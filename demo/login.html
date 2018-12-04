@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/axios.min.js"></script>
+</head>
+<body>
+这是一个登录页面
+<br>
+用户名:<input type="text" id="username" value="张三">
+<br>
+密码: <input type="text" id="password" value="123456">
+<br>
+
+<button onclick="dl()">登录</button>
+
+<br><br><br>
+<button onclick="hqxx()">登录之后获取用户信息</button>
+<div id="userinfo">
+
+</div>
+</body>
+<script>
+    function dl() {
+        let params = new URLSearchParams();
+        params.append("grant_type", "password");
+        params.append("username", username.value);
+        params.append("password", password.value);
+        axios({
+            method: 'post',
+            url: '/oauth/token',
+            data: params,
+            headers: {
+                "Authorization": "Basic aWVwOmllcHNlY3JldA=="
+            }
+        }).then(res => {
+            res=res.data;
+            sessionStorage.setItem("access_token",res.access_token);
+            sessionStorage.setItem("refresh_token",res.refresh_token);
+            sessionStorage.setItem("expires_in",res.expires_in);
+            axios.defaults.headers.common['Authorization'] = "bearer "+res.access_token;
+        })
+    }
+    function hqxx() {
+        axios({
+            method: 'get',
+            url: '/oauth/me',
+        }).then(res=>{
+            userinfo.innerHTML=JSON.stringify(res.data)
+        })
+    }
+</script>
+</html>

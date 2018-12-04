@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/axios.min.js"></script>
+</head>
+<body>
+这是一个注册页面
+用户名:<input type="text" id="username" value="张三"> <br>
+密码:<input type="text" id="password" value="123456"> <br>
+手机号:<input type="text" id="protectMTel" value="15238311712"> <br>
+邮箱:<input type="text" id="protectEMail" value="80795289@qq.com"> <br>
+<button onclick="zc()">注册</button>
+</body>
+<script>
+    function zc() {
+        let params = new URLSearchParams();
+        params.append("name", username.value);
+        params.append("password", password.value);
+        params.append("protectMTel", protectMTel.value);
+        params.append("protectEMail", protectEMail.value);
+        axios({
+            method: 'post',
+            url: '/oauth/userRegist',
+            data: params
+        })
+    }
+</script>
+</html>
