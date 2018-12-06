@@ -22,7 +22,7 @@
         params.append("protectEMail", protectEMail.value);
         axios({
             method: 'post',
-            url: '/oauth/userRegist',
+            url: '/api/oauth/userRegist',
             data: params
         })
     }

@@ -12,8 +12,10 @@
 <br>
 密码: <input type="text" id="password" value="123456">
 <br>
-
 <button onclick="dl()">登录</button>
+&emsp;
+<a href="/api/qqLogin/qq">QQ登录</a>
+
 
 <br><br><br>
 <button onclick="hqxx()">登录之后获取用户信息</button>
@@ -45,7 +47,7 @@
     function hqxx() {
         axios({
             method: 'get',
-            url: '/oauth/me',
+            url: '/api/oauth/me',
         }).then(res=>{
             userinfo.innerHTML=JSON.stringify(res.data)
         })
