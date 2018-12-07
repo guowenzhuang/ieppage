@@ -24,7 +24,7 @@
 ## 启动项目之前
 1. 下载nginx
 2. 配置nginx反向代理(上面已介绍)
-3. 从github上拉取项目  (使用github Desktop/WebStorm)
+3. 从github上拉取项目  (使用github Desktop/WebStorm/HbuilderX)
 4. 把项目放入到 nginx/html/ 文件内
 ## 启动项目:
 1. 启动nginx
