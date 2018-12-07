@@ -28,7 +28,7 @@
 4. 把项目放入到 nginx/html/ 文件内
 ## 启动项目:
 1. 启动nginx
-2. 访问index页面
+2. 访问login页面
 
 
 
