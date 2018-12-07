@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="demo/js/axios.min.js"></script>
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        body>div>div{
+            margin-bottom: 10px;
+        }
+        body>div #dldiv *{
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <h1>
+        智慧教学平台登录
+    </h1>
+    <div>
+        用户名:<input type="text" id="username" value="张三">
+    </div>
+    <div>
+        密码: <input type="text" id="password" value="123456">
+    </div>
+    <div id="dldiv">
+        <button onclick="dl()">登录</button>
+        <a href="/api/qqLogin/qq">QQ登录</a>
+        <a href="/demo/userregist.html">注册</a>
+    </div>
+    &emsp;
+    <div>
+        <button onclick="hqxx()">登录之后获取用户信息</button>
+    </div>
+    <div id="userinfo">
+
+    </div>
+</div>
+</body>
+<script>
+    function dl() {
+        let params = new URLSearchParams();
+        params.append("grant_type", "password");
+        params.append("username", username.value);
+        params.append("password", password.value);
+        axios({
+            method: 'post',
+            url: '/oauth/token',
+            data: params,
+            headers: {
+                "Authorization": "Basic aWVwOmllcHNlY3JldA=="
+            }
+        }).then(res => {
+            res = res.data;
+            sessionStorage.setItem("access_token", res.access_token);
+            sessionStorage.setItem("refresh_token", res.refresh_token);
+            sessionStorage.setItem("expires_in", res.expires_in);
+            axios.defaults.headers.common['Authorization'] = "bearer " + res.access_token;
+        })
+    }
+
+    function hqxx() {
+        axios({
+            method: 'get',
+            url: '/api/oauth/me',
+        }).then(res => {
+            userinfo.innerHTML = JSON.stringify(res.data)
+        })
+    }
+</script>
+</html>
