@@ -22,8 +22,14 @@
 <div id="userinfo">
 
 </div>
+<br><br><br>
+<a href="test.html">测试页面</a>
 </body>
 <script>
+
+    /**
+     * 登录
+     */
     function dl() {
         let params = new URLSearchParams();
         params.append("grant_type", "password");
@@ -37,19 +43,38 @@
                 "Authorization": "Basic aWVwOmllcHNlY3JldA=="
             }
         }).then(res => {
-            res=res.data;
-            sessionStorage.setItem("access_token",res.access_token);
-            sessionStorage.setItem("refresh_token",res.refresh_token);
-            sessionStorage.setItem("expires_in",res.expires_in);
-            axios.defaults.headers.common['Authorization'] = "bearer "+res.access_token;
+            res = res.data;
+            //token
+            sessionStorage.setItem("access_token", res.access_token);
+            //刷新token
+            sessionStorage.setItem("refresh_token", res.refresh_token);
+            //过期时间
+            sessionStorage.setItem("expires_in", res.expires_in);
+            //权限
+            let authorities=res.authorities;
+            console.log(res);
+            sessionStorage.setItem("authorities",authorities);
+            let url=authoritiesToUrl(authorities);
+            axios.defaults.headers.common['Authorization'] = "bearer " + res.access_token;
         })
+    }
+    function authoritiesToUrl(authorities) {
+        let role="";
+        for (let i = 0; i < authorities.length; i++) {
+            console.log(authorities[i])
+            if(authorities[i].indexOf("ROLE")>=0){
+                role=authorities[i].substring(5);
+                break;
+            }
+        }
+        console.log(role)
     }
     function hqxx() {
         axios({
             method: 'get',
             url: '/api/oauth/me',
-        }).then(res=>{
-            userinfo.innerHTML=JSON.stringify(res.data)
+        }).then(res => {
+            userinfo.innerHTML = JSON.stringify(res.data)
         })
     }
 </script>

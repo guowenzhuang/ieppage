@@ -60,13 +60,37 @@
             }
         }).then(res => {
             res = res.data;
+            //token
             sessionStorage.setItem("access_token", res.access_token);
+            //刷新token
             sessionStorage.setItem("refresh_token", res.refresh_token);
+            //过期时间
             sessionStorage.setItem("expires_in", res.expires_in);
+            //权限
+            let authorities=res.authorities;
+            sessionStorage.setItem("authorities",authorities);
+            let url=authoritiesToUrl(authorities);
             axios.defaults.headers.common['Authorization'] = "bearer " + res.access_token;
         })
     }
 
+    function authoritiesToUrl(authorities) {
+        let role="";
+        for (let i = 0; i < authorities.length; i++) {
+            if(authorities[i].indexOf("ROLE")>=0){
+                role=authorities[i].substring(5);
+                break;
+            }
+        }
+        switch (role) {
+            case "学生":
+                return "/student/index.html";
+            case "老师":
+                return "/teacher/index.html";
+            case "管理员":
+                ;
+        }
+    }
     function hqxx() {
         axios({
             method: 'get',

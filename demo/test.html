@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/axios.min.js"></script>
+</head>
+<body>
+    <div>
+        <h1>文件上传</h1>
+            <input type="file" id="file">
+            <button onclick="tj()">提交</button>
+    </div>
+<script>
+    function tj() {
+        this.formData = new FormData();
+        let file=document.getElementById("file").files[0];
+        console.log(file)
+        formData.append('file', file);
+        formData.append('path', "/test/a.jpg");
+        axios({
+            method: 'post',
+            url: '/api/oss/upload',
+            data: formData,
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "Authorization": "bearer "+sessionStorage.getItem("access_token")
+            }
+        })
+    }
+</script>
+</body>
+</html>
