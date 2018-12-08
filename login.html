@@ -31,8 +31,15 @@
     <div>
         密码: <input type="text" id="password" value="123456">
     </div>
+    <div>
+        <h4>切换账号:</h4>
+        <button onclick="username.value='王五'">老师</button>
+        <button onclick="username.value='张三'">学生</button>
+        <button onclick="username.value='李四'">管理员</button>
+    </div>
+    <br><br>
     <div id="dldiv">
-        <button onclick="dl()">登录</button>
+        <button onclick="dl()" style="width: 50px;height: 50px;">登录</button>
         <a href="/api/qqLogin/qq">QQ登录</a>
         <a href="demo/userregist.html">注册</a>
     </div>
@@ -70,6 +77,7 @@
             let authorities=res.authorities;
             sessionStorage.setItem("authorities",authorities);
             let url=authoritiesToUrl(authorities);
+            window.location.href=url;
             axios.defaults.headers.common['Authorization'] = "bearer " + res.access_token;
         })
     }
@@ -88,7 +96,7 @@
             case "老师":
                 return "/teacher/index.html";
             case "管理员":
-                ;
+                return "/admin/index.html";
         }
     }
     function hqxx() {
