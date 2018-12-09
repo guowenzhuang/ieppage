@@ -6,16 +6,97 @@
     <script src="js/axios.min.js"></script>
 </head>
 <body>
-    <div>
-        <h1>文件上传</h1>
-            <input type="file" id="file">
-            <button onclick="tj()">提交</button>
-    </div>
+<div>
+    <h1>文件上传</h1>
+    <input type="file" id="file">
+    <button onclick="tj()">提交</button>
+</div>
+<div>
+    <h1>大文件上传</h1>
+    <input type="file" id="longfile">
+    <button onclick="longtj()">提交</button>
+</div>
 <script>
+
+    const   MB=1024*1024;
+    function longtj() {
+        let formData = new FormData();
+        let path = "test/test.mp4";
+        formData.append('path', path);
+        axios({
+            method: 'post',
+            url: '/api/oss/long/longUploadFirst',
+            data: formData,
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "Authorization": "bearer " + sessionStorage.getItem("access_token")
+            }
+        }).then(res => {
+            res = res.data;
+            let uploadId = res.message;
+            longtjContent(uploadId, path);
+        })
+
+    }
+
+    function longtjContent(uploadId, path) {
+        let file = document.getElementById("longfile").files[0];
+        let i = 0;
+        longWhile(file,i,uploadId, path);
+    }
+
+    function longWhile(file, i,uploadId, path) {
+        let end=(i + 1) * MB;
+        if(end>file.size){
+            end=file.size
+        }
+        let slice = file.slice(i * MB,end);
+        console.log(slice);
+        console.log(file);
+        console.log(end);
+        console.log(i);
+        let formData = new FormData();
+        formData.append("file", slice);
+        formData.append("uploadId", uploadId);
+        formData.append("path", path);
+        i++;
+        axios({
+            method: 'post',
+            url: '/api/oss/long/loadUploadConenet',
+            data: formData,
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "Authorization": "bearer " + sessionStorage.getItem("access_token")
+            }
+        }).then(res => {
+            if (slice.size >= MB) {
+                longWhile(file,i,uploadId, path);
+            }else{
+                let params=new URLSearchParams();
+                params.append("uploadId",uploadId);
+                params.append("path",path);
+                axios({
+                    method: 'post',
+                    url: '/api/oss/long/loadUploadEnd',
+                    data: params,
+                    headers: {
+                        "Authorization": "bearer " + sessionStorage.getItem("access_token")
+                    }
+                })
+            }
+        })
+            .catch(error=>{
+                console.log("错误");
+                i--;
+                longWhile(file,i,uploadId, path);
+            })
+    }
+
+
     function tj() {
-        this.formData = new FormData();
-        let file=document.getElementById("file").files[0];
-        console.log(file)
+        let formData = new FormData();
+        let file = document.getElementById("file").files[0];
+        console.log(file);
         formData.append('file', file);
         formData.append('path', "/test/a.jpg");
         axios({
@@ -24,7 +105,7 @@
             data: formData,
             headers: {
                 'Content-Type': 'multipart/form-data',
-                "Authorization": "bearer "+sessionStorage.getItem("access_token")
+                "Authorization": "bearer " + sessionStorage.getItem("access_token")
             }
         })
     }
