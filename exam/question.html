@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>question 题库管理</title>
+		<link rel="stylesheet" type="text/css" href="css/iview.css">
+		<script src="js/vue.min.js"></script>
+		<script src="js/iview.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="css/index.css" />
+		<script src="js/index.js"></script>
+
+
+
+
+	</head>
+	<body>
+
+		<h1 align="center">题库管理</h1>
+
+		<div id="app" align="center">
+			<div align="center">
+				<font size="4">题干:</font>
+				<el-input v-model="input" placeholder="请输入内容" style="width: 200px;"></el-input>
+				<font size="4">试题的类型:</font>
+				<el-input v-model="input" placeholder="请输入内容" style="width: 120px;"></el-input>
+				<font size="4">课程:</font>
+				<el-input v-model="input" placeholder="请输入内容" style="width: 120px;"></el-input>
+				<font size="4">章节:</font>
+				<el-input v-model="input" placeholder="请输入内容" style="width: 120px;"></el-input>
+
+				<el-button type="primary" icon="el-icon-search" round>搜索</el-button>
+			</div>
+
+
+
+			<div style="width: 100%;">
+				<template>
+					<el-table :data="tableData" style=" width: auto">
+
+						<el-table-column prop="id" label="序号">
+						</el-table-column>
+
+						<el-table-column prop="type" label="试题类型">
+						</el-table-column>
+
+						<el-table-column prop="context" label="试题内容">
+						</el-table-column>
+
+						<el-table-column prop="answerA" label="选项A">
+						</el-table-column>
+
+						<el-table-column prop="answerB" label="选项B">
+						</el-table-column>
+
+						<el-table-column prop="answerC" label="选项C">
+						</el-table-column>
+
+						<el-table-column prop="answerD" label="选项D">
+						</el-table-column>
+
+						<el-table-column prop="answerone" label="正确答案">
+						</el-table-column>
+
+						<el-table-column prop="section" label="对应课程">
+						</el-table-column>
+
+						<el-table-column prop="course" label="对应章节">
+						</el-table-column>
+
+						<el-table-column prop="operation" label="操作" align="center" min-width="100">
+
+							<template slot-scope="scope">
+								<el-button type="primary" round @click="checkDetail(scope.row.phone)" size="mini">查看</el-button>
+								<el-button type="danger" round @click="modifyUser(scope.row.phone)" size="mini">删除</el-button>
+							</template>
+
+						</el-table-column>
+
+					</el-table>
+				</template>
+			</div>
+			<el-pagination background layout="prev, pager, next" :total="1000">
+			</el-pagination>
+
+
+		</div>
+	</body>
+
+	<script>
+		var Main = {
+
+
+			data() {
+				return {
+
+
+					tableData: [{
+						id: 1,
+						type: '选择题',
+						context: 'mysql...............',
+						answerA: "选项1",
+						answerB: "选项2",
+						answerC: "选项3",
+						answerD: "选项4",
+						answerone: "B",
+						section: "mysql",
+						course: "第一章"
+
+					}]
+				}
+			}
+		}
+
+		var Ctor = Vue.extend(Main)
+		new Ctor().$mount('#app')
+	</script>
+	</body>
+</html>
