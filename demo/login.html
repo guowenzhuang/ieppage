@@ -72,7 +72,7 @@
     function hqxx() {
         axios({
             method: 'get',
-            url: '/api/oauth/me',
+            url: '/api/oauth/me'
         }).then(res => {
             userinfo.innerHTML = JSON.stringify(res.data)
         })
