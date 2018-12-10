@@ -1,76 +1,72 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
+<head>
+    <meta charset="utf-8">
 
-		<link href="css/main.css" rel="stylesheet" type="text/css" />
-		<link href="css/iconfont.css" rel="stylesheet" type="text/css" />
-		<link href="css/test.css" rel="stylesheet" type="text/css" />
+    <link href="css/main.css" rel="stylesheet" type="text/css"/>
+    <link href="css/iconfont.css" rel="stylesheet" type="text/css"/>
+    <link href="css/test.css" rel="stylesheet" type="text/css"/>
 
-		<script src="js/jquery-1.11.3.min.js"></script>
-		<script src="js/jquery.easy-pie-chart.js"></script>
-		<!--时间js-->
-		<script src="js/jquery.countdown.js"></script>
-
-		<script type="text/javascript">
-			$(function() {
-
-				$('time').countDown({
-					with_separators: false
-				});
+    <script src="js/jquery-1.11.3.min.js"></script>
+    <script src="js/jquery.easy-pie-chart.js"></script>
+    <!--时间js-->
+    <script src="js/jquery.countdown.js"></script>
 
 
-				$('.alt-1').countDown({
-					css_class: 'countdown-alt-1'
-				});
+    <script type="text/javascript">
+        $(function () {
+            dasfsdfasadf
 
 
-
-			})
-
-
-			function ccc() {
-				$.post("http://localhost:8090/querysubject", {}, function(e) {
-					/* alert(e); */
-					con = "";
-					$.each(e, function(index, item) {
-						con += "<li>姓名：" + item.qc + "</li>";
-						con += "<li>选项：" + item.optionlist.oc + "</li>";
-						/* con += "<li>姓名：" + item.qc + "</li>";
-						con += "<li>姓名：" + item.qc + "</li>";
-						con += "<li>姓名：" + item.qc + "</li>"; */
+            $('time').countDown({
+                with_separators: false
+            });
 
 
-					})
-					console.log(con); 
-					$("#con").html(con);
+            $('.alt-1').countDown({
+                css_class: 'countdown-alt-1'
+            });
 
 
-				}, "json");
-
-			}
-		</script>
+        })
 
 
+        function ccc() {
+            $.post("http://localhost:8090/querysubject", {}, function (e) {
+                /* alert(e); */
+                con = "";
+                $.each(e, function (index, item) {
+                    con += "<li>姓名：" + item.qc + "</li>";
+                    con += "<li>选项：" + item.optionlist.oc + "</li>";
+                    /* con += "<li>姓名：" + item.qc + "</li>";
+                    con += "<li>姓名：" + item.qc + "</li>";
+                    con += "<li>姓名：" + item.qc + "</li>"; */
 
 
-	</head>
-	<body>
-		<p class="test_time">
-			<i class="icon iconfont">&#xe6fb;</i><b class="alt-1">01:40</b>
-		</p>
-
-		<button onclick="ccc()">hahah</button>
+                })
+                console.log(con);
+                $("#con").html(con);
 
 
-		<ul id="con"></ul>
+            }, "json");
+
+        }
+    </script>
 
 
+</head>
+<body>
+<p class="test_time">
+    <i class="icon iconfont">&#xe6fb;</i><b class="alt-1">01:40</b>
+</p>
+
+<button onclick="ccc()">hahah</button>
 
 
-	</body>
+<ul id="con"></ul>
 
 
+</body>
 
 
 </html>

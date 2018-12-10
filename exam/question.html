@@ -1,118 +1,234 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<title>question 题库管理</title>
-		<link rel="stylesheet" type="text/css" href="css/iview.css">
-		<script src="js/vue.min.js"></script>
-		<script src="js/iview.min.js"></script>
-		<link rel="stylesheet" type="text/css" href="css/index.css" />
-		<script src="js/index.js"></script>
+<head>
+    <meta charset="utf-8">
+    <title>question 题库管理</title>
+    <link rel="stylesheet" type="text/css" href="css/iview.css">
+    <script src="js/vue.min.js"></script>
+    <script src="js/iview.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/index.css"/>
+    <script src="js/index.js"></script>
+    <script src="js/axios.js"></script>
 
 
+</head>
+<body>
+
+<h1 align="center">题库管理</h1>
+<br>
+<hr>
+<br><br><br>
 
 
-	</head>
-	<body>
+<div id="app" align="center">
+    <div align="center">
+        <font size="4">题干:</font>
+        <el-input v-model="input1" placeholder="请输入内容" style="width: 200px;"></el-input>
+        <font size="4">试题的类型:</font>
+        <el-select v-model="value2" placeholder="请选择">
+            <el-option v-for="item in options2" :key="item.value" :label="item.label" :value="item.value"
+                       :disabled="item.disabled">
+            </el-option>
+        </el-select>
+        <font size="4">课程:</font>
+        <el-input v-model="input" placeholder="请输入内容" style="width: 120px;"></el-input>
+        <font size="4">章节:</font>
+        <el-input v-model="input" placeholder="请输入内容" style="width: 120px;"></el-input>
 
-		<h1 align="center">题库管理</h1>
-
-		<div id="app" align="center">
-			<div align="center">
-				<font size="4">题干:</font>
-				<el-input v-model="input" placeholder="请输入内容" style="width: 200px;"></el-input>
-				<font size="4">试题的类型:</font>
-				<el-input v-model="input" placeholder="请输入内容" style="width: 120px;"></el-input>
-				<font size="4">课程:</font>
-				<el-input v-model="input" placeholder="请输入内容" style="width: 120px;"></el-input>
-				<font size="4">章节:</font>
-				<el-input v-model="input" placeholder="请输入内容" style="width: 120px;"></el-input>
-
-				<el-button type="primary" icon="el-icon-search" round>搜索</el-button>
-			</div>
-
+        <el-button type="primary" icon="el-icon-search" @click="query()" round>搜索</el-button>
+    </div>
 
 
-			<div style="width: 100%;">
-				<template>
-					<el-table :data="tableData" style=" width: auto">
+    <div style="width: 100%;">
+        <template>
+            <el-table :data="tableData" style=" width: auto">
 
-						<el-table-column prop="id" label="序号">
-						</el-table-column>
+                <el-table-column prop="id" label="序号" :show-overflow-tooltip="true">
+                </el-table-column>
+                <el-table-column prop="rubricttype" label="试题类型" :show-overflow-tooltip="true">
+                </el-table-column>
+                <el-table-column prop="content" label="题干" :show-overflow-tooltip="true">
+                </el-table-column>
+                <el-table-column prop="A" label="选项A" :show-overflow-tooltip="true">
+                </el-table-column>
+                <el-table-column prop="B" label="选项B" :show-overflow-tooltip="true">
+                </el-table-column>
+                <el-table-column prop="C" label="选项C" :show-overflow-tooltip="true">
+                </el-table-column>
+                <el-table-column prop="D" label="选项D" :show-overflow-tooltip="true">
+                </el-table-column>
+                <el-table-column prop="trcherId" label="教师id" :show-overflow-tooltip="true">
+                </el-table-column>
+                <el-table-column prop="sectionId" label="章节id" :show-overflow-tooltip="true">
+                </el-table-column>
+                <el-table-column prop="courseId" label="课程id" :show-overflow-tooltip="true">
+                </el-table-column>
+                <el-table-column prop="answerId" label="答案id" :show-overflow-tooltip="true">
+                </el-table-column>
 
-						<el-table-column prop="type" label="试题类型">
-						</el-table-column>
+                <el-table-column prop="operation" label="操作" align="center" min-width="100">
+                    <template slot-scope="scope">
+                        <el-button type="primary" round @click="checkDetail(scope.row)" size="mini">查看
+                        </el-button>
+                        <el-button type="danger" round @click="delete(scope.row)" size="mini">删除
+                        </el-button>
+                    </template>
 
-						<el-table-column prop="context" label="试题内容">
-						</el-table-column>
+                </el-table-column>
 
-						<el-table-column prop="answerA" label="选项A">
-						</el-table-column>
-
-						<el-table-column prop="answerB" label="选项B">
-						</el-table-column>
-
-						<el-table-column prop="answerC" label="选项C">
-						</el-table-column>
-
-						<el-table-column prop="answerD" label="选项D">
-						</el-table-column>
-
-						<el-table-column prop="answerone" label="正确答案">
-						</el-table-column>
-
-						<el-table-column prop="section" label="对应课程">
-						</el-table-column>
-
-						<el-table-column prop="course" label="对应章节">
-						</el-table-column>
-
-						<el-table-column prop="operation" label="操作" align="center" min-width="100">
-
-							<template slot-scope="scope">
-								<el-button type="primary" round @click="checkDetail(scope.row.phone)" size="mini">查看</el-button>
-								<el-button type="danger" round @click="modifyUser(scope.row.phone)" size="mini">删除</el-button>
-							</template>
-
-						</el-table-column>
-
-					</el-table>
-				</template>
-			</div>
-			<el-pagination background layout="prev, pager, next" :total="1000">
-			</el-pagination>
+            </el-table>
 
 
-		</div>
-	</body>
-
-	<script>
-		var Main = {
+        </template>
+    </div>
 
 
-			data() {
-				return {
+    <el-dialog title="提示" :visible="dialog" width="30%" id="dialog" :before-close="handleClose" :modal="true">
+        <span>{{haha}}</span>
+        <span slot="footer" class="dialog-footer">
+    <el-button @click="quxiao">取 消</el-button>
+    <el-button type="primary" @click="queding">确 定</el-button>
+
+  </span>
+    </el-dialog>
 
 
-					tableData: [{
-						id: 1,
-						type: '选择题',
-						context: 'mysql...............',
-						answerA: "选项1",
-						answerB: "选项2",
-						answerC: "选项3",
-						answerD: "选项4",
-						answerone: "B",
-						section: "mysql",
-						course: "第一章"
+    <el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange"
+                   @current-page="handleCurrentChange" :current-page.sync="pageNum" :page-sizes="pageSizesList"
+                   :page-size="pagesize" :total="100">
+    </el-pagination>
 
-					}]
-				}
-			}
-		}
 
-		var Ctor = Vue.extend(Main)
-		new Ctor().$mount('#app')
-	</script>
-	</body>
+</div>
+</body>
+
+<script>
+
+
+    var Main = {
+        data() {
+
+            mounted()
+            {
+              alert("dasfsddddddddddd")
+            };
+
+            return {
+                delete(val) {
+
+                    let params = new URLSearchParams();
+                    params.append("id", val.id)
+                    axios({
+                        method: 'post',
+                        url: '/api/exam/rubric/deleteredicbyid',
+                        data:
+                        params,
+
+                        headers: {
+                            "Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDM3Mjk4NywiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6ImM5ZTViYWU5LTg0OWEtNDNmZC04OGNjLTEzN2FiNjhkMTBlNyIsImNsaWVudF9pZCI6ImllcCJ9.46qUBcbUmq9mqe-XPQjR9muN8FO4G4UpyzNDF_EdpN0"
+                        }
+                    }).then(res => {
+                        if (res.success) {
+                            this.reload();
+                            alert(res.message)
+                        } else {
+                            alert(res.message)
+                        }
+                    })
+                }
+                ,
+
+
+                query() {
+                    axios({
+                        method: 'post',
+                        url: '/api/exam/rubric/queryrubric',
+                        data: {},
+                        headers: {
+                            "Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDM3Mjk4NywiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6ImM5ZTViYWU5LTg0OWEtNDNmZC04OGNjLTEzN2FiNjhkMTBlNyIsImNsaWVudF9pZCI6ImllcCJ9.46qUBcbUmq9mqe-XPQjR9muN8FO4G4UpyzNDF_EdpN0"
+                        }
+                    }).then(res => {
+                        res = res.data;
+                        for (let i = 0; i < res.length; i++) {
+                            let r = res[i];
+                            let answer = r.answer;
+                            for (let j = 0; j < answer.length; j++) {
+                                let a = answer[j];
+                                r[a.optiones] = a.content;
+                            }
+                        }
+                        this.tableData = res;
+                    })
+                }
+                ,
+                options2: [
+                    {
+                        value: '选项1',
+                        label: 'mysql'
+                    }, {
+                        value: '选项2',
+                        label: 'sqlserver'
+                    }, {
+                        value: '选项3',
+                        label: 'oop'
+                    }, {
+                        value: '选项4',
+                        label: 'websocket'
+                    }, {
+                        value: '选项5',
+                        label: 'webservice'
+                    }],
+
+                value2:
+                    '',
+
+                dialogVisible:
+                    false,
+
+                input1:
+                    '',
+
+
+                checkDetail(val) {
+                    alert(val.id)
+                }
+                ,
+                tableData: [],
+            }
+                ;
+            methods: {
+
+                init()
+                {
+                    alert("hahah");
+                }
+
+
+                handleClose(done)
+                {
+                    this.$confirm('确认关闭？')
+                        .then(_ => {
+                            done();
+                        })
+                        .catch(_ => {
+                        });
+                }
+
+                handleSizeChange(val)
+                {
+                    this.pagesize = val;
+                }
+                handleCurrentChange()
+                {
+                    this.pageNum = val;
+                }
+
+
+            }
+        }
+    }
+    var Ctor = Vue.extend(Main)
+    new Ctor().$mount('#app')
+</script>
+</body>
 </html>

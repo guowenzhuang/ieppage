@@ -81,13 +81,12 @@
             axios.defaults.headers.common['Authorization'] = "bearer " + res.access_token;
         })
     }
-            url: '/api/oauth/me',
 
     function authoritiesToUrl(authorities) {
         let role="";
         for (let i = 0; i < authorities.length; i++) {
-            if(authorities[i].indexOf("ROLE")>=0){
-                role=authorities[i].substring(5);
+            if(authorities[i].authority.indexOf("ROLE")>=0){
+                role=authorities[i].authority.substring(5);
                 break;
             }
         }
@@ -103,6 +102,7 @@
     function hqxx() {
         axios({
             method: 'get',
+            url: '/api/oauth/me',
         }).then(res => {
             userinfo.innerHTML = JSON.stringify(res.data)
         })

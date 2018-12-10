@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="css/iview.css">
+    <script src="js/vue.min.js"></script>
+    <script src="js/iview.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/index.css"/>
+    <script src="js/index.js"></script>
+
+
+</head>
+<body>
+
+<div id="app" align="center">
+
+
+
+</div>
+
+</body>
+<script>
+
+    var Main = {
+        data() {
+            return {
+                mounted: function () {
+                    this.ccc();
+                },
+                ccc() {
+                    alert("ahahahha");
+                }
+
+
+
+            }
+        }
+    }
+    var Ctor = Vue.extend(Main)
+    new Ctor().$mount('#app')
+
+</script>
+
+</html>
