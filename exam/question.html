@@ -22,6 +22,9 @@
 
 <div id="app" align="center">
     <div align="center">
+
+        <!--条件查询的条件输入框-->
+        <el-button type="primary" icon="el-icon-plus" @click="dialogVisible = true" round>新增试题</el-button>
         <font size="4">题干:</font>
         <el-input v-model="input1" placeholder="请输入内容" style="width: 200px;"></el-input>
         <font size="4">试题的类型:</font>
@@ -41,8 +44,8 @@
 
     <div style="width: 100%;">
         <template>
+            <!--element表格-->
             <el-table :data="tableData" style=" width: auto">
-
                 <el-table-column prop="id" label="序号" :show-overflow-tooltip="true">
                 </el-table-column>
                 <el-table-column prop="rubricttype" label="试题类型" :show-overflow-tooltip="true">
@@ -56,8 +59,6 @@
                 <el-table-column prop="C" label="选项C" :show-overflow-tooltip="true">
                 </el-table-column>
                 <el-table-column prop="D" label="选项D" :show-overflow-tooltip="true">
-                </el-table-column>
-                <el-table-column prop="trcherId" label="教师id" :show-overflow-tooltip="true">
                 </el-table-column>
                 <el-table-column prop="sectionId" label="章节id" :show-overflow-tooltip="true">
                 </el-table-column>
@@ -73,22 +74,66 @@
                         <el-button type="danger" round @click="delete(scope.row)" size="mini">删除
                         </el-button>
                     </template>
-
                 </el-table-column>
-
             </el-table>
-
 
         </template>
     </div>
 
 
-    <el-dialog title="提示" :visible="dialog" width="30%" id="dialog" :before-close="handleClose" :modal="true">
-        <span>{{haha}}</span>
-        <span slot="footer" class="dialog-footer">
-    <el-button @click="quxiao">取 消</el-button>
-    <el-button type="primary" @click="queding">确 定</el-button>
+    <el-dialog title="新增试题" :visible.sync="dialogVisible" width="60%" :before-close="handleClose">
 
+        <font size="4">题干:</font>
+        <el-input v-model="input1" placeholder="请输入内容" style="width: 400px;" :show-overflow-tooltip="true"></el-input>
+
+        <font size="4">试题的类型:</font>
+        <el-select v-model="value2" placeholder="请选择">
+            <el-option v-for="item in options3" :key="item.value" :label="item.label" :value="item.value"
+                       :disabled="item.disabled">
+            </el-option>
+        </el-select>
+
+        <br>
+        <el-checkbox v-model="checked"><font size="4">选项A:</font></el-checkbox>
+        <el-input v-model="input1" placeholder="请输入内容" style="width: auto;" :show-overflow-tooltip="true"></el-input>
+
+        <el-checkbox v-model="checked"><font size="4">选项B:</font></el-checkbox>
+        <el-input v-model="input1" placeholder="请输入内容" style="width: auto;" :show-overflow-tooltip="true"></el-input>
+        <br>
+        <el-checkbox v-model="checked"><font size="4">选项C:</font></el-checkbox>
+        <el-input v-model="input1" placeholder="请输入内容" style="width: auto;" :show-overflow-tooltip="true"></el-input>
+
+        <el-checkbox v-model="checked"><font size="4">选项D:</font></el-checkbox>
+        <el-input v-model="input1" placeholder="请输入内容" style="width: auto;" :show-overflow-tooltip="true"></el-input>
+
+
+        <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+  </span>
+    </el-dialog>
+
+
+    <el-dialog title="提示" :visible.sync="dialogVisible1" width="60%" :before-close="handleClose">
+        <font size="4">题干:</font>
+        <el-input v-model="input2" placeholder="请输入内容" style="width: 600px;"></el-input>
+        <br>
+        <el-checkbox v-model="checked"><font size="4">选项A:</font></el-checkbox>
+        <el-input v-model="inputA" placeholder="请输入内容" style="width: auto;"></el-input>
+
+        <el-checkbox v-model="checked"><font size="4">选项B:</font></el-checkbox>
+        <el-input v-model="inputB" placeholder="请输入内容" style="width: auto;"></el-input>
+        <br>
+        <el-checkbox v-model="checked"><font size="4">选项C:</font></el-checkbox>
+        <el-input v-model="inputC" placeholder="请输入内容" style="width: auto;"></el-input>
+
+        <el-checkbox v-model="checked"><font size="4">选项D:</font></el-checkbox>
+        <el-input v-model="inputD" placeholder="请输入内容" style="width: auto;"></el-input>
+
+
+        <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
   </span>
     </el-dialog>
 
@@ -105,62 +150,20 @@
 <script>
 
 
-    var Main = {
+
+
+    var Main = new Vue({
+        el: '#app',
+
+        /*初始化方法放在这里面(相当于页面加载事件)*/
+        mounted: function () {
+           console.log(sessionStorage.getItem("access_token"))
+            this.query();
+        },
+
+        /*数据*/
         data() {
-
-            mounted()
-            {
-              alert("dasfsddddddddddd")
-            };
-
             return {
-                delete(val) {
-
-                    let params = new URLSearchParams();
-                    params.append("id", val.id)
-                    axios({
-                        method: 'post',
-                        url: '/api/exam/rubric/deleteredicbyid',
-                        data:
-                        params,
-
-                        headers: {
-                            "Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDM3Mjk4NywiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6ImM5ZTViYWU5LTg0OWEtNDNmZC04OGNjLTEzN2FiNjhkMTBlNyIsImNsaWVudF9pZCI6ImllcCJ9.46qUBcbUmq9mqe-XPQjR9muN8FO4G4UpyzNDF_EdpN0"
-                        }
-                    }).then(res => {
-                        if (res.success) {
-                            this.reload();
-                            alert(res.message)
-                        } else {
-                            alert(res.message)
-                        }
-                    })
-                }
-                ,
-
-
-                query() {
-                    axios({
-                        method: 'post',
-                        url: '/api/exam/rubric/queryrubric',
-                        data: {},
-                        headers: {
-                            "Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDM3Mjk4NywiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6ImM5ZTViYWU5LTg0OWEtNDNmZC04OGNjLTEzN2FiNjhkMTBlNyIsImNsaWVudF9pZCI6ImllcCJ9.46qUBcbUmq9mqe-XPQjR9muN8FO4G4UpyzNDF_EdpN0"
-                        }
-                    }).then(res => {
-                        res = res.data;
-                        for (let i = 0; i < res.length; i++) {
-                            let r = res[i];
-                            let answer = r.answer;
-                            for (let j = 0; j < answer.length; j++) {
-                                let a = answer[j];
-                                r[a.optiones] = a.content;
-                            }
-                        }
-                        this.tableData = res;
-                    })
-                }
-                ,
                 options2: [
                     {
                         value: '选项1',
@@ -179,56 +182,120 @@
                         label: 'webservice'
                     }],
 
-                value2:
-                    '',
+                user: {},
+                options3: [
+                    {
+                        value: '选项1',
+                        label: '选择题'
+                    }, {
+                        value: '选项2',
+                        label: '填空题'
+                    }, {
+                        value: '选项3',
+                        label: '判断题'
+                    }],
 
-                dialogVisible:
-                    false,
-
-                input1:
-                    '',
-
-
-                checkDetail(val) {
-                    alert(val.id)
-                }
-                ,
-                tableData: [],
-            }
-                ;
-            methods: {
-
-                init()
-                {
-                    alert("hahah");
-                }
+                dialogVisible1: false,
 
 
-                handleClose(done)
-                {
-                    this.$confirm('确认关闭？')
-                        .then(_ => {
-                            done();
-                        })
-                        .catch(_ => {
-                        });
-                }
+                value2: '',
 
-                handleSizeChange(val)
-                {
-                    this.pagesize = val;
-                }
-                handleCurrentChange()
-                {
-                    this.pageNum = val;
-                }
+                dialogVisible: false,
 
 
-            }
+                tableData: []
+            };
+        },
+        /*方法函数写在这里面*/
+        methods: {
+            /*点击新增试题时触发*/
+            addrudic() {
+
+            },
+
+
+            /*获取所有的试题*/
+            query() {
+                axios({
+                    method: 'post',
+                    url: '/api/exam/rubric/queryrubric',
+                    data: {},
+                    headers: {
+                        "Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDQ1MjI0MCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6ImI1NzY2OTkwLTdjY2ItNDU4OS1iNGQxLWNmNDdkYjRlODQ1NiIsImNsaWVudF9pZCI6ImllcCJ9.7Xj1kJTLnRifr12hbonUx1naHHGYmhkC3TU69pjyNiY"
+                    }
+                }).then(res => {
+                    res = res.data;
+                    for (let i = 0; i < res.length; i++) {
+                        let r = res[i];
+                        let answer = r.answer;
+                        for (let j = 0; j < answer.length; j++) {
+                            let a = answer[j];
+                            r[a.optiones] = a.content;
+                        }
+                    }
+                    this.tableData = res;
+                })
+            },
+
+            /*点击查看的时候调用这个*/
+
+            checkDetail(val) {
+
+                this.dialogVisible1 = "true";
+                this.input2 = val.content;
+                this.inputA = val.A;
+                this.inputB = val.B;
+                this.inputC = val.C;
+                this.inputD = val.D;
+
+
+            },
+
+            /*删除一个试题*/
+            delete(val) {
+                let params = new URLSearchParams();
+                params.append("id", val.id)
+                axios({
+                    method: 'post',
+                    url: '/api/exam/rubric/deleteredicbyid',
+                    data:
+                    params,
+
+                    headers: {
+                        "Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDQ0MzMyNCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjYzNjNmMGJjLWI0OTYtNDQ2ZC1iNjMzLTI0OTlhNDRkYmI3NiIsImNsaWVudF9pZCI6ImllcCJ9.Ys_9xqB-MQ6wIaVpFIpOKIiA0IoBtZUAGaHDBjy6iKY"
+                    }
+                }).then(res => {
+                    if (res.success) {
+                        this.reload();
+                        alert(res.message)
+                    } else {
+                        alert(res.message)
+                    }
+                })
+            },
+            /*对话框关闭与否触发的方法*/
+            handleClose(done) {
+                this.$confirm('确认关闭？')
+                    .then(_ => {
+                        done();
+                    })
+                    .catch(_ => {
+                    });
+            },
+
+            handleSizeChange(val) {
+                this.pagesize = val;
+            },
+            handleCurrentChange() {
+                this.pageNum = val;
+            },
+
+
         }
-    }
-    var Ctor = Vue.extend(Main)
-    new Ctor().$mount('#app')
+
+    });
+
 </script>
 </body>
 </html>
+          
