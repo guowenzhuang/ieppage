@@ -1,0 +1,9 @@
+.el-tree-node__label{
+    font-size: 16px;
+}
+.el-tree-node{
+    margin-bottom: 10px;
+}
+.el-tree-node__content{
+    margin-bottom: 10px;
+}
