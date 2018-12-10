@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>试卷管理</title>
+    <link rel="stylesheet" type="text/css" href="css/iview.css">
+    <script src="js/vue.min.js"></script>
+    <script src="js/iview.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/index.css"/>
+    <script src="js/index.js"></script>
+    <script src="js/axios.js"></script>
+</head>
+<body>
+<div id="from" align="center">
+    <el-form :inline="true" :model="formInline" class="demo-form-inline">
+        <el-form-item label="试卷名称：">
+            <el-input v-model="formInline.user" placeholder="试卷名称"></el-input>
+        </el-form-item>
+        <el-form-item label="试卷类型：">
+            <el-select v-model="formInline.region" placeholder="试卷类型">
+                <el-option label="区域一" value="shanghai"></el-option>
+                <el-option label="区域二" value="beijing"></el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item label="试卷状态：">
+            <el-select v-model="formInline.region" placeholder="试卷状态">
+                <el-option label="区域一" value="shanghai"></el-option>
+                <el-option label="区域二" value="beijing"></el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="primary" @click="onSubmit">查询</el-button>
+            <el-button type="primary" @click="onSubmit">随机组卷</el-button>
+            <el-button type="primary" @click="onSubmit">选题组卷</el-button>
+        </el-form-item>
+    </el-form>
+        <el-table
+                :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+                style="width: 100%">
+            <el-table-column
+                    label="试卷标题"
+                    width="180">
+                <template slot-scope="scope">
+                    <span style="margin-left: 10px">{{ scope.row.date }}</span>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    label="试卷类型"
+                    width="180">
+                <template slot-scope="scope">
+                    <span style="margin-left: 10px">{{ scope.row.name }}</span>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    label="考试科目"
+                    width="180">
+                <template slot-scope="scope">
+                    <span style="margin-left: 10px">{{ scope.row.name }}</span>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    label="考试时长"
+                    width="180">
+                <template slot-scope="scope">
+                    <span style="margin-left: 10px">{{ scope.row.name }}</span>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    label="考试状态"
+                    width="180">
+                <template slot-scope="scope">
+                    <span style="margin-left: 10px">{{ scope.row.name }}</span>
+                </template>
+            </el-table-column>
+            <el-table-column label="操作">
+                <template slot-scope="scope">
+                    <el-button
+                            size="mini"
+                            type="warning"
+                            @click="handleStarttheexam(scope.$index, scope.row)">开始考试
+                    </el-button>
+                    <el-button
+                            size="mini"
+                            type="info"
+                            @click="handleEdit(scope.$index, scope.row)">查看试卷
+                    </el-button>
+                    <el-button
+                            size="mini"
+                            type="primary"
+                            @click="handleDelete(scope.$index, scope.row)">删除
+                    </el-button>
+                    <el-button
+                            size="mini"
+                            type="info"
+                            @click="handleViewingresults(scope.$index, scope.row)">查看成绩
+                    </el-button>
+                    <el-button
+                            size="mini"
+                            type="danger"
+                            @click="handleFinishtheexam(scope.$index, scope.row)">结束考试
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+        <div>
+            <el-pagination class="fy"
+                           layout="prev, pager, next"
+                           @current-change="current_change"
+                           :total="total"
+                           background
+            >
+            </el-pagination>
+        </div>
+
+</div>
+
+</body>
+<script>
+    new Vue({
+        el: "#from",
+        data: function () {
+            return {
+                total:50,//默认数据总数
+                pagesize:10,//每页的数据条数
+                currentPage:1,//默认开始页面
+                tableData: [{
+                    date: '2016-05-02',
+                    name: '王小虎',
+                    address: '上海市普陀区金沙江路 1518 弄'
+                }, {
+                    date: '2016-05-04',
+                    name: '王小虎',
+                    address: '上海市普陀区金沙江路 1517 弄'
+                }, {
+                    date: '2016-05-01',
+                    name: '王小虎',
+                    address: '上海市普陀区金沙江路 1519 弄'
+                }, {
+                    date: '2016-05-03',
+                    name: '王小虎',
+                    address: '上海市普陀区金沙江路 1516 弄'
+                },{
+                    date: '2016-05-03',
+                    name: '王小虎',
+                    address: '上海市普陀区金沙江路 1516 弄'
+                },{
+                    date: '2016-05-03',
+                    name: '王小虎',
+                    address: '上海市普陀区金沙江路 1516 弄'
+                },{
+                    date: '2016-05-03',
+                    name: '王小虎',
+                    address: '上海市普陀区金沙江路 1516 弄'
+                },{
+                    date: '2016-05-03',
+                    name: '王小虎',
+                    address: '上海市普陀区金沙江路 1516 弄'
+                },{
+                    date: '2016-05-03',
+                    name: '王五2',
+                    address: '上海市普陀区金沙江路 1516 弄'
+                },{
+                    date: '2016-05-03',
+                    name: '王五2',
+                    address: '上海市普陀区金沙江路 1516 弄'
+                },{
+                    date: '2016-05-03',
+                    name: '王五2',
+                    address: '上海市普陀区金沙江路 1516 弄'
+                },{
+                    date: '2016-05-03',
+                    name: '王五2',
+                    address: '上海市普陀区金沙江路 1516 弄'
+                },{
+                    date: '2016-05-03',
+                    name: '王五2',
+                    address: '上海市普陀区金沙江路 1516 弄'
+                },{
+                    date: '2016-05-03',
+                    name: '王五2',
+                    address: '上海市普陀区金沙江路 1516 弄'
+                },{
+                    date: '2016-05-03',
+                    name: '王五2',
+                    address: '上海市普陀区金沙江路 1516 弄'
+                }
+                ],
+                formInline: {
+                    user: '',
+                    region: ''
+                }
+            }
+        },
+        methods: {
+            handleStarttheexam(index, row){
+                console.log(index, row);
+            },
+            handleEdit(index, row) {
+                console.log(index, row);
+            },
+            handleDelete(index, row) {
+                console.log(index, row);
+            },
+            onSubmit() {
+                console.log('submit!');
+            },
+            handleViewingresults(index, row) {
+                console.log(index, row);
+            },
+            handleFinishtheexam(index, row){
+                console.log(index, row);
+            }, tableRowClassName({row, rowIndex}) {
+                if (rowIndex === 0) {
+                    return 'th';
+                }
+                return '';
+            },
+            switchChange(){
+                this.istag = !this.istag ;
+
+            },
+            created:function(){
+                this.total=this.tableData.length;
+            },
+            current_change:function(currentPage){
+                this.currentPage = currentPage;
+            }
+
+
+        }
+    })
+
+</script>
+</html>
