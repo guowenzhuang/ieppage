@@ -22,23 +22,9 @@
 </body>
 <script>
 
-    var Main = {
-        data() {
-            return {
-                mounted: function () {
-                    this.ccc();
-                },
-                ccc() {
-                    alert("ahahahha");
-                }
+   var main=new Vue({
 
-
-
-            }
-        }
-    }
-    var Ctor = Vue.extend(Main)
-    new Ctor().$mount('#app')
+   })
 
 </script>
 
