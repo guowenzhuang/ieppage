@@ -12,64 +12,70 @@
 </head>
 <body>
 <div id="from" align="center">
-    <el-form :inline="true" :model="formInline" class="demo-form-inline">
+
+    <el-form :inline="true"  class="demo-form-inline">
+        <el-form-item label="科目：">
+            <el-input  placeholder="科目" id="subject" ></el-input>
+        </el-form-item>
         <el-form-item label="试卷名称：">
-            <el-input v-model="formInline.user" placeholder="试卷名称"></el-input>
+            <el-input  placeholder="试卷名称"id="titlees"></el-input>
         </el-form-item>
         <el-form-item label="试卷类型：">
-            <el-select v-model="formInline.region" placeholder="试卷类型">
-                <el-option label="区域一" value="shanghai"></el-option>
-                <el-option label="区域二" value="beijing"></el-option>
+            <el-select v-model="formInline.Type" placeholder="试卷类型" id="typees">
+                <el-option label="请选择" value=""></el-option>
+                <el-option label="统一考试" value="统一考试"></el-option>
+                <el-option label="自主考试" value="自主考试"></el-option>
             </el-select>
         </el-form-item>
         <el-form-item label="试卷状态：">
-            <el-select v-model="formInline.region" placeholder="试卷状态">
-                <el-option label="区域一" value="shanghai"></el-option>
-                <el-option label="区域二" value="beijing"></el-option>
+            <el-select v-model="formInline.State" placeholder="试卷状态" id="state">
+                <el-option label="请选择" value=""></el-option>
+                <el-option label="未开考" value="未开考"></el-option>
+                <el-option label="考试中" value="考试中"></el-option>
+                <el-option label="考试结束" value="考试结束"></el-option>
             </el-select>
         </el-form-item>
         <el-form-item>
-            <el-button type="primary" @click="onSubmit">查询</el-button>
-            <el-button type="primary" @click="onSubmit">随机组卷</el-button>
-            <el-button type="primary" @click="onSubmit">选题组卷</el-button>
+            <el-button type="primary" @click="onSubmitquery">查询</el-button>
+            <!--<el-button type="primary" @click="onSubmitsui">随机组卷</el-button>
+            <el-button type="primary" @click="onSubmitxaun">选题组卷</el-button>-->
         </el-form-item>
     </el-form>
+
         <el-table
-                :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+                :data="tableData"
                 style="width: 100%">
-            <el-table-column
-                    label="试卷标题"
-                    width="180">
+            <el-table-column label="试卷标题" width="180">
                 <template slot-scope="scope">
-                    <span style="margin-left: 10px">{{ scope.row.date }}</span>
+                    <span style="margin-left: 10px">{{ scope.row.title }}</span>
                 </template>
             </el-table-column>
             <el-table-column
                     label="试卷类型"
                     width="180">
                 <template slot-scope="scope">
-                    <span style="margin-left: 10px">{{ scope.row.name }}</span>
+                    <span style="margin-left: 10px">{{ scope.row.type }}</span>
                 </template>
             </el-table-column>
             <el-table-column
                     label="考试科目"
                     width="180">
                 <template slot-scope="scope">
-                    <span style="margin-left: 10px">{{ scope.row.name }}</span>
+                    <span style="margin-left: 10px">{{ scope.row.subject }}</span>
                 </template>
             </el-table-column>
             <el-table-column
                     label="考试时长"
                     width="180">
                 <template slot-scope="scope">
-                    <span style="margin-left: 10px">{{ scope.row.name }}</span>
+                    <span style="margin-left: 10px">{{ scope.row.duration }}</span>
                 </template>
             </el-table-column>
             <el-table-column
                     label="考试状态"
                     width="180">
                 <template slot-scope="scope">
-                    <span style="margin-left: 10px">{{ scope.row.name }}</span>
+                    <span style="margin-left: 10px">{{ scope.row.state }}</span>
                 </template>
             </el-table-column>
             <el-table-column label="操作">
@@ -107,6 +113,7 @@
                            layout="prev, pager, next"
                            @current-change="current_change"
                            :total="total"
+                           :page-size="pagesize"
                            background
             >
             </el-pagination>
@@ -116,82 +123,59 @@
 
 </body>
 <script>
+
     new Vue({
         el: "#from",
         data: function () {
             return {
-                total:50,//默认数据总数
-                pagesize:10,//每页的数据条数
+                total:0,
+                pagesize:3,//每页的数据条数
                 currentPage:1,//默认开始页面
                 tableData: [{
-                    date: '2016-05-02',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄'
-                }, {
-                    date: '2016-05-04',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1517 弄'
-                }, {
-                    date: '2016-05-01',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1519 弄'
-                }, {
-                    date: '2016-05-03',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1516 弄'
-                },{
-                    date: '2016-05-03',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1516 弄'
-                },{
-                    date: '2016-05-03',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1516 弄'
-                },{
-                    date: '2016-05-03',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1516 弄'
-                },{
-                    date: '2016-05-03',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1516 弄'
-                },{
-                    date: '2016-05-03',
-                    name: '王五2',
-                    address: '上海市普陀区金沙江路 1516 弄'
-                },{
-                    date: '2016-05-03',
-                    name: '王五2',
-                    address: '上海市普陀区金沙江路 1516 弄'
-                },{
-                    date: '2016-05-03',
-                    name: '王五2',
-                    address: '上海市普陀区金沙江路 1516 弄'
-                },{
-                    date: '2016-05-03',
-                    name: '王五2',
-                    address: '上海市普陀区金沙江路 1516 弄'
-                },{
-                    date: '2016-05-03',
-                    name: '王五2',
-                    address: '上海市普陀区金沙江路 1516 弄'
-                },{
-                    date: '2016-05-03',
-                    name: '王五2',
-                    address: '上海市普陀区金沙江路 1516 弄'
-                },{
-                    date: '2016-05-03',
-                    name: '王五2',
-                    address: '上海市普陀区金沙江路 1516 弄'
-                }
-                ],
-                formInline: {
-                    user: '',
-                    region: ''
+
+                }],
+                formInline:{
+                    Type: '',
+                    State: ''
                 }
             }
         },
-        methods: {
+        mounted: function () {
+            this.query();
+        },
+        methods:
+            {
+
+            query(){
+                var page=this.currentPage;
+                 var rows=this.pagesize;
+
+               //var  token=sessionStorage.getItem("access_token")
+                let params = new URLSearchParams();
+                params.append("Subject",subject.value);
+                params.append("Title",titlees.value);
+                params.append("State",this.formInline.State);
+                params.append("type",this.formInline.Type);
+                params.append("page",page);
+                params.append("rows",rows);
+                axios({
+
+                    method: 'post',
+                    url: '/api/exam/examParper/getqueryqueryByDynamicSQLPageExpaerper',
+                    data:params,
+                    headers: {
+                        "Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDYwOTI1NiwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjI1MGY5YjNiLWYxYzQtNGJhNC1hNWZlLWQxNmU1Njg3OWQ4ZiIsImNsaWVudF9pZCI6ImllcCJ9.KYpHs4oGKaTySu9g6o251FQsXg5SpemWLfAucpT35Y8"
+                    }
+                }).then(res => {
+
+                    res = res.data;
+                    this.tableData = res.rows;
+                    this.total=res.total;
+
+                })
+
+                },
+
             handleStarttheexam(index, row){
                 console.log(index, row);
             },
@@ -201,8 +185,9 @@
             handleDelete(index, row) {
                 console.log(index, row);
             },
-            onSubmit() {
-                console.log('submit!');
+            onSubmitquery() {
+                this.currentPage=1;
+               this.query();
             },
             handleViewingresults(index, row) {
                 console.log(index, row);
@@ -224,6 +209,9 @@
             },
             current_change:function(currentPage){
                 this.currentPage = currentPage;
+                this.query();
+
+
             }
 
 

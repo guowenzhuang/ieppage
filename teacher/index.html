@@ -28,7 +28,7 @@
                 ></el-tree>
             </el-aside>
             <el-main>
-                <el-tabs type="card" v-model="activeid" @tab-click="handleClick">
+                <el-tabs type="card" v-model="activeid" @tab-click="handleClick" closable  @tab-remove="removeTab">
                     <el-tab-pane v-for="tab in tabs" :name="tab.id"  :label="tab.name" >
                         <iframe  width='100%' height='1800px'  frameborder="0" scrolling="no"   :src="tab.path"></iframe>
                     </el-tab-pane>
@@ -44,6 +44,7 @@
     axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
 
     var Main = {
+
         data() {
                 return {
                     activeid:'',
@@ -57,12 +58,7 @@
                     label: 'name'
                 },
 
-                //表格数据
-                tableData: [],
-                cour_name: "",
-                page: 1,
-                pageSize: 10,
-                total: 0,
+
 
             }
         },
@@ -72,6 +68,7 @@
             },
 
             //显示左边树
+
             menuClick(data, node, target) {
                 let newnode=data;
                 let path=newnode.path;
@@ -84,10 +81,26 @@
                             return;
                         }
                     }
-                    console.log(tab)
-                    this.tabs.push(tab)
+                     this.tabs.push(tab)
                     this.activeid=tab.id
                 }
+            },
+            removeTab() {
+               alert(rname);
+                let activeName = this.data;
+              if (activeName === targetName) {
+                    tabs.forEach((tab, index) => {
+                        if (tab.name === targetName) {
+                            let nextTab = tabs[index + 1] || tabs[index - 1];
+                            if (nextTab) {
+                                activeName = nextTab.name;
+                            }
+                        }
+                    });
+                }
+
+                this.editableTabsValue2 = activeName;
+                this.editableTabs2 = tabs.filter(tab => tab.name !== targetName);
             },
             //分页
             pageChange(page) {
@@ -132,8 +145,7 @@
 
         },
         mounted() {
-            // 初始化数据
-            this.queryCourse();
+
             //初始化菜单
             this.queryMenu();
             //this.changTree();
