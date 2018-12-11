@@ -26,17 +26,17 @@
         <!--条件查询的条件输入框-->
         <el-button type="primary" icon="el-icon-plus" @click="dialogVisible = true" round>新增试题</el-button>
         <font size="4">题干:</font>
-        <el-input v-model="input1" placeholder="请输入内容" style="width: 200px;"></el-input>
+        <el-input v-model="rubric" placeholder="请输入内容" style="width: 200px;"></el-input>
         <font size="4">试题的类型:</font>
-        <el-select v-model="value2" placeholder="请选择">
+        <el-select v-model="typecc" placeholder="请选择">
             <el-option v-for="item in options2" :key="item.value" :label="item.label" :value="item.value"
                        :disabled="item.disabled">
             </el-option>
         </el-select>
         <font size="4">课程:</font>
-        <el-input v-model="input" placeholder="请输入内容" style="width: 120px;"></el-input>
+        <el-input v-model="course" placeholder="请输入内容" style="width: 120px;"></el-input>
         <font size="4">章节:</font>
-        <el-input v-model="input" placeholder="请输入内容" style="width: 120px;"></el-input>
+        <el-input v-model="section" placeholder="请输入内容" style="width: 120px;"></el-input>
 
         <el-button type="primary" icon="el-icon-search" @click="query()" round>搜索</el-button>
     </div>
@@ -109,7 +109,7 @@
 
         <span slot="footer" class="dialog-footer">
     <el-button @click="dialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+    <el-button type="primary" @click="addrudic()">确 定</el-button>
   </span>
     </el-dialog>
 
@@ -138,9 +138,12 @@
     </el-dialog>
 
 
-    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
-                   :page-sizes="[10, 20, 30, 40]" :page-size="10" layout="total, sizes, prev, pager, next, jumper"
-                   :total="total1">
+    <el-pagination class="fy"
+                   layout="prev, pager, next"
+                   @current-change="current_change"
+                   :total="total"
+                   background
+    >
     </el-pagination>
 
 
@@ -155,7 +158,7 @@
 
         /*初始化方法放在这里面(相当于页面加载事件)*/
         mounted: function () {
-            console.log(sessionStorage.getItem("access_token"))
+
             this.query();
         },
 
@@ -164,86 +167,86 @@
             return {
                 options2: [
                     {
-                        value: '选项1',
-                        label: 'mysql'
+                        value: '选择题',
+                        label: '选择题'
                     }, {
-                        value: '选项2',
-                        label: 'sqlserver'
+                        value: '填空题',
+                        label: '填空题'
                     }, {
-                        value: '选项3',
-                        label: 'oop'
-                    }, {
-                        value: '选项4',
-                        label: 'websocket'
-                    }, {
-                        value: '选项5',
-                        label: 'webservice'
+                        value: '判断题',
+                        label: '判断题'
                     }],
 
                 user: {},
                 options3: [
                     {
-                        value: '选项1',
+                        value: '选择题',
                         label: '选择题'
                     }, {
-                        value: '选项2',
+                        value: '填空题',
                         label: '填空题'
                     }, {
-                        value: '选项3',
+                        value: '判断题',
                         label: '判断题'
                     }],
 
                 dialogVisible1: false,
 
-
+                rubric: "",
+                typecc: "",
+                course: "",
+                section: "",
                 value2: '',
-
-
                 dialogVisible: false,
-
-                currentPage: 1, //初始页
-                pagesize: 10,    //每页的数据
+                total: 50,//默认数据总数
+                pagesize: 10,//每页的数据条数
+                currentPage: 1,//默认开始页面
                 rubricList: []
             };
         },
         /*方法函数写在这里面*/
         methods: {
             /*点击新增试题时触发*/
+
             addrudic() {
+                alert("dsaf")
+
 
             },
 
 
-            /*获取所有的试题*/
             query() {
+
+
                 let params = new URLSearchParams();
-                params.append("currentPage", this.currentPage)
-                params.append("pagesize", this.pagesize)
+                params.append("rubric", this.rubric);
+                params.append("type", this.typecc);
+                params.append("course", this.course);
+                params.append("section", this.section);
                 axios({
                     method: 'post',
-                    url: '/api/exam/rubric/queryrubric',
+                    url: '/api/exam/rubric/queryrubricer',
                     data: params,
                     headers: {
-                        "Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUxMzA2OSwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjBhMDg5NGI0LWM3NWUtNGE1ZS1hOWUwLWNiOTRkZTdhZjMwZSIsImNsaWVudF9pZCI6ImllcCJ9.r0dbINxwbpTk0Y5qDf4DJyPh3Wgox31pj0ywdW-Wcl4"
+                        "Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
                     }
                 }).then(res => {
                     res = res.data;
-                    for (let i = 0; i < res.rubricList.length; i++) {
-                        let r = res.rubricList[i];
+                    for (let i = 0; i < res.length; i++) {
+                        let r = res[i];
                         let answer = r.answer;
                         for (let j = 0; j < answer.length; j++) {
                             let a = answer[j];
                             r[a.optiones] = a.content;
                         }
                     }
-                    this.rubricList = res.rubricList;
-                    this.total1 = res.total;
-                    /*this.currentPage=*/
+                    this.rubricList = res;
+                    this.total = res.length;
 
 
                 })
-            },
 
+            },
             /*点击查看的时候调用这个*/
 
             checkDetail(val) {
@@ -291,7 +294,7 @@
             },
 
             handleSizeChange(val) {
-                this.pagesize = size;
+                this.pagesize = val;
                 console.log(this.pagesize)  //每页下拉显示数据
             },
 
@@ -299,6 +302,13 @@
                 this.currentPage = currentPage;
                 console.log(this.currentPage)  //点击第几页
             },
+
+            created: function () {
+                this.total = this.tableData.length;
+            },
+            current_change: function (currentPage) {
+                this.currentPage = currentPage;
+            }
 
 
         }
