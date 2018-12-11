@@ -14,13 +14,61 @@
 <body>
 <div id="app">
     <el-container>
-        <el-header></el-header>
+        <el-header>
+            <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+                <el-menu-item index="1">处理中心</el-menu-item>
+                <el-menu-item index="2">工作台</el-menu-item>
+                <el-menu-item index="3">工作台</el-menu-item>
+                <el-menu-item index="4">工作台</el-menu-item>
+                </el-submenu>
+              </el-menu>
+        </el-header>
         <el-container>
             <el-aside width="200px">
-                <el-tree  accordion :data="menuData" :props="menuProps" @node-click="menuClick"></el-tree>
+                <el-tree
+                        node-key="id"
+                        :default-expanded-keys="[4]"
+                        :data="menuData"
+                        :props="menuProps"
+                        @node-click="menuClick"
+                ></el-tree>
             </el-aside>
             <el-main>
-                <el-button icon="el-icon-time" circle></el-button>
+            <!--    <div>
+                    <el-input v-model="cour_name"></el-input>
+                    <el-button type="success" @click="search">搜索sss</el-button>
+
+                </div>
+                <el-table :data="tableData" style="width: 100%">
+                    <el-table-column
+                            type="index"
+                            width="50">
+                    </el-table-column>
+
+                    <el-table-column prop="courName" label="阅览室">
+                    </el-table-column>
+
+                    <el-table-column prop="courContent" label="卡号">
+                    </el-table-column>
+
+                    <el-table-column prop="courDetails" label="名称">
+                    </el-table-column>
+
+                    <el-table-column prop="courIsputaway" label="进入时间">
+                    </el-table-column>
+
+                    <el-table-column prop="courNocount" label="离开时间">
+                    </el-table-column>
+
+                    <el-table-column prop="courPageview" label="离开时间">
+                    </el-table-column>
+                </el-table>
+                <div style="display: flex;justify-content: center">
+                    <el-pagination
+                            layout="prev, pager, next"
+                            :total="total" current-page.sync="page" @current-change="pageChange">
+                    </el-pagination>
+                </div>-->
 
             </el-main>
         </el-container>
@@ -41,6 +89,7 @@
                     children: 'children',
                     label: 'name'
                 },
+
                 tableData: [],
                 cour_name: "",
                 page: 1,
