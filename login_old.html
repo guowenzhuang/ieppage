@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="teacher/js/axios.min.js"></script>
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        body>div>div{
+            margin-bottom: 10px;
+        }
+        body>div #dldiv *{
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <h1>
+        智慧教学平台登录
+    </h1>
+    <div>
+        用户名:<input type="text" id="username" value="张三">
+    </div>
+    <div>
+        密码: <input type="text" id="password" value="123456">
+    </div>
+    <div>
+        <h4>切换账号:</h4>
+        <button onclick="username.value='王五'">老师</button>
+        <button onclick="username.value='张三'">学生</button>
+        <button onclick="username.value='李四'">管理员</button>
+    </div>
+    <br><br>
+    <div id="dldiv">
+        <button onclick="dl()" style="width: 50px;height: 50px;">登录</button>
+        <a href="/api/qqLogin/qq">QQ登录</a>
+        <a href="demo/userregist.html">注册</a>
+    </div>
+    &emsp;
+    <div>
+        <button onclick="hqxx()">登录之后获取用户信息</button>
+    </div>
+    <div id="userinfo">
+
+    </div>
+</div>
+</body>
+<script>
+    function dl() {
+        let params = new URLSearchParams();
+        params.append("grant_type", "password");
+        params.append("username", username.value);
+        params.append("password", password.value);
+        axios({
+            method: 'post',
+            url: '/oauth/token',
+            data: params,
+            headers: {
+                "Authorization": "Basic aWVwOmllcHNlY3JldA=="
+            }
+        }).then(res => {
+            res = res.data;
+            //token
+            sessionStorage.setItem("access_token", res.access_token);
+            //刷新token
+            sessionStorage.setItem("refresh_token", res.refresh_token);
+            //过期时间
+            sessionStorage.setItem("expires_in", res.expires_in);
+            //权限
+            let authorities=res.authorities;
+            sessionStorage.setItem("authorities",authorities);
+            //用户名
+            sessionStorage.setItem("username",res.user_name);
+            let url=authoritiesToUrl(authorities);
+            window.location.href=url;
+            axios.defaults.headers.common['Authorization'] = "bearer " + res.access_token;
+        })
+    }
+
+    function authoritiesToUrl(authorities) {
+        let role="";
+        for (let i = 0; i < authorities.length; i++) {
+            if(authorities[i].authority.indexOf("ROLE")>=0){
+                role=authorities[i].authority.substring(5);
+                break;
+            }
+        }
+        switch (role) {
+            case "学生":
+                return "student/index.html";
+            case "老师":
+                return "teacher/index.html";
+            case "管理员":
+                return "admin/index.html";
+        }
+    }
+    function hqxx() {
+        axios({
+            method: 'get',
+            url: '/api/oauth/me',
+        }).then(res => {
+            userinfo.innerHTML = JSON.stringify(res.data)
+        })
+    }
+</script>
+</html>
