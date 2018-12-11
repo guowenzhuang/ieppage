@@ -15,27 +15,24 @@
 <div id="app">
     <el-container>
         <el-header>
-            <el-tabs v-model="activeName" @tab-click="handleClick" :value="tabsvalue" >
-               <el-tab-pane v-for="tab in tabs" :name="tab.id"  :key="tab.id" :icon="tab.icon_class" :label="tab.title" >
-                    <iframe  width='100%' height='1800px'  frameborder="0" scrolling="no"   :src="tab.path"></iframe>
-                </el-tab-pane>
-            </el-tabs>
-
 
         </el-header>
         <el-container>
-            <el-aside width="200px">
+            <el-aside>
                 <el-tree
                         node-key="id"
                         :default-expanded-keys="[4]"
                         :data="menuData"
                         :props="menuProps"
                         @node-click="menuClick"
-                        @current-change="changTree"
                 ></el-tree>
             </el-aside>
             <el-main>
-
+                <el-tabs type="card" v-model="activeid" @tab-click="handleClick">
+                    <el-tab-pane v-for="tab in tabs" :name="tab.id"  :label="tab.name" >
+                        <iframe  width='100%' height='1800px'  frameborder="0" scrolling="no"   :src="tab.path"></iframe>
+                    </el-tab-pane>
+                </el-tabs>
 
             </el-main>
         </el-container>
@@ -49,10 +46,9 @@
     var Main = {
         data() {
                 return {
+                    activeid:'',
                     //标签
-                    activeName: '',
                     tabs:[],
-                    tabsvalue:'',
                //菜单数据
                 menuData: [],
                 //菜单配置
@@ -71,40 +67,27 @@
             }
         },
         methods: {
-            changTree(name,node){
-                console.log(name,node)
-               if(node.length==0)
-                    return
-                let newnode=node[0];
-                let path='/'+newnode.path;
-                path=path.replace(".jsp",".html");
-                if(newnode.children.length==0){ //判断是不是最下层节点
-                    let tab={id:newnode.id+'',title:newnode.title,icon_class:newnode.icon_class,path:path};
-                    for(let i=0;i<this.tabs.length;i++){
-                        if(this.tabs[i].id==tab.id){
-                            this.tabsvalue=tab.id
-                            return;
-                        }
-                    }
-                    this.tabs.push(tab)
-
-                    this.tabsvalue=tab.id
-                }
-
-
-            },
-            /*changTree(data,node){
-
-            },*/
-
-
             handleClick(name){
-                this.tabsvalue=name
+                this.activeid=name
             },
 
             //显示左边树
             menuClick(data, node, target) {
-
+                let newnode=data;
+                let path=newnode.path;
+                path=path.replace(".jsp",".html");
+                if(newnode.children.length==0){ //判断是不是最下层节点
+                    let tab={id:newnode.id+'',name:newnode.name,icon_class:newnode.icon_class,path:path};
+                    for(let i=0;i<this.tabs.length;i++){
+                        if(this.tabs[i].id==tab.id){
+                            this.activeid=tab.id
+                            return;
+                        }
+                    }
+                    console.log(tab)
+                    this.tabs.push(tab)
+                    this.activeid=tab.id
+                }
             },
             //分页
             pageChange(page) {
@@ -153,7 +136,7 @@
             this.queryCourse();
             //初始化菜单
             this.queryMenu();
-            this.changTree();
+            //this.changTree();
         }
     }
 

@@ -76,6 +76,8 @@
             //权限
             let authorities=res.authorities;
             sessionStorage.setItem("authorities",authorities);
+            //用户名
+            sessionStorage.setItem("username",res.user_name);
             let url=authoritiesToUrl(authorities);
             window.location.href=url;
             axios.defaults.headers.common['Authorization'] = "bearer " + res.access_token;
@@ -92,11 +94,11 @@
         }
         switch (role) {
             case "学生":
-                return "/student/index.html";
+                return "student/index.html";
             case "老师":
-                return "/teacher/index.html";
+                return "teacher/index.html";
             case "管理员":
-                return "/admin/index.html";
+                return "admin/index.html";
         }
     }
     function hqxx() {
