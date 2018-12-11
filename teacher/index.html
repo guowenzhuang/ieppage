@@ -3,154 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <script src="js/vue.min.js"></script>
-    <link rel="stylesheet" href="js/element-ui/index.js">
-    <link rel="stylesheet" href="js/element-ui/index.css">
-    <script src="js/element-ui/index.js"></script>
+    <link rel="stylesheet" href="js/elementui/index.css">
+    <script src="js/vue.js"></script>
+    <script  src="js/elementui/index.js"></script>
     <script src="js/axios.min.js"></script>
-    <link rel="stylesheet" href="js/css/tea.css">
-    <!-- import stylesheet -->
-    <link rel="stylesheet" href="//unpkg.com/iview/dist/styles/iview.css">
-    <!-- import iView -->
-    <script src="//unpkg.com/iview/dist/iview.min.js"></script>
+    <link rel="stylesheet" href="css/tea.css">
+
 </head>
 
 <body>
 <div id="app">
+    <el-container>
+        <el-header>
 
-    <div id="app">
-        <div class="layout">
-            <layout>
-                <i-header>
-                    <i-menu mode="horizontal" theme="dark" active-name="1">
-                        <div class="layout-logo"></div>
-                        <div class="layout-nav">
-                            <menu-item name="1">
-                                <icon type="ios-navigate"></icon>
-                                Item 1
-                            </menu-item>
-                            <menu-item name="2">
-                                <icon type="ios-keypad"></icon>
-                                Item 2
-                            </menu-item>
-                            <menu-item name="3">
-                                <icon type="ios-analytics"></icon>
-                                Item 3
-                            </menu-item>
-                            <menu-item name="4">
-                                <icon type="ios-paper"></icon>
-                                Item 4
-                            </menu-item>
-                        </div>
-                    </i-menu>
-                </i-header>
-                <layout>
-                    <sider hide-trigger :style="{background: '#fff'}">
-                        <i-menu active-name="1-2" theme="light" width="auto" :open-names="['1']">
-                            <submenu name="1">
-                                <template slot="title">
-                                    <icon type="ios-navigate"></icon>
-                                    Item 1
-                                </template>
-                                <menu-item name="1-1">Option 1</menu-item>
-                                <menu-item name="1-2">Option 2</menu-item>
-                                <menu-item name="1-3">Option 3</menu-item>
-                            </submenu>
-                            <submenu name="2">
-                                <template slot="title">
-                                    <icon type="ios-keypad"></icon>
-                                    Item 2
-                                </template>
-                                <menu-item name="2-1">Option 1</menu-item>
-                                <menu-item name="2-2">Option 2</menu-item>
-                            </submenu>
-                            <submenu name="3">
-                                <template slot="title">
-                                    <icon type="ios-analytics"></icon>
-                                    Item 3
-                                </template>
-                                <menu-item name="3-1">Option 1</menu-item>
-                                <menu-item name="3-2">Option 2</menu-item>
-                            </submenu>
-                        </i-menu>
-                    </sider>
-                    <layout :style="{padding: '0 24px 24px'}">
-                        <breadcrumb :style="{margin: '24px 0'}">
-                            <breadcrumb-item>Home</breadcrumb-item>
-                            <breadcrumb-item>Components</breadcrumb-item>
-                            <breadcrumb-item>Layout</breadcrumb-item>
-                        </breadcrumb>
-                        <i-content :style="{padding: '24px', minHeight: '280px', background: '#fff'}">
+        </el-header>
+        <el-container>
+            <el-aside>
+                <el-tree
+                        node-key="id"
+                        :default-expanded-keys="[4]"
+                        :data="menuData"
+                        :props="menuProps"
+                        @node-click="menuClick"
+                ></el-tree>
+            </el-aside>
+            <el-main>
+                <el-tabs type="card" v-model="activeid" @tab-click="handleClick" closable  @tab-remove="removeTab">
+                    <el-tab-pane v-for="tab in tabs" :name="tab.id"  :label="tab.name" >
+                        <iframe  width='100%' height='1800px'  frameborder="0" scrolling="no"   :src="tab.path"></iframe>
+                    </el-tab-pane>
+                </el-tabs>
 
-                            <div>
-                                <el-input v-model="cour_name"></el-input>
-                                <el-button type="success" @click="search">搜索sss</el-button>
-
-                            </div>
-                            <el-table :data="tableData" style="width: 100%">
-                                <el-table-column
-                                        type="index"
-                                        width="50">
-                                </el-table-column>
-
-                                <el-table-column prop="courName" label="阅览室">
-                                </el-table-column>
-
-                                <el-table-column prop="courContent" label="卡号">
-                                </el-table-column>
-
-                                <el-table-column prop="courDetails" label="名称">
-                                </el-table-column>
-
-                                <el-table-column prop="courIsputaway" label="进入时间">
-                                </el-table-column>
-
-                                <el-table-column prop="courNocount" label="离开时间">
-                                </el-table-column>
-
-                                <el-table-column prop="courPageview" label="离开时间">
-                                </el-table-column>
-                            </el-table>
-                            <div style="display: flex;justify-content: center">
-                                <el-pagination
-                                        layout="prev, pager, next"
-                                        :total="total" current-page.sync="page" @current-change="pageChange">
-                                </el-pagination>
-                            </div>
-
-                        </i-content>
-                    </layout>
-                </layout>
-            </layout>
-        </div>
-    </div>
-
+            </el-main>
+        </el-container>
+    </el-container>
 </div>
 
 </body>
 <script>
-
+    axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
 
     var Main = {
+
         data() {
-            return {
-                tableData: [],
-                cour_name: "",
-                page: 1,
-                pageSize: 10,
-                total: 0
+                return {
+                    activeid:'',
+                    //标签
+                    tabs:[],
+               //菜单数据
+                menuData: [],
+                //菜单配置
+                menuProps: {
+                    children: 'children',
+                    label: 'name'
+                },
+
+
+
             }
         },
         methods: {
+            handleClick(name){
+                this.activeid=name
+            },
+
+            //显示左边树
+
+            menuClick(data, node, target) {
+                let newnode=data;
+                let path=newnode.path;
+                path=path.replace(".jsp",".html");
+                if(newnode.children.length==0){ //判断是不是最下层节点
+                    let tab={id:newnode.id+'',name:newnode.name,icon_class:newnode.icon_class,path:path};
+                    for(let i=0;i<this.tabs.length;i++){
+                        if(this.tabs[i].id==tab.id){
+                            this.activeid=tab.id
+                            return;
+                        }
+                    }
+                     this.tabs.push(tab)
+                    this.activeid=tab.id
+                }
+            },
+            removeTab() {
+               alert(rname);
+                let activeName = this.data;
+              if (activeName === targetName) {
+                    tabs.forEach((tab, index) => {
+                        if (tab.name === targetName) {
+                            let nextTab = tabs[index + 1] || tabs[index - 1];
+                            if (nextTab) {
+                                activeName = nextTab.name;
+                            }
+                        }
+                    });
+                }
+
+                this.editableTabsValue2 = activeName;
+                this.editableTabs2 = tabs.filter(tab => tab.name !== targetName);
+            },
+            //分页
             pageChange(page) {
                 this.page = page;
                 this.queryCourse();
             },
+
             search() {
                 this.page = 1;
                 this.queryCourse();
             },
-
+              //课程分页
             queryCourse() {
                 axios({
                     method: 'get',
@@ -159,27 +121,34 @@
                         page: this.page,
                         pageSize: this.pageSize,
                         courName: this.cour_name
-                    },
-                    headers: {
-                        "Authorization": "bearer " + sessionStorage.getItem("access_token")
                     }
                 })
-                    .
-                    then(res => {
+                    .then(res => {
                             let data = res.data;
 
                             this.total = data.totalElements;
                             this.tableData = data.content;
-                            console.log(data.totalElements);
-                            console.log(data.content);
                         }
                     )
 
-            }
+            },
+             //菜单显示
+            queryMenu() {
+               axios({
+                    method: "get",
+                    url: "/api/teacher/course/getMenu"
+                }).then(res => {
+                    res=res.data;
+                    this.menuData=res.message;
+                })
+            },
+
         },
         mounted() {
-            // 初始化数据
-            this.queryCourse()
+
+            //初始化菜单
+            this.queryMenu();
+            //this.changTree();
         }
     }
 

@@ -1,0 +1,26 @@
+.el-header, .el-footer {
+    background-color: #B3C0D1;
+    color: #333;
+    text-align: center;
+    line-height: 60px;
+}
+.el-tree{
+    padding-top: 50px;
+}
+.el-tree-node__label{
+
+    font-size: 16px;
+}
+.el-tree-node{
+    margin-bottom: 10px;
+}
+.el-tree-node__content{
+    margin-bottom: 10px;
+}
+
+.el-tree-node__label{
+    font-size: 16px;
+    padding-left: 50px;
+}
+
+
