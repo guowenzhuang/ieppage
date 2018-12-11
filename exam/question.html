@@ -45,7 +45,7 @@
     <div style="width: 100%;">
         <template>
             <!--element表格-->
-            <el-table :data="tableData" style=" width: auto">
+            <el-table :data="rubricList.slice((currentPage-1)*pagesize,currentPage*pagesize)" style=" width: auto">
                 <el-table-column prop="id" label="序号" :show-overflow-tooltip="true">
                 </el-table-column>
                 <el-table-column prop="rubricttype" label="试题类型" :show-overflow-tooltip="true">
@@ -138,9 +138,9 @@
     </el-dialog>
 
 
-    <el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange"
-                   @current-page="handleCurrentChange" :current-page.sync="pageNum" :page-sizes="pageSizesList"
-                   :page-size="pagesize" :total="100">
+    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
+                   :page-sizes="[10, 20, 30, 40]" :page-size="10" layout="total, sizes, prev, pager, next, jumper"
+                   :total="total1">
     </el-pagination>
 
 
@@ -150,14 +150,12 @@
 <script>
 
 
-
-
     var Main = new Vue({
         el: '#app',
 
         /*初始化方法放在这里面(相当于页面加载事件)*/
         mounted: function () {
-           console.log(sessionStorage.getItem("access_token"))
+            console.log(sessionStorage.getItem("access_token"))
             this.query();
         },
 
@@ -200,10 +198,12 @@
 
                 value2: '',
 
+
                 dialogVisible: false,
 
-
-                tableData: []
+                currentPage: 1, //初始页
+                pagesize: 10,    //每页的数据
+                rubricList: []
             };
         },
         /*方法函数写在这里面*/
@@ -216,24 +216,31 @@
 
             /*获取所有的试题*/
             query() {
+                let params = new URLSearchParams();
+                params.append("currentPage", this.currentPage)
+                params.append("pagesize", this.pagesize)
                 axios({
                     method: 'post',
                     url: '/api/exam/rubric/queryrubric',
-                    data: {},
+                    data: params,
                     headers: {
-                        "Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDQ1MjI0MCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6ImI1NzY2OTkwLTdjY2ItNDU4OS1iNGQxLWNmNDdkYjRlODQ1NiIsImNsaWVudF9pZCI6ImllcCJ9.7Xj1kJTLnRifr12hbonUx1naHHGYmhkC3TU69pjyNiY"
+                        "Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUxMzA2OSwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjBhMDg5NGI0LWM3NWUtNGE1ZS1hOWUwLWNiOTRkZTdhZjMwZSIsImNsaWVudF9pZCI6ImllcCJ9.r0dbINxwbpTk0Y5qDf4DJyPh3Wgox31pj0ywdW-Wcl4"
                     }
                 }).then(res => {
                     res = res.data;
-                    for (let i = 0; i < res.length; i++) {
-                        let r = res[i];
+                    for (let i = 0; i < res.rubricList.length; i++) {
+                        let r = res.rubricList[i];
                         let answer = r.answer;
                         for (let j = 0; j < answer.length; j++) {
                             let a = answer[j];
                             r[a.optiones] = a.content;
                         }
                     }
-                    this.tableData = res;
+                    this.rubricList = res.rubricList;
+                    this.total1 = res.total;
+                    /*this.currentPage=*/
+
+
                 })
             },
 
@@ -262,7 +269,7 @@
                     params,
 
                     headers: {
-                        "Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDQ0MzMyNCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjYzNjNmMGJjLWI0OTYtNDQ2ZC1iNjMzLTI0OTlhNDRkYmI3NiIsImNsaWVudF9pZCI6ImllcCJ9.Ys_9xqB-MQ6wIaVpFIpOKIiA0IoBtZUAGaHDBjy6iKY"
+                        "Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUwNTc3MCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjllMjI1MDUyLTViNDQtNGI0MS05ZTRkLTk4NmNhMTJjZWZkZCIsImNsaWVudF9pZCI6ImllcCJ9.qxP1BynI41fIAAgXxeS-hYVIxdbiIpcjy3GQXrhPEh8"
                     }
                 }).then(res => {
                     if (res.success) {
@@ -284,10 +291,13 @@
             },
 
             handleSizeChange(val) {
-                this.pagesize = val;
+                this.pagesize = size;
+                console.log(this.pagesize)  //每页下拉显示数据
             },
+
             handleCurrentChange() {
-                this.pageNum = val;
+                this.currentPage = currentPage;
+                console.log(this.currentPage)  //点击第几页
             },
 
 
