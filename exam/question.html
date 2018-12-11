@@ -26,17 +26,17 @@
         <!--条件查询的条件输入框-->
         <el-button type="primary" icon="el-icon-plus" @click="dialogVisible = true" round>新增试题</el-button>
         <font size="4">题干:</font>
-        <el-input v-model="input1" placeholder="请输入内容" style="width: 200px;"></el-input>
+        <el-input v-model="rubric" placeholder="请输入内容" style="width: 200px;"></el-input>
         <font size="4">试题的类型:</font>
-        <el-select v-model="value2" placeholder="请选择">
+        <el-select v-model="typecc" placeholder="请选择">
             <el-option v-for="item in options2" :key="item.value" :label="item.label" :value="item.value"
                        :disabled="item.disabled">
             </el-option>
         </el-select>
         <font size="4">课程:</font>
-        <el-input v-model="input" placeholder="请输入内容" style="width: 120px;"></el-input>
+        <el-input v-model="course" placeholder="请输入内容" style="width: 120px;"></el-input>
         <font size="4">章节:</font>
-        <el-input v-model="input" placeholder="请输入内容" style="width: 120px;"></el-input>
+        <el-input v-model="section" placeholder="请输入内容" style="width: 120px;"></el-input>
 
         <el-button type="primary" icon="el-icon-search" @click="query()" round>搜索</el-button>
     </div>
@@ -45,7 +45,7 @@
     <div style="width: 100%;">
         <template>
             <!--element表格-->
-            <el-table :data="tableData" style=" width: auto">
+            <el-table :data="rubricList.slice((currentPage-1)*pagesize,currentPage*pagesize)" style=" width: auto">
                 <el-table-column prop="id" label="序号" :show-overflow-tooltip="true">
                 </el-table-column>
                 <el-table-column prop="rubricttype" label="试题类型" :show-overflow-tooltip="true">
@@ -109,7 +109,7 @@
 
         <span slot="footer" class="dialog-footer">
     <el-button @click="dialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+    <el-button type="primary" @click="addrudic()">确 定</el-button>
   </span>
     </el-dialog>
 
@@ -138,9 +138,12 @@
     </el-dialog>
 
 
-    <el-pagination background layout="prev, pager, next, jumper" @size-change="handleSizeChange"
-                   @current-page="handleCurrentChange" :current-page.sync="pageNum" :page-sizes="pageSizesList"
-                   :page-size="pagesize" :total="100">
+    <el-pagination class="fy"
+                   layout="prev, pager, next"
+                   @current-change="current_change"
+                   :total="total"
+                   background
+    >
     </el-pagination>
 
 
@@ -150,14 +153,12 @@
 <script>
 
 
-
-
     var Main = new Vue({
         el: '#app',
 
         /*初始化方法放在这里面(相当于页面加载事件)*/
         mounted: function () {
-           console.log(sessionStorage.getItem("access_token"))
+
             this.query();
         },
 
@@ -166,62 +167,68 @@
             return {
                 options2: [
                     {
-                        value: '选项1',
-                        label: 'mysql'
+                        value: '选择题',
+                        label: '选择题'
                     }, {
-                        value: '选项2',
-                        label: 'sqlserver'
+                        value: '填空题',
+                        label: '填空题'
                     }, {
-                        value: '选项3',
-                        label: 'oop'
-                    }, {
-                        value: '选项4',
-                        label: 'websocket'
-                    }, {
-                        value: '选项5',
-                        label: 'webservice'
+                        value: '判断题',
+                        label: '判断题'
                     }],
 
                 user: {},
                 options3: [
                     {
-                        value: '选项1',
+                        value: '选择题',
                         label: '选择题'
                     }, {
-                        value: '选项2',
+                        value: '填空题',
                         label: '填空题'
                     }, {
-                        value: '选项3',
+                        value: '判断题',
                         label: '判断题'
                     }],
 
                 dialogVisible1: false,
 
-
+                rubric: "",
+                typecc: "",
+                course: "",
+                section: "",
                 value2: '',
-
                 dialogVisible: false,
-
-
-                tableData: []
+                total: 50,//默认数据总数
+                pagesize: 10,//每页的数据条数
+                currentPage: 1,//默认开始页面
+                rubricList: []
             };
         },
         /*方法函数写在这里面*/
         methods: {
             /*点击新增试题时触发*/
+
             addrudic() {
+                alert("dsaf")
+
 
             },
 
 
-            /*获取所有的试题*/
             query() {
+
+
+                let params = new URLSearchParams();
+                params.append("rubric", this.rubric);
+                params.append("type", this.typecc);
+                params.append("course", this.course);
+                params.append("section", this.section);
                 axios({
                     method: 'post',
-                    url: '/api/exam/rubric/queryrubric',
-                    data: {},
+                    url: '/api/exam/rubric/queryrubricer',
+                    data: params,
                     headers: {
-                        "Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDQ1MjI0MCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6ImI1NzY2OTkwLTdjY2ItNDU4OS1iNGQxLWNmNDdkYjRlODQ1NiIsImNsaWVudF9pZCI6ImllcCJ9.7Xj1kJTLnRifr12hbonUx1naHHGYmhkC3TU69pjyNiY"
+                        "Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
                     }
                 }).then(res => {
                     res = res.data;
@@ -233,10 +240,13 @@
                             r[a.optiones] = a.content;
                         }
                     }
-                    this.tableData = res;
-                })
-            },
+                    this.rubricList = res;
+                    this.total = res.length;
 
+
+                })
+
+            },
             /*点击查看的时候调用这个*/
 
             checkDetail(val) {
@@ -262,7 +272,7 @@
                     params,
 
                     headers: {
-                        "Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDQ0MzMyNCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjYzNjNmMGJjLWI0OTYtNDQ2ZC1iNjMzLTI0OTlhNDRkYmI3NiIsImNsaWVudF9pZCI6ImllcCJ9.Ys_9xqB-MQ6wIaVpFIpOKIiA0IoBtZUAGaHDBjy6iKY"
+                        "Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUwNTc3MCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjllMjI1MDUyLTViNDQtNGI0MS05ZTRkLTk4NmNhMTJjZWZkZCIsImNsaWVudF9pZCI6ImllcCJ9.qxP1BynI41fIAAgXxeS-hYVIxdbiIpcjy3GQXrhPEh8"
                     }
                 }).then(res => {
                     if (res.success) {
@@ -285,10 +295,20 @@
 
             handleSizeChange(val) {
                 this.pagesize = val;
+                console.log(this.pagesize)  //每页下拉显示数据
             },
+
             handleCurrentChange() {
-                this.pageNum = val;
+                this.currentPage = currentPage;
+                console.log(this.currentPage)  //点击第几页
             },
+
+            created: function () {
+                this.total = this.tableData.length;
+            },
+            current_change: function (currentPage) {
+                this.currentPage = currentPage;
+            }
 
 
         }
