@@ -15,16 +15,10 @@
 <div id="app">
     <el-container>
         <el-header>
-            <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
-                <el-menu-item index="1">处理中心</el-menu-item>
-                <el-menu-item index="2">工作台</el-menu-item>
-                <el-menu-item index="3">工作台</el-menu-item>
-                <el-menu-item index="4">工作台</el-menu-item>
-                </el-submenu>
-              </el-menu>
+
         </el-header>
         <el-container>
-            <el-aside width="200px">
+            <el-aside>
                 <el-tree
                         node-key="id"
                         :default-expanded-keys="[4]"
@@ -34,41 +28,11 @@
                 ></el-tree>
             </el-aside>
             <el-main>
-            <!--    <div>
-                    <el-input v-model="cour_name"></el-input>
-                    <el-button type="success" @click="search">搜索sss</el-button>
-
-                </div>
-                <el-table :data="tableData" style="width: 100%">
-                    <el-table-column
-                            type="index"
-                            width="50">
-                    </el-table-column>
-
-                    <el-table-column prop="courName" label="阅览室">
-                    </el-table-column>
-
-                    <el-table-column prop="courContent" label="卡号">
-                    </el-table-column>
-
-                    <el-table-column prop="courDetails" label="名称">
-                    </el-table-column>
-
-                    <el-table-column prop="courIsputaway" label="进入时间">
-                    </el-table-column>
-
-                    <el-table-column prop="courNocount" label="离开时间">
-                    </el-table-column>
-
-                    <el-table-column prop="courPageview" label="离开时间">
-                    </el-table-column>
-                </el-table>
-                <div style="display: flex;justify-content: center">
-                    <el-pagination
-                            layout="prev, pager, next"
-                            :total="total" current-page.sync="page" @current-change="pageChange">
-                    </el-pagination>
-                </div>-->
+                <el-tabs type="card" v-model="activeid" @tab-click="handleClick" closable  @tab-remove="removeTab">
+                    <el-tab-pane v-for="tab in tabs" :name="tab.id"  :label="tab.name" >
+                        <iframe  width='100%' height='1800px'  frameborder="0" scrolling="no"   :src="tab.path"></iframe>
+                    </el-tab-pane>
+                </el-tabs>
 
             </el-main>
         </el-container>
@@ -80,9 +44,13 @@
     axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
 
     var Main = {
+
         data() {
-            return {
-                //菜单数据
+                return {
+                    activeid:'',
+                    //标签
+                    tabs:[],
+               //菜单数据
                 menuData: [],
                 //菜单配置
                 menuProps: {
@@ -90,37 +58,61 @@
                     label: 'name'
                 },
 
-                tableData: [],
-                cour_name: "",
-                page: 1,
-                pageSize: 10,
-                total: 0,
-                activeIndex: '1',
-                activeIndex2: '1'
+
+
             }
         },
         methods: {
-            menuClick(data, node, target) {
-
+            handleClick(name){
+                this.activeid=name
             },
+
+            //显示左边树
+
+            menuClick(data, node, target) {
+                let newnode=data;
+                let path=newnode.path;
+                path=path.replace(".jsp",".html");
+                if(newnode.children.length==0){ //判断是不是最下层节点
+                    let tab={id:newnode.id+'',name:newnode.name,icon_class:newnode.icon_class,path:path};
+                    for(let i=0;i<this.tabs.length;i++){
+                        if(this.tabs[i].id==tab.id){
+                            this.activeid=tab.id
+                            return;
+                        }
+                    }
+                     this.tabs.push(tab)
+                    this.activeid=tab.id
+                }
+            },
+            removeTab() {
+               alert(rname);
+                let activeName = this.data;
+              if (activeName === targetName) {
+                    tabs.forEach((tab, index) => {
+                        if (tab.name === targetName) {
+                            let nextTab = tabs[index + 1] || tabs[index - 1];
+                            if (nextTab) {
+                                activeName = nextTab.name;
+                            }
+                        }
+                    });
+                }
+
+                this.editableTabsValue2 = activeName;
+                this.editableTabs2 = tabs.filter(tab => tab.name !== targetName);
+            },
+            //分页
             pageChange(page) {
                 this.page = page;
                 this.queryCourse();
             },
-            handleSelect(key, keyPath) {
-                console.log(key, keyPath);
-            },
-            handleClose(key, keyPath) {
-                console.log(key, keyPath);
-            },
-            handleOpen(key, keyPath) {
-                console.log(key, keyPath);
-            },
+
             search() {
                 this.page = 1;
                 this.queryCourse();
             },
-
+              //课程分页
             queryCourse() {
                 axios({
                     method: 'get',
@@ -140,21 +132,23 @@
                     )
 
             },
+             //菜单显示
             queryMenu() {
-                axios({
+               axios({
                     method: "get",
                     url: "/api/teacher/course/getMenu"
                 }).then(res => {
                     res=res.data;
                     this.menuData=res.message;
                 })
-            }
+            },
+
         },
         mounted() {
-            // 初始化数据
-            this.queryCourse();
+
             //初始化菜单
             this.queryMenu();
+            //this.changTree();
         }
     }
 
