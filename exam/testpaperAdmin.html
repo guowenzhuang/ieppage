@@ -15,20 +15,20 @@
 
     <el-form :inline="true" class="demo-form-inline">
         <el-form-item label="科目：">
-            <el-input placeholder="科目" id="subject"></el-input>
+            <el-input placeholder="科目" id="subject" size="small" style="width: 100px"></el-input>
         </el-form-item>
         <el-form-item label="试卷名称：">
-            <el-input placeholder="试卷名称" id="titlees"></el-input>
+            <el-input placeholder="试卷名称" id="titlees" size="small" style="width: 100px"></el-input>
         </el-form-item>
         <el-form-item label="试卷类型：">
-            <el-select v-model="formInline.Type" placeholder="试卷类型" id="typees">
+            <el-select v-model="formInline.Type" placeholder="试卷类型" id="typees" size="small" style="width: 100px">
                 <el-option label="请选择" value=""></el-option>
                 <el-option label="统一考试" value="统一考试"></el-option>
                 <el-option label="自主考试" value="自主考试"></el-option>
             </el-select>
         </el-form-item>
         <el-form-item label="试卷状态：">
-            <el-select v-model="formInline.State" placeholder="试卷状态" id="state">
+            <el-select v-model="formInline.State" placeholder="试卷状态" id="state" size="small" style="width: 100px">
                 <el-option label="请选择" value=""></el-option>
                 <el-option label="未开考" value="未开考"></el-option>
                 <el-option label="考试中" value="考试中"></el-option>
@@ -36,16 +36,20 @@
             </el-select>
         </el-form-item>
         <el-form-item>
-            <el-button type="primary" @click="onSubmitquery">查询</el-button>
-            <el-button type="primary" @click="onSubmitsui">随机组卷</el-button>
-            <el-button type="primary" @click="onSubmitxaun">选题组卷</el-button>
+            <el-button size="small" type="primary" @click="onSubmitquery">查询</el-button>
+            <el-button size="small" type="primary" @click="onSubmitsui">随机组卷</el-button>
+            <el-button size="small" type="primary" @click="onSubmitxaun">选题组卷</el-button>
         </el-form-item>
     </el-form>
 
     <el-table
             :data="tableData"
             style="width: 100%;text-align: center">
-        <el-table-column align="center" label="试卷标题" width="180">
+
+        <el-table-column
+                align="center"
+                label="试卷标题"
+                width="180">
             <template slot-scope="scope">
                 <span style="margin-left: 10px">{{ scope.row.title }}</span>
             </template>
@@ -53,7 +57,7 @@
         <el-table-column
                 align="center"
                 label="试卷类型"
-                width="180">
+                width="100">
             <template slot-scope="scope">
                 <span style="margin-left: 10px">{{ scope.row.type }}</span>
             </template>
@@ -77,7 +81,7 @@
         <el-table-column
                 align="center"
                 label="考试时长(分钟)"
-                width="180">
+                width="120">
             <template slot-scope="scope">
                 <span style="margin-left: 10px">{{ scope.row.duration }}</span>
             </template>
@@ -85,44 +89,77 @@
         <el-table-column
                 align="center"
                 label="考试状态"
-                width="180">
+                width="80"
+                prop="state">
             <template slot-scope="scope">
-                <span style="margin-left: 10px">{{ scope.row.state }}</span>
+                <el-tag
+                        plain
+                        size="medium"
+                        :type="scope.row.state=='考试中'?'success':'warning'">
+                    {{scope.row.state}}
+                </el-tag>
             </template>
         </el-table-column>
-        <el-table-column align="center" label="操作">
-            <template slot-scope="scope">
-                <el-button
-                        size="mini"
-                        type="warning"
-                      @click="centerDialogVisible = true">开始考试
+        <el-table-column align="center" align="center" label="操作">
+            <template slot-scope="scope" type="text" size="mini" >
+                <span v-if="scope.row.state==='考试中'">
+                    <el-button
+                            size="mini"
+                            type="danger"
+                            @click="handleFinishtheexam(scope.$index,scope.row)">结束考试
                 </el-button>
                 <el-button
                         size="mini"
                         type="info"
-                        @click="handleEdit(scope.$index, scope.row)">查看试卷
+                        @click="handleEdit(scope.$index,scope.row)">查看试卷
+                </el-button>
+                <el-button
+                        size="mini"
+                        type="info"
+                        @click="handleViewingresults(scope.$index,scope.row)">查看成绩
+                </el-button>
+                </span>
+                <span v-else-if="scope.row.state==='未开考'">
+                     <el-button
+                             size="mini"
+                             type="warning"
+                             @click="dianjikaishikaoshi(scope.$index,scope.row)">开始考试
+                </el-button>
+                <el-button
+                        size="mini"
+                        type="info"
+                        @click="handleEdit(scope.$index,scope.row)">查看试卷
                 </el-button>
                 <el-button
                         size="mini"
                         type="primary"
-                        @click="handleDelete(scope.$index, scope.row)">删除
+                        @click="handleDelete(scope.$index,scope.row)">删除试卷
+                </el-button>
+                </span>
+                <span v-else-if="scope.row.state==='考试结束'">
+                    <el-button
+                            size="mini"
+                            type="info"
+                            @click="handleEdit(scope.$index,scope.row)">查看试卷
                 </el-button>
                 <el-button
                         size="mini"
                         type="info"
-                        @click="handleViewingresults(scope.$index, scope.row)">查看成绩
+                        @click="handleViewingresults(scope.$index,scope.row)">查看成绩
                 </el-button>
                 <el-button
                         size="mini"
-                        type="danger"
-                        @click="handleFinishtheexam(scope.$index, scope.row)">结束考试
+                        type="primary"
+                        @click="handleDelete(scope.$index,scope.row)">删除试卷
                 </el-button>
+                </span>
+
             </template>
         </el-table-column>
     </el-table>
     <div>
         <el-pagination class="fy"
-                       layout="prev, pager, next"
+                       layout="prev,pager,next"
                        @current-change="current_change"
                        :total="total"
                        :page-size="pagesize"
@@ -135,17 +172,17 @@
             :visible.sync="centerDialogVisible"
             width="30%"
             center>
-        <div class="block"align="center">
+        <div class="block" align="center" v-modul="updateexamtime">
             <span class="demonstration">开考时间:</span>
             <el-date-picker
-                    v-model="shezhiexamtime"
+                    v-model="updateexamtime.shezhiexamtime"
                     type="datetime"
                     placeholder="选择开考时间">
             </el-date-picker>
         </div>
         <div style="margin-top: 20px" align="center">
-    <el-button @click="centerDialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="quedingshezhiexamtime(scope.$index, scope.row)">确 定</el-button>
+            <el-button @click="centerDialogVisible=false">取 消</el-button>
+            <el-button type="primary" @click="quedingshezhiexamtime">确 定</el-button>
         </div>
     </el-dialog>
 
@@ -153,6 +190,7 @@
 
 </body>
 <script>
+    axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
 
     new Vue({
         el: "#from",
@@ -167,7 +205,12 @@
                     State: ''
                 },
                 centerDialogVisible: false,
-                shezhiexamtime: '',
+                updateexamtime: {
+                    shezhiexamtime: '',
+                    id: '',
+                    state: ''
+                },
+
             }
         },
         mounted: function () {
@@ -192,22 +235,51 @@
 
                         method: 'post',
                         url: '/api/exam/examParper/getqueryqueryByDynamicSQLPageExpaerper',
-                        data: params,
-                        headers: {
-                            "Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDYwOTI1NiwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjI1MGY5YjNiLWYxYzQtNGJhNC1hNWZlLWQxNmU1Njg3OWQ4ZiIsImNsaWVudF9pZCI6ImllcCJ9.KYpHs4oGKaTySu9g6o251FQsXg5SpemWLfAucpT35Y8"
-                        }
+                        data: params
+
                     }).then(res => {
 
                         res = res.data;
                         this.tableData = res.rows;
                         this.total = res.total;
-
                     })
 
                 },
+                //点击开始考试按钮
+                dianjikaishikaoshi(index, row) {
+                    this.centerDialogVisible=true;
+                    this.updateexamtime.id=row.id;
+                    this.updateexamtime.state=row.state;
+                },
                 //点击确定开考时间按钮
-                quedingshezhiexamtime(index,row){
-                    console.log(index);
+                quedingshezhiexamtime() {
+                    let params = new URLSearchParams();
+                    params.append("id",this.updateexamtime.id);
+                    params.append("examtime",this.updateexamtime.shezhiexamtime);
+                    params.append("state",this.updateexamtime.state);
+                    axios({
+                        method: 'put',
+                        url: '/api/exam/examParper/updateStartExamtime',
+                        data: params
+                  }).then(response => {
+                        if (response.data.success) {
+                            this.$Notice.success({
+                                title: '设置成功',
+                                desc: ''
+                            });
+                            this.centerDialogVisible = false;
+                            this.updateexamtime.shezhiexamtime.value = "";
+                            this.query();
+                        } else {
+                            this.$Notice.info({
+                                title: '设置失败',
+                                desc: response.data.message
+                            });
+                            this.centerDialogVisible = false;
+                        }
+                    })
+
+
                 },
                 handleEdit(index, row) {
                     console.log(index, row);
@@ -218,7 +290,7 @@
                 onSubmitsui() {
 
                 },
-                onSubmitxaun(){
+                onSubmitxaun() {
 
                 },
                 onSubmitquery() {
