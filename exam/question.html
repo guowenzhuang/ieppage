@@ -167,6 +167,10 @@
             return {
                 options2: [
                     {
+                        value: '',
+                        label: '请选择'
+                    },
+                    {
                         value: '选择题',
                         label: '选择题'
                     }, {
@@ -218,6 +222,7 @@
             query() {
 
 
+
                 let params = new URLSearchParams();
                 params.append("rubric", this.rubric);
                 params.append("type", this.typecc);
@@ -228,7 +233,7 @@
                     url: '/api/exam/rubric/queryrubricer',
                     data: params,
                     headers: {
-                        "Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
+                        "Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDU4MTg5OSwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6ImRiMTI0ZGFhLTgxZjgtNGJiMS1hYmNiLWVkZmM5MjY0Y2Y4YyIsImNsaWVudF9pZCI6ImllcCJ9.z9xy_i88gzZ2TVyE1IZhmndozWNxoBl56anJ4rlYZv4"
                     }
                 }).then(res => {
                     res = res.data;
