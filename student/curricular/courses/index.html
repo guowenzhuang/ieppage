@@ -20,14 +20,14 @@
 <meta content="实验楼课程,IT培训课程,IT实训课程,IT在线课程,all" name="keywords">
 
     <meta content="" name="author">
-
-	<link rel="shortcut icon" href="favicon.ico">
 	<link rel="stylesheet" href="../static/font-awesome//4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="../static/highlight.js/9.8.0/monokai-sublime.min.css">
     <link rel="stylesheet" href="../app/css/libs/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="../app/css/libs/katex/0.6.0/katex.min.css">
     <link rel="stylesheet" href="../app/css/libs/videojs/5.11.7/video-js.min.css">
 	<link rel="stylesheet" href="../app/css/dest/styles.css?=2016121272249">
+    <script src="../../js/vue.min.js"></script>
+    <script src="../../js/axios.min.js"></script>
 
 	<style>
 		@font-face {
@@ -73,11 +73,9 @@
             font-size: 14px;
         }
     </style>
-	
-    
+    <script src="../../js/vue.min.js"></script>
 
-	
-    
+
 </head>
 
 <body>
@@ -180,12 +178,13 @@
                 </div>
             </div>
         </div>
-        <div class="row course-cates">
+        <div class="row course-cates" id="keicheng">
             <div class="col-md-1 course-cates-title">标签：</div>
             <div class="col-md-11 course-cates-content">
                 <a class="active" href="/courses/?course_type=all&amp;fee=all">全部</a>
+                <a v-for="site in sites" class="" href="/courses/?course_type=all&amp;tag=Python&amp;fee=all">{{ site.name }}</a>
                 
-                    <a class="" href="/courses/?course_type=all&amp;tag=Python&amp;fee=all">Python</a>
+                   <!-- <a class="" href="/courses/?course_type=all&amp;tag=Python&amp;fee=all">Python</a>
                 
                     <a class="" href="/courses/?course_type=all&amp;tag=C%2FC%2B%2B&amp;fee=all">C/C++</a>
                 
@@ -236,7 +235,7 @@
                     <a class="" href="/courses/?course_type=all&amp;tag=%E6%B1%87%E7%BC%96&amp;fee=all">汇编</a>
                 
                     <a class="" href="/courses/?course_type=all&amp;tag=Windows&amp;fee=all">Windows</a>
-                
+                -->
             </div>
         </div>
     </div>
@@ -1291,8 +1290,29 @@
     </div>
 </div>
 
-            
-        
-	
+
+
+<script>
+    new Vue({
+        el: '#keicheng',
+        mounted:function(){
+            this.queryKeicheng()
+        },
+        data: {
+            sites: []
+        },
+        methods:{
+            queryKeicheng:function(){
+                axios({
+                    method: 'get',
+                    url:'/api/student/curricularTaxonomy/getCurricularTaxonomy'
+                }).then(res =>{
+                    console.log(res);
+                    this.sites=res.data.message;
+                })
+            }
+        },
+    })
+</script>
 </body>
 </html>

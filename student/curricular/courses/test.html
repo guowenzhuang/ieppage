@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <script src="../../js/vue.min.js"></script>
+    <script src="../../js/axios.min.js"></script>
+</head>
+<body>
+<div id="app">
+    <ol>
+        <li v-for="site in sites">
+            {{ site.name }}
+        </li>
+    </ol>
+</div>
+
+<script>
+    new Vue({
+        el: '#app',
+        mounted:function(){
+            this.queryKeicheng()
+        },
+        data: {
+            sites: []
+        },
+        methods:{
+            queryKeicheng:function(){
+                axios({
+                    method: 'get',
+                    url:'/api/student/curricularTaxonomy/getCurricularTaxonomy'
+                }).then(res =>{
+                    console.log(res);
+                    this.sites=res.data.message;
+                })
+            }
+        },
+    })
+    </script>
+</body>
+</html>
