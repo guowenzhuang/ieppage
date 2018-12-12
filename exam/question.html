@@ -45,7 +45,7 @@
     <div style="width: 100%;">
         <template>
             <!--element表格-->
-            <el-table :data="rubricList.slice((currentPage-1)*pagesize,currentPage*pagesize)" style=" width: auto">
+            <el-table :data="rubricList" style=" width: auto">
                 <el-table-column prop="id" label="序号" :show-overflow-tooltip="true">
                 </el-table-column>
                 <el-table-column prop="rubricttype" label="试题类型" :show-overflow-tooltip="true">
@@ -83,34 +83,38 @@
 
     <el-dialog title="新增试题" :visible.sync="dialogVisible" width="60%" :before-close="handleClose">
 
-        <font size="4">题干:</font>
-        <el-input v-model="input1" placeholder="请输入内容" style="width: 400px;" :show-overflow-tooltip="true"></el-input>
+        <el-form ref="form" :model="form" label-width="80px">
+            <el-form-item label="题干内容:">
+                <el-input v-model="rubric"></el-input>
+            </el-form-item>
 
-        <font size="4">试题的类型:</font>
-        <el-select v-model="value2" placeholder="请选择">
-            <el-option v-for="item in options3" :key="item.value" :label="item.label" :value="item.value"
-                       :disabled="item.disabled">
-            </el-option>
-        </el-select>
+            <el-form-item label="答案A:">
+                <el-input v-model="answerA" style="width:80%"></el-input>
+                <el-switch v-model="form.answerA" active-value="A" inactive-value=""></el-switch>
+            </el-form-item>
 
-        <br>
-        <el-checkbox v-model="checked"><font size="4">选项A:</font></el-checkbox>
-        <el-input v-model="input1" placeholder="请输入内容" style="width: auto;" :show-overflow-tooltip="true"></el-input>
+            <el-form-item label="答案B">
+                <el-input v-model="answerB" style="width:80%"></el-input>
+                <el-switch v-model="form.answerA" active-value="B" inactive-value=""></el-switch>
+            </el-form-item>
 
-        <el-checkbox v-model="checked"><font size="4">选项B:</font></el-checkbox>
-        <el-input v-model="input1" placeholder="请输入内容" style="width: auto;" :show-overflow-tooltip="true"></el-input>
-        <br>
-        <el-checkbox v-model="checked"><font size="4">选项C:</font></el-checkbox>
-        <el-input v-model="input1" placeholder="请输入内容" style="width: auto;" :show-overflow-tooltip="true"></el-input>
+            <el-form-item label="答案C">
+                <el-input v-model="answerC" style="width:80%"></el-input>
+                <el-switch v-model="form.answerA" active-value="C" inactive-value=""></el-switch>
+            </el-form-item>
 
-        <el-checkbox v-model="checked"><font size="4">选项D:</font></el-checkbox>
-        <el-input v-model="input1" placeholder="请输入内容" style="width: auto;" :show-overflow-tooltip="true"></el-input>
+            <el-form-item label="答案D">
+                <el-input v-model="answerD" style="width:80%"></el-input>
+                <el-switch v-model="form.answerA" active-value="D" inactive-value=""></el-switch>
+            </el-form-item>
 
 
-        <span slot="footer" class="dialog-footer">
-    <el-button @click="dialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="addrudic()">确 定</el-button>
-  </span>
+            <el-form-item>
+                <el-button type="primary" @click="addrudic()">立即创建</el-button>
+                <el-button>取消</el-button>
+            </el-form-item>
+        </el-form>
+
     </el-dialog>
 
 
@@ -142,6 +146,7 @@
                    layout="prev, pager, next"
                    @current-change="current_change"
                    :total="total"
+                   :page-size="pagesize"
                    background
     >
     </el-pagination>
@@ -165,6 +170,18 @@
         /*数据*/
         data() {
             return {
+                form: {
+                    name: '',
+                    region: '',
+                    date1: '',
+                    date2: '',
+                    delivery: false,
+                    type: [],
+                    resource: '',
+                    desc: ''
+                },
+
+
                 options2: [
                     {
                         value: '',
@@ -213,7 +230,28 @@
             /*点击新增试题时触发*/
 
             addrudic() {
-                alert("dsaf")
+
+                alert(this.form.answerD)
+
+
+                /*alert("dsaf")
+                let params = new URLSearchParams();
+                params.append("page", this.currentPage)
+                params.append("rows", this.pagesize)
+                params.append("rubric", this.rubric);
+                params.append("type", this.typecc);
+                params.append("course", this.course);
+                params.append("section", this.section);
+                axios({
+                    method: 'post',
+                    url: '/api/exam/rubric/addrubric',
+                    data: params,
+                    headers: {
+                        "Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDY1MjY1MywiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6ImY3NDIyN2IzLTY2ZmQtNDBhNy04ZmJlLWUxZjI5YjA4YmI1YyIsImNsaWVudF9pZCI6ImllcCJ9.IEgFAYiFIJ86KnD7BzDRFucc3NCI91lOkGu31imY-ew"
+                    }
+                }).then(res => {
+
+                })*/
 
 
             },
@@ -222,8 +260,9 @@
             query() {
 
 
-
                 let params = new URLSearchParams();
+                params.append("page", this.currentPage)
+                params.append("rows", this.pagesize)
                 params.append("rubric", this.rubric);
                 params.append("type", this.typecc);
                 params.append("course", this.course);
@@ -233,20 +272,22 @@
                     url: '/api/exam/rubric/queryrubricer',
                     data: params,
                     headers: {
-                        "Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDU4MTg5OSwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6ImRiMTI0ZGFhLTgxZjgtNGJiMS1hYmNiLWVkZmM5MjY0Y2Y4YyIsImNsaWVudF9pZCI6ImllcCJ9.z9xy_i88gzZ2TVyE1IZhmndozWNxoBl56anJ4rlYZv4"
+                        "Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDY1MjY1MywiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6ImY3NDIyN2IzLTY2ZmQtNDBhNy04ZmJlLWUxZjI5YjA4YmI1YyIsImNsaWVudF9pZCI6ImllcCJ9.IEgFAYiFIJ86KnD7BzDRFucc3NCI91lOkGu31imY-ew"
                     }
                 }).then(res => {
+
                     res = res.data;
-                    for (let i = 0; i < res.length; i++) {
-                        let r = res[i];
+
+                    for (let i = 0; i < res.page.length; i++) {
+                        let r = res.page[i];
                         let answer = r.answer;
                         for (let j = 0; j < answer.length; j++) {
                             let a = answer[j];
                             r[a.optiones] = a.content;
                         }
                     }
-                    this.rubricList = res;
-                    this.total = res.length;
+                    this.rubricList = res.page;
+                    this.total = res.total;
 
 
                 })
@@ -313,6 +354,7 @@
             },
             current_change: function (currentPage) {
                 this.currentPage = currentPage;
+                this.query();
             }
 
 
