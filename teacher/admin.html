@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="js/elementui/index.css">
+    <script src="js/vue.js"></script>
+    <script  src="js/elementui/index.js"></script>
+    <script src="js/axios.min.js"></script>
+    <link rel="stylesheet" href="css/tea.css">
+</head>
+<body>
+<div id="app">
+    <template>
+        <el-breadcrumb separator="/">
+
+            <el-breadcrumb-item><a href="ei.html">基本信息</a></el-breadcrumb-item>
+
+        </el-breadcrumb>
+    </template>
+</div>
+</body>
+<script>
+    var Main = {
+        data() {
+            return {
+                activeName2: 'first'
+            };
+        },
+        methods: {
+            handleClick(tab, event) {
+                console.log(tab, event);
+            }
+        }
+    };
+    var Ctor = Vue.extend(Main)
+    new Ctor().$mount('#app')
+</script>
+</html>

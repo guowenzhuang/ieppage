@@ -35,18 +35,15 @@
         <el-table-column prop="courIsputaway" label="进入时间">
         </el-table-column>
 
-        <el-table-column prop="courNocount" label="离开时间">
-        </el-table-column>
+       <el-table-column label="操作">
 
-        <el-table-column prop="courPageview" label="离开时间">
-        </el-table-column>
-        <el-table-column label="操作">
             <template slot-scope="scope">
-                <el-button
-                        size="mini"
-                        @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                <el-button
-                        size="mini"
+                 <el-button size="mini" onclick="window.location.href='admin.html'">管理</el-button>
+
+                </el-breadcrumb>
+
+
+                <el-button size="mini"
                         type="danger"
                         @click="handleDelete(scope.$index, scope.row)">删除</el-button>
             </template>
@@ -62,7 +59,7 @@
 </div>
 </body>
 <script>
-
+     //跳转
 
     var Main = {
         data() {
@@ -79,31 +76,39 @@
 
             //点击删除
             handleDelete(index, row) {
+                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning',
+                    center: true
+                }).then(() => {
+                    axios({
+                           method: 'post',
+                           url: '/api/teacher/course/deleteCourseById',
+                           params: {
+                               courId: row.courId
+                           },
+                           headers: {
+                               "Authorization": "bearer " + sessionStorage.getItem("access_token")
+                           }
+                       })
+                    this.queryCourse()
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!',
 
-                console.log(index,row.courId)
-                 axios({
+                    });
 
-                    method: 'delete',
-                    url: '/api/teacher/course/deleteCourseById',
-                    params: {
-                        courId: row.courId
-                    }
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
                 })
-                    .then(res => {
-                        alert(res)
-                        if (res.success) {
-                            this.$message({
-                                message: `删除成功`,
-                                type: 'success'
-                            })
-                            this.queryCourse()
-                        } else {
-                            this.$message({
-                                message: res.message,
-                                type: 'error'
-                            })
-                        }
-                    })
+
+
+
+
             },
 
 
@@ -129,8 +134,7 @@
                         "Authorization": "bearer " + sessionStorage.getItem("access_token")
                     }
                 })
-                    .
-                    then(res => {
+                    .then(res => {
                             let data = res.data;
 
                             this.total = data.totalElements;
