@@ -13,8 +13,12 @@
 <body>
 <div id="app">
     <div>
-        <el-input v-model="cour_name"></el-input>
+         <el-input  v-model="cour_name" placeholder="请输入内容"></el-input>
         <el-button type="success" @click="search">搜索</el-button>
+        <el-button size="mini"
+                   type="primary"
+                   @click="showAddCourseDialog()">添加
+        </el-button>
      </div>
 
     <el-table :data="tableData" style="width: 100%" >
@@ -23,32 +27,61 @@
                 width="50">
         </el-table-column>
 
-        <el-table-column prop="courName" label="阅览室">
+        <el-table-column prop="setAddUserDialogData" label="阅览室">
         </el-table-column>
 
-        <el-table-column prop="courContent" label="卡号">
+        <el-table-column prop="courName" label="课程名称">
         </el-table-column>
 
-        <el-table-column prop="courDetails" label="名称">
+        <el-table-column prop="courContent" label="课程内容">
+        </el-table-column>
+        <el-table-column prop="courTarget" label="课程目标">
         </el-table-column>
 
-        <el-table-column prop="courIsputaway" label="进入时间">
-        </el-table-column>
-
-       <el-table-column label="操作">
+            <el-table-column label="操作">
 
             <template slot-scope="scope">
                  <el-button size="mini" onclick="window.location.href='admin.html'">管理</el-button>
 
                 </el-breadcrumb>
-
-
-                <el-button size="mini"
+                 <el-button size="mini"
                         type="danger"
-                        @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                        @click="handleDelete(scope.$index, scope.row)">删除
+                </el-button>
+
+
             </template>
         </el-table-column>
     </el-table>
+
+  <el-dialog
+          width="40%"
+          class="addUserDialogClass"
+          :title="addCourseDialog.title"
+          :visible.sync="addCourseDialog.show">
+      <el-row :gutter="8">
+          <el-col :span="6">
+              姓名:
+          </el-col>
+          <el-col :span="18">
+              <el-input v-model="addCourseDialog.courName" :readonly="addCourseDialog.nameReadonly"></el-input>
+          </el-col>
+      </el-row>
+      <el-row :gutter="8">
+          <el-col :span="6">
+             教师id
+          </el-col>
+          <el-col :span="18">
+              <el-input v-model="addCourseDialog.courTeaid" ></el-input>
+          </el-col>
+      </el-row>
+        <span slot="footer" class="dialog-footer">
+    <el-button @click="addCourseDialog.show">取 消</el-button>
+    <el-button type="primary" @click="addCourseDialogEnter">确 定</el-button>
+  </span>
+    </el-dialog>
+
+
     <div style="display: flex;justify-content: center">
         <el-pagination
                 layout="prev, pager, next"
@@ -62,8 +95,26 @@
      //跳转
 
     var Main = {
+
         data() {
             return {
+                addCourseDialog: {
+                    // 模态框显示
+                    show: false,
+                    // 课程id
+                    courId: '',
+                    // 模态框标题
+                    title: '',
+                    // 名字只读
+                    nameReadonly: true,
+                    // 课程名称
+                    courName: '',
+                    //教师id
+                    courTeaid: '',
+
+                },
+
+                //表格数据（分页）
                 tableData: [],
                 cour_name: "",
                 page: 1,
@@ -73,7 +124,51 @@
             }
         },
         methods: {
+            // 新增用户
+            addCourse() {
 
+                let params = new URLSearchParams()
+                params.append('courId', this.addCourseDialog.courId)
+                params.append('courName', this.addCourseDialog.courName)
+                params.append('courTeaid', this.addCourseDialog.courTeaid)
+                axios({
+                    method: 'post',
+                    url: '/api/teacher/course/addCourseAll',
+                    data: params,
+
+                    headers: {
+                        "Authorization": "bearer " + sessionStorage.getItem("access_token")
+                    }
+                })
+                    .then(() => {
+                        this.$message({
+                            type: 'success',
+                            message: '新增成功!',
+                           });
+                     this.addCourseDialog.show = false
+                        location.reload();
+                    }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '新增失败'
+                    });
+                })
+            },
+            addCourseDialogEnter() {
+                 this.addCourse()
+
+            },
+            showAddCourseDialog() {
+                this.addCourseDialog.title = '课程新增'
+                this.addCourseDialog.nameReadonly = false
+                this.addCourseDialog.show = true
+                this.setAddUserDialogData('', '', '', '')
+            },
+            setAddUserDialogData(courId,courName,courTeaid){
+                this.addCourseDialog.courId = courId
+                this.addCourseDialog.courName = courName
+                this.addCourseDialog.courTeaid = courTeaid
+            },
             //点击删除
             handleDelete(index, row) {
                 this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
@@ -92,13 +187,13 @@
                                "Authorization": "bearer " + sessionStorage.getItem("access_token")
                            }
                        })
-                    this.queryCourse()
+
                     this.$message({
                         type: 'success',
                         message: '删除成功!',
 
                     });
-
+                    location.reload();
                 }).catch(() => {
                     this.$message({
                         type: 'info',
