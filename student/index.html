@@ -4,6 +4,7 @@
 		<meta charset="utf-8">
 		<title>智慧教学平台</title>
 		<script type="text/javascript" src="js/jquery.js"></script>
+		
 		<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css">
 		<link rel="stylesheet" type="text/css" href="css/muke.css">
 		<script type="text/javascript" src="js/jquery.SuperSlide.2.1.1.js"></script>
@@ -12,10 +13,12 @@
 	</head>
 
 	<body class="backg_huibai">
+		
 
 		<!-- 顶部 -->
-		<div class="width100 float_l height490 img_backg1">
+		 <div class="width100 float_l height490 img_backg1">
 			<div class="width100 float_l height80 line_hei80">
+				
 				<!-- 顶部左边 -->
 				<div class="float_l">
 					<div class="float_l margin_l20">
@@ -26,7 +29,7 @@
 							<li><a class="" href="curricular/courses/index.html">课程</a></li>
 							<li><a>院系</a></li>
 							<li><a>名师专栏</a></li>
-							<!-- <li><a>手记</a></li> -->
+							
 						</ul>
 					</div>
 				</div>
@@ -50,8 +53,9 @@
 						<img src="img/uiz2.png">
 					</div>
 				</div>
+				
 			</div>
-		</div>
+		</div> 
 
 		<!-- 轮播图 -->
 		<div class="width100 float_l margin_t-405 margin_b40">
@@ -78,7 +82,7 @@
 						<div v-for="l in lessons" class="width100 float_l tab_qiehuan ">
 							<div class="width100 float_l text_c height64 line_hei64 color_white bianhuabeijing backg_jqian padding_lr20">
 								<div class="width100 float_l text_c height64 line_hei64 color_white border_b_baise fon_siz16">
-									<a href="" class="color_white" v-text="l.name"><span v-text="l.departmentId"></span></a>				
+									<a :href=" 'curricular/courses/index.html?departmentId='+l.departmentId " class="color_white" v-text="l.name"></a>				
 								</div>
 							</div>
 						</div>
@@ -88,6 +92,7 @@
 			</div>
 		</div>
 		<script>
+			//类别显示
 			var menu = new Vue({
 				el: "#menu",
 				mounted: function() {
@@ -111,6 +116,9 @@
 					}
 				}
 			});
+			
+			
+			
 		</script>
 
 
