@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../teacher/js/elementui/index.css">
+    <script src="../teacher/js/vue.js"></script>
+    <script src="../teacher/js/elementui/index.js"></script>
+    <script src="../teacher/js/axios.min.js"></script>
+    <link rel="stylesheet" href="../teacher/css/tea.css">
+    <style>
+        .el-main {
+            padding-top: 0;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <el-container>
+        <el-main>
+            <el-row :gutter="20">
+                <el-col :span="4">
+                    <div>用户名:</div>
+                    <el-input v-model="query.userName" placeholder="请输入用户名"></el-input>
+                </el-col>
+                <el-col :span="4">
+                    <span>邮箱:</span>
+                    <el-input v-model="query.protectEMail" placeholder="请输入邮箱"></el-input>
+                </el-col>
+                <el-col :span="4">
+                    <span>手机号:</span>
+                    <el-input v-model="query.protectMTel" placeholder="请输入手机号"></el-input>
+                </el-col>
+                <el-col :span="7">
+                    <span>是否锁定:</span>
+                    <div>
+                        <el-radio v-model="query.isLockout" border label="">全选</el-radio>
+                        <el-radio v-model="query.isLockout" border label="是">锁定</el-radio>
+                        <el-radio v-model="query.isLockout" border label="否">未锁定</el-radio>
+                    </div>
+                </el-col>
+                <el-col :span="2">
+                    <span>&nbsp;</span>
+                    <el-button icon="el-icon-refresh" type="primary" @click="search">搜索</el-button>
+                </el-col>
+            </el-row>
+            <el-row :gutter="20">
+                <el-col :span="9">
+                    <span>创建时间:</span>
+                    <el-date-picker
+                            v-model="query.createTime"
+                            type="datetimerange"
+                            range-separator="至"
+                            start-placeholder="开始日期"
+                            end-placeholder="结束日期">
+                    </el-date-picker>
+                </el-col>
+                <el-col :span="4">
+                    <span>排序:</span>
+                    <el-select v-model="query.order" placeholder="请选择">
+                        <el-option value="CreateTime" label="创建时间"></el-option>
+                        <el-option value="LastLoginTime" label="最后登录时间"></el-option>
+                    </el-select>
+                </el-col>
+                <el-col :span="2">
+                    <span>&nbsp;</span>
+                    <el-button>新增用户</el-button>
+                </el-col>
+                <el-col :span="1">
+                    <span>&nbsp;</span>
+                    <el-button icon="el-icon-refresh" type="primary" @click="reloadHTML">刷新</el-button>
+                </el-col>
+            </el-row>
+            <el-row style="margin-top: 20px;">
+                <el-table :data="userData" border>
+                    <el-table-column
+                            type="selection"
+                            width="55">
+                    </el-table-column>
+                    <el-table-column
+                            prop="loginName"
+                            label="用户名"
+                            width="70">
+                    </el-table-column>
+                    <el-table-column
+                            prop="lastLoginTime"
+                            label="最后登录时间">
+                    </el-table-column>
+                    <el-table-column
+                            prop="protectEMail"
+                            label="邮箱">
+                    </el-table-column>
+                    <el-table-column
+                            prop="protectMTel"
+                            label="手机号">
+                    </el-table-column>
+                    <el-table-column
+                            prop="isLockout"
+                            label="是否锁定">
+                        <template slot-scope="scope">
+                            <div>
+                                <el-switch
+                                        v-model="scope.row.isLockout"
+                                        active-value="是"
+                                        inactive-value="否"
+                                        @change="isLockoutChange(scope.row)"
+                                >
+                                </el-switch>
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            prop="lockTime"
+                            label="锁定时间">
+                        <template slot-scope="scope">
+                            <div v-show="scope.row.isLockout=='是'">
+                                {{scope.row.lockTime}}
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="设置">
+                        <template slot-scope="scope">
+                            <el-button type="text">设置角色</el-button>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="操作">
+                        <template slot-scope="scope">
+                            <div>
+                                <el-button type="text">修改</el-button>
+                            </div>
+                            <div>
+                                <el-button type="text">删除</el-button>
+                            </div>
+                            <div>
+                                <el-button type="text">重置密码</el-button>
+                            </div>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </el-row>
+            <el-row type="flex" justify="center">
+                <el-pagination
+                        layout="prev, pager, next"
+                        :current-page.sync="query.page"
+                        :page-size="query.rows"
+                        @current-change="queryUser"
+                        :total="total">
+                </el-pagination>
+            </el-row>
+        </el-main>
+    </el-container>
+    <div></div>
+</div>
+</body>
+<script>
+    axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
+    let main = {
+        data() {
+            return {
+                //用户查询条件封装
+                query: {
+                    userName: '',
+                    protectEMail: '',
+                    protectMTel: '',
+                    isLockout: '',
+                    createTime: '',
+                    order: '',
+                    page: 1,
+                    rows: 10
+                },
+                //用户数据
+                userData: [],
+                total: 0
+            }
+        },
+        computed: {},
+        methods: {
+            isLockoutChange(row) {
+                this.updateUserField('isLockout', row.isLockout, row.id);
+            },
+            updateUserField(fieldName, fieldValue, id) {
+                let params = new URLSearchParams();
+                params.append("fieldName", fieldName);
+                params.append("fieldValue", fieldValue);
+                axios.put('/api/admin/user/updateUserField/' + id, params)
+                    .then(res => {
+                        res = res.data;
+                        if (res.success) {
+                            this.$message({
+                                showClose: true,
+                                message: '成功'
+                            });
+                        } else {
+                            this.$message({
+                                showClose: true,
+                                message: '失败',
+                                type: 'error'
+                            });
+                        }
+                    })
+            },
+            search() {
+                this.query.page = 1;
+                this.queryUser();
+            },
+            //刷新页面
+            reloadHTML() {
+                window.location.reload();
+            },
+            //查询用户
+            queryUser() {
+                axios({
+                    method: 'get',
+                    url: "/api/admin/user/query",
+                    params: {
+                        userName: this.query.userName,
+                        beginCreateTime: this.date_string(this.query.createTime[0]),
+                        endCreateTime: this.date_string(this.query.createTime[1]),
+                        isLockout: this.query.isLockout,
+                        order: this.query.order,
+                        protectEMail: this.query.protectEMail,
+                        protectMTel: this.query.protectMTel,
+                        page: this.query.page,
+                        rows: this.query.rows,
+                    }
+                }).then(res => {
+                    res = res.data;
+                    this.total = res.total;
+                    this.userData = res.rows;
+                })
+            },
+            //日期封装
+            date_string(date) {
+                if (typeof(date) != "object") {
+                    return null;
+                }
+                if (date == "") {
+                    return null;
+                }
+                let year = date.getFullYear();
+                let month = (date.getMonth() + 1).toString();
+                let day = (date.getDate()).toString();
+                let hour = date.getHours();
+                let min = date.getMinutes();
+                let secod = date.getSeconds();
+                if (month.length == 1) {
+                    month = "0" + month;
+                }
+                if (day.length == 1) {
+                    day = "0" + day;
+                }
+                var dateTime = year + "-" + month + "-" + day + " " + hour + ":" + min + ":" + secod
+                return dateTime;
+            }
+        },
+        mounted() {
+            this.queryUser();
+        }
+    };
+    let Component = Vue.extend(main);
+    new Component().$mount('#app')
+</script>
+</html>

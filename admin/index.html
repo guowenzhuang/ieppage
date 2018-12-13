@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../teacher/js/elementui/index.css">
+    <script src="../teacher/js/vue.js"></script>
+    <script src="../teacher/js/elementui/index.js"></script>
+    <script src="../teacher/js/axios.min.js"></script>
+    <link rel="stylesheet" href="../teacher/css/tea.css">
+    <style>
+        .el-tabs__header{
+            margin-bottom: 0;
+        }
+        .el-aside,.el-tree{
+            background-color: #DCDFE6;
+        }
+    </style>
+</head>
+
+<body>
+<div id="app">
+    <el-container>
+        <el-header>
+            {{username}} 你好
+        </el-header>
+        <el-container>
+            <el-aside style="width: 200px;">
+                <el-tree
+                        node-key="id"
+                        :default-expanded-keys="[4]"
+                        :data="menuData"
+                        :props="menuProps"
+                        @node-click="menuClick"
+                ></el-tree>
+            </el-aside>
+            <el-main>
+                <el-tabs type="card" v-model="activeid" closable @tab-remove="removeTab">
+                    <el-tab-pane v-for="tab in tabs" :name="tab.id" :label="tab.name">
+                        <iframe width='100%' height='1800px' frameborder="0" scrolling="no" :src="tab.path"></iframe>
+                    </el-tab-pane>
+                </el-tabs>
+
+            </el-main>
+        </el-container>
+    </el-container>
+</div>
+
+</body>
+<script>
+    axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
+
+    const Main = {
+        data() {
+            return {
+                activeid: '',
+                //标签
+                tabs: [],
+                //菜单数据
+                menuData: [],
+                //菜单配置
+                menuProps: {
+                    children: 'children',
+                    label: 'name'
+                },
+                username:''
+            }
+        },
+        methods: {
+
+
+            //显示左边树
+
+            menuClick(data, node, target) {
+                let newnode = data;
+                if (newnode.children.length == 0) { //判断是不是最下层节点
+                    let path = newnode.path;
+                    path = path.replace(".jsp", ".html");
+                    let tab = {id: newnode.id + '', name: newnode.name, icon_class: newnode.icon_class, path: path};
+                    for (let i = 0; i < this.tabs.length; i++) {
+                        if (this.tabs[i].id == tab.id) {
+                            this.activeid = tab.id
+                            return;
+                        }
+                    }
+                    this.tabs.push(tab)
+                    this.activeid = tab.id
+                }
+            },
+            removeTab(id) {
+                    this.tabs.forEach((tab, index) => {
+                        if(tab.id==id){
+                            this.tabs.splice(index,1);                        }
+                    });
+
+            },
+
+            //菜单显示
+            queryMenu() {
+                let roleNames=sessionStorage.getItem("roleNames");
+                axios({
+                    method: "get",
+                    url: "/api/admin/module/getMenuByRole",
+                    params:{
+                        rolenames:roleNames
+                    }
+                }).then(res => {
+                    res = res.data;
+                    this.menuData = res.message;
+                })
+            },
+
+        },
+        mounted() {
+            this.username=sessionStorage.getItem("username")
+            //初始化菜单
+            this.queryMenu();
+            //this.changTree();
+        }
+    }
+
+    const Component = Vue.extend(Main)
+    new Component().$mount('#app')
+</script>
+
+</html>
