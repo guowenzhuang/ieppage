@@ -73,9 +73,6 @@
             font-size: 14px;
         }
     </style>
-    <script src="../../js/vue.min.js"></script>
-
-
 </head>
 
 <body>
@@ -182,9 +179,9 @@
             <div class="col-md-1 course-cates-title">标签：</div>
             <div class="col-md-11 course-cates-content">
                 <a class="active" href="/courses/?course_type=all&amp;fee=all">全部</a>
-                <a v-for="site in sites" class="" href="/courses/?course_type=all&amp;tag=Python&amp;fee=all">{{ site.name }}</a>
+                <a v-for="site in sites" class="" href="/courses/?course_type=&amp;tag=Python&amp;fee=all">{{ site.name }}</a>
                 
-                   <!-- <a class="" href="/courses/?course_type=all&amp;tag=Python&amp;fee=all">Python</a>
+                    <a class="" href="/courses/?course_type=all&amp;tag=Python&amp;fee=all">Python</a>
                 
                     <a class="" href="/courses/?course_type=all&amp;tag=C%2FC%2B%2B&amp;fee=all">C/C++</a>
                 
@@ -235,7 +232,7 @@
                     <a class="" href="/courses/?course_type=all&amp;tag=%E6%B1%87%E7%BC%96&amp;fee=all">汇编</a>
                 
                     <a class="" href="/courses/?course_type=all&amp;tag=Windows&amp;fee=all">Windows</a>
-                -->
+
             </div>
         </div>
     </div>
