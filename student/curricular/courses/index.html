@@ -1292,7 +1292,7 @@
 				},
 			})
 			
-      //获取a标签url中的参数
+      //获取a标签url中的参数的方法
 			function getQueryString(name) {
 				var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
 				var r = window.location.search.substr(1).match(reg);
@@ -1302,6 +1302,7 @@
 				return '';
 			}
 			
+			//取出分类id
 			var departmentId=getQueryString("departmentId");
 			console.log("取到的课程分类id为："+departmentId);
 			
