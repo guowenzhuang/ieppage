@@ -1,330 +1,1 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>试卷管理</title>
-    <link rel="stylesheet" type="text/css" href="css/iview.css">
-    <script src="js/vue.min.js"></script>
-    <script src="js/iview.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="css/index.css"/>
-    <script src="js/index.js"></script>
-    <script src="js/axios.js"></script>
-</head>
-<body>
-<div id="from" align="center">
-
-    <el-form :inline="true" class="demo-form-inline">
-        <el-form-item label="科目：">
-            <el-input placeholder="科目" id="subject" size="small" style="width: 100px"></el-input>
-        </el-form-item>
-        <el-form-item label="试卷名称：">
-            <el-input placeholder="试卷名称" id="titlees" size="small" style="width: 100px"></el-input>
-        </el-form-item>
-        <el-form-item label="试卷类型：">
-            <el-select v-model="formInline.Type" placeholder="试卷类型" id="typees" size="small" style="width: 100px">
-                <el-option label="请选择" value=""></el-option>
-                <el-option label="统一考试" value="统一考试"></el-option>
-                <el-option label="自主考试" value="自主考试"></el-option>
-            </el-select>
-        </el-form-item>
-        <el-form-item label="试卷状态：">
-            <el-select v-model="formInline.State" placeholder="试卷状态" id="state" size="small" style="width: 100px">
-                <el-option label="请选择" value=""></el-option>
-                <el-option label="未开考" value="未开考"></el-option>
-                <el-option label="考试中" value="考试中"></el-option>
-                <el-option label="考试结束" value="考试结束"></el-option>
-            </el-select>
-        </el-form-item>
-        <el-form-item>
-            <el-button size="small" type="primary" @click="onSubmitquery">查询</el-button>
-            <el-button size="small" type="primary" @click="onSubmitsui">随机组卷</el-button>
-            <el-button size="small" type="primary" @click="onSubmitxaun">选题组卷</el-button>
-        </el-form-item>
-    </el-form>
-
-    <el-table
-            :data="tableData"
-            style="width: 100%;text-align: center">
-
-        <el-table-column
-                align="center"
-                label="试卷标题"
-                width="180">
-            <template slot-scope="scope">
-                <span style="margin-left: 10px">{{ scope.row.title }}</span>
-            </template>
-        </el-table-column>
-        <el-table-column
-                align="center"
-                label="试卷类型"
-                width="100">
-            <template slot-scope="scope">
-                <span style="margin-left: 10px">{{ scope.row.type }}</span>
-            </template>
-        </el-table-column>
-        <el-table-column
-                align="center"
-                label="考试科目"
-                width="180">
-            <template slot-scope="scope">
-                <span style="margin-left: 10px">{{ scope.row.subject }}</span>
-            </template>
-        </el-table-column>
-        <el-table-column
-                align="center"
-                label="开考时间"
-                width="180">
-            <template slot-scope="scope">
-                <span style="margin-left: 10px">{{ scope.row.examtime }}</span>
-            </template>
-        </el-table-column>
-        <el-table-column
-                align="center"
-                label="考试时长(分钟)"
-                width="120">
-            <template slot-scope="scope">
-                <span style="margin-left: 10px">{{ scope.row.duration }}</span>
-            </template>
-        </el-table-column>
-        <el-table-column
-                align="center"
-                label="考试状态"
-                width="80"
-                prop="state">
-            <template slot-scope="scope">
-                <el-tag
-                        plain
-                        size="medium"
-                        :type="scope.row.state=='考试中'?'success':'warning'">
-                    {{scope.row.state}}
-                </el-tag>
-            </template>
-        </el-table-column>
-        <el-table-column align="center" align="center" label="操作">
-            <template slot-scope="scope" type="text" size="mini" >
-                <span v-if="scope.row.state==='考试中'">
-                    <el-button
-                            size="mini"
-                            type="danger"
-                            @click="handleFinishtheexam(scope.$index,scope.row)">结束考试
-                </el-button>
-                <el-button
-                        size="mini"
-                        type="info"
-                        @click="handleEdit(scope.$index,scope.row)">查看试卷
-                </el-button>
-                <el-button
-                        size="mini"
-                        type="info"
-                        @click="handleViewingresults(scope.$index,scope.row)">查看成绩
-                </el-button>
-                </span>
-                <span v-else-if="scope.row.state==='未开考'">
-                     <el-button
-                             size="mini"
-                             type="warning"
-                             @click="dianjikaishikaoshi(scope.$index,scope.row)">开始考试
-                </el-button>
-                <el-button
-                        size="mini"
-                        type="info"
-                        @click="handleEdit(scope.$index,scope.row)">查看试卷
-                </el-button>
-                <el-button
-                        size="mini"
-                        type="primary"
-                        @click="handleDelete(scope.$index,scope.row)">删除试卷
-                </el-button>
-                </span>
-                <span v-else-if="scope.row.state==='考试结束'">
-                    <el-button
-                            size="mini"
-                            type="info"
-                            @click="handleEdit(scope.$index,scope.row)">查看试卷
-                </el-button>
-                <el-button
-                        size="mini"
-                        type="info"
-                        @click="handleViewingresults(scope.$index,scope.row)">查看成绩
-                </el-button>
-                <el-button
-                        size="mini"
-                        type="primary"
-                        @click="handleDelete(scope.$index,scope.row)">删除试卷
-                </el-button>
-                </span>
-
-            </template>
-        </el-table-column>
-    </el-table>
-    <div>
-        <el-pagination class="fy"
-                       layout="prev,pager,next"
-                       @current-change="current_change"
-                       :total="total"
-                       :page-size="pagesize"
-                       background
-        >
-        </el-pagination>
-    </div>
-    <el-dialog
-            title="请输入开考时间"
-            :visible.sync="centerDialogVisible"
-            width="30%"
-            center>
-        <div class="block" align="center" v-modul="updateexamtime">
-            <span class="demonstration">开考时间:</span>
-            <el-date-picker
-                    v-model="updateexamtime.shezhiexamtime"
-                    type="datetime"
-                    placeholder="选择开考时间">
-            </el-date-picker>
-        </div>
-        <div style="margin-top: 20px" align="center">
-            <el-button @click="centerDialogVisible=false">取 消</el-button>
-            <el-button type="primary" @click="quedingshezhiexamtime">确 定</el-button>
-        </div>
-    </el-dialog>
-
-</div>
-
-</body>
-<script>
-    axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
-
-    new Vue({
-        el: "#from",
-        data: function () {
-            return {
-                total: 0,
-                pagesize: 3,//每页的数据条数
-                currentPage: 1,//默认开始页面
-                tableData: [{}],
-                formInline: {
-                    Type: '',
-                    State: ''
-                },
-                centerDialogVisible: false,
-                updateexamtime: {
-                    shezhiexamtime: '',
-                    id: '',
-                    state: ''
-                },
-
-            }
-        },
-        mounted: function () {
-            this.query();
-        },
-        methods:
-            {
-                //带条件分页显示
-                query() {
-                    var page = this.currentPage;
-                    var rows = this.pagesize;
-
-                    //var  token=sessionStorage.getItem("access_token")
-                    let params = new URLSearchParams();
-                    params.append("Subject", subject.value);
-                    params.append("Title", titlees.value);
-                    params.append("State", this.formInline.State);
-                    params.append("type", this.formInline.Type);
-                    params.append("page", page);
-                    params.append("rows", rows);
-                    axios({
-
-                        method: 'post',
-                        url: '/api/exam/examParper/getqueryqueryByDynamicSQLPageExpaerper',
-                        data: params
-
-                    }).then(res => {
-
-                        res = res.data;
-                        this.tableData = res.rows;
-                        this.total = res.total;
-                    })
-
-                },
-                //点击开始考试按钮
-                dianjikaishikaoshi(index, row) {
-                    this.centerDialogVisible=true;
-                    this.updateexamtime.id=row.id;
-                    this.updateexamtime.state=row.state;
-                },
-                //点击确定开考时间按钮
-                quedingshezhiexamtime() {
-                    let params = new URLSearchParams();
-                    params.append("id",this.updateexamtime.id);
-                    params.append("examtime",this.updateexamtime.shezhiexamtime);
-                    params.append("state",this.updateexamtime.state);
-                    axios({
-                        method: 'put',
-                        url: '/api/exam/examParper/updateStartExamtime',
-                        data: params
-                  }).then(response => {
-                        if (response.data.success) {
-                            this.$Notice.success({
-                                title: '设置成功',
-                                desc: ''
-                            });
-                            this.centerDialogVisible = false;
-                            this.updateexamtime.shezhiexamtime.value = "";
-                            this.query();
-                        } else {
-                            this.$Notice.info({
-                                title: '设置失败',
-                                desc: response.data.message
-                            });
-                            this.centerDialogVisible = false;
-                        }
-                    })
-
-
-                },
-                handleEdit(index, row) {
-                    console.log(index, row);
-                },
-                handleDelete(index, row) {
-                    console.log(index, row);
-                },
-                onSubmitsui() {
-
-                },
-                onSubmitxaun() {
-
-                },
-                onSubmitquery() {
-                    this.currentPage = 1;
-                    this.query();
-                },
-                handleViewingresults(index, row) {
-                    console.log(index, row);
-                },
-                handleFinishtheexam(index, row) {
-                    console.log(index, row);
-                }, tableRowClassName({row, rowIndex}) {
-                    if (rowIndex === 0) {
-                        return 'th';
-                    }
-                    return '';
-                },
-                switchChange() {
-                    this.istag = !this.istag;
-
-                },
-                created: function () {
-                    this.total = this.tableData.length;
-                },
-                current_change: function (currentPage) {
-                    this.currentPage = currentPage;
-                    this.query();
-
-
-                }
-
-
-            }
-    })
-
-</script>
-</html>
+<!DOCTYPE html><html lang="en"><head>    <meta charset="UTF-8">    <title>试卷管理</title>    <link rel="stylesheet" type="text/css" href="css/iview.css">    <script src="js/vue.min.js"></script>    <script src="js/iview.min.js"></script>    <link rel="stylesheet" type="text/css" href="css/index.css"/>    <script src="js/index.js"></script>    <script src="js/axios.js"></script></head><body><div id="from" align="center">    <el-form :inline="true" class="demo-form-inline">        <el-form-item label="科目：">            <el-input placeholder="科目" id="subject" size="small" style="width: 100px"></el-input>        </el-form-item>        <el-form-item label="试卷名称：">            <el-input placeholder="试卷名称" id="titlees" size="small" style="width: 100px"></el-input>        </el-form-item>        <el-form-item label="试卷状态：">            <el-select v-model="formInline.State" placeholder="试卷状态" id="state" size="small" style="width: 100px">                <el-option label="请选择" value=""></el-option>                <el-option label="未开考" value="未开考"></el-option>                <el-option label="考试中" value="考试中"></el-option>                <el-option label="考试结束" value="考试结束"></el-option>            </el-select>        </el-form-item>        <el-form-item>            <el-button size="small" type="primary" @click="onSubmitquery">查询</el-button>            <el-button size="small" type="primary" @click="dialogTableVisible = true">随机组卷</el-button>            <el-button size="small" type="primary" @click="onSubmitxaun">选题组卷</el-button>        </el-form-item>    </el-form>    <el-table            :data="tableData"            style="width: 100%;text-align: center">        <el-table-column                align="center"                label="试卷标题"                width="180">            <template slot-scope="scope">                <span style="margin-left: 10px">{{ scope.row.title }}</span>            </template>        </el-table-column>        <el-table-column                align="center"                label="考试科目"                width="180">            <template slot-scope="scope">                <span style="margin-left: 10px">{{ scope.row.subject }}</span>            </template>        </el-table-column>        <el-table-column                align="center"                label="开考时间"                width="180">            <template slot-scope="scope">                <span style="margin-left: 10px">{{ scope.row.examtime }}</span>            </template>        </el-table-column>        <el-table-column                align="center"                label="考试时长(分钟)"                width="200">            <template slot-scope="scope">                <span style="margin-left: 10px">{{ scope.row.duration }}</span>            </template>        </el-table-column>        <el-table-column                align="center"                label="考试状态"                width="100"        >            <template slot-scope="scope">                <el-tag                        plain                        size="medium"                        :type="scope.row.state=='考试中'?'success':'warning'">                    {{scope.row.state}}                </el-tag>            </template>        </el-table-column>        <el-table-column align="center" align="center" label="操作">            <template slot-scope="scope" type="text" size="mini">                <span v-if="scope.row.state==='考试中'">                    <el-button                            size="mini"                            type="danger"                            @click="handleFinishtheexam(scope.$index,scope.row)">结束考试                </el-button>                <el-button                        size="mini"                        type="info"                        @click="handleEdit(scope.$index,scope.row)">查看试卷                </el-button>                <el-button                        size="mini"                        type="info"                        @click="handleViewingresults(scope.$index,scope.row)">查看成绩                </el-button>                </span>                <span v-else-if="scope.row.state==='未开考'">                     <el-button                             size="mini"                             type="warning"                             @click="dianjikaishikaoshi(scope.$index,scope.row)">开始考试                </el-button>                <el-button                        size="mini"                        type="info"                        @click="handleEdit(scope.$index,scope.row)">查看试卷                </el-button>                <el-button                        size="mini"                        type="primary"                        @click="handleDelete(scope.$index,scope.row)">删除试卷                </el-button>                </span>                <span v-else-if="scope.row.state==='考试结束'">                    <el-button                            size="mini"                            type="info"                            @click="handleEdit(scope.$index,scope.row)">查看试卷                </el-button>                <el-button                        size="mini"                        type="info"                        @click="handleViewingresults(scope.$index,scope.row)">查看成绩                </el-button>                <el-button                        size="mini"                        type="primary"                        @click="handleDelete(scope.$index,scope.row)">删除试卷                </el-button>                </span>            </template>        </el-table-column>    </el-table>    <div>        <el-pagination class="fy"                       layout="prev,pager,next"                       @current-change="current_change"                       :total="total"                       :page-size="pagesize"                       background        >        </el-pagination>    </div>    <!-- 设置开考时间-->    <el-dialog            title="请输入开考时间"            :visible.sync="centerDialogVisible"            width="30%"            center>        <div class="block" align="center" v-modul="updateexamtime">            <span class="demonstration">开考时间:</span>            <el-date-picker                    v-model="updateexamtime.shezhiexamtime"                    type="datetime"                    placeholder="选择开考时间">            </el-date-picker>        </div>        <div style="margin-top: 20px" align="center">            <el-button @click="centerDialogVisible=false">取 消</el-button>            <el-button type="primary" @click="quedingshezhiexamtime">确 定</el-button>        </div>    </el-dialog>    <!--随机组卷-->    <el-dialog title="随机组卷" :visible.sync="dialogTableVisible" style="width: 100%">        <el-form :inline="true" :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-form-inline">            <el-form-item label="试卷标题:" prop="formtitle">                <el-input v-model="ruleForm.formtitle" style="width:280px;"></el-input>            </el-form-item>            <el-form-item label="考试课程:" prop="formsubject">                <el-select v-model="ruleForm.formsubject" style="width:140px;">                    <el-option label="javaweb" value="123456"></el-option>                    <el-option label="Mybatis" value="166666"></el-option>                </el-select>            </el-form-item>            <br/>            <el-form-item label="试卷总分:" prop="formtotal">                <el-input  v-model.number="ruleForm.formtotal" style="width:70px;"></el-input>            </el-form-item>            <el-form-item label="考试时常(分钟):" prop="formduration">                <el-input v-model.number="ruleForm.formduration" style="width:70px;"></el-input>            </el-form-item>            <el-form-item label="最低交卷时间(分钟):" prop="formexamshortesttime">                <el-input v-model.number="ruleForm.formexamshortesttime" style="width:70px;"></el-input>            </el-form-item>            <br/>            <el-form-item label="单选题数量:" prop="formradionum">                <el-input v-model.number="ruleForm.formradionum" style="width:70px;"></el-input>            </el-form-item>            <el-form-item label="分数/每题:" prop="formradionumresource">                <el-input v-model.number="ruleForm.formradionumresource" style="width:70px;"></el-input>            </el-form-item>            <br/>            <el-form-item label="判断题数量:" prop="formjudgenum">                <el-input v-model.number="ruleForm.formjudgenum" style="width:70px;"></el-input>            </el-form-item>            <el-form-item label="分数/每题:" prop="formjudgenumresource">                <el-input v-model.number="ruleForm.formjudgenumresource" style="width:70px;"></el-input>            </el-form-item>            <br/>            <el-form-item label="填空题数量:" prop="formfillnum">                <el-input v-model.number="ruleForm.formfillnum" style="width:70px;"></el-input>            </el-form-item>            <el-form-item label="分数/每题:" prop="formfillnumresource">                <el-input v-model.number="ruleForm.formfillnumresource" style="width:70px;"></el-input>            </el-form-item><br/>            <el-form-item label="多选题数量:" prop="formmultiplenum">                <el-input v-model.number="ruleForm.formmultiplenum" style="width:70px;"></el-input>            </el-form-item>            <el-form-item label="分数/每题:" prop="formmultiplenumresource">                <el-input v-model.number="ruleForm.formmultiplenumresource" style="width:70px;"></el-input>            </el-form-item>            <br/>            <el-form-item>                <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>                <el-button @click="resetForm('ruleForm')">重置</el-button>            </el-form-item>        </el-form>    </el-dialog></div></body><script>    axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");    new Vue({        el: "#from",        data: function () {            return {                total: 0,                pagesize: 10,//每页的数据条数                currentPage: 1,//默认开始页面                tableData: [{}],                formInline: {                    Type: '',                    State: ''                },                centerDialogVisible: false,                dialogTableVisible: false,                updateexamtime: {                    shezhiexamtime: '',                    id: '',                    state: ''                },                ruleForm: {                    formtitle: '',                    formsubject: '',                    formtotal: '',                    formduration: '',                    formexamshortesttime: '',                    formradionum: '',                    formradionumresource: '',                    formjudgenum: '',                    formjudgenumresource: '',                    formfillnum: '',                    formfillnumresource: '',                    formmultiplenum:'',                    formmultiplenumresource:''                }, rules: {                    formtitle: [                        {required: true, message: '不能为空', trigger: 'blur'}                    ],                    formsubject: [                        {required: true, message: '不能为空', trigger: 'blur'}                    ],                    formtotal: [                        { required: true, message: '不能为空'},                        { type: 'number', message: '必须为数值'}                        ],                    formduration: [                        { required: true, message: '不能为空'},                        { type: 'number', message: '必须为数值'}                    ],                    formexamshortesttime: [                        { required: true, message: '不能为空'},                        { type: 'number', message: '必须为数值'}                    ],                    formradionum: [                        { required: true, message: '不能为空'},                        { type: 'number', message: '必须为数值'}                    ],                    formradionumresource: [                        { required: true, message: '不能为空'},                        { type: 'number', message: '必须为数值'}                    ],                    formjudgenum: [                        { required: true, message: '不能为空'},                        { type: 'number', message: '必须为数值'}                    ],                    formjudgenumresource:[                        { required: true, message: '不能为空'},                        { type: 'number', message: '必须为数值'}                    ],                    formfillnum:[                        { required: true, message: '不能为空'},                        { type: 'number', message: '必须为数值'}                    ],                    formfillnumresource:[                        { required: true, message: '不能为空'},                        { type: 'number', message: '必须为数值'}                    ],                    formmultiplenum:[                        { required: true, message: '不能为空'},                        { type: 'number', message: '必须为数值'}                    ],                    formmultiplenumresource:[                        { required: true, message: '不能为空'},                        { type: 'number', message: '必须为数值'}                    ],                }            }        },        mounted: function () {            this.query();        },        methods:            {                //带条件分页显示                query() {                    var page = this.currentPage;                    var rows = this.pagesize;                    //var  token=sessionStorage.getItem("access_token")                    let params = new URLSearchParams();                    params.append("Subject", subject.value);                    params.append("Title", titlees.value);                    params.append("State", this.formInline.State);                    params.append("page", page);                    params.append("rows", rows);                    axios.get('/api/exam/examParper/getqueryqueryByDynamicSQLPageExpaerper',{                        params: params                        }                    ).then(res => {                        res = res.data;                        this.tableData = res.rows;                        this.total = res.total;                    })                },                //点击开始考试按钮                dianjikaishikaoshi(index, row) {                    this.centerDialogVisible = true;                    this.updateexamtime.id = row.id;                    this.updateexamtime.state = row.state;                },                //点击确定开考时间按钮                quedingshezhiexamtime() {                    let params = new URLSearchParams();                    params.append("id", this.updateexamtime.id);                    params.append("examtime", this.updateexamtime.shezhiexamtime);                    params.append("state", this.updateexamtime.state);                    axios({                        method: 'put',                        url: '/api/exam/examParper/updateStartExamtime',                        data: params                    }).then(response => {                        if (response.data.success) {                            this.$notify({                                title: '成功',                                message: response.data.message,                                type: 'success'                            });                            this.centerDialogVisible = false;                            this.updateexamtime.shezhiexamtime.value = "";                            this.query();                        } else {                            this.$notify({                                title: '失败',                                message: response.data.message,                                type: 'warning'                            });                            this.centerDialogVisible = false;                        }                    })                },                submitForm(formName) {                    let params = new URLSearchParams();                     params.append("title",this.ruleForm.formtitle);                    params.append("subject",this.ruleForm.formsubject);                    params.append("total",this.ruleForm.formtotal);                    params.append("duration",this.ruleForm.formduration);                    params.append("examshortesttime",this.ruleForm.formexamshortesttime);                    params.append("radionum",this.ruleForm.formradionum);                    params.append("radionumresource",this.ruleForm.formradionumresource);                    params.append("judgenum",this.ruleForm.formjudgenum);                    params.append("judgenumresource",this.ruleForm.formjudgenumresource);                    params.append("fillnum",this.ruleForm.formfillnum);                    params.append("fillnumresource",this.ruleForm.formfillnumresource);                    params.append("multiplenum",this.ruleForm.formmultiplenum);                    params.append("multiplenumresource",this.ruleForm.formmultiplenumresource);                    this.$refs[formName].validate((valid) => {                        if (valid) {                            alert('submit!');                            axios.post('/api/exam/examParper/addRandomExamparper',                                 params                            ).then(response => {                                if (response.data.success) {                                    this.$notify({                                        title: '成功',                                        message: response.data.message,                                        type: 'success'                                    });                                    this.centerDialogVisible = false;                                    this.updateexamtime.shezhiexamtime.value = "";                                    this.query();                                } else {                                    this.$notify({                                        title: '失败',                                        message: response.data.message,                                        type: 'warning'                                    });                                }                            })                        } else {                            console.log('error submit!!');                            return false;                        }                    });                },                resetForm(formName) {                    this.$refs[formName].resetFields();                },                handleEdit(index, row) {                    console.log(index, row);                },                handleDelete(index, row) {                    console.log(index, row);                },                onSubmitxaun() {                },                onSubmitquery() {                    this.currentPage = 1;                    this.query();                },                handleViewingresults(index, row) {                    console.log(index, row);                },                handleFinishtheexam(index, row) {                    console.log(index, row);                }, tableRowClassName({row, rowIndex}) {                    if (rowIndex === 0) {                        return 'th';                    }                    return '';                },                switchChange() {                    this.istag = !this.istag;                },                created: function () {                    this.total = this.tableData.length;                },                current_change: function (currentPage) {                    this.currentPage = currentPage;                    this.query();                }            }    })</script></html>
