@@ -47,8 +47,8 @@
         <template>
             <!--element表格-->
             <el-table :data="rubricList" style=" width: auto">
-                <el-table-column prop="id" label="序号" :show-overflow-tooltip="true">
-                </el-table-column>
+                <!--<el-table-column prop="id" label="序号" :show-overflow-tooltip="true">
+                </el-table-column>-->
                 <el-table-column prop="rubricttype" label="试题类型" :show-overflow-tooltip="true">
                 </el-table-column>
                 <el-table-column prop="content" label="题干" :show-overflow-tooltip="true">
@@ -81,14 +81,12 @@
         </template>
     </div>
 
-
+    <!--新增试题对话框-->
     <el-dialog title="新增试题" :visible.sync="dialogVisible" width="60%" :before-close="handleClose">
 
         <el-form ref="form" :model="form" label-width="80px">
             <el-form-item label="题干内容:">
                 <el-input v-model="addrubric"></el-input>
-
-
             </el-form-item>
 
             <el-form-item label="试题类型:">
@@ -122,34 +120,90 @@
 
             <el-form-item>
                 <el-button type="primary" @click="addrudic()">立即创建</el-button>
-                <el-button>取消</el-button>
+                <el-button @click="addquxiao()">取消</el-button>
             </el-form-item>
         </el-form>
 
     </el-dialog>
 
 
-    <el-dialog title="提示" :visible.sync="dialogVisible1" width="60%" :before-close="handleClose">
-        <font size="4">题干:</font>
-        <el-input v-model="input2" placeholder="请输入内容" style="width: 600px;"></el-input>
-        <br>
-        <el-checkbox v-model="checked"><font size="4">选项A:</font></el-checkbox>
-        <el-input v-model="inputA" placeholder="请输入内容" style="width: auto;"></el-input>
+    <!--修改填空题的对话框-->
+    <el-dialog title="修改填空题" :visible.sync="dialogVisiblepack" width="60%" :before-close="handleClose">
 
-        <el-checkbox v-model="checked"><font size="4">选项B:</font></el-checkbox>
-        <el-input v-model="inputB" placeholder="请输入内容" style="width: auto;"></el-input>
-        <br>
-        <el-checkbox v-model="checked"><font size="4">选项C:</font></el-checkbox>
-        <el-input v-model="inputC" placeholder="请输入内容" style="width: auto;"></el-input>
+        <el-form ref="form" :model="form" label-width="80px">
+            <el-form-item label="题干内容:">
+                <el-input v-model="packrubric"></el-input>
+            </el-form-item>
 
-        <el-checkbox v-model="checked"><font size="4">选项D:</font></el-checkbox>
-        <el-input v-model="inputD" placeholder="请输入内容" style="width: auto;"></el-input>
+            <el-form-item label="正确答案:">
+                <el-input v-model="packanswer" style="width:80%"></el-input>
+            </el-form-item>
 
 
-        <span slot="footer" class="dialog-footer">
-    <el-button @click="dialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-  </span>
+            <el-form-item>
+                <el-button type="primary" @click="updatepack()">保存</el-button>
+                <el-button @click="dialogVisiblepack = false">取消</el-button>
+            </el-form-item>
+        </el-form>
+
+
+    </el-dialog>
+
+
+    <!--修改判断题的对话框-->
+    <el-dialog title="修改判断题" :visible.sync="dialogVisiblejudge" width="60%" :before-close="handleClose">
+
+        <el-form ref="form" :model="form" label-width="80px">
+            <el-form-item label="题干内容:">
+                <el-input v-model="input2"></el-input>
+            </el-form-item>
+
+            <el-switch v-model="value3" active-text="正确" inactive-text="错误">
+
+
+            <el-form-item>
+                <el-button type="primary" @click="updaterubric()">保存</el-button>
+                <el-button @click="dialogVisible1 = false">取消</el-button>
+            </el-form-item>
+        </el-form>
+    </el-dialog>
+
+
+    <!--修改选择题的对话框-->
+    <el-dialog title="修改选择题" :visible.sync="dialogVisibleselect" width="60%" :before-close="handleClose">
+        <el-form ref="form" :model="form" label-width="80px">
+            <el-form-item label="题干内容:">
+                <el-input v-model="input2"></el-input>
+            </el-form-item>
+
+            <el-form-item label="答案A:">
+                <el-input v-model="inputA" style="width:80%"></el-input>
+                <el-switch v-model="form" active-value="A" inactive-value=""></el-switch>
+            </el-form-item>
+
+            <el-form-item label="答案B">
+                <el-input v-model="inputB" style="width:80%"></el-input>
+                <el-switch v-model="form" active-value="B" inactive-value=""></el-switch>
+            </el-form-item>
+
+            <el-form-item label="答案C">
+                <el-input v-model="inputC" style="width:80%"></el-input>
+                <el-switch v-model="form" active-value="C" inactive-value=""></el-switch>
+            </el-form-item>
+
+            <el-form-item label="答案D">
+                <el-input v-model="inputD" style="width:80%"></el-input>
+                <el-switch v-model="form" active-value="D" inactive-value=""></el-switch>
+            </el-form-item>
+
+
+            <el-form-item>
+                <el-button type="primary" @click="updaterubric()">保存</el-button>
+                <el-button @click="dialogVisible1 = false">取消</el-button>
+            </el-form-item>
+        </el-form>
+
+
     </el-dialog>
 
 
@@ -184,14 +238,13 @@
         data() {
             return {
                 form: {
-                    name: '',
-                    region: '',
-                    date1: '',
-                    date2: '',
-                    delivery: false,
-                    type: [],
-                    resource: '',
-                    desc: ''
+                    addrubric: '',
+                    rubrictype1: '',
+                    answerA: "",
+                    answerB: "",
+                    answerC: "",
+                    answerD: "",
+                    form: true,
                 },
 
 
@@ -211,38 +264,22 @@
                         label: '判断题'
                     }],
                 value: '',
-
                 user: {},
-                /*options3: [
-                    {
-                        value: '',
-                        label: '请选择'
-                    },
-                    {
-                        value: '选择题',
-                        label: '选择题'
-                    }, {
-                        value: '填空题',
-                        label: '填空题'
-                    }, {
-                        value: '判断题',
-                        label: '判断题'
-                    }],
-                value: '',*/
-
-                dialogVisible1: false,
-                rubrictype1: "",
+                dialogVisibleselect: false,
+                dialogVisiblejudge: false,
+                dialogVisiblepack: false,
                 rubric: "",
                 typecc: "",
+                value3:'',
                 course: "",
                 section: "",
-
                 dialogVisible: false,
-
                 total: 50,//默认数据总数
                 pagesize: 10,//每页的数据条数
                 currentPage: 1,//默认开始页面
-                rubricList: []
+                rubricList: [],
+
+
             };
         },
         /*方法函数写在这里面*/
@@ -253,7 +290,6 @@
             addrudic() {
 
                 let params = new URLSearchParams();
-
                 params.append("rubrictype", this.rubrictype1)
                 params.append("answerid", this.form)
                 params.append("addrubric", this.addrubric)
@@ -261,27 +297,52 @@
                 params.append("answerB", this.answerB)
                 params.append("answerC", this.answerC)
                 params.append("answerD", this.answerD)
-                axios({
-                    method: 'post',
-                    url: '/api/exam/rubric/addrubric',
-                    data: params,
-
-                }).then(res => {
-                    res = res.data;
-                    if (res.success) {
-
-                    this.$notify({title: "成功", message: res.message, type: 'success'});
-                    this.dialogVisible = false;
+                //判断是否选中正确答案
+                if (this.answerD != null && this.answerC != null && this.answerB != null && this.answerA != null && this.addrubric != null && this.rubrictype1 != null) {
 
 
-                } else {
-                    this.$notify.error({title: "失败", message: res.message()})
+                    if (this.form != true) {
+                        axios({
+                            method: 'post',
+                            url: '/api/exam/rubric/addrubric',
+                            data: params,
+
+                        }).then(res => {
+                            res = res.data;
+                            if (res.success) {
+
+                                this.$notify({title: "成功", message: res.message, type: 'success'});
+                                this.dialogVisible = false;
+                                this.query();
+
+
+                            } else {
+                                this.$notify.error({title: "失败", message: res.message})
+                            }
+
+
+                        })
+                    } else {
+                        this.$notify.error({title: "失败", message: "请选择正确答案", offset: 0})
+                    }
+                }
+
+                else {
+                    this.$notify.error({title: "失败", message: "请填写完成试题信息"})
                 }
 
 
-                })
+            },
+            addquxiao() {
 
-
+                this.addrubric = '',
+                    this.rubrictype1 = '',
+                    this.answerA = "",
+                    this.answerB = "",
+                    this.answerC = "",
+                    this.answerD = "",
+                    this.form = true,
+                    this.dialogVisible = false;
             },
 
 
@@ -322,12 +383,66 @@
 
             checkDetail(val) {
 
-                this.dialogVisible1 = "true";
-                this.input2 = val.content;
-                this.inputA = val.A;
-                this.inputB = val.B;
-                this.inputC = val.C;
-                this.inputD = val.D;
+                if (val.rubricttype == "选择题") {
+                    this.dialogVisibleselect = true;
+                    this.input2 = val.content;
+                    this.inputA = val.A;
+                    this.inputB = val.B;
+                    this.inputC = val.C;
+                    this.inputD = val.D;
+                } else if (val.rubricttype == "填空题") {
+
+                    this.dialogVisiblepack = true;
+                    this.packrubric = val.content;
+                    this.packanswer = val.answerId;
+
+
+                } else if (val.rubricttype == "判断题") {
+                    this.dialogVisiblejudge = true;
+
+                }
+
+
+            },
+
+            /*更改试题内容*/
+            updaterubric() {
+
+                let params = new URLSearchParams();
+
+
+                params.append("rubrictype", this.rubrictype1)
+                params.append("answerid", this.form)
+                params.append("addrubric", this.addrubric)
+                params.append("answerA", this.answerA)
+                params.append("answerB", this.answerB)
+                params.append("answerC", this.answerC)
+                params.append("answerD", this.answerD)
+                axios({
+                    method: 'post',
+                    url: '/api/exam/rubric/queryrubricer',
+                    data: params,
+
+                }).then(res => {
+
+                    res = res.data;
+
+                    for (let i = 0; i < res.page.length; i++) {
+                        let r = res.page[i];
+                        let answer = r.answer;
+                        for (let j = 0; j < answer.length; j++) {
+                            let a = answer[j];
+                            r[a.optiones] = a.content;
+                        }
+                    }
+                    this.rubricList = res.page;
+                    this.total = res.total;
+
+
+                })
+
+
+                this.dialogVisible1 = false;
 
 
             },
@@ -346,6 +461,7 @@
                     res = res.data;
                     if (res.success) {
                         this.$notify({title: "删除成功", message: res.message, type: 'success'});
+                        this.query();
 
                     } else {
                         alert(res.message);
