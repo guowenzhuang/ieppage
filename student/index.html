@@ -78,14 +78,12 @@
 						<div v-for="l in lessons" class="width100 float_l tab_qiehuan ">
 							<div class="width100 float_l text_c height64 line_hei64 color_white bianhuabeijing backg_jqian padding_lr20">
 								<div class="width100 float_l text_c height64 line_hei64 color_white border_b_baise fon_siz16">
-									<a href="" class="color_white" v-text="l.name"></a>
-									<!-- <span class="float_r">></span> -->
+									<a href="" class="color_white" v-text="l.name"><span v-text="l.departmentId"></span></a>				
 								</div>
 							</div>
 						</div>
 					</div>
-					
-					
+										
 				</div>
 			</div>
 		</div>
@@ -96,7 +94,8 @@
 					this.queryMenu()
 				},
 				data: {
-					lessons: []
+					lessons: [],
+					isShow:true
 				},
 				methods: {
 					queryMenu: function() {
@@ -132,17 +131,17 @@
 			});
 		</script>
 
-		<!-- 实战推荐 -->
+		<!-- 课程推荐 -->
 		<div class="width100 float_l margin_b40">
 			<div class="width_1200 margin_auto">
 
 				<div class="width100 float_l margin_b20">
 					<div class="float_l">
-						<span class="fon_siz16">实战推荐</span>
+						<span class="fon_siz16">课程推荐</span>
 					</div>
-					<div class="float_r bianshou">
+					<!-- <div class="float_r bianshou">
 						<span>更多></span>
-					</div>
+					</div> -->
 				</div>
 
 				<div class="width100 float_l">
@@ -215,13 +214,14 @@
 							<span class="float_r color_gray"><span>499</span>人在学</span>
 						</div>
 					</div>
+					
 				</div>
 
 			</div>
 		</div>
 
 		<!-- 免费好课 -->
-		<div class="width100 float_l margin_b40">
+		<!-- <div class="width100 float_l margin_b40">
 			<div class="width_1200 margin_auto">
 
 				<div class="width100 float_l margin_b20">
@@ -307,7 +307,7 @@
 
 			</div>
 		</div>
-
+ -->
 		<!-- web 前端工程师 -->
 		<div class="width100 float_l padding_tb45 backg_qiangray">
 			<div class="width_1200 margin_auto">
