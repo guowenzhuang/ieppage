@@ -213,7 +213,8 @@
                 //权限
                 sessionStorage.setItem("permission", permission);
                 //用户名
-                sessionStorage.setItem("username", res.user_name);
+                sessionStorage.setItem("username", res.info.name);
+                sessionStorage.setItem("userid", res.info.id);
                 let url = authoritiesToUrl(roleNames[0]);
                 window.location.href=url;
                 axios.defaults.headers.common['Authorization'] = "bearer " + res.access_token;
