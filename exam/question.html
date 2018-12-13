@@ -14,31 +14,32 @@
 </head>
 <body>
 
-<h1 align="center">题库管理</h1>
+<!--<h1 align="center">题库管理</h1>
 <br>
 <hr>
-<br><br><br>
+<br><br><br>-->
 
 
 <div id="app" align="center">
     <div align="center">
 
         <!--条件查询的条件输入框-->
-        <el-button type="primary" icon="el-icon-plus" @click="dialogVisible = true" round>新增试题</el-button>
+        <el-button type="primary" icon="el-icon-plus" @click="dialogVisible = true" size="small" round>新增试题
+        </el-button>
         <font size="4">题干:</font>
-        <el-input v-model="rubric" placeholder="请输入内容" style="width: 200px;"></el-input>
+        <el-input v-model="rubric" placeholder="请输入内容" style="width: 150px;" size="small"></el-input>
         <font size="4">试题的类型:</font>
-        <el-select v-model="typecc" placeholder="请选择">
+        <el-select v-model="typecc" placeholder="请选择" size="small">
             <el-option v-for="item in options2" :key="item.value" :label="item.label" :value="item.value"
                        :disabled="item.disabled">
             </el-option>
         </el-select>
         <font size="4">课程:</font>
-        <el-input v-model="course" placeholder="请输入内容" style="width: 120px;"></el-input>
+        <el-input v-model="course" placeholder="请输入内容" style="width: 120px;" size="small"></el-input>
         <font size="4">章节:</font>
-        <el-input v-model="section" placeholder="请输入内容" style="width: 120px;"></el-input>
+        <el-input v-model="section" placeholder="请输入内容" style="width: 120px;" size="small"></el-input>
 
-        <el-button type="primary" icon="el-icon-search" @click="query()" round>搜索</el-button>
+        <el-button type="primary" icon="el-icon-search" @click="query()" size="small" round>搜索</el-button>
     </div>
 
 
@@ -71,7 +72,7 @@
                     <template slot-scope="scope">
                         <el-button type="primary" round @click="checkDetail(scope.row)" size="mini">查看
                         </el-button>
-                        <el-button type="danger" round @click="delete(scope.row)" size="mini">删除
+                        <el-button type="danger" round @click="deleterubric(scope.row)" size="mini">删除
                         </el-button>
                     </template>
                 </el-table-column>
@@ -85,27 +86,37 @@
 
         <el-form ref="form" :model="form" label-width="80px">
             <el-form-item label="题干内容:">
-                <el-input v-model="rubric"></el-input>
+                <el-input v-model="addrubric"></el-input>
+
+
+            </el-form-item>
+
+            <el-form-item label="试题类型:">
+                <el-select v-model="rubrictype1" placeholder="请选择" size="small">
+                    <el-option v-for="item in options2" :key="item.value" :label="item.label" :value="item.value"
+                               :disabled="item.disabled">
+                    </el-option>
+                </el-select>
             </el-form-item>
 
             <el-form-item label="答案A:">
                 <el-input v-model="answerA" style="width:80%"></el-input>
-                <el-switch v-model="form.answerA" active-value="A" inactive-value=""></el-switch>
+                <el-switch v-model="form" active-value="A" inactive-value=""></el-switch>
             </el-form-item>
 
             <el-form-item label="答案B">
                 <el-input v-model="answerB" style="width:80%"></el-input>
-                <el-switch v-model="form.answerA" active-value="B" inactive-value=""></el-switch>
+                <el-switch v-model="form" active-value="B" inactive-value=""></el-switch>
             </el-form-item>
 
             <el-form-item label="答案C">
                 <el-input v-model="answerC" style="width:80%"></el-input>
-                <el-switch v-model="form.answerA" active-value="C" inactive-value=""></el-switch>
+                <el-switch v-model="form" active-value="C" inactive-value=""></el-switch>
             </el-form-item>
 
             <el-form-item label="答案D">
                 <el-input v-model="answerD" style="width:80%"></el-input>
-                <el-switch v-model="form.answerA" active-value="D" inactive-value=""></el-switch>
+                <el-switch v-model="form" active-value="D" inactive-value=""></el-switch>
             </el-form-item>
 
 
@@ -157,6 +168,8 @@
 
 <script>
 
+    axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
+
 
     var Main = new Vue({
         el: '#app',
@@ -197,9 +210,14 @@
                         value: '判断题',
                         label: '判断题'
                     }],
+                value: '',
 
                 user: {},
-                options3: [
+                /*options3: [
+                    {
+                        value: '',
+                        label: '请选择'
+                    },
                     {
                         value: '选择题',
                         label: '选择题'
@@ -210,15 +228,17 @@
                         value: '判断题',
                         label: '判断题'
                     }],
+                value: '',*/
 
                 dialogVisible1: false,
-
+                rubrictype1: "",
                 rubric: "",
                 typecc: "",
                 course: "",
                 section: "",
-                value2: '',
+
                 dialogVisible: false,
+
                 total: 50,//默认数据总数
                 pagesize: 10,//每页的数据条数
                 currentPage: 1,//默认开始页面
@@ -227,38 +247,45 @@
         },
         /*方法函数写在这里面*/
         methods: {
+
             /*点击新增试题时触发*/
 
             addrudic() {
 
-                alert(this.form.answerD)
-
-
-                /*alert("dsaf")
                 let params = new URLSearchParams();
-                params.append("page", this.currentPage)
-                params.append("rows", this.pagesize)
-                params.append("rubric", this.rubric);
-                params.append("type", this.typecc);
-                params.append("course", this.course);
-                params.append("section", this.section);
+
+                params.append("rubrictype", this.rubrictype1)
+                params.append("answerid", this.form)
+                params.append("addrubric", this.addrubric)
+                params.append("answerA", this.answerA)
+                params.append("answerB", this.answerB)
+                params.append("answerC", this.answerC)
+                params.append("answerD", this.answerD)
                 axios({
                     method: 'post',
                     url: '/api/exam/rubric/addrubric',
                     data: params,
-                    headers: {
-                        "Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDY1MjY1MywiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6ImY3NDIyN2IzLTY2ZmQtNDBhNy04ZmJlLWUxZjI5YjA4YmI1YyIsImNsaWVudF9pZCI6ImllcCJ9.IEgFAYiFIJ86KnD7BzDRFucc3NCI91lOkGu31imY-ew"
-                    }
-                }).then(res => {
 
-                })*/
+                }).then(res => {
+                    res = res.data;
+                    if (res.success) {
+
+                    this.$notify({title: "成功", message: res.message, type: 'success'});
+                    this.dialogVisible = false;
+
+
+                } else {
+                    this.$notify.error({title: "失败", message: res.message()})
+                }
+
+
+                })
 
 
             },
 
 
             query() {
-
 
                 let params = new URLSearchParams();
                 params.append("page", this.currentPage)
@@ -271,9 +298,7 @@
                     method: 'post',
                     url: '/api/exam/rubric/queryrubricer',
                     data: params,
-                    headers: {
-                        "Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLnjovkupQiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDY2MTA0MiwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf6ICB5biIIn1dLCJqdGkiOiI1MzRhMWE2OS0yZTU3LTQxZjItODgwNC00ZGMyZWQ4MTg5MTUiLCJjbGllbnRfaWQiOiJpZXAifQ.R5_wNkO6yrkYnWBVmZZfB-1TzfrJYewKdTNqBGRavQs"
-                    }
+
                 }).then(res => {
 
                     res = res.data;
@@ -308,36 +333,27 @@
             },
 
             /*删除一个试题*/
-            delete(val) {
+            deleterubric(val) {
                 let params = new URLSearchParams();
                 params.append("id", val.id)
                 axios({
                     method: 'post',
                     url: '/api/exam/rubric/deleteredicbyid',
-                    data:
-                    params,
+                    data: params,
 
-                    headers: {
-                        "Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLnjovkupQiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDY2MTA0MiwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf6ICB5biIIn1dLCJqdGkiOiI1MzRhMWE2OS0yZTU3LTQxZjItODgwNC00ZGMyZWQ4MTg5MTUiLCJjbGllbnRfaWQiOiJpZXAifQ.R5_wNkO6yrkYnWBVmZZfB-1TzfrJYewKdTNqBGRavQs"
-                    }
+
                 }).then(res => {
+                    res = res.data;
                     if (res.success) {
-                        this.reload();
-                        alert(res.message)
+                        this.$notify({title: "删除成功", message: res.message, type: 'success'});
+
                     } else {
-                        alert(res.message)
+                        alert(res.message);
+                        this.$notify.error({title: "失败", message: res.message});
                     }
                 })
             },
-            /*对话框关闭与否触发的方法*/
-            handleClose(done) {
-                this.$confirm('确认关闭？')
-                    .then(_ => {
-                        done();
-                    })
-                    .catch(_ => {
-                    });
-            },
+
 
             handleSizeChange(val) {
                 this.pagesize = val;
