@@ -5,6 +5,25 @@
     <title>Title</title>
 </head>
 <body>
-    角色管理
+    <div id="app">
+
+    </div>
 </body>
+<script>
+    axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
+    axios.defaults.headers.common['Content-Type'] = 'application/json;charset=UTF-8';
+    const main={
+        data(){
+            return{
+
+            }
+        },
+        methods:{
+
+        }
+    }
+
+    const Component = Vue.extend(main);
+    new Component().$mount('#app')
+</script>
 </html>
