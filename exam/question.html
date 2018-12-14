@@ -24,7 +24,7 @@
     <div align="center">
 
         <!--条件查询的条件输入框-->
-        <el-button type="primary" icon="el-icon-plus" @click="dialogVisible = true" size="small" round>新增试题
+        <el-button type="primary" icon="el-icon-plus" @click="dialogVisibletype = true" size="small" round>新增试题
         </el-button>
         <font size="4">题干:</font>
         <el-input v-model="rubric" placeholder="请输入内容" style="width: 150px;" size="small"></el-input>
@@ -39,8 +39,19 @@
         <font size="4">章节:</font>
         <el-input v-model="section" placeholder="请输入内容" style="width: 120px;" size="small"></el-input>
 
-        <el-button type="primary" icon="el-icon-search" @click="query()" size="small" round>搜索</el-button>
+        <el-button type="primary" icon="el-icon-search" @click="query()" v-on:keyup.13="submit" size="small" round>搜索
+        </el-button>
     </div>
+
+
+    <el-dialog title="选择新增题型" :visible.sync="dialogVisibletype" width="60%" :before-close="handleClose">
+        <el-button type="primary" icon="el-icon-plus" @click="dialogVisible = true" size="small" round>新增选择题
+        </el-button>
+        <el-button type="primary" icon="el-icon-plus" @click="dialogVisible = true" size="small" round>新增试题
+        </el-button>
+        <el-button type="primary" icon="el-icon-plus" @click="dialogVisible = true" size="small" round>新增试题
+        </el-button>
+    </el-dialog>
 
 
     <div style="width: 100%;">
@@ -296,6 +307,13 @@
         },
         /*方法函数写在这里面*/
         methods: {
+
+
+            /*show: function (ev) {
+                if (ev.keyCode == 13) {
+                    alert('你按回车键了');
+                }
+            },*/
 
             /*点击新增试题时触发*/
 
