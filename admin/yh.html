@@ -72,7 +72,7 @@
                 </el-col>
                 <el-col :span="1">
                     <span>&nbsp;</span>
-                    <el-button icon="el-icon-refresh" type="primary" @click="reloadHTML">刷新</el-button>
+                    <el-button icon="el-icon-refresh" type="primary" onclick=" window.location.reload();">刷新</el-button>
                 </el-col>
             </el-row>
             <el-row style="margin-top: 20px;">
@@ -134,13 +134,13 @@
                     <el-table-column label="操作">
                         <template slot-scope="scope">
                             <div>
-                                <el-button type="text">修改</el-button>
+                                <el-button type="text" @click="updateUserShow(scope.row)">修改</el-button>
                             </div>
                             <div>
                                 <el-button type="text" @click="deleteUser(scope.row.id)">删除</el-button>
                             </div>
                             <div>
-                                <el-button type="text">重置密码</el-button>
+                                <el-button type="text" @click="updateUserField('password','',scope.row.id)">重置密码</el-button>
                             </div>
                         </template>
                     </el-table-column>
@@ -168,11 +168,11 @@
                     :data="role.roleAll"></el-transfer>
         </el-dialog>
         <el-dialog
-                title="新增用户"
+                :title="add.title"
                 :visible.sync="add.show">
             <el-form  :rules="addRules" ref="addForm" :model="add" label-position="left" label-width="80px">
                 <el-form-item prop="loginName" label="用户名称">
-                    <el-input v-model="add.loginName"></el-input>
+                    <el-input v-model="add.loginName" :disabled="add.nameDisabled"></el-input>
                 </el-form-item>
                 <el-form-item prop="protectEMail" label="邮箱">
                     <el-input v-model="add.protectEMail"></el-input>
@@ -181,15 +181,19 @@
                     <el-input v-model="add.protectMTel"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="addUser">新增</el-button>
+                    <el-button type="primary" v-if="add.nameDisabled" @click="updateUser">修改</el-button>
+                    <el-button type="primary" v-else @click="addUser" >新增</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
+
     </div>
 </div>
 </body>
 <script>
     axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
+    axios.defaults.headers.common['Content-Type'] = 'application/json;charset=UTF-8';
+
     let main = {
         data() {
             return {
@@ -208,6 +212,8 @@
 
                 },
                 add: {
+                    nameDisabled:true,
+                    title:'',
                     show: false,
                     loginName:'',
                     protectEMail:'',
@@ -242,6 +248,45 @@
         },
         computed: {},
         methods: {
+            //修改用户
+            updateUser(){
+                this.$refs['addForm'].validate((valid) => {
+                    if (valid) {
+                        axios({
+                            method:'put',
+                            url:'/api/admin/user',
+                            data:{
+                                loginName:this.add.loginName,
+                                protectEMail:this.add.protectEMail,
+                                protectMTel:this.add.protectMTel
+                            },
+                        }).then(res=>{
+                            res=res.data;
+                            if(res.success){
+                                this.queryUser();
+                                this.add.show=false;
+                                this.$refs['addForm'].resetFields();
+                            }
+                        })
+                    } else {
+                        this.$message({
+                            showClose: true,
+                            message: '新增失败',
+                            type: 'error'
+                        });
+                        return false;
+                    }
+                });
+            },
+            //修改用户框显示
+            updateUserShow(row){
+                this.add.loginName=row.loginName;
+                this.add.protectEMail=row.protectEMail;
+                this.add.protectMTel=row.protectMTel;
+                this.add.nameDisabled=true;
+                this.add.title="修改用户";
+                this.add.show=true;
+            },
             //删除用户
             deleteUser(id){
                 this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
@@ -259,6 +304,7 @@
                                 type: 'success',
                                 message: '删除成功!'
                             });
+                            this.queryUser();
                         })
 
                 }).catch(() => {
@@ -272,17 +318,18 @@
             addUser(){
                 this.$refs['addForm'].validate((valid) => {
                     if (valid) {
-                        let params=new URLSearchParams();
-                        params.append("loginName",this.add.loginName);
-                        params.append("protectEMail",this.add.protectEMail);
-                        params.append("protectMTel",this.add.protectMTel);
                        axios({
                            method:'post',
                            url:'/api/admin/user',
-                           data:params
+                           data:{
+                               loginName:this.add.loginName,
+                               protectEMail:this.add.protectEMail,
+                               protectMTel:this.add.protectMTel
+                           },
                        }).then(res=>{
                            res=res.data;
                             if(res.success){
+                                this.queryUser();
                                 this.add.show=false;
                                 this.$refs['addForm'].resetFields();
                             }
@@ -299,6 +346,11 @@
             },
             //新增用户框显示
             addUserShow(){
+                this.add.loginName="";
+                this.add.protectEMail="";
+                this.add.protectMTel="";
+                this.add.nameDisabled=false;
+                this.add.title="新增用户";
                 this.add.show=true;
             },
             //给用户设置角色
