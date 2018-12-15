@@ -14,7 +14,9 @@
 <body>
 
 <div id="app" align="center">
-
+    <input type="text" @keydown.ctrl="show">
+    <hr>
+    <input type="text" @keydown.myenter="show | debounce 2000">
 
 
 </div>
@@ -22,9 +24,24 @@
 </body>
 <script>
 
-   var main=new Vue({
-
-   })
+    var main = new Vue({
+        el: '#app',
+        methods() {
+            Vue.directive('on').keyCodes.ctrl = 17;
+            Vue.directive('on').keyCodes.myenter = 13;
+            window.onload = function () {
+                var vm = new Vue({
+                    el: '#box',
+                    data: {},
+                    methods: {
+                        show: function () {
+                            alert(111);
+                        }
+                    }
+                });
+            }
+        }
+    })
 
 </script>
 
