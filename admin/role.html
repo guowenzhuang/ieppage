@@ -3,25 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="../teacher/js/elementui/index.css">
+    <script src="../teacher/js/vue.js"></script>
+    <script src="../teacher/js/elementui/index.js"></script>
+    <script src="../teacher/js/axios.min.js"></script>
+    <style>
+        .el-main {
+            padding-top: 0;
+        }
+    </style>
 </head>
 <body>
-    <div id="app">
-
+<div id="app">
+    <el-container>
+        <el-main>
+            <el-row :gutter="20" type="flex">
+                <el-col :span="6">
+                    <div>角色名称:</div>
+                    <el-input v-model="query.name" placeholder="请输入角色名称"></el-input>
+                </el-col>
+                <el-col :span="2">
+                    <div>&nbsp;</div>
+                    <el-button icon="el-icon-refresh" type="primary" @click="search">搜索</el-button>
+                </el-col>
+                <el-col :span="2">
+                    <div>&nbsp;</div>
+                    <el-button icon="el-icon-refresh" type="primary" onclick=" window.location.reload();">刷新</el-button>
+                </el-col>
+                <el-col :span="4">
+                    <div>&nbsp;</div>
+                    <el-button type="success" @click="addRoleShow">新增角色</el-button>
+                </el-col>
+            </el-row>
+            <el-row :gutter="20" style="margin-top: 20px;">
+                <el-table
+                        :data="roleData">
+                    <el-table-column
+                            type="selection"
+                            width="55">
+                    </el-table-column>
+                    <el-table-column
+                            prop="name"
+                            label="角色名称">
+                    </el-table-column>
+                    <el-table-column
+                            label="模块操作">
+                        <template slot-scope="scope">
+                            <el-button type="text" @click="setModuleShow(scope.row)">设置模块</el-button>
+                        </template>
+                </el-table>
+            </el-row>
+            <el-row type="flex" justify="center">
+                <el-pagination
+                        layout="prev, pager, next"
+                        :current-page.sync="query.page"
+                        :page-size="query.rows"
+                        @current-change="queryRole"
+                        :total="total">
+                </el-pagination>
+            </el-row>
+        </el-main>
+    </el-container>
+    <div>
+        <el-dialog
+                title="设置模块"
+                :visible.sync="module.show">
+            <el-tree
+                    show-checkbox
+                    check-strictly
+                    node-key="id"
+                    :data="module.data"
+                    :props="module.props"
+                    :default-checked-keys="module.checkIds"
+            ></el-tree>
+        </el-dialog>
     </div>
+</div>
 </body>
 <script>
     axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
     axios.defaults.headers.common['Content-Type'] = 'application/json;charset=UTF-8';
-    const main={
-        data(){
-            return{
-
+    const main = {
+        data() {
+            return {
+                //角色数据
+                roleData: [],
+                total: 0,
+                //角色查询
+                query: {
+                    page: 1,
+                    rows: 10,
+                    name: ''
+                },
+                //当前模块
+                module: {
+                    show: false,
+                    data:[],
+                    checkIds:[],
+                    props:{
+                        children: 'children',
+                        label: 'name'
+                    }
+                },
+                activeData: {},
             }
         },
-        methods:{
+        methods: {
+            //角色框显示
+            setModuleShow(row) {
+                this.activeData = row;
+                axios({
+                    method: 'get',
+                    url: '/api/admin/module/getAllCheckRole',
+                    params: {
+                        roleid: row.id
+                    }
+                }).then(res => {
+                    res=res.data
+                    this.module.data=res.modules
+                    this.module.checkIds=res.mids;
+                    this.module.show=true
+                })
+            },
+            //新增角色框显示
+            addRoleShow() {
 
+            },
+            search() {
+                this.query.page = 1;
+                this.queryRole();
+            },
+            queryRole() {
+                axios({
+                    method: 'get',
+                    url: '/api/admin/role',
+                    params: this.query
+                }).then(res => {
+                    res = res.data;
+                    this.roleData = res.rows;
+                    this.total = res.total;
+                })
+            }
+        },
+        mounted() {
+            this.queryRole();
         }
-    }
+    };
 
     const Component = Vue.extend(main);
     new Component().$mount('#app')

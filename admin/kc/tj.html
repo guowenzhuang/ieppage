@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../../teacher/js/elementui/index.css">
+    <script src="../../teacher/js/vue.js"></script>
+    <script src="../../teacher/js/elementui/index.js"></script>
+    <script src="../../teacher/js/axios.min.js"></script>
+</head>
+<body>
+<div id="app">
+    <el-container>
+        <el-main>
+            <el-row :gutter="20" type="flex">
+                <el-col :span="2">
+                    <div>&nbsp;</div>
+                    <el-button icon="el-icon-refresh" type="primary" onclick=" window.location.reload();">刷新</el-button>
+                </el-col>
+            </el-row>
+            <el-row :gutter="20" style="margin-top: 20px;">
+                <el-table
+                        :data="courseData">
+                    <el-table-column
+                            type="selection"
+                            width="55">
+                    </el-table-column>
+                    <el-table-column prop="courName" label="课程名称">
+                    </el-table-column>
+
+                    <el-table-column prop="courContent" show-overflow-tooltip label="课程内容">
+                    </el-table-column>
+                    <el-table-column prop="courTarget" show-overflow-tooltip label="课程目标">
+                    </el-table-column>
+                    <el-table-column prop="courPageview" label="浏览量">
+                    </el-table-column>
+                    <el-table-column prop="courCommentcount" label="评价数">
+                    </el-table-column>
+                </el-table>
+            </el-row>
+            <el-row type="flex" justify="center">
+                <el-pagination
+                        layout="prev, pager, next"
+                        :current-page.sync="query.page"
+                        :page-size="query.pageSize"
+                        @current-change="queryCourse"
+                        :total="total">
+                </el-pagination>
+            </el-row>
+        </el-main>
+    </el-container>
+</div>
+</body>
+<script>
+    axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
+    axios.defaults.headers.common['Content-Type'] = 'application/json;charset=UTF-8';
+    const main = {
+        data() {
+            return {
+                //角色数据
+                courseData: [],
+                total: 0,
+                query: {
+                    page: 1,
+                    pageSize: 10,
+                    courName: '',
+                    orderBy:''
+                }
+            }
+        },
+        methods: {
+
+            search() {
+                this.query.page = 1;
+                this.queryCourse();
+            },
+            queryCourse() {
+                axios({
+                    method: 'get',
+                    url: '/api/admin/cource',
+                    params: this.query
+                }).then(res => {
+                    res = res.data;
+                    this.courseData = res.rows;
+                    this.total = res.total;
+                })
+            }
+        },
+        mounted() {
+            this.queryCourse();
+        }
+    };
+
+    const Component = Vue.extend(main);
+    new Component().$mount('#app')
+</script>
+</html>
