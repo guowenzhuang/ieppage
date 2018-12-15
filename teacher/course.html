@@ -15,28 +15,29 @@
     <div>
          <el-input  v-model="cour_name" placeholder="请输入内容"></el-input>
         <el-button type="success" @click="search">搜索</el-button>
-        <el-button size="mini"
+        <el-button
                    type="primary"
                    @click="showAddCourseDialog()">添加
         </el-button>
-     </div>
+        <el-button   type="primary" @click="showUpdateUserDialog()">修改
+        </el-button>
 
-    <el-table :data="tableData" style="width: 100%" >
+        <el-button icon="el-icon-refresh" type="primary" onclick=" window.location.reload();">刷新</el-button>
+
+    </div>
+
+    <el-table :data="tableData" style="width: 100%" @row-click="tableClick">
         <el-table-column
                 type="index"
                 width="50">
         </el-table-column>
 
-        <el-table-column prop="setAddUserDialogData" label="阅览室">
-        </el-table-column>
-
         <el-table-column prop="courName" label="课程名称">
         </el-table-column>
 
-        <el-table-column prop="courContent" label="课程内容">
+        <el-table-column prop="courPrice" label="课程价格">
         </el-table-column>
-        <el-table-column prop="courTarget" label="课程目标">
-        </el-table-column>
+
 
             <el-table-column label="操作">
 
@@ -61,20 +62,28 @@
           :visible.sync="addCourseDialog.show">
       <el-row :gutter="8">
           <el-col :span="6">
-              姓名:
+              课程名称:
           </el-col>
           <el-col :span="18">
-              <el-input v-model="addCourseDialog.courName" :readonly="addCourseDialog.nameReadonly"></el-input>
+              <el-input placeholder="请输入课程名称" v-model="addCourseDialog.courName" ></el-input>
           </el-col>
       </el-row>
       <el-row :gutter="8">
+          <el-col :span="6">
+              课程价格:
+          </el-col>
+          <el-col :span="18">
+              <el-input placeholder="请输入课程价格" v-model="addCourseDialog.courPrice" ></el-input>
+          </el-col>
+      </el-row>
+     <!-- <el-row :gutter="8">
           <el-col :span="6">
              教师id
           </el-col>
           <el-col :span="18">
               <el-input v-model="addCourseDialog.courTeaid" ></el-input>
           </el-col>
-      </el-row>
+      </el-row>-->
         <span slot="footer" class="dialog-footer">
     <el-button @click="addCourseDialog.show">取 消</el-button>
     <el-button type="primary" @click="addCourseDialogEnter">确 定</el-button>
@@ -91,26 +100,29 @@
 
 </div>
 </body>
-<script>
-     //跳转
 
-    var Main = {
+
+<script>
+
+
+        var Main = {
 
         data() {
             return {
-                addCourseDialog: {
+                selectUserData:[],
+                 addCourseDialog: {
                     // 模态框显示
                     show: false,
                     // 课程id
                     courId: '',
                     // 模态框标题
                     title: '',
-                    // 名字只读
-                    nameReadonly: true,
                     // 课程名称
                     courName: '',
                     //教师id
-                    courTeaid: '',
+                   // courTeaid: '',
+                    //课程的价格
+                    courPrice:''
 
                 },
 
@@ -123,14 +135,86 @@
 
             }
         },
+
         methods: {
+            handleSelectionChange(val) {
+                this.selectUserData = val
+            },
+            // 修改用户
+            updateCourse() {
+                let params = new URLSearchParams()
+                params.append('courId', this.addCourseDialog.courId)
+                params.append('courName', this.addCourseDialog.courName)
+                params.append('courPrice', this.addCourseDialog.courPrice)
+                // params.append('courTeaid', this.addCourseDialog.courTeaid)
+                axios({
+                    method: 'post',
+                    url: '/api/teacher/course/addCourseAll',
+                    data: params,
+
+                    headers: {
+                        "Authorization": "bearer " + sessionStorage.getItem("access_token")
+                    }
+                })
+                    .then(() => {
+                        this.$message({
+                            type: 'success',
+                            message: '修改成功!',
+                        });
+                        this.addCourseDialog.show = false
+                        location.reload();
+                    }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '修改失败'
+                    });
+                })
+            },
+            tableClick(row, event, column){
+              //  console.log(row,event,column)
+                if (row.courId>0) {
+                   this.addCourseDialog.title = '用户修改'
+                     // 用户数据赋值
+                    let user = row
+                    this.setAddUserDialogData(user.courId, user.courName, user.courPrice)
+                    // 弹出框显示
+                   // this.addCourseDialog.show = true
+                } else {
+                    this.$message({
+                        message: '请选择并只选中一条数据',
+                        type: 'warning'
+                    })
+                }
+            },
+
+            showUpdateUserDialog(){
+               /*if (this.selectUserData.length === 1) {
+                   console.log(selectUserData)
+                    this.addCourseDialog.title = '用户修改'
+                  // 用户数据赋值
+                    let user = this.selectUserData[0]
+                    this.setAddUserDialogData(user.id, user.loginName, user.iphone, user.email)
+                       // 弹出框显示
+                    this.addCourseDialog.show = true
+                }else {
+                this.$message({
+                message: '请选择并只选中一条数据',
+                type: 'warning'
+              })
+              }*/
+                this.addCourseDialog.show = true
+
+
+                },
+
             // 新增用户
             addCourse() {
 
                 let params = new URLSearchParams()
                 params.append('courId', this.addCourseDialog.courId)
                 params.append('courName', this.addCourseDialog.courName)
-                params.append('courTeaid', this.addCourseDialog.courTeaid)
+                params.append('courPrice', this.addCourseDialog.courPrice)
+               // params.append('courTeaid', this.addCourseDialog.courTeaid)
                 axios({
                     method: 'post',
                     url: '/api/teacher/course/addCourseAll',
@@ -155,19 +239,27 @@
                 })
             },
             addCourseDialogEnter() {
-                 this.addCourse()
-
+                 //this.addCourse()
+                switch (this.addCourseDialog.title) {
+                    case '用户新增':
+                        this.addCourse()
+                        break
+                    case '用户修改':
+                        this.updateCourse()
+                        break
+                }
             },
             showAddCourseDialog() {
                 this.addCourseDialog.title = '课程新增'
-                this.addCourseDialog.nameReadonly = false
-                this.addCourseDialog.show = true
+               this.addCourseDialog.show = true
                 this.setAddUserDialogData('', '', '', '')
             },
-            setAddUserDialogData(courId,courName,courTeaid){
+            setAddUserDialogData(courId,courName,courTeaid,courPrice){
                 this.addCourseDialog.courId = courId
                 this.addCourseDialog.courName = courName
-                this.addCourseDialog.courTeaid = courTeaid
+                this.addCourseDialog.courPrice = courPrice
+                //this.addCourseDialog.courTeaid = courTeaid
+
             },
             //点击删除
             handleDelete(index, row) {

@@ -8,31 +8,121 @@
     <script  src="js/elementui/index.js"></script>
     <script src="js/axios.min.js"></script>
     <link rel="stylesheet" href="css/tea.css">
+    <link rel="stylesheet" href="css/ad.css">
+
 </head>
 <body>
 <div id="app">
+
     <template>
         <el-breadcrumb separator="/">
 
-            <el-breadcrumb-item><a href="ei.html">基本信息</a></el-breadcrumb-item>
+          <!-- <el-breadcrumb-item><a href="ei.html">基本信息</a></el-breadcrumb-item>-->
             <el-breadcrumb-item><a href="video.html">视频课</a></el-breadcrumb-item>
-            <el-breadcrumb-item><a href="details.html">课程详情</a></el-breadcrumb-item>
+
             <el-breadcrumb-item><a href="management.html">学员管理</a></el-breadcrumb-item>
             <el-breadcrumb-item><a href="materials.html">课程资料</a></el-breadcrumb-item>
+            <el-button icon="el-icon-refresh" type="primary" onclick=" window.location.reload();">刷新</el-button>
         </el-breadcrumb>
+
+
     </template>
+    <el-form ref="refname">
+
+        <el-form-item  label="课程名字">
+        <el-input type="courName" v-model.number="numberValidateForm.courName" autocomplete="off"></el-input>
+          </el-form-item>
+        <el-form-item  label="课程详情">
+            <el-input type="courDetails" v-model.number="numberValidateForm.courDetails" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item >
+            <el-button type="primary" @click="addCourse('numberValidateForm')">提交</el-button>
+            <el-button @click="resetForm('numberValidateForm')">重置</el-button>
+        </el-form-item>
+    </el-form>
+
 </div>
+
+
+
+
+
 </body>
+
+
 <script>
     var Main = {
         data() {
             return {
-                activeName2: 'first'
+
+                activeName2: 'first',
+                numberValidateForm: {
+                    // 课程id
+                    courId: '',
+                    // 模态框标题
+                    title: '',
+                    // 课程名称
+                    courName: '',
+                    //教师id
+                    // courTeaid: '',
+                    //课程的价格
+                    courPrice:''
+                }
             };
         },
         methods: {
+            // 新增用户
+            addCourse() {
+
+                let params = new URLSearchParams()
+                params.append('courId', this.numberValidateForm.courId)
+                params.append('courName', this.numberValidateForm.courName)
+                params.append('courPrice', this.numberValidateForm.courPrice)
+                params.append('courDetails', this.numberValidateForm.courDetails)
+                axios({
+                    method: 'post',
+                    url: '/api/teacher/course/addCourseAll',
+                    data: params,
+
+                    headers: {
+                        "Authorization": "bearer " + sessionStorage.getItem("access_token")
+                    }
+                })
+                    .then(() => {
+                        this.$message({
+                            type: 'success',
+                            message: '修改成功!',
+                        });
+
+                        //location.reload();
+                    }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '修改失败'
+                    });
+                })
+
+            },
+
+            showAddCourseDialog() {
+                this.numberValidateForm.title = '课程新增'
+
+                this.setAddUserDialogData('', '', '', '')
+            },
+            setAddUserDialogData(courId,courName,courTeaid,courPrice){
+                this.numberValidateForm.courId = courId
+                this.numberValidateForm.courName = courName
+                this.numberValidateForm.courPrice = courPrice
+                this.numberValidateForm.courDetails = courDetails
+
+            },
+
             handleClick(tab, event) {
                // console.log(tab, event);
+            },
+
+            resetForm(formName) {
+               // this.$refs[formName].resetFields();
             }
         }
     };
