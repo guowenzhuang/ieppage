@@ -11,7 +11,16 @@
 <div id="app">
     <ol>
         <li v-for="site in sites">
-            {{ site.name }}
+            {{ site.courName }}
+        </li>
+    </ol>
+    <ol>
+        <!--<li>
+            pageSize:= > {{ pageable.pageSize }}
+
+        </li>-->
+        <li>
+            totalPages:= > {{totalElements	 }}
         </li>
     </ol>
 </div>
@@ -23,20 +32,29 @@
             this.queryKeicheng()
         },
         data: {
-            sites: []
+            sites: [],
+            pageable:[],
+            totalElements:''
         },
         methods:{
             queryKeicheng:function(){
                 axios({
                     method: 'get',
-                    url:'/api/student/curricularTaxonomy/getCurricularTaxonomy'
+                    url:'/api/student/curricularTaxonomy/getCourse?depId=9357593e-02dc-47ab-b304-910e3511a897&page=1&size=10'
                 }).then(res =>{
                     console.log(res);
-                    this.sites=res.data.message;
+                    this.sites=res.data.message.content;
+                    this.pageable=res.data.message.pageable;
+                    this.totalElements=res.data.message.totalElements;
                 })
             }
         },
     })
+    /**
+     *
+     * /api/student/curricularTaxonomy/getCurricularTaxonomy
+     */
+    /*/api/student/curricularTaxonomy/getCourse?depId=9357593e-02dc-47ab-b304-910e3511a897&page=1&size=10*/
     </script>
 </body>
 </html>
