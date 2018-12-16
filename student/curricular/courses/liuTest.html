@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>vue点击事件</title>
+
+</head>
+
+<body>
+
+<div id="app">
+
+<input type="button" value="点击我" @click="add1"/>
+
+</div>
+<script src="../../js/vue.min.js"></script>
+		<script src="../../js/axios.min.js"></script>
+
+<script>
+
+	var menu = new Vue({
+				el: "#app",
+				 mounted: function() {
+					
+				},
+				data: {
+					courId:12,
+					sid:"1"
+				}, 
+				methods: {
+					add1:function() {
+					
+					
+						 axios({
+							method:'post',
+							url: '/api/student/studentPart/add',
+							data:{
+								courId:'13',
+								sid:'1'
+							},
+							headers: {
+                           "Authorization": "bearer "+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiXSwiZXhwIjoxNTQ0ODM2MDk1LCJhdXRob3JpdGllcyI6W3siYXV0aG9yaXR5IjoiUk9MRV_lrabnlJ8ifSx7ImF1dGhvcml0eSI6Iua1i-ivleadg-mZkCJ9XSwianRpIjoiZWM3MzE3ZDUtNWY2My00ZWI4LTkxMWUtMjZiZWY1NzZmMmY5IiwiY2xpZW50X2lkIjoiaWVwIiwiaW5mbyI6eyJpZCI6IjkzNTc1OTNlLTAyZGMtNDdhYi1iMzA0LTkxMGUzNDExYTg5NyIsIm5hbWUiOiLlvKDkuIkifX0.roDMmXdVS7WNEiXvWEIfsbeycZXmlV27Y8HxL_0jHuo",
+						   
+						   
+                        }
+						}).then(res => {
+							console.log(res.data.success);
+							console.log(res.data.message);
+							
+							this.lessons=res.data.message;
+						})
+					}
+				} 
+			}); 
+		</script>
+
+</body>
+
+</html>
