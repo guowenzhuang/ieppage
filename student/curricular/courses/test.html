@@ -19,9 +19,7 @@
             pageSize:= > {{ pageable.pageSize }}
 
         </li>-->
-        <li>
-            totalPages:= > {{totalElements	 }}
-        </li>
+
     </ol>
 </div>
 
@@ -32,20 +30,21 @@
             this.queryKeicheng()
         },
         data: {
-            sites: [],
-            pageable:[],
-            totalElements:''
+            sites: []
         },
         methods:{
             queryKeicheng:function(){
-                axios({
-                    method: 'get',
-                    url:'/api/student/curricularTaxonomy/getCourse?depId=9357593e-02dc-47ab-b304-910e3511a897&page=1&size=10'
-                }).then(res =>{
+                axios.get(
+
+                    'api/student/curricularTaxonomy/getCourse',
+                    {
+                        page:1,
+                        pageSize:10
+                    }
+                ).then(res =>{
                     console.log(res);
                     this.sites=res.data.message.content;
-                    this.pageable=res.data.message.pageable;
-                    this.totalElements=res.data.message.totalElements;
+
                 })
             }
         },

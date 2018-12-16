@@ -19,129 +19,15 @@
 		<link rel="stylesheet" href="../app/css/libs/katex/0.6.0/katex.min.css">
 		<link rel="stylesheet" href="../app/css/libs/videojs/5.11.7/video-js.min.css">
 		<link rel="stylesheet" href="../app/css/dest/styles.css?=2016121272249">
-		<style>
-			@font-face {
-			font-family: "lantingxihei";
-			src: url("../fonts/FZLTCXHJW.TTF");
-		}
-
-        /* modal 模态框*/
-        #invite-user .modal-body {
-            overflow: hidden;
-        }
-		#invite-user .modal-body .form-label {
-			margin-bottom: 16px;
-			font-size:14px;
-		}
-		#invite-user .modal-body .form-invite {
-			width: 80%;
-			padding: 6px 12px;
-			background-color: #eeeeee;
-			border: 1px solid #cccccc;
-			border-radius: 5px;
-			float: left;
-			margin-right: 10px;
-		}
-		#invite-user .modal-body .msg-modal-style {
-			background-color: #7dd383;
-			margin-top: 10px;
-			padding: 6px 0;
-			text-align: center;
-			width: 100%;
-		}
-		#invite-user .modal-body .modal-flash {
-			position: absolute;
-			top: 53px;
-			right: 74px;
-			z-index: 999;
-		}
-		/* end modal */
-
-        .en-footer {
-            padding: 30px;
-            text-align: center;
-            font-size: 14px;
-        }
-    </style>
+		<link rel="stylesheet" href="../app/css/show1.css" />
 		<link rel="stylesheet" href="../restatic/js/libs/marked/katex/katex.min.css">
-		<style>
-			.bootcamp-infobox {
-        margin: 50px 0 0;
-    }
-    .invite-friends-link {
-        margin-top:10px;
-        padding-left:8px;
-    }
-    .invite-friends-link input {
-        margin-left:-5px;
-    }
-    .invite-friends-link button {
-        float:left;
-        margin-top:5px;
-        margin-left:-5px;
-    }
-    .invite-friends-link .copy-msg {
-        float:left;
-        margin-top:10px;
-        margin-left:20px;
-        color:#42b1ad;
-    }
-    p.join-vip-faq {
-        margin-top:20px;
-        margin-bottom:-50px;
-        font-size:13px;
-    }
-    p.join-vip-faq img {
-        height:13px;
-        width:13px;
-        margin-top:-2px;
-    }
-    a.vip-without-bean {
-        font-size:18px;
-        line-height:30px;
-    }
-</style>
-		<script src="js/vue.min.js"></script>
-		<script src="https://cdn.bootcss.com/vue/2.5.15/vue.js"></script>
+		<link rel="stylesheet" href="../app/css/show.css" />
+		<script src="../../js/vue.min.js"></script>
+		<script src="../../js/axios.min.js"></script>
 
 	</head>
 
 	<body>
-
-		<script>
-			var menu = new Vue({
-				el: "#canjia",
-				mounted: function() {
-					this.add1()
-				},
-				data: {
-					lessons: []
-				},
-				methods: {
-					add1: function() {
-						axios({
-							method: 'get',
-							url: '/api/student/studentPart/add',
-							headers: {
-                     "Authorization": "bearer "+你的token
-                        }
-						}).then(res => {
-							console.log(res.data.success);
-							console.log(res.data.message);
-							
-							this.lessons=res.data.message;
-						})
-					}
-				}
-			});
-		</script>
-
-
-
-
-
-
-
 
 		<nav class="navbar navbar-default navbar-fixed-top header">
 			<div class="container">
@@ -207,7 +93,7 @@
 
 
 
-		<div class="container layout layout-margin-top">
+		<div id="details" class="container layout layout-margin-top">
 
 			<ol class="breadcrumb">
 				<li><a href="/courses/">全部课程</a></li>
@@ -220,24 +106,14 @@
 
 				<li class="active">
 					<a href="/courses/1">
-						Linux 基础入门（新版）
+						{{courName}}
 					</a>
 				</li>
 			</ol>
 
 
 			<div class="row">
-
-
 				<div class="col-md-9 layout-body">
-
-
-
-
-					<!-- <div class="side-image side-image-mobile">
-						<img src="https://dn-simplecloud.xxxxxx.com/ncn1.jpg?imageView2/0/h/300">
-					</div> -->
-					<!-- 视频摆放位置 introduce-unit col-sm-6 col-md-3-->
 					<div class="content">
 
 						<img alt="机器学习" src="../img/002.jpg" width="510" height="288">
@@ -245,7 +121,7 @@
 						<div class="bootcamp-infobox-footer">
 							<div class="col-md-3 bootcamp-infobox-msg">
 								<div class="msg-desc">
-									<h4><span>Linux 基础入门（新版）</span></h4>
+									<h4><span>{{courName}}</span></h4>
 								</div>
 							</div>
 
@@ -262,12 +138,12 @@
 
 							<div class="col-md-3 bootcamp-infobox-msg bootcamp-infobox-buybox">
 								<div class="original-price">已有
-									<span>25</span>人参加
+									<span>{{renshu}}</span>人参加
 								</div>
 								<div class="member-price">
 								</div>
-								<!-- <div id="canjia" class="bootcamp-infobox-buy">	 -->						
-									<button id="canjia" class="bootcamp-infobox-buy" v-on:click="add1">立即参加</button>									
+								<!-- <div id="canjia" class="bootcamp-infobox-buy">	 -->
+								<button @click="add1" class="bootcamp-infobox-buy">{{baoming}}</button>
 								<!-- </div> -->
 							</div>
 
@@ -291,9 +167,9 @@
 
 							</h4>
 							<div class="pull-right course-infobox-follow" data-follow-url="/courses/1/follow" data-unfollow-url="/courses/1/unfollow">
-								<span class="course-infobox-followers">4401</span>
-								<span>人关注</span>
-
+								
+								<span>浏览量</span>
+								<span class="course-infobox-followers">{{courPageview}}人</span>
 								<i class="fa fa-star-o" data-next="/login?next=%2Fcourses%2F1"></i>
 
 							</div>
@@ -301,8 +177,7 @@
 
 						<div class="clearfix course-infobox-body">
 							<div class="course-infobox-content">
-								<p>机器学习是人工智能的核心研究领域之一，
-									其研究动机是为了让计算机系统具有人的学习能力以便实现人工智能。本课程将以数据挖掘中的分类任务为例，首先讲解分类模型的评估，然后讲解一批经典而常用的机器学习技术。加入到我们的课程，一起进入机器学习的世界、发掘潜藏在数据中的奥秘和财富吧！</p>
+								<p>{{courContent}}</p>
 
 							</div>
 
@@ -322,7 +197,7 @@
 
 						<div class="clearfix course-infobox-footer">
 
-							<div class="pull-right course-infobox-learned">85243 人学过</div>
+							<div class="pull-right course-infobox-learned">{{renshu}}人学过</div>
 						</div>
 
 					</div>
@@ -352,11 +227,7 @@
 										<img src="../img/lab-not-ok.png">
 									</div>
 									<div class="lab-item-index">课程概述</div>
-									<h4><span>
-											2016年3月9日至15日谷歌人工智能围棋程序阿尔法狗AlphaGo以总比分4比1战胜世界围棋冠军李世石。
-											2017年5月23日至27日，又在浙江乌镇的围棋峰会上，以总比分3比0完胜我国世界排名第一的棋手柯洁。赛后柯洁一度哽咽称：“它太完美，我很痛苦，看不到任何胜利的希望” 。
-											2017年1月6日，最强大脑第四季引入人机大战模式，百度人工智能机器人小度作为特别选手参赛，在比赛中战胜了最强大脑的队长：王峰。
-										</span></h4>
+									<h4><span>{{courDetails}}</span></h4>
 								</div>
 
 								<div class="lab-item ">
@@ -365,14 +236,12 @@
 									</div>
 									<div class="lab-item-index">授课目标</div>
 									<h4> <span>
-											机器学习是人工智能的核心研究领域之一，
-											其研究动机是为了让计算机系统具有人的学习能力以便实现人工智能。本课程将以数据挖掘中的分类任务为例，首先讲解分类模型的评估，然后讲解一批经典而常用的机器学习技术。加入到我们的课程，一起进入机器学习的世界、发掘潜藏在数据中的奥秘和财富吧！
-											—— 课程团队
+											{{courTarget}}
 										</span>
 									</h4>
 								</div>
 
-								<div class="lab-item ">
+								<!-- <div class="lab-item ">
 									<div class="lab-item-status">
 										<img src="../img/lab-not-ok.png">
 									</div>
@@ -382,7 +251,7 @@
 											其研究动机是为了让计算机系统具有人的学习能力以便实现人工智能。本课程将以数据挖掘中的分类任务为例，首先讲解分类模型的评估，然后讲解一批经典而常用的机器学习技术。加入到我们的课程，一起进入机器学习的世界、发掘潜藏在数据中的奥秘和财富吧！
 											—— 课程团队
 										</span></h4>
-								</div>
+								</div> -->
 
 								<div class="lab-item ">
 									<div class="lab-item-status">
@@ -390,13 +259,11 @@
 									</div>
 									<div class="lab-item-index">预备知识</div>
 									<h4><span>
-											机器学习是人工智能的核心研究领域之一，
-											其研究动机是为了让计算机系统具有人的学习能力以便实现人工智能。本课程将以数据挖掘中的分类任务为例，首先讲解分类模型的评估，然后讲解一批经典而常用的机器学习技术。加入到我们的课程，一起进入机器学习的世界、发掘潜藏在数据中的奥秘和财富吧！
-											—— 课程团队
+											{{courPropaedeutics}}
 										</span></h4>
 								</div>
 
-								<div class="lab-item ">
+								<!-- <div class="lab-item ">
 									<div class="lab-item-status">
 										<img src="../img/lab-not-ok.png">
 									</div>
@@ -406,7 +273,7 @@
 											其研究动机是为了让计算机系统具有人的学习能力以便实现人工智能。本课程将以数据挖掘中的分类任务为例，首先讲解分类模型的评估，然后讲解一批经典而常用的机器学习技术。加入到我们的课程，一起进入机器学习的世界、发掘潜藏在数据中的奥秘和财富吧！
 											—— 课程团队
 										</span></h4>
-								</div>
+								</div> -->
 
 								<div class="lab-item ">
 									<div class="lab-item-status">
@@ -414,13 +281,11 @@
 									</div>
 									<div class="lab-item-index">参考资料</div>
 									<h4><span>
-											机器学习是人工智能的核心研究领域之一，
-											其研究动机是为了让计算机系统具有人的学习能力以便实现人工智能。本课程将以数据挖掘中的分类任务为例，首先讲解分类模型的评估，然后讲解一批经典而常用的机器学习技术。加入到我们的课程，一起进入机器学习的世界、发掘潜藏在数据中的奥秘和财富吧！
-											—— 课程团队
+											{{courResources}}
 										</span></h4>
 								</div>
 
-								<div class="lab-item ">
+								<!-- <div class="lab-item ">
 									<div class="lab-item-status">
 										<img src="../img/lab-not-ok.png">
 									</div>
@@ -430,7 +295,7 @@
 											其研究动机是为了让计算机系统具有人的学习能力以便实现人工智能。本课程将以数据挖掘中的分类任务为例，首先讲解分类模型的评估，然后讲解一批经典而常用的机器学习技术。加入到我们的课程，一起进入机器学习的世界、发掘潜藏在数据中的奥秘和财富吧！
 											—— 课程团队
 										</span></h4>
-								</div>
+								</div> -->
 
 							</div>
 							<div role="tabpanel" class="tab-pane course-comment" id="comments">
@@ -535,247 +400,11 @@
 		</div>
 
 
-		<div class="modal fade" id="invite-user" tabindex="-1" role="dialog" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-						<h4 class="modal-title">邀请好友，双方都可获赠实验豆！</h4>
-					</div>
-					<div class="modal-body">
-
-						<p>
-							<h4><a href="#sign-modal" data-toggle="modal" data-sign="signin">登录</a>后邀请好友注册，您和好友将分别获赠3个实验豆！</h4>
-						</p>
-
-						<div id="msg-modal"></div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div class="modal fade" id="flash-message" tabindex="-1" role="dialog">
-			<div class="modal-dialog" rolw="document">
-			</div>
-		</div>
-		<div class="modal fade" id="modal-message" tabindex="-1" role="dialog" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-						<h4 class="modal-title">注意</h4>
-					</div>
-					<div class="modal-body">
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-						<button type="button" class="btn btn-primary confirm" data-dismiss="modal">确定</button>
-					</div>
-				</div>
-			</div>
-		</div>
 
 
 
 
-		<div class="modal fade askquestion-modal" id="askquestion" tabindex="-1" role="dialog">
-			<div class="modal-dialog" role=document>
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-						<h4 class="modal-title">发帖</h4>
-					</div>
-					<div class="modal-body words-ctrl">
-						<form class="form-horizontal" action="/questions/">
-							<input name="_csrf_token" type=hidden value="1483794941##be4fb68b276c5f7cb970936cb25985cd53b943d1">
-							<div class="form-group">
-								<label class="col-md-2 control-label">标题</label>
-								<div class="col-md-10">
-									<input type="text" name="title" min="5" max="100" class="form-control" placeholder="至少输入5个字" value="">
-									<span class="help-block"></span>
-								</div>
-							</div>
-							<div class="form-group">
-								<label class="col-md-2 control-label">描述</label>
-								<div class="col-md-10">
 
-
-
-									<div class="tabpanel mkeditor">
-										<ul class="nav nav-tabs" role="tablist">
-											<li role="presentation" class="active">
-												<a href="#mkeditor-editor" role="tab" data-toggle="tab">编辑</a>
-											</li>
-											<li role="presentation">
-												<a class="mkeditor-btn-view" href="#mkeditor-viewer" role="tab" data-toggle="tab">预览</a>
-											</li>
-										</ul>
-										<div class="tab-content">
-											<div class="tab-pane active mkeditor-editor" id="mkeditor-editor" role="tabpanel">
-
-												<div class="btn-group" role="group">
-
-													<button type="button" class="btn btn-default mkeditor-btn-bold">
-														<i class="fa fa-bold"></i>
-													</button>
-													<button type="button" class="btn btn-default mkeditor-btn-italic">
-														<i class="fa fa-italic"></i>
-													</button>
-													<button type="button" class="btn btn-default mkeditor-btn-link">
-														<i class="fa fa-link"></i>
-													</button>
-													<button type="button" class="btn btn-default mkeditor-btn-quote">
-														<i class="fa fa-quote-left"></i>
-													</button>
-													<button type="button" class="btn btn-default mkeditor-btn-code">
-														<i class="fa fa-code"></i>
-													</button>
-													<button id="mkeditor-pickfile" type="button" class="btn btn-default mkeditor-btn-img">
-														<i class="fa fa-image"></i>
-													</button>
-
-													<button type="button" class="btn btn-default mkeditor-btn-listol">
-														<i class="fa fa-list-ol"></i>
-													</button>
-													<button type="button" class="btn btn-default mkeditor-btn-listul">
-														<i class="fa fa-list-ul"></i>
-													</button>
-												</div>
-												<div class="btn-group pull-right" role="group">
-													<a style="font-size:12px; color:#666; text-decoration:underline;" href="/questions/764" target="_blank">
-														<i class="fa fa-question-circle"></i>Markdown 语法
-													</a>
-												</div>
-												<textarea name="content" class="content" min="0" max="20000" placeholder="推荐使用 Markdown 语法，至少输入 5 个字"></textarea>
-												<div class="help-block"></div>
-											</div>
-											<div class="tab-pane mkeditor-viewer markdown-body" id="mkeditor-viewer" role="tabpanel">
-												<div></div>
-											</div>
-										</div>
-									</div>
-
-								</div>
-							</div>
-							<div class="form-group">
-								<label class="col-md-2 control-label">板块</label>
-								<div class="col-md-10">
-									<div class="q-types" data-type="">
-									</div>
-								</div>
-							</div>
-
-
-						</form>
-					</div>
-					<div class="modal-footer">
-						<a type="button" class="submit-question btn btn-primary" href="/vip" target="_blank" style="background:#FFFFFF;color:#00CC99;border:none;float:left;padding-left:0;"><img
-							 src="../img/senior-vip-icon.png" alt=""> 加入高级会员获得助教答疑</a>
-						<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-						<button type="button" class="submit-question btn btn-primary" data-dismiss="modal">提交</button>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div class="modal fade" id="start-newlab">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-						<h3>开始新实验</h3>
-					</div>
-					<div class="modal-body" style="text-align:center">
-						<p> 一个实验正在进行，是否停止它，开始新实验？</p>
-
-					</div>
-					<div class="modal-footer" style="margin-top:0px">
-
-						<button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
-						<a class="btn btn-primary start-newlab-confirm">确定</a>
-
-					</div>
-				</div><!-- /.modal-content -->
-			</div><!-- /.modal-dialog -->
-		</div>
-		<div class="modal fade" id="start-evaluation-course">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-						<h3>开始评估课实验</h3>
-					</div>
-					<div class="modal-body">
-						<div>
-							<p>为了让评估结果更加准确，请注意以下操作：</p>
-							<ul>
-								<li>完成实验后点击「停止实验」按钮</li>
-								<li>将代码提交到代码库</li>
-								<li>尽可能详尽的撰写实验报告</li>
-								<li>尽可能在实验操作的关键步骤截图</li>
-								<li>尽可能减少无用操作</li>
-								<li>尽可能高效的利用内存/CPU资源</li>
-							</ul>
-							<p>评估课还在不断完善中，我们真挚希望你能通过我们提供的这个平台，找到更好的发展机会。</p>
-						</div>
-						<br>
-						<div class="start-newlab"></div>
-					</div>
-					<div class="modal-footer">
-						<button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
-						<a class="btn btn-primary start-confirm">确定</a>
-					</div>
-				</div><!-- /.modal-content -->
-			</div><!-- /.modal-dialog -->
-		</div>
-		<div class="modal fade" id="vip-startlab-modal">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-						<h3>开始实验</h3>
-					</div>
-					<div class="modal-body">
-						<div class="start-newlab"></div>
-						<br>
-						<div class="text-center vip-vm">
-							<a class="btn btn-default btn-lg newvm">创建新环境</a>
-
-						</div>
-						<br>
-					</div>
-				</div><!-- /.modal-content -->
-			</div><!-- /.modal-dialog -->
-		</div>
-		<div class="modal fade" id="bean-course-modal" tabindex="-1" role="dialog" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-						<h4 class="modal-title">激活项目课：Linux 基础入门（新版）</h4>
-					</div>
-					<div class="modal-body">
-						<div style="font-size:14px; font-weight:thin;">
-							要在实验楼愉快地学习，先要熟练地使用 Linux，本实验介绍 Linux 基本操作，shell 环境下的常用命令。
-						</div>
-						<div style="margin:36px 0 18px; font-size:16px; font-weight:bold;">
-							您有 <span style="color:#f66;"><strong></strong></span> 个实验豆，激活本课程需要消耗 <span style="color:#f66;"><strong>0</strong></span>
-							个实验豆！
-						</div>
-						<div style="color:#84B61A; font-size:14px; font-weight:bold;">激活后可不限次数学习本课。<a href="/faq#shiyandou" style="font-weight:normal;"
-							 target="_blank">如何获得实验豆？</a></div>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-
-						<a class="btn btn-primary getshiyandou" href="/faq#shiyandou" target="_blank" data-dismiss="modal">获取实验豆</a>
-
-					</div>
-				</div>
-			</div>
-		</div>
 
 
 		<div class="modal fade" id="charge-course-modal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -853,7 +482,7 @@
 
 
 
-		<div class="modal fade" id="sign-modal" tabindex="-1" role="dialog">
+		<!-- <div class="modal fade" id="sign-modal" tabindex="-1" role="dialog">
 			<div class="modal-dialog modal-sm" role="document">
 				<div class="modal-content">
 					<button type="button" class="close-modal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -964,7 +593,7 @@
 			</div>
 		</div>
 
-
+ -->
 		<div id="base-data" data-flash="false" data-is-login=false data-is-jwt=true data-socket-url="wss://comet.xxxxxx.com"
 		 data-msg-user="" data-msg-system=""></div>
 
@@ -983,11 +612,11 @@
 		<script src="../static/bootstrap-table/1.11.0/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
 
 		<script src="../static/ravenjs/3.7.0/raven.min.js"></script>
-		<script>
-			Raven.config('https://bc3878b7ed0a4468a65390bd79e6e73f@sentry.xxxxxx.com/5', {
+		<!-- <script>
+			Raven.config('http://127.0.0.1:8060', {
 				release: '3.12.13'
 			}).install();
-		</script>
+		</script> -->
 
 
 		<div id="jinja-data" data-userlab-id="" data-course-id="1" data-is-authenticated="false" data-user-joined="false"
@@ -1070,6 +699,116 @@
 
 			</div>
 		</div>
+		<script>
+			var menu = new Vue({
+				el: "#details",
+				mounted: function() {
+					this.chaxun()
+					this.people()
+				},
+				data: {
+					//urlPre: "http://127.0.0.1:8060",
+					courId: 1,
+					sid: "1",
+					//courId: "",
+					courName: "",
+					courTeaid: "",
+					courDepid: "",
+					courPicurl: "",
+					courPrice: "",
+					courNocount: "",
+					courContent: "",
+					courDetails: "",
+					courPageview: "",
+					courScore: "",
+					courTarget: "",
+					courResources: "",
+					courPropaedeutics: "",
+					courIsputaway: "",
+					courCommentcount: "",
+					renshu:"",
+					baoming:"立即参加"
+
+				},
+				methods: {
+					add1: function() {
+						//alert("点击");
+						axios({
+							method: 'post',
+							url: `/api/student/studentPart/add`,
+							params: {
+								courId: this.courId,
+								sid: this.sid,
+
+							},
+							headers: {
+								"Authorization": "bearer " +
+									"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiXSwiZXhwIjoxNTQ0OTU4NDEwLCJhdXRob3JpdGllcyI6W3siYXV0aG9yaXR5IjoiUk9MRV_lrabnlJ8ifSx7ImF1dGhvcml0eSI6Iua1i-ivleadg-mZkCJ9XSwianRpIjoiMTJjNGMxYzAtYmZlMC00MGY2LTgzZWMtMTA0OTY0ODY2ZmU2IiwiY2xpZW50X2lkIjoiaWVwIiwiaW5mbyI6eyJpZCI6IjkzNTc1OTNlLTAyZGMtNDdhYi1iMzA0LTkxMGUzNDExYTg5NyIsIm5hbWUiOiLlvKDkuIkifX0.OQ8FVdLjFwTbyPVyk8VcV22aReG2gOQBnX_NSnPIt5U",
+							}
+						}).then(res => {
+							//http://localhost/ieppage/student/curricular/courses/show.html
+							console.log(res.data.success);
+							console.log(res.data.message);
+							this.people();
+							//this.courId = res.data;						
+							if(res.data.success==true){							
+								this.baoming=res.data.message;
+								
+							}else{
+								this.baoming=res.data.message;
+							}
+						})
+					},
+					chaxun: function() {
+						//alert("点击");
+						axios({
+							method: 'get',
+							url: `/api/student/curricularTaxonomy/getCoursedetails`,
+							params: {
+								courId: this.courId
+								//sid: this.sid,
+							},
+							headers: {
+								"Authorization": "bearer " +
+									"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiXSwiZXhwIjoxNTQ1MDI1OTU2LCJhdXRob3JpdGllcyI6W3siYXV0aG9yaXR5IjoiUk9MRV_lrabnlJ8ifSx7ImF1dGhvcml0eSI6Iua1i-ivleadg-mZkCJ9XSwianRpIjoiM2IyZmFjODgtYWExZi00MzU3LThlNTAtNjQ1OWI4YzkwZGE5IiwiY2xpZW50X2lkIjoiaWVwIiwiaW5mbyI6eyJpZCI6IjkzNTc1OTNlLTAyZGMtNDdhYi1iMzA0LTkxMGUzNDExYTg5NyIsIm5hbWUiOiLlvKDkuIkifX0.V6Gw0X4KWyAJisY8bge3FME2r03eHPN8Q5s7zEnLq3I",
+							}
+						}).then(res => {
+							//http://localhost/ieppage/student/curricular/courses/show.html
+							res=res.data[0];
+							console.log(res);
+							console.log(res.courContent);
+							this.courName = res.courName;
+							this.courContent=res.courContent;
+							this.courDetails=res.courDetails;
+							this.courTarget=res.courTarget;
+							this.courResources=res.courResources;
+							this.courPropaedeutics=res.courPropaedeutics;
+							this.courPageview=res.courPageview
+						})
+					},people: function(){
+						axios({
+							method:'get',
+							url:`/api/student/studentPart/querypeople`,
+							params: {
+								cid:this.courId									
+								},							
+								headers: {
+									"Authorization": "bearer " +
+										"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiXSwiZXhwIjoxNTQ1MDI1OTU2LCJhdXRob3JpdGllcyI6W3siYXV0aG9yaXR5IjoiUk9MRV_lrabnlJ8ifSx7ImF1dGhvcml0eSI6Iua1i-ivleadg-mZkCJ9XSwianRpIjoiM2IyZmFjODgtYWExZi00MzU3LThlNTAtNjQ1OWI4YzkwZGE5IiwiY2xpZW50X2lkIjoiaWVwIiwiaW5mbyI6eyJpZCI6IjkzNTc1OTNlLTAyZGMtNDdhYi1iMzA0LTkxMGUzNDExYTg5NyIsIm5hbWUiOiLlvKDkuIkifX0.V6Gw0X4KWyAJisY8bge3FME2r03eHPN8Q5s7zEnLq3I",
+								}
+							}).then(res => {
+								//http://localhost/ieppage/student/curricular/courses/show.html
+								res=res.data;
+								this.renshu=res;
+								console.log(res);
+							
+														
+							})
+					}
+				}
+
+			});
+		</script>
 
 
 

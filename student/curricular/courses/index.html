@@ -156,7 +156,7 @@
 
 
 
-		<div class="container layout layout-margin-top">
+		<div class="container layout layout-margin-top" id="queryCourse">
 
 
 			<div class="row">
@@ -175,12 +175,11 @@
 								</div>
 							</div>
 						</div>
-						<div class="row course-cates" id="keicheng">
+						<div class="row course-cates">
 							<div class="col-md-1 course-cates-title">标签：</div>
 							<div class="col-md-11 course-cates-content" >
-								<a class="active" href="/courses/?course_type=all&amp;fee=all">全部</a>
-
-								<a v-for="site in sites" class="" @click="checkDetail(site.departmentId)"  href="javascript:void(0)" v-text="site.departmentId"></a>
+								<a class="active" href="javascript:void(0)" @click="queryKeichengContent()">全部</a>
+								<a v-for="site in sites"  class="" @click="queryKeichengContent(site.departmentId)"  href="javascript:void(0)" v-text="site.name" ></a>
 							</div>
 						</div>
 					</div>
@@ -198,23 +197,42 @@
 						<div class="search-result"></div>
 
 
-						<div class="row" id="queryCourse" >
+						<div class="row">
 
                            <!--   <ol>
-                                <li v-for="list in cources">
+                                <li v-for="list in courseList">
                                     {{ list.courName }}
                                 </li>
                             </ol>-->
 
+                            <div class="media bootcamp-courses-item" v-for="c in courseList">
+                                <div class="media-left bootcamp-courses-media">
+                                    <img style="width: 300px;height: 140px" class="media-object" src="../img/002.jpg">
+                                </div>
+                                <div class="media-body bootcamp-courses-body">
+                                    <div class="bootcamp-courses-info">
+                                        <h4 class="media-heading"><span>已上线</span>{{c.courName}}</h4>
+                                        <div><p>{{c.courContent}}</p></div>
+                                        <div>推荐先学：<a href="https://www.xxxxxx.com/courses/1" target="_blank">Linux基础入门</a> </div>
+                                        <div>
+                                            <p>浏览次数：<a class="tagStyle2">{{c.courPageview}}</a></p>
+                                        </div>
+                                    </div>
+                                    <div class="bootcamp-courses-subscribe">
+                                        <div class="pull-right bootcamp-courses-order">
+                                            <a class="btn pull-right"href="show.html">查看详情</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-
-							<div   class="col-md-4 col-sm-6 " v-for="c in cources">
+							<!--<div   class="col-md-4 col-sm-6 " v-for="c in courseList">
 
 								<a class="course-box" href="show.html">
 									<div class="sign-box">
 
 
-                                        <!-- v-text="courclist.courName"-->
+                                        &lt;!&ndash; v-text="courclist.courName"&ndash;&gt;
 										<i class="fa fa-star-o course-follow pull-right" data-follow-url="/courses/63/follow" data-unfollow-url="/courses/63/unfollow"
 										 style="display:none"></i>
 
@@ -236,14 +254,19 @@
                                         <span class="course-money pull-right">会员</span>
 									</div>
 								</a>
-							</div>
+							</div>-->
 
 
 
 
 						</div>
 
-
+                       <!-- <div style="display: flex;justify-content: center">
+                            <el-pagination
+                                    layout="prev, pager, next"
+                                    :total="total" current-page.sync="page" @current-change="pageChange">
+                            </el-pagination>
+                        </div>-->
 						<nav class="pagination-container">
 							<ul class="pagination">
 
@@ -304,8 +327,8 @@
 
 
 								<li class="">
-									<a aria-label="Next" href="/courses/?course_type=all&amp;tag=all&amp;fee=all&amp;page=2">
-										<span aria-hidden="true">下一页</span>
+									<a aria-label="Next" href="javascript:void(0)" @click="pageChange(2)">
+										<span aria-hidden="true"  >下一页</span>
 									</a>
 								</li>
 
@@ -691,15 +714,22 @@
 
 		<script>
 		var a=	new Vue({
-				el: '#keicheng',
+				el: '#queryCourse',
 				mounted: function() {
-					this.queryKeicheng()
+					this.queryKeicheng();
+					this.queryKeichengContent();
 				},
-				data: {
-					sites: []
-				},
+				data() {
+				    return{
+					sites: [],
+                    courseList:[],
+                    page: 1,
+                    pageSize: 10,
+                    courDepid:''
+				}},
 				methods: {
-					queryKeicheng: function() {
+					queryKeicheng() {
+
 						axios({
 							method: 'get',
 							url: '/api/student/curricularTaxonomy/getCurricularTaxonomy'
@@ -707,11 +737,25 @@
 							console.log(res);
 							this.sites = res.data.message;
 						})
-					},checkDetail(val) {
+					},
+                    pageChange(page) {
+                        this.page = page;
+                    },
+                    queryKeichengContent(val){
+                        axios({
+                            method: 'get',
+                            url:'/api/student/curricularTaxonomy/getCourse',
+                            params:{
+                                courDepid:val,
+                                page:this.page,
+                                pageSize:this.pageSize
+                            }
 
-                        console.log("课程分类Id"+val)
+                        }).then(res =>{
+                            console.log(res);
+                            this.courseList=res.data.message.content;
 
-
+                        })
                     }
 				}
 			})
@@ -732,28 +776,6 @@
 			
 			
 		</script>
-        <script>
-          var zm =new Vue({
-                el: '#queryCourse',
-                mounted:function(){
-                    this.queryKeicheng()
-                },
-                data: {
-                    cources: []
-                },
-                methods:{
-                    queryKeicheng:function(){
-                        axios({
-                            method: 'get',
-                            url:'/api/student/curricularTaxonomy/getCourse?depId=9357593e-02dc-47ab-b304-910e3511a897&page=1&size=10'
-                        }).then(res =>{
-                            console.log(res);
-                            this.cources=res.data.message.content;
-                        })
-                    }
-                },
-            })
-        </script>
 	</body>
 
 </html>
