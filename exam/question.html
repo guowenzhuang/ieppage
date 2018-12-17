@@ -3,9 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>question 题库管理</title>
-    <link rel="stylesheet" type="text/css" href="css/iview.css">
     <script src="js/vue.min.js"></script>
-    <script src="js/iview.min.js"></script>
     <link rel="stylesheet" type="text/css" href="css/index.css"/>
     <script src="js/index.js"></script>
     <script src="js/axios.js"></script>
@@ -17,8 +15,12 @@
 <div id="app" align="center">
 
 
+    
+
+
     <!--条件查询的条件输入框-->
     <div align="center">
+        <a href="examcomposition.html">哈哈哈</a>
         <!--<el-button type="primary" icon="el-icon-plus" @click="querycourse()" size="small" round>ccc</el-button>-->
         <el-button type="primary" icon="el-icon-plus" @click="dialogVisibletype = true" size="small" round>新增试题
         </el-button>
@@ -47,6 +49,45 @@
         </el-button>
     </div>
 
+    <!--element表格-->
+    <div style="width: 100%;">
+        <template>
+            <el-table :data="rubricList" style=" width: auto">
+                <!--<el-table-column prop="id" label="序号" :show-overflow-tooltip="true">
+                </el-table-column>-->
+                <el-table-column prop="rubricttype" label="试题类型" :show-overflow-tooltip="true">
+                </el-table-column>
+                <el-table-column prop="content" label="题干" :show-overflow-tooltip="true">
+                </el-table-column>
+                <el-table-column prop="A" label="选项A" :show-overflow-tooltip="true">
+                </el-table-column>
+                <el-table-column prop="B" label="选项B" :show-overflow-tooltip="true">
+                </el-table-column>
+                <el-table-column prop="C" label="选项C" :show-overflow-tooltip="true">
+                </el-table-column>
+                <el-table-column prop="D" label="选项D" :show-overflow-tooltip="true">
+                </el-table-column>
+                <!-- <el-table-column prop="sectionId" label="章节id" :show-overflow-tooltip="true">
+                 </el-table-column>
+                 <el-table-column prop="courseId" label="课程id" :show-overflow-tooltip="true">
+                 </el-table-column>-->
+                <el-table-column prop="answerId" label="答案id" :show-overflow-tooltip="true">
+                </el-table-column>
+
+                <el-table-column prop="operation" label="操作" align="center" min-width="100">
+                    <template slot-scope="scope">
+                        <el-button type="primary" round @click="checkDetail(scope.row)" size="mini">查看
+                        </el-button>
+                        <el-button type="danger" round @click="deleterubric(scope.row)" size="mini">删除
+                        </el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+
+        </template>
+    </div>
+
+
     <!--选择新增的试题类型-->
     <el-dialog title="选择新增题型" :visible.sync="dialogVisibletype" width="60%" :before-close="handleClose">
         <el-button type="primary" icon="el-icon-plus" @click="dialogVisible = true" size="small" round>新增单选题
@@ -58,6 +99,7 @@
         <el-button type="primary" icon="el-icon-plus" @click="dialogVisiblepd = true" size="small" round>新增判断题
         </el-button>
     </el-dialog>
+
 
     <!--新增单选题对话框-->
     <el-dialog title="新增单选题" :visible.sync="dialogVisible" width="60%" :before-close="handleClose">
@@ -147,44 +189,6 @@
 
     </el-dialog>
 
-    <!--element表格-->
-    <div style="width: 100%;">
-        <template>
-            <el-table :data="rubricList" style=" width: auto">
-                <!--<el-table-column prop="id" label="序号" :show-overflow-tooltip="true">
-                </el-table-column>-->
-                <el-table-column prop="rubricttype" label="试题类型" :show-overflow-tooltip="true">
-                </el-table-column>
-                <el-table-column prop="content" label="题干" :show-overflow-tooltip="true">
-                </el-table-column>
-                <el-table-column prop="A" label="选项A" :show-overflow-tooltip="true">
-                </el-table-column>
-                <el-table-column prop="B" label="选项B" :show-overflow-tooltip="true">
-                </el-table-column>
-                <el-table-column prop="C" label="选项C" :show-overflow-tooltip="true">
-                </el-table-column>
-                <el-table-column prop="D" label="选项D" :show-overflow-tooltip="true">
-                </el-table-column>
-                <!-- <el-table-column prop="sectionId" label="章节id" :show-overflow-tooltip="true">
-                 </el-table-column>
-                 <el-table-column prop="courseId" label="课程id" :show-overflow-tooltip="true">
-                 </el-table-column>-->
-                <el-table-column prop="answerId" label="答案id" :show-overflow-tooltip="true">
-                </el-table-column>
-
-                <el-table-column prop="operation" label="操作" align="center" min-width="100">
-                    <template slot-scope="scope">
-                        <el-button type="primary" round @click="checkDetail(scope.row)" size="mini">查看
-                        </el-button>
-                        <el-button type="danger" round @click="deleterubric(scope.row)" size="mini">删除
-                        </el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
-
-        </template>
-    </div>
-
     <!--新增填空题对话框-->
     <el-dialog title="新增填空题" :visible.sync="dialogVisibletk" width="60%" :before-close="handleClose">
 
@@ -224,13 +228,21 @@
             <el-switch v-model="pdvalue3" active-text="正确" inactive-text="错误">
             </el-switch>
 
+            <font size="4">课程:</font>
+            <el-select v-model="typejudge" placeholder="请选择" @change="querycourse" size="small">
+                <el-option v-for="item in options3" :key="item.courId" :label="item.courName" :value="item.courId"
+                           :disabled="item.disabled">
+                </el-option>
+            </el-select>
+
             <el-form-item>
                 <el-button type="primary" @click="pdaddrudic()">立即创建</el-button>
-                <el-button @click="pdaddquxiao()">取消</el-button>
+                <el-button @click="addquxiao()">取消</el-button>
             </el-form-item>
         </el-form>
 
     </el-dialog>
+
 
     <!--修改填空题的对话框-->
     <el-dialog title="修改填空题" :visible.sync="dialogVisiblepack" width="60%" :before-close="handleClose">
@@ -264,13 +276,6 @@
 
             <el-switch v-model="value3" active-text="正确" inactive-text="错误">
             </el-switch>
-
-            <font size="4">课程:</font>
-            <el-select v-model="typejudge" placeholder="请选择" @change="querycourse" size="small">
-                <el-option v-for="item in options3" :key="item.courId" :label="item.courName" :value="item.courId"
-                           :disabled="item.disabled">
-                </el-option>
-            </el-select>
 
 
             <el-form-item>
@@ -451,8 +456,8 @@
                         value: '判断题',
                         label: '判断题'
                     }],
-
                 value: '',
+
                 user: {},
                 dialogVisibleselect: false,
                 dialogVisiblejudge: false,
@@ -544,8 +549,7 @@
                                 this.answerC = "";
                                 this.answerD = "";
                                 this.form = "";
-
-
+                                this.typedan = "";
                                 this.query();
 
 
@@ -608,8 +612,7 @@
                                 this.duoform2 = "";
                                 this.duoform3 = "";
                                 this.duoform4 = "";
-
-
+                                this.typeduo = "";
                                 this.query();
 
                             } else {
@@ -651,6 +654,8 @@
                         this.dialogVisibletk = false;
                         this.tkaddrubric = "";
                         this.tkaddanswer = "";
+                        this.typebletk = "";
+                        this.query();
                     } else {
                         this.$notify.error({title: "失败", message: res.message})
                     }
@@ -680,6 +685,7 @@
                         this.dialogVisiblepd = false;
                         this.pdvalue3 = false;
                         this.pdaddrubric = "";
+                        this.typejudge = "";
                         this.query();
                     } else {
                         this.$notify.error({title: "失败", message: res.message})
@@ -693,24 +699,34 @@
             /*新增取消按钮*/
             addquxiao() {
 
-                this.addrubric = '',
-                    this.rubrictype1 = '',
-                    this.answerA = "",
-                    this.answerB = "",
-                    this.answerC = "",
-                    this.answerD = "",
-                    this.form = true,
+                this.addrubric = '';
+                this.rubrictype1 = '';
+                this.answerA = "";
+                this.answerB = "";
+                this.answerC = "";
+                this.answerD = "";
+                this.form = true;
+                this.typejudge = "";
+                this.typedan = "";
+                this.typeduo = "";
+                this.typebletk = "";
 
-                    this.duoaddrubric = "",
-                    this.duoanswerA = "",
-                    this.duoanswerB = "",
-                    this.duoanswerC = "",
-                    this.duoanswerD = "",
-                    this.duoform1 = "",
-                    this.duoform2 = "",
-                    this.duoform3 = "",
-                    this.duoform4 = "",
-                    this.dialogVisible = false;
+                this.pdaddrubric = "";
+                this.pdvalue3 = false;
+                this.tkaddrubric = "";
+                this.tkaddanswer = "";
+
+
+                this.duoaddrubric = "";
+                this.duoanswerA = "";
+                this.duoanswerB = "";
+                this.duoanswerC = "";
+                this.duoanswerD = "";
+                this.duoform1 = "";
+                this.duoform2 = "";
+                this.duoform3 = "";
+                this.duoform4 = "";
+                this.dialogVisible = false;
                 this.dialogVisibletk = false;
                 this.dialogVisiblepd = false;
                 this.dialogVisibleduo = false;
