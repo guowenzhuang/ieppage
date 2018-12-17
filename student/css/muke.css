@@ -1,4 +1,4 @@
-﻿@charset "utf-8";
+@charset "utf-8";
 /* CSS Document */
 
 /* purpose 网站通用 */
@@ -228,7 +228,7 @@ input{outline: none;}
 /* color 字体颜色 */
 .color_white{ color:#FFFFFF;}		/* color 白色 */
 .color_gray{ color:#93999f;}		/* color 灰色 */
-.color_yellow{ color:#FFFF00;}	    /* color 黄色 */
+.color_black{ color:#080808;}	    /* color 黑色 */
 .color_red{ color:#EF1300;}		    /* color 红色 */
 .color_shenred{ color:#c03;}		    /* color 红色 */
 .color_blue{ color:#069;}		    /* color 蓝色 */
@@ -242,7 +242,7 @@ input{outline: none;}
 .backg_red{ background-color:#FF0000;}		/* color 红色 */
 .backg_huibai{ background-color:#fdfdfd;}		/* color 灰白 */
 .backg_qiangray{ background-color:#f3f5f7;}		/* color 浅灰 */
-.backg_jqian{ background-color:#a9aaae;}		/* color tab经过前 */
+.backg_jqian{ background-color: #B2BBC3;}		/* color tab经过前 */
 .backg_jhou{ background-color:#8a8f93;}		/* color tab经过后 */
 
 /* transparent 透明 */
