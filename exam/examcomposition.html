@@ -70,7 +70,7 @@
     </el-dialog>
 
     <!--添加题的对话框-->
-    <el-dialog title="添加题" :visible.sync="bigdialog" width="95%" :before-close="handleClose">
+    <el-dialog title="添加题" :visible.sync="bigdialog" width="90%" modal="false" :before-close="handleClose">
 
         <el-container>
             <!--布局-->
@@ -163,7 +163,8 @@
                 </el-pagination>
 
                 <!--修改填空题的对话框-->
-                <el-dialog title="修改填空题" :visible.sync="dialogVisiblepack" width="60%" :before-close="handleClose">
+                <el-dialog title="修改填空题" :visible.sync="dialogVisiblepack" :modal="false" width="60%"
+                           :before-close="handleClose">
 
                     <el-form ref="form" :model="form" label-width="80px">
                         <el-form-item label="题干内容:">
@@ -185,7 +186,8 @@
                 </el-dialog>
 
                 <!--修改判断题的对话框-->
-                <el-dialog title="修改判断题" :visible.sync="dialogVisiblejudge" width="60%" :before-close="handleClose">
+                <el-dialog title="修改判断题" :visible.sync="dialogVisiblejudge" :modal="false" width="60%"
+                           :before-close="handleClose">
 
                     <el-form ref="form" :model="form" label-width="80px">
                         <el-form-item label="题干内容:">
@@ -213,7 +215,7 @@
                 </el-dialog>
 
                 <!--修改单选题的对话框-->
-                <el-dialog title="修改单选题" :visible.sync="dialogVisibleselect" width="60%"
+                <el-dialog title="修改单选题" :visible.sync="dialogVisibleselect" :modal="false" width="60%"
                            :before-close="handleClose">
                     <el-form ref="updateform" :model="updateform" label-width="80px">
                         <el-form-item label="题干内容:">
@@ -251,7 +253,7 @@
                 </el-dialog>
 
                 <!--修改多选题的对话框-->
-                <el-dialog title="修改多选题" :visible.sync="updatedialogVisibleduo" width="60%"
+                <el-dialog title="修改多选题" :visible.sync="updatedialogVisibleduo" :modal="false" width="60%"
                            :before-close="handleClose">
                     <el-form ref="duoupdateform" :model="duoupdateform" label-width="80px">
                         <el-form-item label="题干内容:">
@@ -287,11 +289,11 @@
 
                 </el-dialog>
 
-
-                <el-dialog title="设置分数" :visible.sync="score" width="60%" :before-close="handleClose">
+                <!--添加题到考试题库中-->
+                <el-dialog title="添加题到试卷" :visible.sync="score" :modal="false" width="60%">
                     <el-form ref="scoreform" :model="scoreform" label-width="80px">
                         <el-form-item label="分数:">
-                            <el-input v-model="score1" style="width:40%"></el-input>
+                            <el-input v-model="score1"></el-input>
                         </el-form-item>
 
                         <el-form-item>
@@ -695,7 +697,6 @@
                 this.addparper = true;
             },
 
-
             /*根据userid查询所拥有的课程*/
             querycourse: function () {
                 axios({
@@ -725,6 +726,7 @@
                 params.append("total", this.ruleForm.formtotal);//考试总分
                 params.append("duration", this.ruleForm.formduration);//考试时长
 
+
                 axios({
                     method: 'post',
                     url: '/api/exam/examparper/addparper',
@@ -734,6 +736,7 @@
 
                     res = res.data;
                     if (res.success) {
+                        this.addparper = false;
                         this.bigdialog = true;
                         this.parperid = res.remark;
                         this.query();

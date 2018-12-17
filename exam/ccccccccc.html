@@ -14,10 +14,16 @@
 <body>
 
 <div id="app" align="center">
-    <input type="text" @keydown.ctrl="show">
-    <hr>
-    <input type="text" @keydown.myenter="show | debounce 2000">
 
+    <el-button type="text" @click="dialogVisible = true">点击打开 Dialog</el-button>
+
+    <el-dialog title="提示" :visible.sync="dialogVisible" :modal="false" width="30%" :before-close="handleClose">
+        <span>这是一段信息</span>
+        <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+  </span>
+    </el-dialog>
 
 </div>
 
@@ -26,21 +32,25 @@
 
     var main = new Vue({
         el: '#app',
-        methods() {
-            Vue.directive('on').keyCodes.ctrl = 17;
-            Vue.directive('on').keyCodes.myenter = 13;
-            window.onload = function () {
-                var vm = new Vue({
-                    el: '#box',
-                    data: {},
-                    methods: {
-                        show: function () {
-                            alert(111);
-                        }
-                    }
-                });
+        data() {
+            return {
+                dialogVisible: false,
             }
+        },
+
+        methods: {
+
+            handleClose(done) {
+                this.$confirm('确认关闭？')
+                    .then(_ => {
+                        done();
+                    })
+                    .catch(_ => {
+                    });
+            }
+
         }
+
     })
 
 </script>
