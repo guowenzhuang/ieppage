@@ -8,12 +8,7 @@
 		<meta http-equiv="Cache-Control" content="o-transform">
 		<meta http-equiv="Cache-Control" content="no-siteapp">
 		<meta name="csrf-token" content="1483780974##87f89328c5616669f00302a263fe9061bb852818">
-
-
-		<title>全部 - 课程 - 实验楼</title>
-
-
-
+		<title>智慧教学平台</title>
 
 		<meta content="实验楼课程分为基础课和项目课，内容涵盖了Linux、Python、Java、C语言、Ruby、Android、IOS开发、大数据、信息安全等IT技术领域。" name="description">
 		<meta content="实验楼课程,IT培训课程,IT实训课程,IT在线课程,all" name="keywords">
@@ -25,6 +20,8 @@
 		<link rel="stylesheet" href="../app/css/libs/katex/0.6.0/katex.min.css">
 		<link rel="stylesheet" href="../app/css/libs/videojs/5.11.7/video-js.min.css">
 		<link rel="stylesheet" href="../app/css/dest/styles.css?=2016121272249">
+		<link rel="stylesheet" type="text/css" href="../../bootstrap/css/bootstrap-theme.min.css">
+		<link rel="stylesheet" type="text/css" href="../../css/muke.css">
 		<script src="../../js/vue.min.js"></script>
 		<script src="../../js/axios.min.js"></script>
 
@@ -75,17 +72,52 @@
 	</head>
 
 	<body>
+		<!-- 顶部 -->
+		<div class="width100 float_l" style="margin-top: -70px;">
+			<div class="width100 float_l height80 line_hei80 backg_gray">
+
+				<!-- 顶部左边 -->
+				<div class="float_l">
+					<div class="float_l margin_l20">
+						<img src="../../img/uiz1.png">
+					</div>
+					<div class="float_l">
+						<ul class="ul_li fon_siz16">
+							<li><a class="color_black" href="curricular/courses/index.html">课程</a></li>
+							<li><a class="color_black" href="">院系</a></li>
+							<li><a class="color_black" href="../paths/index.html">名师专栏</a></li>
+
+						</ul>
+					</div>
+				</div>
+
+				<!-- 顶部右边 -->
+				<div class="float_r">
+					<div class="float_l top_input">
+						<input class="posi_relative" type="text" name="" id="" placeholder="请输入想搜索的内容...">
+						<img class="img_sousuo bianshou" src="../../img/uiz4.png">
+					</div>
+					<div class="float_l margin_l20">
+						<img src="../../img/uiz5.png">
+					</div>
+					<div class="float_l margin_l35">
+						<img src="../../img/uiz6.png">
+					</div>
+					<div class="float_l margin_l30 margin_r40">
+						<a class="btn btn-default navbar-btn sign-in" data-sign="signin" href="#sign-modal" data-toggle="modal">登录</a>
+						<a class="btn btn-default navbar-btn sign-up" data-sign="signup" href="#sign-modal" data-toggle="modal">注册</a>
+					</div>
+				</div>
+
+			</div>
+		</div>
 
 
 
 
 
 
-
-
-
-
-		<nav class="navbar navbar-default navbar-fixed-top header">
+		<!-- <nav class="navbar navbar-default navbar-fixed-top header">
 			<div class="container">
 				<div class="navbar-header">
 					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#header-navbar-collapse"
@@ -143,7 +175,7 @@
 					</form>
 				</div>
 			</div>
-		</nav>
+		</nav> -->
 
 
 
@@ -1291,8 +1323,8 @@
 					}
 				},
 			})
-			
-      //获取a标签url中的参数的方法
+
+			//获取a标签url中的参数的方法
 			function getQueryString(name) {
 				var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
 				var r = window.location.search.substr(1).match(reg);
@@ -1301,12 +1333,10 @@
 				}
 				return '';
 			}
-			
+
 			//取出课程分类id...
-			var departmentId=getQueryString("departmentId");
-			console.log("取到的课程分类id为："+departmentId);
-			
-			
+			var departmentId = getQueryString("departmentId");
+			console.log("取到的课程分类id为：" + departmentId);
 		</script>
 	</body>
 </html>
