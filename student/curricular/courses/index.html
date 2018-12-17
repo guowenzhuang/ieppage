@@ -239,7 +239,7 @@
 
                             <div class="media bootcamp-courses-item" v-for="c in courseList">
                                 <div class="media-left bootcamp-courses-media">
-                                    <img style="width: 300px;height: 140px" class="media-object" src="../img/002.jpg">
+                                    <img style="width: 280px;height: 140px" class="media-object" src="../img/002.jpg">
                                 </div>
                                 <div class="media-body bootcamp-courses-body">
                                     <div class="bootcamp-courses-info">
@@ -252,7 +252,7 @@
                                     </div>
                                     <div class="bootcamp-courses-subscribe">
                                         <div class="pull-right bootcamp-courses-order">
-                                            <a class="btn pull-right"href="show.html">查看详情</a>
+                                            <a class="'btn pull-right" :href="'show.html?courId='+c.courId">查看详情</a>
                                         </div>
                                     </div>
                                 </div>
@@ -745,11 +745,26 @@
 
 
 		<script>
-		var a=	new Vue({
+            //获取a标签url中的参数的方法
+            function getQueryString(name) {
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+                var r = window.location.search.substr(1).match(reg);
+                if (r != null) {
+                    return decodeURIComponent(r[2]);
+                }
+                return '';
+            }
+
+            //取出课程分类id...
+            var departmentId=getQueryString("departmentId");
+            console.log("取到的课程分类id为："+departmentId);
+
+            var a=	new Vue({
 				el: '#queryCourse',
 				mounted: function() {
 					this.queryKeicheng();
-					this.queryKeichengContent();
+                    this.shounindex();
+
 				},
 				data() {
 				    return{
@@ -758,6 +773,7 @@
                     page: 1,
                     pageSize: 10,
                     courDepid:''
+
 				}},
 				methods: {
 					queryKeicheng() {
@@ -769,11 +785,19 @@
 							console.log(res);
 							this.sites = res.data.message;
 						})
-					},
+					},shounindex(){
+					    if(departmentId!==""){
+					      this.queryKeichengContent(departmentId)
+                        }else {
+                            this.queryKeichengContent();
+                        }
+
+                    },
                     pageChange(page) {
                         this.page = page;
                     },
                     queryKeichengContent(val){
+
                         axios({
                             method: 'get',
                             url:'/api/student/curricularTaxonomy/getCourse',
@@ -792,19 +816,6 @@
 				}
 			})
 
-			//获取a标签url中的参数的方法
-			function getQueryString(name) {
-				var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-				var r = window.location.search.substr(1).match(reg);
-				if (r != null) {
-					return decodeURIComponent(r[2]);
-				}
-				return '';
-			}
-
-			//取出课程分类id...
-			var departmentId = getQueryString("departmentId");
-			console.log("取到的课程分类id为：" + departmentId);
 		</script>
 	</body>
 
