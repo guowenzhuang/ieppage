@@ -167,7 +167,7 @@
 
 							</h4>
 							<div class="pull-right course-infobox-follow" data-follow-url="/courses/1/follow" data-unfollow-url="/courses/1/unfollow">
-								
+
 								<span>浏览量</span>
 								<span class="course-infobox-followers">{{courPageview}}人</span>
 								<i class="fa fa-star-o" data-next="/login?next=%2Fcourses%2F1"></i>
@@ -703,12 +703,14 @@
 			var menu = new Vue({
 				el: "#details",
 				mounted: function() {
-					this.chaxun()
-					this.people()
+					this.getQueryString("courId");
+					this.chaxun();
+					this.people();
+					
 				},
 				data: {
 					//urlPre: "http://127.0.0.1:8060",
-					courId: 1,
+					courId:"",
 					sid: "1",
 					//courId: "",
 					courName: "",
@@ -726,11 +728,20 @@
 					courPropaedeutics: "",
 					courIsputaway: "",
 					courCommentcount: "",
-					renshu:"",
-					baoming:"立即参加"
+					renshu: "",
+					baoming: "立即参加"
 
 				},
 				methods: {
+					getQueryString: function(name) {
+						var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+						var r = window.location.search.substr(1).match(reg);
+						if (r != null) {					
+							this.courId = decodeURIComponent(r[2]);						
+							//console.log(this.courId+"this.courId");
+						}
+						return '';
+					},
 					add1: function() {
 						//alert("点击");
 						axios({
@@ -751,11 +762,11 @@
 							console.log(res.data.message);
 							this.people();
 							//this.courId = res.data;						
-							if(res.data.success==true){							
-								this.baoming=res.data.message;
-								
-							}else{
-								this.baoming=res.data.message;
+							if (res.data.success == true) {
+								this.baoming = res.data.message;
+
+							} else {
+								this.baoming = res.data.message;
 							}
 						})
 					},
@@ -774,36 +785,37 @@
 							}
 						}).then(res => {
 							//http://localhost/ieppage/student/curricular/courses/show.html
-							res=res.data[0];
+							res = res.data[0];
 							console.log(res);
 							console.log(res.courContent);
 							this.courName = res.courName;
-							this.courContent=res.courContent;
-							this.courDetails=res.courDetails;
-							this.courTarget=res.courTarget;
-							this.courResources=res.courResources;
-							this.courPropaedeutics=res.courPropaedeutics;
-							this.courPageview=res.courPageview
+							this.courContent = res.courContent;
+							this.courDetails = res.courDetails;
+							this.courTarget = res.courTarget;
+							this.courResources = res.courResources;
+							this.courPropaedeutics = res.courPropaedeutics;
+							this.courPageview = res.courPageview
 						})
-					},people: function(){
+					},
+					people: function() {
 						axios({
-							method:'get',
-							url:`/api/student/studentPart/querypeople`,
+							method: 'get',
+							url: `/api/student/studentPart/querypeople`,
 							params: {
-								cid:this.courId									
-								},							
-								headers: {
-									"Authorization": "bearer " +
-										"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiXSwiZXhwIjoxNTQ1MDI1OTU2LCJhdXRob3JpdGllcyI6W3siYXV0aG9yaXR5IjoiUk9MRV_lrabnlJ8ifSx7ImF1dGhvcml0eSI6Iua1i-ivleadg-mZkCJ9XSwianRpIjoiM2IyZmFjODgtYWExZi00MzU3LThlNTAtNjQ1OWI4YzkwZGE5IiwiY2xpZW50X2lkIjoiaWVwIiwiaW5mbyI6eyJpZCI6IjkzNTc1OTNlLTAyZGMtNDdhYi1iMzA0LTkxMGUzNDExYTg5NyIsIm5hbWUiOiLlvKDkuIkifX0.V6Gw0X4KWyAJisY8bge3FME2r03eHPN8Q5s7zEnLq3I",
-								}
-							}).then(res => {
-								//http://localhost/ieppage/student/curricular/courses/show.html
-								res=res.data;
-								this.renshu=res;
-								console.log(res);
-							
-														
-							})
+								cid: this.courId
+							},
+							headers: {
+								"Authorization": "bearer " +
+									"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiXSwiZXhwIjoxNTQ1MDI1OTU2LCJhdXRob3JpdGllcyI6W3siYXV0aG9yaXR5IjoiUk9MRV_lrabnlJ8ifSx7ImF1dGhvcml0eSI6Iua1i-ivleadg-mZkCJ9XSwianRpIjoiM2IyZmFjODgtYWExZi00MzU3LThlNTAtNjQ1OWI4YzkwZGE5IiwiY2xpZW50X2lkIjoiaWVwIiwiaW5mbyI6eyJpZCI6IjkzNTc1OTNlLTAyZGMtNDdhYi1iMzA0LTkxMGUzNDExYTg5NyIsIm5hbWUiOiLlvKDkuIkifX0.V6Gw0X4KWyAJisY8bge3FME2r03eHPN8Q5s7zEnLq3I",
+							}
+						}).then(res => {
+							//http://localhost/ieppage/student/curricular/courses/show.html
+							res = res.data;
+							this.renshu = res;
+							console.log(res);
+
+
+						})
 					}
 				}
 
