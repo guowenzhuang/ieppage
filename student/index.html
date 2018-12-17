@@ -20,7 +20,7 @@
 
 		<!-- 顶部 -->
 		<div class="width100 float_l height490 img_backg1">
-			<div class="width100 float_l height80 line_hei80 backg_gray">
+			<div class="width100 float_l height80 line_hei80">
 
 				<!-- 顶部左边 -->
 				<div class="float_l">
@@ -148,7 +148,6 @@
 				</div>
 
 				<div id="tuijian" class="width100 float_l">
-
 					<el-row>
 						<el-col :span="6" v-for="(o, index) in 2" :key="o" :offset="index > 0 ? 2 : 0">
 							<el-card :body-style="{ padding: '0px' }">
@@ -188,13 +187,15 @@
 				},
 				methods: {
 					queryTuiJian: function() {
+						var wz=02;
 						axios({
 							method: 'get',
 							url: '/api/student/home/queryTuiJian',
+							data:wz
 						}).then(res => {
 							console.log(res.data.success);
 							console.log(res.data.message);
-							this.recommended=res.data.message;
+							//this.recommended=res.data.message;
 						})
 					}
 				}
