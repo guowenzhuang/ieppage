@@ -11,6 +11,10 @@
         .el-main {
             padding-top: 0;
         }
+        .el-message-box__wrapper {
+            bottom: auto;
+            top:80px;
+        }
     </style>
 </head>
 <body>
@@ -51,6 +55,19 @@
                         <template slot-scope="scope">
                             <el-button type="text" @click="setModuleShow(scope.row)">设置模块</el-button>
                         </template>
+                    </el-table-column>
+                    <el-table-column
+                            label="权限操作">
+                        <template slot-scope="scope">
+                            <el-button type="text" @click="setPermissionShow(scope.row)">设置权限</el-button>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            label="角色操作">
+                        <template slot-scope="scope">
+                            <el-button type="text" @click="deleteRole(scope.row)">删除</el-button>
+                        </template>
+                    </el-table-column>
                 </el-table>
             </el-row>
             <el-row type="flex" justify="center">
@@ -69,13 +86,30 @@
                 title="设置模块"
                 :visible.sync="module.show">
             <el-tree
+                    ref="moduleTree"
                     show-checkbox
                     check-strictly
                     node-key="id"
                     :data="module.data"
                     :props="module.props"
                     :default-checked-keys="module.checkIds"
+                    @check-change="treeCheck"
             ></el-tree>
+            <el-button @click="setModules">确定</el-button>
+            <el-button @click="module.show=false">取消</el-button>
+        </el-dialog>
+
+        <el-dialog
+                :title="add.title"
+                :visible.sync="add.show">
+            <el-form  :rules="addRules" ref="addForm" :model="add" label-position="left" label-width="80px">
+                <el-form-item prop="name" label="角色名称">
+                    <el-input v-model="add.name"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary"  @click="addRole">新增</el-button>
+                </el-form-item>
+            </el-form>
         </el-dialog>
     </div>
 </div>
@@ -86,6 +120,11 @@
     const main = {
         data() {
             return {
+                addRules:{
+                    name: [
+                        { required: true, message: '请输入用户名称', trigger: 'blur' },
+                    ],
+                },
                 //角色数据
                 roleData: [],
                 total: 0,
@@ -98,18 +137,107 @@
                 //当前模块
                 module: {
                     show: false,
-                    data:[],
-                    checkIds:[],
-                    props:{
+                    data: [],
+                    checkIds: [],
+                    props: {
                         children: 'children',
                         label: 'name'
                     }
                 },
                 activeData: {},
+                add:{
+                    title:'',
+                    show:false,
+                    name:''
+                }
             }
         },
         methods: {
-            //角色框显示
+            //角色删除
+            deleteRole(row){
+                this.$confirm('此操作将永久删除该角色, 是否继续?', '提示', {
+                    cancelButtonText: '取消',
+                    confirmButtonText: '确定',
+                    type: 'warning',
+                }).then(() => {
+                    axios({
+                        method:"delete",
+                        url:'/api/admin/role/'+row.id
+                    })
+                        .then(res=>{
+                            res=res.data;
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功!'
+                            });
+                            this.queryRole();
+                        })
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            //权限框显示
+            setPermissionShow(row){},
+            //模块树单击事件
+            treeCheck(row, isCheck) {
+                let m = this.$refs.moduleTree;
+                if (isCheck) {
+                    m.setChecked(row.parentId, true, false);
+                    //选中所有子节点
+                    //TODO 有bug
+                  /*  let chidren = row.children;
+                    chidren.forEach(item => {
+                        m.setChecked(item, true, false);
+                    })*/
+                } else {
+                    //如果子节点全部没有选中 父节点也取消勾选
+                    let parentNode = m.getNode(row.parentId);
+                    if (parentNode != null) {
+                        let chidren = parentNode.childNodes;
+                        let isQx = false;
+                        chidren.forEach(item => {
+                            if (item.checked) {
+                                isQx = true;
+                            }
+                        });
+                        m.setChecked(row.parentId, isQx, false);
+                    }
+                    //取消所有子节点
+                    let chidren = row.children;
+                    chidren.forEach(item => {
+                        m.setChecked(item, false, false);
+                    })
+                }
+            },
+            //角色设置模块
+            setModules() {
+                let treeData = this.$refs.moduleTree.getCheckedNodes(false, true);
+                let midS=treeData.map(item=>{
+                    return item.id;
+                });
+                let params=new URLSearchParams();
+                params.append("mids",midS.join(","));
+                axios({
+                    method:'post',
+                    url:"/api/admin/role/setModule/"+this.activeData.id,
+                    data:params
+                }).then(res=>{
+                    res=res.data;
+                    if(res.success){
+                        this.$message({
+                            showClose: true,
+                            message: '设置成功',
+                            type: 'success'
+                        });
+                        this.module.show = false;
+                    }
+                })
+            },
+            //模块框显示
             setModuleShow(row) {
                 this.activeData = row;
                 axios({
@@ -119,15 +247,44 @@
                         roleid: row.id
                     }
                 }).then(res => {
-                    res=res.data
-                    this.module.data=res.modules
-                    this.module.checkIds=res.mids;
-                    this.module.show=true
+                    res = res.data
+                    this.module.data = res.modules;
+                    this.module.checkIds = res.mids;
+                    this.module.show = true
                 })
+            },
+            //新增角色
+            addRole(){
+               this.$refs['addForm'].validate((valid) => {
+                   if (valid) {
+                       let params=new URLSearchParams();
+                       params.append("name",this.add.name);
+                       axios({
+                           method:'post',
+                           url:'/api/admin/role',
+                           data:params,
+                       }).then(res=>{
+                           res=res.data;
+                           if(res.success){
+                               this.queryRole();
+                               this.add.show=false;
+                               this.$refs['addForm'].resetFields();
+                           }
+                       })
+                   } else {
+                       this.$message({
+                           showClose: true,
+                           message: '新增失败',
+                           type: 'error'
+                       });
+                       return false;
+                   }
+               });
             },
             //新增角色框显示
             addRoleShow() {
-
+                this.add.title="新增角色";
+                this.add.show=true;
             },
             search() {
                 this.query.page = 1;

@@ -3,8 +3,317 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="../teacher/js/elementui/index.css">
+    <script src="../teacher/js/vue.js"></script>
+    <script src="../teacher/js/elementui/index.js"></script>
+    <script src="../teacher/js/axios.min.js"></script>
+    <style>
+        .el-main {
+            padding-top: 0;
+        }
+
+        .el-message-box__wrapper {
+            bottom: auto;
+            top: 80px;
+        }
+    </style>
 </head>
 <body>
-    模块管理
+<div id="app">
+    <el-container>
+        <el-main>
+            <el-row :gutter="20" type="flex">
+                <el-col :span="3">
+                    <div>&nbsp;</div>
+                    <el-button type="primary" @click="addModuleShow">新增模块</el-button>
+                </el-col>
+                <el-col :span="2">
+                    <div>&nbsp;</div>
+                    <el-button icon="el-icon-refresh" type="primary" onclick=" window.location.reload();">刷新</el-button>
+                </el-col>
+            </el-row>
+            <el-row :gutter="20" style="margin-top: 20px;">
+                <el-table
+                        :data="moduleData">
+                    <el-table-column type="expand">
+                        <template slot-scope="props">
+                            <my-table :module-data="props.row.children"></my-table>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            label="模块名称"
+                            prop="name">
+                    </el-table-column>
+                    <el-table-column
+                            label="路径"
+                            prop="path">
+                    </el-table-column>
+                    <el-table-column
+                            label="权重"
+                            prop="weight">
+                    </el-table-column>
+                    <el-table-column
+                            label="模块操作">
+                        <template slot-scope="scope">
+                            <el-button type="text" @click="updateModuleShow(scope.row)">修改模块</el-button>
+                            <el-button type="text" @click="deleteModule(scope.row.id)">删除模块</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </el-row>
+        </el-main>
+    </el-container>
+    <div>
+        <el-dialog
+                :title="add.title"
+                :visible.sync="add.show">
+            <el-form :rules="addRules" ref="addForm" :model="add" label-position="left" label-width="80px">
+                <el-form-item prop="name" label="模块名称">
+                    <el-input v-model="add.name"></el-input>
+                </el-form-item>
+                <el-form-item prop="path" label="模块路径">
+                    <el-input v-model="add.path"></el-input>
+                </el-form-item>
+                <el-form-item prop="weight" label="模块权重">
+                    <el-input-number v-model="add.weight" :min="1" :max="100"></el-input-number>
+                </el-form-item>
+                <el-form-item prop="parentId" label="父级模块">
+                    <el-cascader
+                            :options="add.moduleCascader"
+                            change-on-select
+                            v-model="add.parentId"></el-cascader>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="addModule" v-if="add.title=='新增模块'">新增</el-button>
+             <el-button type="primary" @click="updateModule" v-else-if="add.title=='修改模块'">修改</el-button>
+          </span>
+        </el-dialog>
+
+    </div>
+</div>
 </body>
+<script>
+    axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
+    axios.defaults.headers.common['Content-Type'] = 'application/json;charset=UTF-8';
+    Vue.component('my-table', {
+        props: {
+            moduleData: []
+        },
+        template: `
+           <el-table :data="moduleData">
+                         <el-table-column type="expand">
+                            <template slot-scope="props">
+                            <my-table  :module-data="props.row.children"></my-table>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                label="模块名称"
+                                prop="name">
+                        </el-table-column>
+                        <el-table-column
+                                label="路径"
+                                prop="path">
+                        </el-table-column>
+                        <el-table-column
+                                label="权重"
+                                prop="weight">
+                        </el-table-column>
+                         <el-table-column
+                            label="模块操作">
+                        <template slot-scope="scope">
+                            <el-button type="text" @click="updateModuleShow(scope.row)">修改模块</el-button>
+                            <el-button type="text" @click="deleteModule(scope.row.id)">删除模块</el-button>
+                        </template>
+                    </el-table-column>
+                    </el-table>
+        `,
+        methods: {
+            updateModuleShow(row) {
+                v.updateModuleShow(row);
+            },
+            deleteModule(id){
+                v.deleteModule(id);
+            }
+        }
+    });
+    let main = {
+        data() {
+            return {
+                moduleData: [],
+                add: {
+                    title: '',
+                    show: false,
+                    name: '',
+                    parentId: [],
+                    path: '',
+                    weight: 0,
+                    moduleCascader: []
+                },
+                addRules: {
+                    name: [
+                        {required: true, message: '请输入用户名称', trigger: 'blur'},
+                    ],
+                    parentId: [
+                        {required: true, message: '请输入用户名称', trigger: 'blur'},
+                    ],
+                    path: [
+                        {required: true, message: '请输入用户名称', trigger: 'blur'},
+                    ],
+                    weight: [
+                        {required: true, message: '请输入用户名称', trigger: 'blur'},
+                    ],
+                },
+                activeData: {},
+            }
+        },
+        methods: {
+            deleteModule(id){
+                this.$confirm('此操作将永久删除该模块, 是否继续?', '提示', {
+                    cancelButtonText: '取消',
+                    confirmButtonText: '确定',
+                    type: 'warning',
+                }).then(() => {
+                    axios({
+                        method:"delete",
+                        url:'/api/admin/module/'+id
+                    })
+                        .then(res=>{
+                            res=res.data;
+                            this.$message({
+                                type: 'success',
+                                message: res.message
+                            });
+                            this.queryModule();
+                        })
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            //修改模块
+            updateModule(){
+                this.$refs['addForm'].validate((valid) => {
+                    if (valid) {
+                        let params = new URLSearchParams();
+                        params.append("id", this.activeData.id);
+                        params.append("name", this.add.name);
+                        let parentId = this.add.parentId[this.add.parentId.length - 1];
+                        params.append("parentId", parentId == null ? 0 : parentId);
+                        params.append("path", this.add.path);
+                        params.append("weight", this.add.weight);
+                        axios({
+                            method: 'put',
+                            url: '/api/admin/module',
+                            data: params,
+                        }).then(res => {
+                            res = res.data;
+                            if (res.success) {
+                                this.queryModule();
+                                this.add.show = false;
+                                this.$refs['addForm'].resetFields();
+                            }
+                        })
+                    } else {
+                        this.$message({
+                            showClose: true,
+                            message: '修改失败',
+                            type: 'error'
+                        });
+                        return false;
+                    }
+                });
+            },
+            //查询模块Cascader
+            queryModuleCascader(fun) {
+                if (this.add.moduleCascader.length == 0) {
+                    axios({
+                        method: 'get',
+                        url: '/api/admin/module/getToCascader'
+                    }).then(res => {
+                        res = res.data;
+                        this.add.moduleCascader = res;
+                        fun();
+                    });
+                } else {
+                    fun();
+                }
+
+            },
+            updateModuleShow(row) {
+                this.activeData = row;
+                this.queryModuleCascader(() => {
+                    this.add.name = row.name;
+                    this.add.path = row.path;
+                    this.add.weight = row.weight;
+                    axios({
+                        method:'get',
+                        url:'/api/admin/module/getParentId/'+row.id
+                    }).then(res=>{
+                        res=res.data;
+                        this.add.parentId = res.slice(0,res.length-1);
+                        this.add.title = "修改模块";
+                        this.add.show = true;
+                    })
+
+                })
+            },
+            addModule() {
+                this.$refs['addForm'].validate((valid) => {
+                    if (valid) {
+                        let params = new URLSearchParams();
+                        params.append("name", this.add.name);
+                        let parentId = this.add.parentId[this.add.parentId.length - 1];
+                        params.append("parentId", parentId == null ? 0 : parentId);
+                        params.append("path", this.add.path);
+                        params.append("weight", this.add.weight);
+                        axios({
+                            method: 'post',
+                            url: '/api/admin/module',
+                            data: params,
+                        }).then(res => {
+                            res = res.data;
+                            if (res.success) {
+                                this.queryModule();
+                                this.add.show = false;
+                                this.$refs['addForm'].resetFields();
+                            }
+                        })
+                    } else {
+                        this.$message({
+                            showClose: true,
+                            message: '新增失败',
+                            type: 'error'
+                        });
+                        return false;
+                    }
+                });
+            },
+            //新增模块
+            addModuleShow() {
+                this.queryModuleCascader(() => {
+                    this.add.title = "新增模块";
+                    this.add.show = true;
+                })
+            },
+            queryModule() {
+                axios({
+                    method: 'get',
+                    url: '/api/admin/module'
+                }).then(res => {
+                    res = res.data;
+                    this.moduleData = res;
+                })
+            }
+        },
+        mounted() {
+            this.queryModule();
+        }
+    };
+    const Component = Vue.extend(main);
+    let v = new Component().$mount('#app')
+</script>
 </html>

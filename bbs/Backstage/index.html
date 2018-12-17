@@ -3,13 +3,12 @@
 	<head>
 		<meta charset="utf-8">
 		<title>贴吧管理</title>
-		<link rel="stylesheet" type="text/css" href="css/iview.css">
-		<script src="js/vue.min.js"></script>
-		<script src="js/iview.min.js"></script>
-		<link rel="stylesheet" type="text/css" href="css/index.css" />
-		<script src="js/index.js"></script>
-		<script src="js/axios.js"></script>
-
+		<link rel="stylesheet" type="text/css" href="../css/iview.css">
+		<script src="../js/vue.min.js"></script>
+		<script src="../js/iview.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="../css/index.css" />
+		<script src="../js/index.js"></script>
+		<script src="../js/axios.js"></script>
 
 	</head>
 	<body>
@@ -109,7 +108,7 @@
 						</span>
 					</el-dialog>
 
-					<el-pagination class="fy" layout="prev, pager, next" @current-change="current_change" :total="total" background>
+					<el-pagination class="fy" layout="prev, pager, next" @current-change="current_change" :total="total" :page-size="pagesize" background>
 					</el-pagination>
 				</el-main>
 			</el-container>
