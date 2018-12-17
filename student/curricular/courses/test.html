@@ -11,8 +11,15 @@
 <div id="app">
     <ol>
         <li v-for="site in sites">
-            {{ site.name }}
+            {{ site.courName }}
         </li>
+    </ol>
+    <ol>
+        <!--<li>
+            pageSize:= > {{ pageable.pageSize }}
+
+        </li>-->
+
     </ol>
 </div>
 
@@ -27,16 +34,26 @@
         },
         methods:{
             queryKeicheng:function(){
-                axios({
-                    method: 'get',
-                    url:'/api/student/curricularTaxonomy/getCurricularTaxonomy'
-                }).then(res =>{
+                axios.get(
+
+                    'api/student/curricularTaxonomy/getCourse',
+                    {
+                        page:1,
+                        pageSize:10
+                    }
+                ).then(res =>{
                     console.log(res);
-                    this.sites=res.data.message;
+                    this.sites=res.data.message.content;
+
                 })
             }
         },
     })
+    /**
+     *
+     * /api/student/curricularTaxonomy/getCurricularTaxonomy
+     */
+    /*/api/student/curricularTaxonomy/getCourse?depId=9357593e-02dc-47ab-b304-910e3511a897&page=1&size=10*/
     </script>
 </body>
 </html>

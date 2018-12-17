@@ -3,9 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>question 题库管理</title>
-    <link rel="stylesheet" type="text/css" href="css/iview.css">
     <script src="js/vue.min.js"></script>
-    <script src="js/iview.min.js"></script>
     <link rel="stylesheet" type="text/css" href="css/index.css"/>
     <script src="js/index.js"></script>
     <script src="js/axios.js"></script>
@@ -14,17 +12,17 @@
 </head>
 <body>
 
-<!--<h1 align="center">题库管理</h1>
-<br>
-<hr>
-<br><br><br>-->
-
-
 <div id="app" align="center">
-    <div align="center">
 
-        <!--条件查询的条件输入框-->
-        <el-button type="primary" icon="el-icon-plus" @click="dialogVisible = true" size="small" round>新增试题
+
+    
+
+
+    <!--条件查询的条件输入框-->
+    <div align="center">
+        <a href="examcomposition.html">哈哈哈</a>
+        <!--<el-button type="primary" icon="el-icon-plus" @click="querycourse()" size="small" round>ccc</el-button>-->
+        <el-button type="primary" icon="el-icon-plus" @click="dialogVisibletype = true" size="small" round>新增试题
         </el-button>
         <font size="4">题干:</font>
         <el-input v-model="rubric" placeholder="请输入内容" style="width: 150px;" size="small"></el-input>
@@ -34,18 +32,26 @@
                        :disabled="item.disabled">
             </el-option>
         </el-select>
-        <font size="4">课程:</font>
-        <el-input v-model="course" placeholder="请输入内容" style="width: 120px;" size="small"></el-input>
-        <font size="4">章节:</font>
-        <el-input v-model="section" placeholder="请输入内容" style="width: 120px;" size="small"></el-input>
 
-        <el-button type="primary" icon="el-icon-search" @click="query()" size="small" round>搜索</el-button>
+        <font size="4">课程:</font>
+        <el-select v-model="typecc3" placeholder="请选择" @change="querycourse" size="small">
+            <el-option v-for="item in options3" :key="item.courId" :label="item.courName" :value="item.courId"
+                       :disabled="item.disabled">
+            </el-option>
+        </el-select>
+
+        <!--<el-input v-model="course" placeholder="请输入内容" style="width: 120px;" size="small"></el-input>-->
+        <!--<font size="4">章节:</font>
+        <el-input v-model="section" placeholder="请输入内容" style="width: 120px;" size="small"></el-input>-->
+
+        <el-button type="primary" icon="el-icon-search" @click="query()" v-on:keyup.13="submit" size="small" round>
+            搜索
+        </el-button>
     </div>
 
-
+    <!--element表格-->
     <div style="width: 100%;">
         <template>
-            <!--element表格-->
             <el-table :data="rubricList" style=" width: auto">
                 <!--<el-table-column prop="id" label="序号" :show-overflow-tooltip="true">
                 </el-table-column>-->
@@ -61,10 +67,10 @@
                 </el-table-column>
                 <el-table-column prop="D" label="选项D" :show-overflow-tooltip="true">
                 </el-table-column>
-                <el-table-column prop="sectionId" label="章节id" :show-overflow-tooltip="true">
-                </el-table-column>
-                <el-table-column prop="courseId" label="课程id" :show-overflow-tooltip="true">
-                </el-table-column>
+                <!-- <el-table-column prop="sectionId" label="章节id" :show-overflow-tooltip="true">
+                 </el-table-column>
+                 <el-table-column prop="courseId" label="课程id" :show-overflow-tooltip="true">
+                 </el-table-column>-->
                 <el-table-column prop="answerId" label="答案id" :show-overflow-tooltip="true">
                 </el-table-column>
 
@@ -81,20 +87,26 @@
         </template>
     </div>
 
-    <!--新增试题对话框-->
-    <el-dialog title="新增试题" :visible.sync="dialogVisible" width="60%" :before-close="handleClose">
+
+    <!--选择新增的试题类型-->
+    <el-dialog title="选择新增题型" :visible.sync="dialogVisibletype" width="60%" :before-close="handleClose">
+        <el-button type="primary" icon="el-icon-plus" @click="dialogVisible = true" size="small" round>新增单选题
+        </el-button>
+        <el-button type="primary" icon="el-icon-plus" @click="dialogVisibleduo = true" size="small" round>新增多选题
+        </el-button>
+        <el-button type="primary" icon="el-icon-plus" @click="dialogVisibletk = true" size="small" round>新增填空题
+        </el-button>
+        <el-button type="primary" icon="el-icon-plus" @click="dialogVisiblepd = true" size="small" round>新增判断题
+        </el-button>
+    </el-dialog>
+
+
+    <!--新增单选题对话框-->
+    <el-dialog title="新增单选题" :visible.sync="dialogVisible" width="60%" :before-close="handleClose">
 
         <el-form ref="form" :model="form" label-width="80px">
             <el-form-item label="题干内容:">
                 <el-input v-model="addrubric"></el-input>
-            </el-form-item>
-
-            <el-form-item label="试题类型:">
-                <el-select v-model="rubrictype1" placeholder="请选择" size="small">
-                    <el-option v-for="item in options2" :key="item.value" :label="item.label" :value="item.value"
-                               :disabled="item.disabled">
-                    </el-option>
-                </el-select>
             </el-form-item>
 
             <el-form-item label="答案A:">
@@ -117,9 +129,114 @@
                 <el-switch v-model="form" active-value="D" inactive-value=""></el-switch>
             </el-form-item>
 
+            <font size="4">课程:</font>
+            <el-select v-model="typedan" placeholder="请选择" @change="querycourse" size="small">
+                <el-option v-for="item in options3" :key="item.courId" :label="item.courName" :value="item.courId"
+                           :disabled="item.disabled">
+                </el-option>
+            </el-select>
+
 
             <el-form-item>
                 <el-button type="primary" @click="addrudic()">立即创建</el-button>
+                <el-button @click="addquxiao()">取消</el-button>
+            </el-form-item>
+        </el-form>
+
+    </el-dialog>
+
+    <!--新增多选题-->
+    <el-dialog title="新增多选题" :visible.sync="dialogVisibleduo" width="60%" :before-close="handleClose">
+
+        <el-form ref="formduo" :model="formduo" label-width="80px">
+            <el-form-item label="题干内容:">
+                <el-input v-model="duoaddrubric"></el-input>
+            </el-form-item>
+
+            <el-form-item label="答案A:">
+                <el-input v-model="duoanswerA" style="width:80%"></el-input>
+                <el-switch v-model="duoform1" active-value="A" inactive-value=""></el-switch>
+            </el-form-item>
+
+            <el-form-item label="答案B">
+                <el-input v-model="duoanswerB" style="width:80%"></el-input>
+                <el-switch v-model="duoform2" active-value="B" inactive-value=""></el-switch>
+            </el-form-item>
+
+            <el-form-item label="答案C">
+                <el-input v-model="duoanswerC" style="width:80%"></el-input>
+                <el-switch v-model="duoform3" active-value="C" inactive-value=""></el-switch>
+            </el-form-item>
+
+            <el-form-item label="答案D">
+                <el-input v-model="duoanswerD" style="width:80%"></el-input>
+                <el-switch v-model="duoform4" active-value="D" inactive-value=""></el-switch>
+            </el-form-item>
+
+            <font size="4">课程:</font>
+            <el-select v-model="typeduo" placeholder="请选择" @change="querycourse" size="small">
+                <el-option v-for="item in options3" :key="item.courId" :label="item.courName" :value="item.courId"
+                           :disabled="item.disabled">
+                </el-option>
+            </el-select>
+
+
+            <el-form-item>
+                <el-button type="primary" @click="addrudicduo()">立即创建</el-button>
+                <el-button @click="addquxiao()">取消</el-button>
+            </el-form-item>
+        </el-form>
+
+    </el-dialog>
+
+    <!--新增填空题对话框-->
+    <el-dialog title="新增填空题" :visible.sync="dialogVisibletk" width="60%" :before-close="handleClose">
+
+        <el-form ref="form" :model="form" label-width="80px">
+
+            <el-form-item label="题干内容:">
+                <el-input v-model="tkaddrubric"></el-input>
+            </el-form-item>
+
+            <el-form-item label="正确答案:">
+                <el-input v-model="tkaddanswer"></el-input>
+            </el-form-item>
+
+            <font size="4">课程:</font>
+            <el-select v-model="typebletk" placeholder="请选择" @change="querycourse" size="small">
+                <el-option v-for="item in options3" :key="item.courId" :label="item.courName" :value="item.courId"
+                           :disabled="item.disabled">
+                </el-option>
+            </el-select>
+
+            <el-form-item>
+                <el-button type="primary" @click="tkaddrudic()">立即创建</el-button>
+                <el-button @click="addquxiao()">取消</el-button>
+            </el-form-item>
+        </el-form>
+
+    </el-dialog>
+
+    <!--新增判断题对话框-->
+    <el-dialog title="新增判断题" :visible.sync="dialogVisiblepd" width="60%" :before-close="handleClose">
+
+        <el-form ref="form" :model="form" label-width="80px">
+            <el-form-item label="题干内容:">
+                <el-input v-model="pdaddrubric"></el-input>
+            </el-form-item>
+
+            <el-switch v-model="pdvalue3" active-text="正确" inactive-text="错误">
+            </el-switch>
+
+            <font size="4">课程:</font>
+            <el-select v-model="typejudge" placeholder="请选择" @change="querycourse" size="small">
+                <el-option v-for="item in options3" :key="item.courId" :label="item.courName" :value="item.courId"
+                           :disabled="item.disabled">
+                </el-option>
+            </el-select>
+
+            <el-form-item>
+                <el-button type="primary" @click="pdaddrudic()">立即创建</el-button>
                 <el-button @click="addquxiao()">取消</el-button>
             </el-form-item>
         </el-form>
@@ -149,7 +266,6 @@
 
     </el-dialog>
 
-
     <!--修改判断题的对话框-->
     <el-dialog title="修改判断题" :visible.sync="dialogVisiblejudge" width="60%" :before-close="handleClose">
 
@@ -159,7 +275,6 @@
             </el-form-item>
 
             <el-switch v-model="value3" active-text="正确" inactive-text="错误">
-
             </el-switch>
 
 
@@ -171,9 +286,8 @@
         </el-form>
     </el-dialog>
 
-
-    <!--修改选择题的对话框-->
-    <el-dialog title="修改选择题" :visible.sync="dialogVisibleselect" width="60%" :before-close="handleClose">
+    <!--修改单选题的对话框-->
+    <el-dialog title="修改单选题" :visible.sync="dialogVisibleselect" width="60%" :before-close="handleClose">
         <el-form ref="updateform" :model="updateform" label-width="80px">
             <el-form-item label="题干内容:">
                 <el-input v-model="inputupdate"></el-input>
@@ -209,7 +323,44 @@
 
     </el-dialog>
 
+    <!--修改多选题的对话框-->
+    <el-dialog title="修改多选题" :visible.sync="updatedialogVisibleduo" width="60%" :before-close="handleClose">
+        <el-form ref="duoupdateform" :model="duoupdateform" label-width="80px">
+            <el-form-item label="题干内容:">
+                <el-input v-model="duoinputupdate"></el-input>
+            </el-form-item>
 
+            <el-form-item label="答案A:">
+                <el-input v-model="duoinputA" style="width:80%"></el-input>
+                <el-switch v-model="duoupdateform1" active-value="A" inactive-value=""></el-switch>
+            </el-form-item>
+
+            <el-form-item label="答案B">
+                <el-input v-model="duoinputB" style="width:80%"></el-input>
+                <el-switch v-model="duoupdateform2" active-value="B" inactive-value=""></el-switch>
+            </el-form-item>
+
+            <el-form-item label="答案C">
+                <el-input v-model="duoinputC" style="width:80%"></el-input>
+                <el-switch v-model="duoupdateform3" active-value="C" inactive-value=""></el-switch>
+            </el-form-item>
+
+            <el-form-item label="答案D">
+                <el-input v-model="duoinputD" style="width:80%"></el-input>
+                <el-switch v-model="duoupdateform4" active-value="D" inactive-value=""></el-switch>
+            </el-form-item>
+
+
+            <el-form-item>
+                <el-button type="primary" @click="updaterubric()">保存</el-button>
+                <el-button @click="updatedialogVisibleduo = false">取消</el-button>
+            </el-form-item>
+        </el-form>
+
+    </el-dialog>
+
+
+    <!--分页-->
     <el-pagination class="fy"
                    layout="prev, pager, next"
                    @current-change="current_change"
@@ -225,40 +376,66 @@
 
 <script>
 
+    /*自动在请求中添加请求头*/
     axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
+    /*获取登陆人的userid*/
+    var userid = sessionStorage.getItem("userid");
 
-
+    /*new出一个新的vue虚拟DOM,操作页面(使用vue必须要的)*/
     var Main = new Vue({
         el: '#app',
 
         /*初始化方法放在这里面(相当于页面加载事件)*/
         mounted: function () {
-
             this.query();
+            this.querycourse();
         },
 
         /*数据*/
         data() {
             return {
 
-                updateform: {
-                    inputupdate: '',
-                    inputA: '',
-                    inputB: '',
-                    inputC: '',
-                    inputD: '',
-                    updateform: true,
-                },
-                form: {
-                    addrubric: '',
-                    rubrictype1: '',
-                    answerA: "",
-                    answerB: "",
-                    answerC: "",
-                    answerD: "",
-                    form: true,
-                },
+                updateform: {},
+                inputupdate: '',
+                inputA: '',
+                inputB: '',
+                inputC: '',
+                inputD: '',
 
+
+                updateform: true,
+                form: {},
+                addrubric: '',
+                answerA: "",
+                answerB: "",
+                answerC: "",
+                answerD: "",
+                form: true,
+
+
+                formduo: {},
+                duoaddrubric: "",
+                duoanswerA: "",
+                duoanswerB: "",
+                duoanswerC: "",
+                duoanswerD: "",
+                duoform1: "",
+                duoform2: "",
+                duoform3: "",
+                duoform4: "",
+
+                duoupdateform: {},
+                duoinputupdate: "",
+                duoinputA: '',
+                duoinputB: '',
+                duoinputC: '',
+                duoinputD: '',
+                duoupdateform1: "",
+                duoupdateform2: "",
+                duoupdateform3: "",
+                duoupdateform4: "",
+
+                options3: [],
 
                 options2: [
                     {
@@ -266,9 +443,13 @@
                         label: '请选择'
                     },
                     {
-                        value: '选择题',
-                        label: '选择题'
+                        value: '单选题',
+                        label: '单择题'
                     }, {
+                        value: '多选题',
+                        label: '多选题'
+                    }
+                    , {
                         value: '填空题',
                         label: '填空题'
                     }, {
@@ -276,13 +457,27 @@
                         label: '判断题'
                     }],
                 value: '',
+
                 user: {},
                 dialogVisibleselect: false,
                 dialogVisiblejudge: false,
                 dialogVisiblepack: false,
+                dialogVisibletype: false,
+                dialogVisibletk: false,
+                dialogVisiblepd: false,
+                dialogVisibleduo: false,
+                updatedialogVisibleduo: false,
                 rubric: "",
                 typecc: "",
-                value3: '',
+                typecc3: "",
+
+                typebletk: "",
+                typeduo: "",
+                typedan: "",
+                typejudge: "",
+
+                pdvalue3: false,
+                value3: "",
                 course: "",
                 section: "",
                 dialogVisible: false,
@@ -297,20 +492,42 @@
         /*方法函数写在这里面*/
         methods: {
 
-            /*点击新增试题时触发*/
 
+            /*根据userid查询所拥有的课程*/
+            querycourse: function () {
+                axios({
+                    method: 'get',
+                    url: '/api/exam/rubric/getcourser',
+                    params: {
+                        teaId: userid,
+                    },
+
+                }).then(res => {
+                    res = res.data;
+                    this.options3 = res.message;
+
+                })
+
+
+            },
+
+
+            /*新增单选题方法*/
             addrudic() {
-
                 let params = new URLSearchParams();
-                params.append("rubrictype", this.rubrictype1)
-                params.append("answerid", this.form)
-                params.append("addrubric", this.addrubric)
-                params.append("answerA", this.answerA)
-                params.append("answerB", this.answerB)
-                params.append("answerC", this.answerC)
-                params.append("answerD", this.answerD)
+                params.append("rubrictype", "单选题");
+                params.append("userid", userid);
+                params.append("answerid", this.form);
+                params.append("addrubric", this.addrubric);
+                params.append("answerA", this.answerA);
+                params.append("answerB", this.answerB);
+                params.append("answerC", this.answerC);
+                params.append("answerD", this.answerD);
+                params.append("course", this.typedan);
+
+
                 //判断是否选中正确答案
-                if (this.answerD != null && this.answerC != null && this.answerB != null && this.answerA != null && this.addrubric != null && this.rubrictype1 != null) {
+                if (this.answerD != null && this.answerC != null && this.answerB != null && this.answerA != null && this.addrubric != null) {
 
 
                     if (this.form != true) {
@@ -324,7 +541,15 @@
                             if (res.success) {
 
                                 this.$notify({title: "成功", message: res.message, type: 'success'});
+                                /*关闭对话框,清除表单*/
                                 this.dialogVisible = false;
+                                this.addrubric = '';
+                                this.answerA = "";
+                                this.answerB = "";
+                                this.answerC = "";
+                                this.answerD = "";
+                                this.form = "";
+                                this.typedan = "";
                                 this.query();
 
 
@@ -344,29 +569,184 @@
                 }
 
 
-            },
+            }
+            ,
+
+            /*新增多选题方法*/
+            addrudicduo() {
+
+                let params = new URLSearchParams();
+                params.append("rubrictype", "多选题");
+                params.append("userid", userid);
+                params.append("answerid", this.duoform1 + this.duoform2 + this.duoform3 + this.duoform4);
+                params.append("addrubric", this.duoaddrubric);
+                params.append("answerA", this.duoanswerA);
+                params.append("answerB", this.duoanswerB);
+                params.append("answerC", this.duoanswerC);
+                params.append("answerD", this.duoanswerD);
+                params.append("course", this.typeduo);
+
+
+                //判断是否选中正确答案
+                if (this.duoanswerA != null && this.duoanswerB != null && this.duoanswerC != null && this.duoanswerD != null && this.duoaddrubric != null) {
+
+
+                    if (this.duoform1 + this.duoform2 + this.duoform3 + this.duoform4 != true) {
+                        axios({
+                            method: 'post',
+                            url: '/api/exam/rubric/addrubric',
+                            data: params,
+
+                        }).then(res => {
+                            res = res.data;
+                            if (res.success) {
+                                this.$notify({title: "成功", message: res.message, type: 'success'});
+                                /*关闭对话框,清除表单*/
+                                this.dialogVisibleduo = false;
+                                this.duoaddrubric = "";
+                                this.duoanswerA = "";
+                                this.duoanswerB = "";
+                                this.duoanswerC = "";
+                                this.duoanswerD = "";
+                                this.duoform1 = "";
+                                this.duoform2 = "";
+                                this.duoform3 = "";
+                                this.duoform4 = "";
+                                this.typeduo = "";
+                                this.query();
+
+                            } else {
+                                this.$notify.error({title: "失败", message: res.message})
+                            }
+                        })
+                    } else {
+                        this.$notify.error({title: "失败", message: "请选择正确答案"})
+                    }
+                }
+
+                else {
+                    this.$notify.error({title: "失败", message: "请填写完成试题信息"})
+                }
+
+            }
+            ,
+
+            /*新增填空题方法*/
+            tkaddrudic() {
+                let params = new URLSearchParams();
+                params.append("rubrictype", "填空题");
+                params.append("userid", userid);
+                params.append("answerid", this.tkaddanswer);
+                params.append("addrubric", this.tkaddrubric);
+                params.append("course", this.typebletk);
+
+
+                axios({
+                    method: 'post',
+                    url: '/api/exam/rubric/addrubric',
+                    data: params,
+
+                }).then(res => {
+                    res = res.data;
+                    if (res.success) {
+                        this.$notify({title: "成功", message: res.message, type: 'success'});
+                        /*关闭对话框,清除表单*/
+                        this.dialogVisibletk = false;
+                        this.tkaddrubric = "";
+                        this.tkaddanswer = "";
+                        this.typebletk = "";
+                        this.query();
+                    } else {
+                        this.$notify.error({title: "失败", message: res.message})
+                    }
+                })
+            }
+            ,
+
+            /*新增判断题方法*/
+            pdaddrudic() {
+                let params = new URLSearchParams();
+                params.append("rubrictype", "判断题");
+                params.append("userid", userid);
+                params.append("addrubric", this.pdaddrubric);
+                params.append("answerid", this.pdvalue3);
+                params.append("course", this.typejudge);
+
+
+                axios({
+                    method: 'post',
+                    url: '/api/exam/rubric/addrubric',
+                    data: params,
+
+                }).then(res => {
+                    res = res.data;
+                    if (res.success) {
+                        this.$notify({title: "成功", message: res.message, type: 'success'});
+                        this.dialogVisiblepd = false;
+                        this.pdvalue3 = false;
+                        this.pdaddrubric = "";
+                        this.typejudge = "";
+                        this.query();
+                    } else {
+                        this.$notify.error({title: "失败", message: res.message})
+                    }
+                })
+
+
+            }
+            ,
+
+            /*新增取消按钮*/
             addquxiao() {
 
-                this.addrubric = '',
-                    this.rubrictype1 = '',
-                    this.answerA = "",
-                    this.answerB = "",
-                    this.answerC = "",
-                    this.answerD = "",
-                    this.form = true,
-                    this.dialogVisible = false;
-            },
+                this.addrubric = '';
+                this.rubrictype1 = '';
+                this.answerA = "";
+                this.answerB = "";
+                this.answerC = "";
+                this.answerD = "";
+                this.form = true;
+                this.typejudge = "";
+                this.typedan = "";
+                this.typeduo = "";
+                this.typebletk = "";
+
+                this.pdaddrubric = "";
+                this.pdvalue3 = false;
+                this.tkaddrubric = "";
+                this.tkaddanswer = "";
 
 
+                this.duoaddrubric = "";
+                this.duoanswerA = "";
+                this.duoanswerB = "";
+                this.duoanswerC = "";
+                this.duoanswerD = "";
+                this.duoform1 = "";
+                this.duoform2 = "";
+                this.duoform3 = "";
+                this.duoform4 = "";
+                this.dialogVisible = false;
+                this.dialogVisibletk = false;
+                this.dialogVisiblepd = false;
+                this.dialogVisibleduo = false;
+            }
+            ,
+
+            /*获取所有试题方法*/
             query() {
 
                 let params = new URLSearchParams();
-                params.append("page", this.currentPage)
-                params.append("rows", this.pagesize)
+                params.append("userid", userid);
+                params.append("page", this.currentPage);
+                params.append("rows", this.pagesize);
                 params.append("rubric", this.rubric);
-                params.append("type", this.typecc);
+                params.append("type", this.typecc);//试题类型
                 params.append("course", this.course);
                 params.append("section", this.section);
+                params.append("coursetype", this.typecc3);
+
+
                 axios({
                     method: 'post',
                     url: '/api/exam/rubric/queryrubricer',
@@ -391,12 +771,11 @@
 
                 })
 
-            },
-            /*点击查看的时候调用这个*/
+            }
+            ,
 
+            /*点击查看试题的的时候调用这个(选择题显示选择题的对话框,填空题显示填空的,判断显示判断的)*/
             checkDetail(val) {
-
-
                 this.id = val.id;
                 this.answerid = val.answerId;
                 this.inputupdate = val.content;
@@ -412,7 +791,7 @@
 
                 this.list = val;
 
-                if (val.rubricttype == "选择题") {
+                if (val.rubricttype == "单选题") {
                     this.dialogVisibleselect = true;
 
                     if (val.answerId == val.Aid) {
@@ -432,9 +811,42 @@
                             this.updateform = "D";
                         }, 1)
                     }
+                } else if (val.rubricttype == "多选题") {
+                    this.duoinputA = val.A;
+                    this.duoinputB = val.B;
+                    this.duoinputC = val.C;
+                    this.duoinputD = val.D;
+                    this.duoinputupdate = val.content;
+
+                    var result = val.answerId.split(",");
+                    for (var i = 0; i < result.length; i++) {
+
+                        if (result[i] == val.Aid) {
+                            window.setTimeout(() => {
+                                this.duoupdateform1 = "A";
+                            }, 1)
+                        }
+                        if (result[i] == val.Bid) {
+                            window.setTimeout(() => {
+                                this.duoupdateform2 = "B";
+                            }, 1)
+                        }
+                        if (result[i] == val.Cid) {
+                            window.setTimeout(() => {
+                                this.duoupdateform3 = "C";
+                            }, 1)
+                        }
+                        if (result[i] == val.Did) {
+                            window.setTimeout(() => {
+                                this.duoupdateform4 = "D";
+                            }, 1)
+                        }
+                    }
+                    this.updatedialogVisibleduo = true;
 
 
-                } else if (val.rubricttype == "填空题") {
+                }
+                else if (val.rubricttype == "填空题") {
 
 
                     this.dialogVisiblepack = true;
@@ -455,7 +867,8 @@
                 }
 
 
-            },
+            }
+            ,
 
             /*更改试题内容*/
             updaterubric() {
@@ -464,24 +877,37 @@
 
                 /* params.append("rubrictype", this.)
                  params.append("answerid", this.)*/
-                params.append("id", this.id)//要修改的题的id
-                params.append("answerid", this.answerid)//答案id(判断题对错,填空题标准答案)
-                params.append("rubric", this.inputupdate)//修改的题干
-                params.append("answerA", this.inputA)//修改的选项A
-                params.append("answerB", this.inputB)//修改的B
-                params.append("answerC", this.inputC)
-                params.append("answerD", this.inputD)
+                params.append("id", this.id);//要修改的题的id
+                params.append("answerid", this.answerid);//答案id(判断题对错,填空题标准答案)
+                params.append("rubric", this.inputupdate);//修改的题干
 
-                params.append("Aid", this.aaaa)//修改的选项A
-                params.append("Bid", this.bbbb)//修改的B
-                params.append("Cid", this.cccc)
-                params.append("Did", this.dddd)
+                params.append("answerA", this.inputA);//修改的选项A
+                params.append("answerB", this.inputB);//修改的B
+                params.append("answerC", this.inputC);
+                params.append("answerD", this.inputD);
 
-                params.append("xzanswer", this.updateform)//选择正确答案
-                params.append("tkanswer", this.packanswer)//填空正确答案
-                params.append("pdanswer", this.value3)//判断正确答案
-                params.append("type", this.type)//试题类型
-                params.append("list", this.list)//修改之前的数据
+                params.append("duoinputA", this.duoinputA);//多选的修改答案
+                params.append("duoinputB", this.duoinputB);
+                params.append("duoinputC", this.duoinputC);
+                params.append("duoinputD", this.duoinputD);
+                params.append("duoinputupdate", this.duoinputupdate);
+                params.append("packrubric", this.packrubric);
+                params.append("judgerubric", this.judgerubric);
+
+
+                params.append("duoanswerid", this.duoupdateform1 + this.duoupdateform2 + this.duoupdateform3 + this.duoupdateform4);
+
+                params.append("Aid", this.aaaa);//修改的选项A
+                params.append("Bid", this.bbbb);//修改的B
+                params.append("Cid", this.cccc);
+                params.append("Did", this.dddd);
+
+
+                params.append("xzanswer", this.updateform);//选择正确答案
+                params.append("tkanswer", this.packanswer);//填空正确答案
+                params.append("pdanswer", this.value3);//判断正确答案
+                params.append("type", this.type);//试题类型
+                params.append("list", this.list);//修改之前的数据
 
 
                 axios({
@@ -496,6 +922,7 @@
                         this.dialogVisiblejudge = false;
                         this.dialogVisiblepack = false;
                         this.dialogVisibleselect = false;
+                        this.updatedialogVisibleduo = false;
                         this.query();
 
 
@@ -507,7 +934,8 @@
                 })
 
 
-            },
+            }
+            ,
 
             /*删除一个试题*/
             deleterubric(val) {
@@ -530,30 +958,36 @@
                         this.$notify.error({title: "失败", message: res.message});
                     }
                 })
-            },
+            }
+            ,
 
-
+            /*分页的每页条数*/
             handleSizeChange(val) {
                 this.pagesize = val;
                 console.log(this.pagesize)  //每页下拉显示数据
-            },
+            }
+            ,
 
+            /*点击下面分页条的数字的时候调用*/
             handleCurrentChange() {
                 this.currentPage = currentPage;
                 console.log(this.currentPage)  //点击第几页
-            },
+            }
+            ,
 
+            /*根据total:查询出的数据库的总共条数,进行分页条的划分*/
             created: function () {
                 this.total = this.tableData.length;
-            },
+            }
+            ,
+
+            /*点击分页条的数字,根据数字(页数)进行查询,根据每页的条数进行query()查询*/
             current_change: function (currentPage) {
                 this.currentPage = currentPage;
                 this.query();
             }
 
-
         }
-
     });
 
 </script>
