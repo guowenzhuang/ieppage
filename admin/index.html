@@ -25,7 +25,13 @@
 <div id="app">
     <el-container>
         <el-header>
-            {{username}} 你好
+            <el-row type="flex" justify="center">
+                <el-col :span="3">{{username}} 你好</el-col>
+                <el-col :span="3">
+                    <el-button  type="success" @click="collectPermission">更新全部权限</el-button>
+                </el-col>
+            </el-row>
+
         </el-header>
         <el-container>
             <el-aside style="width: 200px;">
@@ -70,7 +76,16 @@
             }
         },
         methods: {
-
+            //收集权限
+            collectPermission(){
+                axios({
+                    method:'post',
+                    url:'/api/admin/permission/collectPermission'
+                }).then(res=>{
+                    res=res.data;
+                    this.$message('成功更新:'+res.message+"条记录");
+                })
+            },
 
             //显示左边树
 
@@ -115,7 +130,7 @@
 
         },
         mounted() {
-            this.username=sessionStorage.getItem("username")
+            this.username=sessionStorage.getItem("username");
             //初始化菜单
             this.queryMenu();
             //this.changTree();
