@@ -197,21 +197,11 @@
                 sessionStorage.setItem("refresh_token", res.refresh_token);
                 //过期时间
                 sessionStorage.setItem("expires_in", res.expires_in);
-                let authorities = res.authorities,
-                    roleNames = [],
-                    permission = [];
-                authorities.forEach(item => {
-                    if (item.authority.indexOf("ROLE") >= 0) {
-                        roleNames.push(item.authority.substring(5));
-                    }else{
-                        permission.push(item.authority)
-                    }
-                });
+
                 //角色
 
+                let roleNames=res.info.roleNames;
                 sessionStorage.setItem("roleNames", roleNames);
-                //权限
-                sessionStorage.setItem("permission", permission);
                 //用户名
                 sessionStorage.setItem("username", res.info.name);
                 sessionStorage.setItem("userid", res.info.id);

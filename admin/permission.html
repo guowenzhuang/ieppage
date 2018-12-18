@@ -3,8 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="../teacher/js/elementui/index.css">
+    <script src="../teacher/js/vue.js"></script>
+    <script src="../teacher/js/elementui/index.js"></script>
+    <script src="../teacher/js/axios.min.js"></script>
+    <style>
+        .el-main {
+            padding-top: 0;
+        }
+    </style>
 </head>
 <body>
-    权限管理
+<div id="app">
+    <el-container>
+        <el-main>
+            <el-row :gutter="20" type="flex">
+                <el-col :span="2">
+                    <div>&nbsp;</div>
+                    <el-button icon="el-icon-refresh" type="primary" onclick=" window.location.reload();">刷新</el-button>
+                </el-col>
+            </el-row>
+            <el-row :gutter="20" style="margin-top: 20px;">
+                <el-table
+                        :data="permissionData">
+                    <el-table-column type="expand">
+                        <template slot-scope="props">
+                            <el-table :data="props.row.children">
+                                <el-table-column
+                                        type="index"
+                                        width="50">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="权限名称">
+                                </el-table-column>
+                            </el-table>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column
+                            type="index"
+                            width="50">
+                    </el-table-column>
+                    <el-table-column
+                            prop="name"
+                            label="类型名称">
+                    </el-table-column>
+                </el-table>
+            </el-row>
+        </el-main>
+    </el-container>
+    <div>
+    </div>
+</div>
 </body>
+<script>
+    axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
+    axios.defaults.headers.common['Content-Type'] = 'application/json;charset=UTF-8';
+    const main = {
+        data(){
+            return{
+                permissionData:[],
+                query:{
+                    page:1,
+                    rows:10
+                },
+                total:0
+            }
+        },
+        methods:{
+            queryPermission(){
+                axios({
+                    method:'get',
+                    url:'/api/admin/permission'
+                }).then(res=>{
+                    this.permissionData=res.data;
+                })
+            }
+        },
+        mounted(){
+            this.queryPermission();
+        }
+    };
+
+    const Component = Vue.extend(main);
+    new Component().$mount('#app')
+</script>
 </html>

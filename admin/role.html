@@ -83,6 +83,21 @@
     </el-container>
     <div>
         <el-dialog
+                title="设置权限"
+                :visible.sync="permission.show">
+            <el-tree
+                    ref="permissionTree"
+                    show-checkbox
+                    node-key="permissionId"
+                    :data="permission.data"
+                    :props="permission.props"
+                    :default-checked-keys="permission.checkIds"
+            ></el-tree>
+            <el-button @click="setPermission">确定</el-button>
+            <el-button @click="permission.show=false">取消</el-button>
+        </el-dialog>
+
+        <el-dialog
                 title="设置模块"
                 :visible.sync="module.show">
             <el-tree
@@ -149,6 +164,15 @@
                     title:'',
                     show:false,
                     name:''
+                },
+                permission:{
+                    show: false,
+                    data: [],
+                    checkIds: [],
+                    props: {
+                        children: 'children',
+                        label: 'name'
+                    }
                 }
             }
         },
@@ -181,7 +205,27 @@
                 });
             },
             //权限框显示
-            setPermissionShow(row){},
+            setPermissionShow(row){
+                this.activeData = row;
+                axios({
+                    method:'get',
+                    url:'/api/admin/permission/'+row.id
+                }).then(res=>{
+                    res=res.data;
+                    this.permission.data=res.permissions;
+                    this.permission.checkIds=res.pids;
+                    this.permission.show=true;
+                })
+            },
+            setPermission(){
+                let treeData = this.$refs.permissionTree.getCheckedNodes(true, false);
+                let pids=treeData.map(item=>{
+                    return item.permissionId;
+                });
+                let params=new URLSearchParams();
+                params.append("pids",pids.join(","));
+
+            },
             //模块树单击事件
             treeCheck(row, isCheck) {
                 let m = this.$refs.moduleTree;
