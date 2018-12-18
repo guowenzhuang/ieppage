@@ -8,7 +8,7 @@
 		<meta http-equiv="Cache-Control" content="o-transform">
 		<meta http-equiv="Cache-Control" content="no-siteapp">
 		<meta name="csrf-token" content="1483780974##87f89328c5616669f00302a263fe9061bb852818">
-		<title> Linux 基础入门（新版） - 实验楼</title>
+		<title>智慧教学平台</title>
 		<meta content="实验楼课程分为基础课和项目课，内容涵盖了Linux、Python、Java、C语言、Ruby、Android、IOS开发、大数据、信息安全等IT技术领域。" name="description">
 		<meta content="实验楼课程,IT培训课程,IT实训课程,IT在线课程,all" name="keywords">
 		<meta content="" name="author">
@@ -22,73 +22,144 @@
 		<link rel="stylesheet" href="../app/css/show1.css" />
 		<link rel="stylesheet" href="../restatic/js/libs/marked/katex/katex.min.css">
 		<link rel="stylesheet" href="../app/css/show.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/index.css" />
+		
+		<link rel="stylesheet" type="text/css" href="../../bootstrap/css/bootstrap-theme.min.css">
+		<link rel="stylesheet" type="text/css" href="../../css/muke.css">
+		
 		<script src="../../js/vue.min.js"></script>
+		<script src="../../js/index.js"></script>
 		<script src="../../js/axios.min.js"></script>
 
+<el-container>
+  <el-header>Header</el-header>
+  <el-main>Main</el-main>
+</el-container>
+
+<el-container>
+  <el-header>Header</el-header>
+  <el-main>Main</el-main>
+  <el-footer>Footer</el-footer>
+</el-container>
+
+<el-container>
+  <el-aside width="200px">Aside</el-aside>
+  <el-main>Main</el-main>
+</el-container>
+
+<el-container>
+  <el-header>Header</el-header>
+  <el-container>
+    <el-aside width="200px">Aside</el-aside>
+    <el-main>Main</el-main>
+  </el-container>
+</el-container>
+
+<el-container>
+  <el-header>Header</el-header>
+  <el-container>
+    <el-aside width="200px">Aside</el-aside>
+    <el-container>
+      <el-main>Main</el-main>
+      <el-footer>Footer</el-footer>
+    </el-container>
+  </el-container>
+</el-container>
+
+<el-container>
+  <el-aside width="200px">Aside</el-aside>
+  <el-container>
+    <el-header>Header</el-header>
+    <el-main>Main</el-main>
+  </el-container>
+</el-container>
+
+<el-container>
+  <el-aside width="200px">Aside</el-aside>
+  <el-container>
+    <el-header>Header</el-header>
+    <el-main>Main</el-main>
+    <el-footer>Footer</el-footer>
+  </el-container>
+</el-container>
+
+<style>
+  .el-header, .el-footer {
+    background-color: #B3C0D1;
+    color: #333;
+    text-align: center;
+    line-height: 60px;
+  }
+  
+  .el-aside {
+    background-color: #D3DCE6;
+    color: #333;
+    text-align: center;
+    line-height: 200px;
+  }
+  
+  .el-main {
+    background-color: #E9EEF3;
+    color: #333;
+    text-align: center;
+    line-height: 160px;
+  }
+  
+  body > .el-container {
+    margin-bottom: 40px;
+  }
+  
+  .el-container:nth-child(5) .el-aside,
+  .el-container:nth-child(6) .el-aside {
+    line-height: 260px;
+  }
+  
+  .el-container:nth-child(7) .el-aside {
+    line-height: 320px;
+  }
+</style>
 	</head>
 
 	<body>
-
-		<nav class="navbar navbar-default navbar-fixed-top header">
-			<div class="container">
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#header-navbar-collapse"
-					 aria-expanded="false">
-						<span class="sr-only">实验楼</span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
-					<a class="navbar-brand" href="../index.html">
-						<img src="../img/logo_03.png">
-					</a>
-				</div>
-				<div class="collapse navbar-collapse" id="header-navbar-collapse">
-					<ul class="nav navbar-nav">
-						<li class="dropdown active">
-							<a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
-								课程
-								<span class="caret"></span>
-							</a>
-							<ul class="dropdown-menu">
-								<li><a class="active" href="../courses/index.html">全部课程</a></li>
-								<li><a class="" href="../courses/index.html?status=preview">即将上线</a></li>
-								<li><a class="" href="../developer/index.html">开发者</a></li>
-							</ul>
-						</li>
-						<li class="">
-							<a href="../paths/index.html">路径</a>
-						</li>
-						<li class="">
-							<a href="../questions/index.html">讨论区</a>
-						</li>
-						<li class=" bootcamp new-nav logo-1111">
-							<a href="../bootcamp/index.html">训练营</a>
-
-						</li>
-						<li class=" new-nav logo-1111">
-							<a href="../vip/index.html">会员</a>
-
-						</li>
-
-					</ul>
-
-
-					<div class="navbar-right btns">
-						<a class="btn btn-default navbar-btn sign-in" data-sign="signin" href="#sign-modal" data-toggle="modal">登录</a>
-						<a class="btn btn-default navbar-btn sign-up" data-sign="signup" href="#sign-modal" data-toggle="modal">注册</a>
-					</div>
-
-
-					<form class="navbar-form navbar-right" action="../search" method="get" role="search">
-						<div class="form-group">
-							<input type="text" class="form-control" name="search" autocomplete="off" placeholder="搜索 课程/问答">
+		<!-- 顶部 -->
+				<div class="width100 float_l" >
+					<div class="width100 float_l height80 line_hei80">
+		
+						<!-- 顶部左边 -->
+						<div class="float_l">
+							<div class="float_l margin_l20">
+							<a href="../../index.html">	<img src="../../img/uiz1.png"></a>
+							</div>
+							<div class="float_l">
+								<ul class="ul_li fon_siz16">
+									<li><a class="color_black" href="../courses/index.html">课程</a></li>
+									<li><a class="color_black" href="">院系</a></li>
+									<li><a class="color_black" href="../paths/index.html">名师专栏</a></li>
+								</ul>
+							</div>
 						</div>
-					</form>
+		
+						<!-- 顶部右边 -->
+						<div class="float_r">
+							<div class="float_l top_input">
+								<input class="posi_relative" type="text" name="" id="" placeholder="请输入想搜索的内容...">
+								<img class="img_sousuo bianshou" src="../../img/uiz4.png">
+							</div>
+							<div class="float_l margin_l20">
+								<img src="../../img/uiz5.png">
+							</div>
+							<div class="float_l margin_l35">
+								<img src="../../img/uiz6.png">
+							</div>
+							<div class="float_l margin_l30 margin_r40">
+								<a class="btn btn-default navbar-btn sign-in" data-sign="signin" href="#sign-modal" data-toggle="modal">登录</a>
+								<a class="btn btn-default navbar-btn sign-up" data-sign="signup" href="#sign-modal" data-toggle="modal">注册</a>
+							</div>
+						</div>
+		
+					</div>
 				</div>
-			</div>
-		</nav>
-
+		
 
 
 
@@ -214,7 +285,7 @@
 							</li>
 
 							<li role="presentation">
-								<a href="#comments" class="stat-event" aria-controls="comments" role="tab" data-stat="course_comment"
+								<a @click="pinglun" href="#comments" class="stat-event" aria-controls="comments" role="tab" data-stat="course_comment"
 								 data-toggle="tab">课程评价</a>
 							</li>
 
@@ -299,8 +370,40 @@
 
 							</div>
 							<div role="tabpanel" class="tab-pane course-comment" id="comments">
-								<div class="comment-box">
-									<div class="comment-form">
+
+
+<!-- 
+								<div id="app" class="block">
+									<el-container>
+										<el-main>Main</el-main>
+										<el-aside width="200px">
+
+											<!-- Form -->
+										<!--	<el-button type="success" @click="dialogFormVisible = true">我来评价</el-button>
+
+											<el-dialog title="撰写《概率论与数理统计》的评价" :visible.sync="dialogFormVisible">
+												<el-form :model="form">
+													<el-form-item label="评价内容" :label-width="formLabelWidth">
+														<el-input v-model="form.name" autocomplete="off"></el-input>
+													</el-form-item>
+												</el-form>
+												<div slot="footer" class="dialog-footer">
+													<el-button @click="dialogFormVisible = false">取 消</el-button>
+													<el-button type="primary" @click="dialogFormVisible = false">提 交</el-button>
+												</div>
+											</el-dialog>
+
+
+										</el-aside>
+									</el-container>
+									
+								</div> -->
+
+
+
+								<div id="add1" v-for="c in contents" class="comment-box">
+									
+									<!-- <div class="comment-form">
 
 										<div class="comment-form-unlogin">
 											请
@@ -308,13 +411,26 @@
 											后发表评论
 										</div>
 
+									</div> -->
+									<!-- <div class="comment-form">
+										<div v-for="c in contents" class="comment-form-unlogin">
+											<samp v-text="c.content"></samp>
+										</div>
+									</div> -->
+
+									<!-- <div v-for="c in contents" class="comment-title">
+										<samp v-text="c.content"></samp>
+									</div> -->
+									<!-- <div class="comment-list">
+										<samp v-text="c.sid"></samp>
 									</div>
-									<div class="comment-title">最新评论</div>
-									<div class="comment-list">
-									</div>
-									<div class="pagination-container"></div>
+									<div class="pagination-container">
+										<samp v-text="c.content"></samp>
+									</div> -->
 								</div>
 							</div>
+
+
 							<div role="tabpanel" class="tab-pane" id="reports">
 								<span class="lab-id active" data-lab-id="None">全部</span>
 
@@ -629,10 +745,34 @@
 		<script src="../app/dest/course/labs.js?=2016121272249"></script>
 
 
+    <!-- 页脚 -->
+    <div class="width100 float_l padding_t30 height193">
+    	<div class="width_1200 margin_auto">
+    		<div class="width100 float_l text_c margin_b30">
+    			<a class="img_backg5" href="#"></a>
+    			<a class="img_backg6 posi_relative wexinmaxianshi" href="#"><i class="weixinweima dis_none"><img src="img/idx-btm.png"></i></a>
+    			<a class="img_backg7" href="#"></a>
+    			<a class="img_backg8" href="#"></a>
+    		</div>
+    		<div class="width100 float_l text_c yejiao color_gray">
+    			<a>关于我们</a>
+    			<a>企业合作</a>
+    			<a>人才招聘</a>
+    			<a>讲师招募</a>
+    			<a>联系我们</a>
+    			<a>意见反馈</a>
+    			<a>友情链接</a>
+    		</div>
+    		<div class="width100 float_l text_c border_t margin_t20 padding_t20 color_gray fon_siz12">
+    			<span>© 2016 imoroc.com 京ICP备13042132号</span>
+    		</div>
+    	</div>
+    </div>
+		
+		
 
 
-
-		<div class="footer">
+		<!-- <div class="footer">
 			<div class="container">
 				<div class="row">
 					<div class="col-md-4 clearfix footer-col">
@@ -698,20 +838,24 @@
 				<a href="#" target="_blank">蜀ICP备00000000号</a>
 
 			</div>
-		</div>
+		</div> -->
+
+
+
 		<script>
 			var menu = new Vue({
 				el: "#details",
 				mounted: function() {
+					this.sid = sessionStorage.getItem("userid");
 					this.getQueryString("courId");
 					this.chaxun();
 					this.people();
-					
+					this.toggle();
 				},
 				data: {
 					//urlPre: "http://127.0.0.1:8060",
-					courId:"",
-					sid: "1",
+					courId: "",
+					sid: "",
 					//courId: "",
 					courName: "",
 					courTeaid: "",
@@ -729,15 +873,21 @@
 					courIsputaway: "",
 					courCommentcount: "",
 					renshu: "",
-					baoming: "立即参加"
-
+					baoming: "立即参加",
+					contents: [],
+					page: 1,
+					size: 10,
+					return {
+						value2: null,
+						value3: null
+					}
 				},
 				methods: {
 					getQueryString: function(name) {
 						var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
 						var r = window.location.search.substr(1).match(reg);
-						if (r != null) {					
-							this.courId = decodeURIComponent(r[2]);						
+						if (r != null) {
+							this.courId = decodeURIComponent(r[2]);
 							//console.log(this.courId+"this.courId");
 						}
 						return '';
@@ -754,7 +904,7 @@
 							},
 							headers: {
 								"Authorization": "bearer " +
-									"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiXSwiZXhwIjoxNTQ0OTU4NDEwLCJhdXRob3JpdGllcyI6W3siYXV0aG9yaXR5IjoiUk9MRV_lrabnlJ8ifSx7ImF1dGhvcml0eSI6Iua1i-ivleadg-mZkCJ9XSwianRpIjoiMTJjNGMxYzAtYmZlMC00MGY2LTgzZWMtMTA0OTY0ODY2ZmU2IiwiY2xpZW50X2lkIjoiaWVwIiwiaW5mbyI6eyJpZCI6IjkzNTc1OTNlLTAyZGMtNDdhYi1iMzA0LTkxMGUzNDExYTg5NyIsIm5hbWUiOiLlvKDkuIkifX0.OQ8FVdLjFwTbyPVyk8VcV22aReG2gOQBnX_NSnPIt5U",
+									"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiXSwiZXhwIjoxNTQ1MDk2MzQ2LCJhdXRob3JpdGllcyI6W3siYXV0aG9yaXR5IjoiUk9MRV_lrabnlJ8ifSx7ImF1dGhvcml0eSI6Iua1i-ivleadg-mZkCJ9XSwianRpIjoiMzg2NjdjNTItNGQ3Zi00ZTJjLWI4YTktZjc0Y2Q0MDZjZTk1IiwiY2xpZW50X2lkIjoiaWVwIiwiaW5mbyI6eyJpZCI6IjkzNTc1OTNlLTAyZGMtNDdhYi1iMzA0LTkxMGUzNDExYTg5NyIsIm5hbWUiOiLlvKDkuIkifX0.Og4slxWZ2TLwNHzzgTesCpdZrhj-sDtKoThCW87_ZNQ",
 							}
 						}).then(res => {
 							//http://localhost/ieppage/student/curricular/courses/show.html
@@ -781,7 +931,7 @@
 							},
 							headers: {
 								"Authorization": "bearer " +
-									"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiXSwiZXhwIjoxNTQ1MDI1OTU2LCJhdXRob3JpdGllcyI6W3siYXV0aG9yaXR5IjoiUk9MRV_lrabnlJ8ifSx7ImF1dGhvcml0eSI6Iua1i-ivleadg-mZkCJ9XSwianRpIjoiM2IyZmFjODgtYWExZi00MzU3LThlNTAtNjQ1OWI4YzkwZGE5IiwiY2xpZW50X2lkIjoiaWVwIiwiaW5mbyI6eyJpZCI6IjkzNTc1OTNlLTAyZGMtNDdhYi1iMzA0LTkxMGUzNDExYTg5NyIsIm5hbWUiOiLlvKDkuIkifX0.V6Gw0X4KWyAJisY8bge3FME2r03eHPN8Q5s7zEnLq3I",
+									"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiXSwiZXhwIjoxNTQ1MDk2MzQ2LCJhdXRob3JpdGllcyI6W3siYXV0aG9yaXR5IjoiUk9MRV_lrabnlJ8ifSx7ImF1dGhvcml0eSI6Iua1i-ivleadg-mZkCJ9XSwianRpIjoiMzg2NjdjNTItNGQ3Zi00ZTJjLWI4YTktZjc0Y2Q0MDZjZTk1IiwiY2xpZW50X2lkIjoiaWVwIiwiaW5mbyI6eyJpZCI6IjkzNTc1OTNlLTAyZGMtNDdhYi1iMzA0LTkxMGUzNDExYTg5NyIsIm5hbWUiOiLlvKDkuIkifX0.Og4slxWZ2TLwNHzzgTesCpdZrhj-sDtKoThCW87_ZNQ",
 							}
 						}).then(res => {
 							//http://localhost/ieppage/student/curricular/courses/show.html
@@ -806,7 +956,7 @@
 							},
 							headers: {
 								"Authorization": "bearer " +
-									"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiXSwiZXhwIjoxNTQ1MDI1OTU2LCJhdXRob3JpdGllcyI6W3siYXV0aG9yaXR5IjoiUk9MRV_lrabnlJ8ifSx7ImF1dGhvcml0eSI6Iua1i-ivleadg-mZkCJ9XSwianRpIjoiM2IyZmFjODgtYWExZi00MzU3LThlNTAtNjQ1OWI4YzkwZGE5IiwiY2xpZW50X2lkIjoiaWVwIiwiaW5mbyI6eyJpZCI6IjkzNTc1OTNlLTAyZGMtNDdhYi1iMzA0LTkxMGUzNDExYTg5NyIsIm5hbWUiOiLlvKDkuIkifX0.V6Gw0X4KWyAJisY8bge3FME2r03eHPN8Q5s7zEnLq3I",
+									"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiXSwiZXhwIjoxNTQ1MDk2MzQ2LCJhdXRob3JpdGllcyI6W3siYXV0aG9yaXR5IjoiUk9MRV_lrabnlJ8ifSx7ImF1dGhvcml0eSI6Iua1i-ivleadg-mZkCJ9XSwianRpIjoiMzg2NjdjNTItNGQ3Zi00ZTJjLWI4YTktZjc0Y2Q0MDZjZTk1IiwiY2xpZW50X2lkIjoiaWVwIiwiaW5mbyI6eyJpZCI6IjkzNTc1OTNlLTAyZGMtNDdhYi1iMzA0LTkxMGUzNDExYTg5NyIsIm5hbWUiOiLlvKDkuIkifX0.Og4slxWZ2TLwNHzzgTesCpdZrhj-sDtKoThCW87_ZNQ",
 							}
 						}).then(res => {
 							//http://localhost/ieppage/student/curricular/courses/show.html
@@ -816,14 +966,53 @@
 
 
 						})
+					},
+					pinglun: function() {
+						axios({
+							method: 'get',
+							url: `/api/student/comment/queryCommentByCid`,
+							params: {
+								cid: this.courId,
+								page: this.page,
+								size: this.size
+							},
+							headers: {
+								"Authorization": "bearer " +
+									"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiXSwiZXhwIjoxNTQ1MDk2MzQ2LCJhdXRob3JpdGllcyI6W3siYXV0aG9yaXR5IjoiUk9MRV_lrabnlJ8ifSx7ImF1dGhvcml0eSI6Iua1i-ivleadg-mZkCJ9XSwianRpIjoiMzg2NjdjNTItNGQ3Zi00ZTJjLWI4YTktZjc0Y2Q0MDZjZTk1IiwiY2xpZW50X2lkIjoiaWVwIiwiaW5mbyI6eyJpZCI6IjkzNTc1OTNlLTAyZGMtNDdhYi1iMzA0LTkxMGUzNDExYTg5NyIsIm5hbWUiOiLlvKDkuIkifX0.Og4slxWZ2TLwNHzzgTesCpdZrhj-sDtKoThCW87_ZNQ",
+							}
+						}).then(res => {
+							//http://localhost/ieppage/student/curricular/courses/show.html
+							res = res.data;
+							this.contents = res;
+							//console.log(res.content);
+
+
+						})
 					}
+
 				}
 
 			});
 		</script>
 
+		<!-- <script type="text/javascript">
+			var app = new Vue({
+				el: "#app",
+				data() {
+					return {
+						value3: null,
+						dialogFormVisible: false,
+						form: {
+							name: '',
+							delivery: false,
+							type: [],
+							desc: ''
+						},
+						formLabelWidth: '120px'
 
-
-
+					}
+				}
+			})
+		</script> -->
 	</body>
 </html>
