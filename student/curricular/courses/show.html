@@ -22,9 +22,98 @@
 		<link rel="stylesheet" href="../app/css/show1.css" />
 		<link rel="stylesheet" href="../restatic/js/libs/marked/katex/katex.min.css">
 		<link rel="stylesheet" href="../app/css/show.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/index.css" />
 		<script src="../../js/vue.min.js"></script>
+		<script src="../../js/index.js"></script>
 		<script src="../../js/axios.min.js"></script>
 
+<el-container>
+  <el-header>Header</el-header>
+  <el-main>Main</el-main>
+</el-container>
+
+<el-container>
+  <el-header>Header</el-header>
+  <el-main>Main</el-main>
+  <el-footer>Footer</el-footer>
+</el-container>
+
+<el-container>
+  <el-aside width="200px">Aside</el-aside>
+  <el-main>Main</el-main>
+</el-container>
+
+<el-container>
+  <el-header>Header</el-header>
+  <el-container>
+    <el-aside width="200px">Aside</el-aside>
+    <el-main>Main</el-main>
+  </el-container>
+</el-container>
+
+<el-container>
+  <el-header>Header</el-header>
+  <el-container>
+    <el-aside width="200px">Aside</el-aside>
+    <el-container>
+      <el-main>Main</el-main>
+      <el-footer>Footer</el-footer>
+    </el-container>
+  </el-container>
+</el-container>
+
+<el-container>
+  <el-aside width="200px">Aside</el-aside>
+  <el-container>
+    <el-header>Header</el-header>
+    <el-main>Main</el-main>
+  </el-container>
+</el-container>
+
+<el-container>
+  <el-aside width="200px">Aside</el-aside>
+  <el-container>
+    <el-header>Header</el-header>
+    <el-main>Main</el-main>
+    <el-footer>Footer</el-footer>
+  </el-container>
+</el-container>
+
+<style>
+  .el-header, .el-footer {
+    background-color: #B3C0D1;
+    color: #333;
+    text-align: center;
+    line-height: 60px;
+  }
+  
+  .el-aside {
+    background-color: #D3DCE6;
+    color: #333;
+    text-align: center;
+    line-height: 200px;
+  }
+  
+  .el-main {
+    background-color: #E9EEF3;
+    color: #333;
+    text-align: center;
+    line-height: 160px;
+  }
+  
+  body > .el-container {
+    margin-bottom: 40px;
+  }
+  
+  .el-container:nth-child(5) .el-aside,
+  .el-container:nth-child(6) .el-aside {
+    line-height: 260px;
+  }
+  
+  .el-container:nth-child(7) .el-aside {
+    line-height: 320px;
+  }
+</style>
 	</head>
 
 	<body>
@@ -214,7 +303,7 @@
 							</li>
 
 							<li role="presentation">
-								<a href="#comments" class="stat-event" aria-controls="comments" role="tab" data-stat="course_comment"
+								<a @click="pinglun" href="#comments" class="stat-event" aria-controls="comments" role="tab" data-stat="course_comment"
 								 data-toggle="tab">课程评价</a>
 							</li>
 
@@ -299,8 +388,40 @@
 
 							</div>
 							<div role="tabpanel" class="tab-pane course-comment" id="comments">
-								<div class="comment-box">
-									<div class="comment-form">
+
+
+<!-- 
+								<div id="app" class="block">
+									<el-container>
+										<el-main>Main</el-main>
+										<el-aside width="200px">
+
+											<!-- Form -->
+										<!--	<el-button type="success" @click="dialogFormVisible = true">我来评价</el-button>
+
+											<el-dialog title="撰写《概率论与数理统计》的评价" :visible.sync="dialogFormVisible">
+												<el-form :model="form">
+													<el-form-item label="评价内容" :label-width="formLabelWidth">
+														<el-input v-model="form.name" autocomplete="off"></el-input>
+													</el-form-item>
+												</el-form>
+												<div slot="footer" class="dialog-footer">
+													<el-button @click="dialogFormVisible = false">取 消</el-button>
+													<el-button type="primary" @click="dialogFormVisible = false">提 交</el-button>
+												</div>
+											</el-dialog>
+
+
+										</el-aside>
+									</el-container>
+									
+								</div> -->
+
+
+
+								<div id="add1" v-for="c in contents" class="comment-box">
+									
+									<!-- <div class="comment-form">
 
 										<div class="comment-form-unlogin">
 											请
@@ -308,13 +429,26 @@
 											后发表评论
 										</div>
 
+									</div> -->
+									<!-- <div class="comment-form">
+										<div v-for="c in contents" class="comment-form-unlogin">
+											<samp v-text="c.content"></samp>
+										</div>
+									</div> -->
+
+									<!-- <div v-for="c in contents" class="comment-title">
+										<samp v-text="c.content"></samp>
+									</div> -->
+									<!-- <div class="comment-list">
+										<samp v-text="c.sid"></samp>
 									</div>
-									<div class="comment-title">最新评论</div>
-									<div class="comment-list">
-									</div>
-									<div class="pagination-container"></div>
+									<div class="pagination-container">
+										<samp v-text="c.content"></samp>
+									</div> -->
 								</div>
 							</div>
+
+
 							<div role="tabpanel" class="tab-pane" id="reports">
 								<span class="lab-id active" data-lab-id="None">全部</span>
 
@@ -699,19 +833,23 @@
 
 			</div>
 		</div>
+
+
+
 		<script>
 			var menu = new Vue({
 				el: "#details",
 				mounted: function() {
+					this.sid = sessionStorage.getItem("userid");
 					this.getQueryString("courId");
 					this.chaxun();
 					this.people();
-					
+					this.toggle();
 				},
 				data: {
 					//urlPre: "http://127.0.0.1:8060",
-					courId:"",
-					sid: "1",
+					courId: "",
+					sid: "",
 					//courId: "",
 					courName: "",
 					courTeaid: "",
@@ -729,15 +867,21 @@
 					courIsputaway: "",
 					courCommentcount: "",
 					renshu: "",
-					baoming: "立即参加"
-
+					baoming: "立即参加",
+					contents: [],
+					page: 1,
+					size: 10,
+					return {
+						value2: null,
+						value3: null
+					}
 				},
 				methods: {
 					getQueryString: function(name) {
 						var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
 						var r = window.location.search.substr(1).match(reg);
-						if (r != null) {					
-							this.courId = decodeURIComponent(r[2]);						
+						if (r != null) {
+							this.courId = decodeURIComponent(r[2]);
 							//console.log(this.courId+"this.courId");
 						}
 						return '';
@@ -754,7 +898,7 @@
 							},
 							headers: {
 								"Authorization": "bearer " +
-									"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiXSwiZXhwIjoxNTQ0OTU4NDEwLCJhdXRob3JpdGllcyI6W3siYXV0aG9yaXR5IjoiUk9MRV_lrabnlJ8ifSx7ImF1dGhvcml0eSI6Iua1i-ivleadg-mZkCJ9XSwianRpIjoiMTJjNGMxYzAtYmZlMC00MGY2LTgzZWMtMTA0OTY0ODY2ZmU2IiwiY2xpZW50X2lkIjoiaWVwIiwiaW5mbyI6eyJpZCI6IjkzNTc1OTNlLTAyZGMtNDdhYi1iMzA0LTkxMGUzNDExYTg5NyIsIm5hbWUiOiLlvKDkuIkifX0.OQ8FVdLjFwTbyPVyk8VcV22aReG2gOQBnX_NSnPIt5U",
+									"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiXSwiZXhwIjoxNTQ1MDk2MzQ2LCJhdXRob3JpdGllcyI6W3siYXV0aG9yaXR5IjoiUk9MRV_lrabnlJ8ifSx7ImF1dGhvcml0eSI6Iua1i-ivleadg-mZkCJ9XSwianRpIjoiMzg2NjdjNTItNGQ3Zi00ZTJjLWI4YTktZjc0Y2Q0MDZjZTk1IiwiY2xpZW50X2lkIjoiaWVwIiwiaW5mbyI6eyJpZCI6IjkzNTc1OTNlLTAyZGMtNDdhYi1iMzA0LTkxMGUzNDExYTg5NyIsIm5hbWUiOiLlvKDkuIkifX0.Og4slxWZ2TLwNHzzgTesCpdZrhj-sDtKoThCW87_ZNQ",
 							}
 						}).then(res => {
 							//http://localhost/ieppage/student/curricular/courses/show.html
@@ -781,7 +925,7 @@
 							},
 							headers: {
 								"Authorization": "bearer " +
-									"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiXSwiZXhwIjoxNTQ1MDI1OTU2LCJhdXRob3JpdGllcyI6W3siYXV0aG9yaXR5IjoiUk9MRV_lrabnlJ8ifSx7ImF1dGhvcml0eSI6Iua1i-ivleadg-mZkCJ9XSwianRpIjoiM2IyZmFjODgtYWExZi00MzU3LThlNTAtNjQ1OWI4YzkwZGE5IiwiY2xpZW50X2lkIjoiaWVwIiwiaW5mbyI6eyJpZCI6IjkzNTc1OTNlLTAyZGMtNDdhYi1iMzA0LTkxMGUzNDExYTg5NyIsIm5hbWUiOiLlvKDkuIkifX0.V6Gw0X4KWyAJisY8bge3FME2r03eHPN8Q5s7zEnLq3I",
+									"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiXSwiZXhwIjoxNTQ1MDk2MzQ2LCJhdXRob3JpdGllcyI6W3siYXV0aG9yaXR5IjoiUk9MRV_lrabnlJ8ifSx7ImF1dGhvcml0eSI6Iua1i-ivleadg-mZkCJ9XSwianRpIjoiMzg2NjdjNTItNGQ3Zi00ZTJjLWI4YTktZjc0Y2Q0MDZjZTk1IiwiY2xpZW50X2lkIjoiaWVwIiwiaW5mbyI6eyJpZCI6IjkzNTc1OTNlLTAyZGMtNDdhYi1iMzA0LTkxMGUzNDExYTg5NyIsIm5hbWUiOiLlvKDkuIkifX0.Og4slxWZ2TLwNHzzgTesCpdZrhj-sDtKoThCW87_ZNQ",
 							}
 						}).then(res => {
 							//http://localhost/ieppage/student/curricular/courses/show.html
@@ -806,7 +950,7 @@
 							},
 							headers: {
 								"Authorization": "bearer " +
-									"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiXSwiZXhwIjoxNTQ1MDI1OTU2LCJhdXRob3JpdGllcyI6W3siYXV0aG9yaXR5IjoiUk9MRV_lrabnlJ8ifSx7ImF1dGhvcml0eSI6Iua1i-ivleadg-mZkCJ9XSwianRpIjoiM2IyZmFjODgtYWExZi00MzU3LThlNTAtNjQ1OWI4YzkwZGE5IiwiY2xpZW50X2lkIjoiaWVwIiwiaW5mbyI6eyJpZCI6IjkzNTc1OTNlLTAyZGMtNDdhYi1iMzA0LTkxMGUzNDExYTg5NyIsIm5hbWUiOiLlvKDkuIkifX0.V6Gw0X4KWyAJisY8bge3FME2r03eHPN8Q5s7zEnLq3I",
+									"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiXSwiZXhwIjoxNTQ1MDk2MzQ2LCJhdXRob3JpdGllcyI6W3siYXV0aG9yaXR5IjoiUk9MRV_lrabnlJ8ifSx7ImF1dGhvcml0eSI6Iua1i-ivleadg-mZkCJ9XSwianRpIjoiMzg2NjdjNTItNGQ3Zi00ZTJjLWI4YTktZjc0Y2Q0MDZjZTk1IiwiY2xpZW50X2lkIjoiaWVwIiwiaW5mbyI6eyJpZCI6IjkzNTc1OTNlLTAyZGMtNDdhYi1iMzA0LTkxMGUzNDExYTg5NyIsIm5hbWUiOiLlvKDkuIkifX0.Og4slxWZ2TLwNHzzgTesCpdZrhj-sDtKoThCW87_ZNQ",
 							}
 						}).then(res => {
 							//http://localhost/ieppage/student/curricular/courses/show.html
@@ -816,14 +960,53 @@
 
 
 						})
+					},
+					pinglun: function() {
+						axios({
+							method: 'get',
+							url: `/api/student/comment/queryCommentByCid`,
+							params: {
+								cid: this.courId,
+								page: this.page,
+								size: this.size
+							},
+							headers: {
+								"Authorization": "bearer " +
+									"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiXSwiZXhwIjoxNTQ1MDk2MzQ2LCJhdXRob3JpdGllcyI6W3siYXV0aG9yaXR5IjoiUk9MRV_lrabnlJ8ifSx7ImF1dGhvcml0eSI6Iua1i-ivleadg-mZkCJ9XSwianRpIjoiMzg2NjdjNTItNGQ3Zi00ZTJjLWI4YTktZjc0Y2Q0MDZjZTk1IiwiY2xpZW50X2lkIjoiaWVwIiwiaW5mbyI6eyJpZCI6IjkzNTc1OTNlLTAyZGMtNDdhYi1iMzA0LTkxMGUzNDExYTg5NyIsIm5hbWUiOiLlvKDkuIkifX0.Og4slxWZ2TLwNHzzgTesCpdZrhj-sDtKoThCW87_ZNQ",
+							}
+						}).then(res => {
+							//http://localhost/ieppage/student/curricular/courses/show.html
+							res = res.data;
+							this.contents = res;
+							//console.log(res.content);
+
+
+						})
 					}
+
 				}
 
 			});
 		</script>
 
+		<!-- <script type="text/javascript">
+			var app = new Vue({
+				el: "#app",
+				data() {
+					return {
+						value3: null,
+						dialogFormVisible: false,
+						form: {
+							name: '',
+							delivery: false,
+							type: [],
+							desc: ''
+						},
+						formLabelWidth: '120px'
 
-
-
+					}
+				}
+			})
+		</script> -->
 	</body>
 </html>
