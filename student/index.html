@@ -20,7 +20,7 @@
 
 		<!-- 顶部 -->
 		<div class="width100 float_l height490 img_backg1">
-			<div class="width100 float_l height80 line_hei80 backg_gray">
+			<div class="width100 float_l height80 line_hei80">
 
 				<!-- 顶部左边 -->
 				<div class="float_l">
@@ -148,7 +148,6 @@
 				</div>
 
 				<div id="tuijian" class="width100 float_l">
-
 					<el-row>
 						<el-col :span="6" v-for="(o, index) in 2" :key="o" :offset="index > 0 ? 2 : 0">
 							<el-card :body-style="{ padding: '0px' }">
@@ -164,18 +163,6 @@
 						</el-col>
 					</el-row>
 
-					<!-- <div class="width_224 height172 float_l margin_r20 border_shadow jingguoxianshi over_pos bianshou">
-						<div class="width100 float_l img_100 z_inx_1">
-							<img src="img/uiz7.jpg">
-						</div>
-						<div class="img_backg2 donghua">
-							<span class="margin_t15 float_l ">飞速上手的跨平台App开发</span>
-							<span class="float_l fon_siz12 line_hei16 color_gray margin_t5 posi_relative ">8小时带领大家步步深入学习标签的基础知识，掌握各种样式的基本用法。</span>
-						</div>
-						<div class="width100 float_l padding_lr20 height48 fon_siz12 line_hei48 z_inx_3 posi_relative backg_white">
-							<span class="float_r color_gray"><span>499</span>人在学</span>
-						</div>
-					</div> -->
 				</div>
 			</div>
 		</div>
@@ -188,13 +175,15 @@
 				},
 				methods: {
 					queryTuiJian: function() {
+						var wz=02;
 						axios({
 							method: 'get',
 							url: '/api/student/home/queryTuiJian',
+							data:wz
 						}).then(res => {
 							console.log(res.data.success);
 							console.log(res.data.message);
-							this.recommended=res.data.message;
+							//this.recommended=res.data.message;
 						})
 					}
 				}
