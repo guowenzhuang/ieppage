@@ -318,7 +318,8 @@
                             新增试题
                         </el-button>
                         <font size="4">题干:</font>
-                        <el-input v-model="rubric" placeholder="请输入内容" style="width: 150px;" size="small"></el-input>
+                        <el-input v-model="examrubric" placeholder="请输入内容" style="width: 150px;"
+                                  size="small"></el-input>
 
                         <br>
                         <font size="4">试题的类型:</font>
@@ -413,19 +414,23 @@
                             <el-switch v-model="form" active-value="A" inactive-value=""></el-switch>
                         </el-form-item>
 
-                        <el-form-item label="答案B">
+                        <el-form-item label="答案B:">
                             <el-input v-model="answerB" style="width:80%"></el-input>
                             <el-switch v-model="form" active-value="B" inactive-value=""></el-switch>
                         </el-form-item>
 
-                        <el-form-item label="答案C">
+                        <el-form-item label="答案C:">
                             <el-input v-model="answerC" style="width:80%"></el-input>
                             <el-switch v-model="form" active-value="C" inactive-value=""></el-switch>
                         </el-form-item>
 
-                        <el-form-item label="答案D">
+                        <el-form-item label="答案D:">
                             <el-input v-model="answerD" style="width:80%"></el-input>
                             <el-switch v-model="form" active-value="D" inactive-value=""></el-switch>
+                        </el-form-item>
+
+                        <el-form-item label="分数:">
+                            <el-input v-model="score2" style="width:80%"></el-input>
                         </el-form-item>
 
                         <font size="4">课程:</font>
@@ -474,6 +479,10 @@
                             <el-switch v-model="duoform4" active-value="D" inactive-value=""></el-switch>
                         </el-form-item>
 
+                        <el-form-item label="分数:">
+                            <el-input v-model="score2" style="width:80%"></el-input>
+                        </el-form-item>
+
                         <font size="4">课程:</font>
                         <el-select v-model="typeduo" placeholder="请选择" @change="querycourse" size="small">
                             <el-option v-for="item in options3" :key="item.courId" :label="item.courName"
@@ -505,6 +514,10 @@
                             <el-input v-model="tkaddanswer"></el-input>
                         </el-form-item>
 
+                        <el-form-item label="分数:">
+                            <el-input v-model="score2" style="width:80%"></el-input>
+                        </el-form-item>
+
                         <font size="4">课程:</font>
                         <el-select v-model="typebletk" placeholder="请选择" @change="querycourse" size="small">
                             <el-option v-for="item in options3" :key="item.courId" :label="item.courName"
@@ -532,6 +545,10 @@
 
                         <el-switch v-model="pdvalue3" active-text="正确" inactive-text="错误">
                         </el-switch>
+
+                        <el-form-item label="分数:">
+                            <el-input v-model="score2" style="width:80%"></el-input>
+                        </el-form-item>
 
                         <font size="4">课程:</font>
                         <el-select v-model="typejudge" placeholder="请选择" @change="querycourse" size="small">
@@ -617,9 +634,11 @@
                     formtotal: '',
                     formduration: '',
                     formexamshortesttime: '',
+                    examrubric: "",
 
 
                 },
+                score2: "",
 
                 updateform: {},
                 inputupdate: '',
@@ -639,6 +658,10 @@
                 answerC: "",
                 answerD: "",
                 form: true,
+                typejudge: "",
+                typeduo: "",
+                typedan: "",
+                typebletk: "",
 
                 scoreform: {},
 
@@ -666,6 +689,7 @@
                 duoupdateform4: "",
 
 
+                pdvalue3: '',
                 score: false,
                 score1: "",
                 rubric: "",
@@ -677,6 +701,7 @@
                 currentPage: 1,//默认开始页面
                 rubricList: [],
                 examrubricList: [],
+                examrubric: '',
 
                 dialogVisibleselect: false,
                 dialogVisiblejudge: false,
@@ -685,6 +710,7 @@
                 dialogVisibletk: false,
                 dialogVisiblepd: false,
                 dialogVisibleduo: false,
+                dialogVisible: false,
                 updatedialogVisibleduo: false,
                 addparper: false,
 
@@ -723,7 +749,6 @@
 
             /*点击创建的时候*/
             submitForm() {
-
 
                 let params = new URLSearchParams();
                 params.append("title", this.ruleForm.formtitle);//考试标题
@@ -813,7 +838,7 @@
                 params.append("userid", userid);
                 params.append("page", this.currentPage);
                 params.append("rows", this.pagesize);
-                params.append("rubric", this.rubric);
+                params.append("rubric", this.examrubric);
                 params.append("type", this.typeccexam);//试题类型
 
                 /* params.append("course", this.course);*/
@@ -852,6 +877,7 @@
                 this.list = val;
 
             },
+
 
             addparperanniu() {
                 this.bigdialog = false;
@@ -951,6 +977,8 @@
                 params.append("answerC", this.answerC);
                 params.append("answerD", this.answerD);
                 params.append("course", this.typedan);
+                params.append("parperid", this.parperid);
+                params.append("score", this.score2);//分数
 
 
                 //判断是否选中正确答案
@@ -960,7 +988,7 @@
                     if (this.form != true) {
                         axios({
                             method: 'post',
-                            url: '/api/exam/rubric/addrubric',
+                            url: '/api/exam/examrubric/addexamrubricdouble',
                             data: params,
 
                         }).then(res => {
@@ -977,7 +1005,9 @@
                                 this.answerD = "";
                                 this.form = "";
                                 this.typedan = "";
+                                this.score2 = "";
                                 this.query();
+                                this.queryexam();
 
 
                             } else {
@@ -1012,6 +1042,8 @@
                 params.append("answerC", this.duoanswerC);
                 params.append("answerD", this.duoanswerD);
                 params.append("course", this.typeduo);
+                params.append("parperid", this.parperid);
+                params.append("score", this.score2);//分数
 
 
                 //判断是否选中正确答案
@@ -1021,7 +1053,7 @@
                     if (this.duoform1 + this.duoform2 + this.duoform3 + this.duoform4 != true) {
                         axios({
                             method: 'post',
-                            url: '/api/exam/rubric/addrubric',
+                            url: '/api/exam/examrubric/addexamrubricdouble',
                             data: params,
 
                         }).then(res => {
@@ -1040,7 +1072,9 @@
                                 this.duoform3 = "";
                                 this.duoform4 = "";
                                 this.typeduo = "";
+                                this.score2 = "";
                                 this.query();
+                                this.queryexam();
 
                             } else {
                                 this.$notify.error({title: "失败", message: res.message})
@@ -1066,11 +1100,13 @@
                 params.append("answerid", this.tkaddanswer);
                 params.append("addrubric", this.tkaddrubric);
                 params.append("course", this.typebletk);
+                params.append("parperid", this.parperid);
+                params.append("score", this.score2);//分数
 
 
                 axios({
                     method: 'post',
-                    url: '/api/exam/rubric/addrubric',
+                    url: '/api/exam/examrubric/addexamrubricdouble',
                     data: params,
 
                 }).then(res => {
@@ -1082,7 +1118,9 @@
                         this.tkaddrubric = "";
                         this.tkaddanswer = "";
                         this.typebletk = "";
+                        this.score2 = "";
                         this.query();
+                        this.queryexam();
                     } else {
                         this.$notify.error({title: "失败", message: res.message})
                     }
@@ -1098,10 +1136,12 @@
                 params.append("addrubric", this.pdaddrubric);
                 params.append("answerid", this.pdvalue3);
                 params.append("course", this.typejudge);
+                params.append("parperid", this.parperid);
+                params.append("score", this.score2);//分数
 
                 axios({
                     method: 'post',
-                    url: '/api/exam/rubric/addrubric',
+                    url: '/api/exam/examrubric/addexamrubricdouble',
                     data: params,
 
                 }).then(res => {
@@ -1112,7 +1152,9 @@
                         this.pdvalue3 = false;
                         this.pdaddrubric = "";
                         this.typejudge = "";
+                        this.score2 = "";
                         this.query();
+                        this.queryexam();
                     } else {
                         this.$notify.error({title: "失败", message: res.message})
                     }
@@ -1121,7 +1163,6 @@
 
             }
             ,
-
 
             /*选题取消*/
             addquxiao() {
