@@ -11,6 +11,143 @@
 
 </head>
 <body>
+<div id="app">
+   <!-- <el-tree
+            node-key="id"
+            :default-expanded-keys="[4]"
+            :data="menuData"
+            :props="menuProps"
+            @node-click="menuClick"
+            show-checkbox
+    ></el-tree>-->
+    <el-container>
+        <el-main>
+            <el-row :gutter="20" type="flex">
+                <el-col :span="3">
+                    <div>&nbsp;</div>
+                    <el-button type="primary" @click="addModuleShow">新增模块</el-button>
+                </el-col>
+                <el-col :span="2">
+                    <div>&nbsp;</div>
+                    <el-button icon="el-icon-refresh" type="primary" onclick=" window.location.reload();">刷新</el-button>
+                </el-col>
+            </el-row>
+            <el-row :gutter="20" style="margin-top: 20px;">
+                <el-table
+                        :data="moduleData">
+                    <el-table-column type="expand">
+                        <template slot-scope="props">
+                            <my-table :module-data="props.row.children"></my-table>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            label="模块名称"
+                            prop="chaName">
+                    </el-table-column>
+
+                    <el-table-column
+                            label="模块操作">
+                        <template slot-scope="scope">
+                            <el-button type="text" @click="updateModuleShow(scope.row)">修改模块</el-button>
+                            <el-button type="text" @click="deleteModule(scope.row.id)">删除模块</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </el-row>
+        </el-main>
+    </el-container>
+   <!-- <template>
+        <el-table :data="moduleData" style="width: 100%">
+            <el-table-column type="expand">
+                <template slot-scope="props">
+                    <el-table-column
+                            label="模块名称"
+                            prop="chaName">
+                    </el-table-column>
+                </template>
+            </el-table-column>
+
+        </el-table>
+    </template>-->
+</div>
 
 </body>
+<script>
+    axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
+    axios.defaults.headers.common['Content-Type'] = 'application/json;charset=UTF-8';
+    Vue.component('my-table', {
+        props: {
+            moduleData: []
+        },
+        template: `
+           <el-table :data="moduleData">
+                         <el-table-column type="expand">
+                            <template slot-scope="props">
+                            <my-table  :module-data="props.row.children"></my-table>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                label="模块名称"
+                                prop="chaName">
+                        </el-table-column>
+                        \
+                         <el-table-column
+                            label="模块操作">
+                        <template slot-scope="scope">
+                            <el-button type="text" @click="updateModuleShow(scope.row)">修改模块</el-button>
+                            <el-button type="text" @click="deleteModule(scope.row.id)">删除模块</el-button>
+                        </template>
+                    </el-table-column>
+                    </el-table>
+        `,
+        methods: {
+            updateModuleShow(row) {
+                v.updateModuleShow(row);
+            },
+            deleteModule(id){
+                v.deleteModule(id);
+            }
+        }
+    });
+    var Main = {
+
+        data() {
+            return {
+                moduleData: [],
+
+                add: {
+                    title: '',
+                    courId:'',
+                    show: false,
+                    chaName: '',
+                    parentId: [],
+                    moduleCascader: []
+                },
+
+            };
+        },
+        methods: {
+            queryMenu() {
+                axios({
+                    method: "get",
+                    url: "/api/teacher/chapter/queryChapter",
+                    data:{
+                        courid:  add.courid,
+                     }
+                }).then(res => {
+                    res=res.data;
+                    this.moduleData=res;
+                })
+            },
+        },
+        mounted() {
+
+            //初始化菜单
+            this.queryMenu();
+            //this.changTree();
+        }
+    };
+    var Ctor = Vue.extend(Main)
+    new Ctor().$mount('#app')
+</script>
 </html>
