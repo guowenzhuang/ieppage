@@ -537,6 +537,8 @@
 		</div>
 
 		<script>
+            /*自动在请求中添加请求头*/
+            axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
 			var menu = new Vue({
 				el: "#details",
 				mounted: function() {
@@ -548,7 +550,7 @@
 				data: {
 					//urlPre: "http://127.0.0.1:8060",
 					courId: "courId",
-					sid: "userid",
+					sid: "",
 					//courId: "",
 					courName: "",
 					courTeaid: "",
@@ -572,6 +574,8 @@
 					page: 1,
 					size: 10,
 					contents: [],
+                    praise:'',
+					cidlist:[]
 
 				},
 				methods: {
@@ -582,48 +586,46 @@
 							this.courId = decodeURIComponent(r[2]);
 							//console.log(this.courId+"this.courId");
 						}
+
 						return '';
 					},
 					add1: function() {
-						//alert("点击");
-						axios({
-							method: 'post',
-							url: `/api/student/studentPart/add`,
-							params: {
-								courId: this.courId,
-								sid: this.sid,
+                     alert("this.baoming"+this.baoming)
+						if(this.baoming=="立即参加"){
+                            axios({
 
-							},
-							headers: {
-								"Authorization": "bearer " +
-									"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiXSwiZXhwIjoxNTQ1MjU1MTMyLCJhdXRob3JpdGllcyI6W3siYXV0aG9yaXR5IjoiUk9MRV_lrabnlJ8ifV0sImp0aSI6IjM5YzM4N2MwLTFjY2UtNDQwNi05M2ZlLWMyYzYxZDQwYzMwNiIsImNsaWVudF9pZCI6ImllcCIsImluZm8iOnsiaWQiOiI5MzU3NTkzZS0wMmRjLTQ3YWItYjMwNC05MTBlMzQxMWE4OTciLCJuYW1lIjoi5byg5LiJIn19.4HH5obnK0ALwajPciZrAtYZqaXw-9c6leNDcaC54aVw",
-							}
-						}).then(res => {
-							//http://localhost/ieppage/student/curricular/courses/show.html
-							console.log(res.data.success);
-							console.log(res.data.message);
-							this.people();
-							//this.courId = res.data;						
-							if (res.data.success == true) {
-								this.baoming = res.data.message;
+                                method: 'post',
+                                url: `/api/student/studentPart/add`,
+                                params: {
+                                    courId: this.courId,
+                                    sid: this.sid,
 
-							} else {
-								this.baoming = res.data.message;
-							}
-						})
+                                }
+                            }).then(res => {
+                                //http://localhost/ieppage/student/curricular/courses/show.html
+
+                                this.people();
+                                //this.courId = res.data;
+                                if (res.data.success == true) {
+                                    this.baoming = res.data.message;
+
+                                } else {
+                                    this.baoming = res.data.message;
+                                }
+                            })
+						}else if(this.baoming="进入学习"){
+						    alert("跳转学习页面");
+						}
+
 					},
 					chaxun: function() {
-						//alert("点击");
+
 						axios({
 							method: 'get',
 							url: `/api/student/curricularTaxonomy/getCoursedetails`,
 							params: {
 								courId: this.courId
 								//sid: this.sid,
-							},
-							headers: {
-								"Authorization": "bearer " +
-									"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiXSwiZXhwIjoxNTQ1MjU1MTMyLCJhdXRob3JpdGllcyI6W3siYXV0aG9yaXR5IjoiUk9MRV_lrabnlJ8ifV0sImp0aSI6IjM5YzM4N2MwLTFjY2UtNDQwNi05M2ZlLWMyYzYxZDQwYzMwNiIsImNsaWVudF9pZCI6ImllcCIsImluZm8iOnsiaWQiOiI5MzU3NTkzZS0wMmRjLTQ3YWItYjMwNC05MTBlMzQxMWE4OTciLCJuYW1lIjoi5byg5LiJIn19.4HH5obnK0ALwajPciZrAtYZqaXw-9c6leNDcaC54aVw",
 							}
 						}).then(res => {
 							//http://localhost/ieppage/student/curricular/courses/show.html
@@ -639,6 +641,35 @@
 							this.courPageview = res.courPageview;
 							this.courOpentime = res.courOpentime;
 							this.courClasshour = res.courClasshour;
+                            //1.未登录this.baoming显示立即参加
+                            //2.已登录未参加本门课程this.baoming显示立即参加
+                            //3.已登录已参加本门课程this.baoming显示进入学习
+                            if(this.sid!="" && this.sid!=null){
+
+                                axios({
+                                    method: 'get',
+                                    url: `/api/student/studentPart/query`,
+                                    params: {
+                                        sid: this.sid,
+
+                                    }
+                                }).then(res =>{
+                                    this.cidlist=res.data;
+
+                                    for(var i=0;i<this.cidlist.length;i++){
+
+                                            //console.log("用户ID"+this.cidlist[i].cid);
+                                        if(this.cidlist[i].cid==this.courId){
+                                            console.log("课程id"+this.cidlist[i].cid);
+                                          return this.baoming="进入学习";
+                                        }
+
+                                    }
+                                })
+							}else if(this.sid=="" || this.sid==null){
+                                alert("未登录");
+                                return this.baoming="立即参加";
+							}
 
 
 						})
@@ -649,10 +680,6 @@
 							url: `/api/student/studentPart/querypeople`,
 							params: {
 								cid: this.courId
-							},
-							headers: {
-								"Authorization": "bearer " +
-									"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiXSwiZXhwIjoxNTQ1MjU1MTMyLCJhdXRob3JpdGllcyI6W3siYXV0aG9yaXR5IjoiUk9MRV_lrabnlJ8ifV0sImp0aSI6IjM5YzM4N2MwLTFjY2UtNDQwNi05M2ZlLWMyYzYxZDQwYzMwNiIsImNsaWVudF9pZCI6ImllcCIsImluZm8iOnsiaWQiOiI5MzU3NTkzZS0wMmRjLTQ3YWItYjMwNC05MTBlMzQxMWE4OTciLCJuYW1lIjoi5byg5LiJIn19.4HH5obnK0ALwajPciZrAtYZqaXw-9c6leNDcaC54aVw",
 							}
 						}).then(res => {
 							//http://localhost/ieppage/student/curricular/courses/show.html
@@ -671,10 +698,6 @@
 								cid: this.courId,
 								page: this.page,
 								size: this.size
-							},
-							headers: {
-								"Authorization": "bearer " +
-									"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiXSwiZXhwIjoxNTQ1MjU1MTMyLCJhdXRob3JpdGllcyI6W3siYXV0aG9yaXR5IjoiUk9MRV_lrabnlJ8ifV0sImp0aSI6IjM5YzM4N2MwLTFjY2UtNDQwNi05M2ZlLWMyYzYxZDQwYzMwNiIsImNsaWVudF9pZCI6ImllcCIsImluZm8iOnsiaWQiOiI5MzU3NTkzZS0wMmRjLTQ3YWItYjMwNC05MTBlMzQxMWE4OTciLCJuYW1lIjoi5byg5LiJIn19.4HH5obnK0ALwajPciZrAtYZqaXw-9c6leNDcaC54aVw",
 							}
 						}).then(res => {
 							//http://localhost/ieppage/student/curricular/courses/show.html
@@ -687,6 +710,14 @@
 					},
 					dainzan: function() {
 						//点赞
+                       /* axios({
+                            method: 'post',
+                            url: `api/student/comment/addComment`,
+                            params: {
+                                cid: this.courId,
+                               sid: this.sid
+                            },
+						})*/
 						console.log("1111");
 					}
 				}
