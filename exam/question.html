@@ -384,6 +384,7 @@
 
         /*初始化方法放在这里面(相当于页面加载事件)*/
         mounted: function () {
+
             this.query();
             this.querycourse();
         },
@@ -773,6 +774,8 @@
 
             /*点击查看试题的的时候调用这个(选择题显示选择题的对话框,填空题显示填空的,判断显示判断的)*/
             checkDetail(val) {
+
+               /* alert("sdafsdf")*/
                 this.id = val.id;
                 this.answerid = val.answerId;
                 this.inputupdate = val.content;
@@ -812,14 +815,18 @@
 
 
                     this.updatedialogVisibleduo = true;
-
                     this.duoinputA = val.A;
                     this.duoinputB = val.B;
                     this.duoinputC = val.C;
                     this.duoinputD = val.D;
                     this.duoinputupdate = val.content;
 
+                   /* alert("sdafsdaf")
+                    alert(val.answerId);*/
+
                     var result = val.answerId.split(",");
+                    /*alert(result)*/
+
                     for (var i = 0; i < result.length; i++) {
 
                         if (result[i] == val.Aid) {
@@ -827,36 +834,28 @@
                                 this.duoupdateform1 = "A";
                             }, 1)
                         } else {
-                            window.setTimeout(() => {
                                 this.duoupdateform1 = "";
-                            }, 1)
                         }
                         if (result[i] == val.Bid) {
                             window.setTimeout(() => {
                                 this.duoupdateform2 = "B";
                             }, 1)
                         } else {
-                            window.setTimeout(() => {
                                 this.duoupdateform2 = "";
-                            }, 1)
                         }
                         if (result[i] == val.Cid) {
                             window.setTimeout(() => {
                                 this.duoupdateform3 = "C";
                             }, 1)
                         } else {
-                            window.setTimeout(() => {
                                 this.duoupdateform3 = "";
-                            }, 1)
                         }
                         if (result[i] == val.Did) {
                             window.setTimeout(() => {
                                 this.duoupdateform4 = "D";
                             }, 1)
                         } else {
-                            window.setTimeout(() => {
                                 this.duoupdateform4 = "";
-                            }, 1)
                         }
                     }
 
