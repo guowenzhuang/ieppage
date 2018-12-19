@@ -24,6 +24,7 @@
 		<link rel="stylesheet" type="text/css" href="../../css/muke.css">
 		<script src="../../js/vue.min.js"></script>
 		<script src="../../js/axios.min.js"></script>
+		<script src="../../js/jquery.js"></script>
 
 		<style>
 			@font-face {
@@ -69,17 +70,18 @@
             font-size: 14px;
         }
     </style>
+
 	</head>
 
 	<body>
 		<!-- 顶部 -->
 		<div class="width100 float_l" style="margin-top: -70px;">
-			<div class="width100 float_l height80 line_hei80 backg_gray">
+			<div class="width100 float_l height80 line_hei80">
 
 				<!-- 顶部左边 -->
 				<div class="float_l">
 					<div class="float_l margin_l20">
-						<img src="../../img/uiz1.png">
+					<a href="../../index.html">	<img src="../../img/uiz1.png"></a>
 					</div>
 					<div class="float_l">
 						<ul class="ul_li fon_siz16">
@@ -231,15 +233,11 @@
 
 						<div class="row">
 
-                           <!--   <ol>
-                                <li v-for="list in courseList">
-                                    {{ list.courName }}
-                                </li>
-                            </ol>-->
+
 
                             <div class="media bootcamp-courses-item" v-for="c in courseList">
                                 <div class="media-left bootcamp-courses-media">
-                                    <img style="width: 300px;height: 140px" class="media-object" src="../img/002.jpg">
+                                    <img style="width: 280px;height: 140px" class="media-object" src="../img/002.jpg">
                                 </div>
                                 <div class="media-body bootcamp-courses-body">
                                     <div class="bootcamp-courses-info">
@@ -252,125 +250,66 @@
                                     </div>
                                     <div class="bootcamp-courses-subscribe">
                                         <div class="pull-right bootcamp-courses-order">
-                                            <a class="btn pull-right"href="show.html">查看详情</a>
+                                            <a class="'btn pull-right" :href="'show.html?courId='+c.courId">查看详情</a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
-							<!--<div   class="col-md-4 col-sm-6 " v-for="c in courseList">
-
-								<a class="course-box" href="show.html">
-									<div class="sign-box">
-
-
-                                        &lt;!&ndash; v-text="courclist.courName"&ndash;&gt;
-										<i class="fa fa-star-o course-follow pull-right" data-follow-url="/courses/63/follow" data-unfollow-url="/courses/63/unfollow"
-										 style="display:none"></i>
-
-									</div>
-									<div class="course-img">
-										<img alt="新手指南之玩转实验楼" src="../img/ncn1.jpg">
-									</div>
-
-									<div class="course-body">
-										<span class="course-title" data-toggle="tooltip" data-placement="bottom" v-text="c.courName	"></span>
-									</div>
-									<div class="course-footer">
-										<span class="course-per-num pull-left">
-											<i class="fa fa-users" ></i>
-                                          {{c.courPageview}}
-										</span>
-
-
-                                        <span class="course-money pull-right">会员</span>
-									</div>
-								</a>
-							</div>-->
 
 
 
 
 						</div>
 
-                       <!-- <div style="display: flex;justify-content: center">
-                            <el-pagination
-                                    layout="prev, pager, next"
-                                    :total="total" current-page.sync="page" @current-change="pageChange">
-                            </el-pagination>
-                        </div>-->
-						<nav class="pagination-container">
-							<ul class="pagination">
 
-								<li class="disabled">
-									<a href="#" aria-label="Previous">
-										<span aria-hidden="true">上一页</span>
-									</a>
-								</li>
+						<nav class="pagination-container" id="pager">
+							 <span class="form-inline">
+                        <select class="form-control" v-model="pagesize" v-on:change="showPage(pageCurrent,$event,true)">
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="30">30</option>
+                            <option value="40">40</option>
+                        </select>
+                    </span>
+							<template v-for="item in pageCount+1">
+                        <span v-if="item==1" class="btn btn-default" v-on:click="showPage(1,$event)">
+                            首页
+                        </span>
+								<span v-if="item==1" class="btn btn-default" v-on:click="showPage(pageCurrent-1,$event)">
+                            上一页
+                        </span>
+								<span v-if="item==1" class="btn btn-default" v-on:click="showPage(item,$event)">
+                            {{item}}
+                        </span>
+								<span v-if="item==1&&item<showPagesStart-1" class="btn btn-default disabled">
+                            ...
+                        </span>
+								<span v-if="item>1&&item<=pageCount-1&&item>=showPagesStart&&item<=showPageEnd&&item<=pageCount" class="btn btn-default" v-on:click="showPage(item,$event)">
+                            {{item}}
+                        </span>
+								<span v-if="item==pageCount&&item>showPageEnd+1" class="btn btn-default disabled">
+                            ...
+                        </span>
+								<span v-if="item==pageCount" class="btn btn-default" v-on:click="showPage(item,$event)">
+                            {{item}}
+                        </span>
+								<span v-if="item==pageCount" class="btn btn-default" v-on:click="showPage(pageCurrent+1,$event)">
+                            下一页
+                        </span>
+								<span v-if="item==pageCount" class="btn btn-default" v-on:click="showPage(pageCount,$event)">
+                            尾页
+                        </span>
+							</template>
+							<!--<ul class="pagination">
 
-
-
-								<li class="active">
-									<a href="/courses/?course_type=all&amp;tag=all&amp;fee=all&amp;page=1">1</a>
-								</li>
-
-
-
-								<li class="">
-									<a href="/courses/?course_type=all&amp;tag=all&amp;fee=all&amp;page=2">2</a>
-								</li>
-
-
-
-								<li class="">
-									<a href="/courses/?course_type=all&amp;tag=all&amp;fee=all&amp;page=3">3</a>
-								</li>
-
-
-
-								<li class="">
-									<a href="/courses/?course_type=all&amp;tag=all&amp;fee=all&amp;page=4">4</a>
-								</li>
-
-
-
-								<li class="">
-									<a href="/courses/?course_type=all&amp;tag=all&amp;fee=all&amp;page=5">5</a>
-								</li>
-
-
-
-								<li>
-									<a href='#'>...</a>
-								</li>
-
-
-
-								<li class="">
-									<a href="/courses/?course_type=all&amp;tag=all&amp;fee=all&amp;page=24">24</a>
-								</li>
-
-
-
-								<li class="">
-									<a href="/courses/?course_type=all&amp;tag=all&amp;fee=all&amp;page=25">25</a>
-								</li>
-
-
-
-								<li class="">
-									<a aria-label="Next" href="javascript:void(0)" @click="pageChange(2)">
-										<span aria-hidden="true"  >下一页</span>
-									</a>
-								</li>
-
-							</ul>
+							</ul>-->
 						</nav>
 
 
 					</div>
 
 				</div>
+
 				<div class="col-md-3 layout-side">
 
 
@@ -652,7 +591,6 @@
 		<script src="../static/bootstrap-table/1.11.0/bootstrap-table.min.js"></script>
 		<script src="../static/bootstrap-table/1.11.0/locale/bootstrap-table-zh-CN.min.js"></script>
 		<script src="../static/bootstrap-table/1.11.0/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
-
 		<script src="../static/ravenjs/3.7.0/raven.min.js"></script>
 		<script>
 			Raven.config('https://bc3878b7ed0a4468a65390bd79e6e73f@sentry.xxxxxx.com/5', {
@@ -669,8 +607,31 @@
 
 		<script src="../app/dest/course/index.js?=2016121272249"></script>
 
+        <!-- 页脚 -->
+        		<div class="width100 float_l padding_t30 height193">
+        			<div class="width_1200 margin_auto">
+        				<div class="width100 float_l text_c margin_b30">
+        					<a class="img_backg5" href="#"></a>
+        					<a class="img_backg6 posi_relative wexinmaxianshi" href="#"><i class="weixinweima dis_none"><img src="img/idx-btm.png"></i></a>
+        					<a class="img_backg7" href="#"></a>
+        					<a class="img_backg8" href="#"></a>
+        				</div>
+        				<div class="width100 float_l text_c yejiao color_gray">
+        					<a>关于我们</a>
+        					<a>企业合作</a>
+        					<a>人才招聘</a>
+        					<a>讲师招募</a>
+        					<a>联系我们</a>
+        					<a>意见反馈</a>
+        					<a>友情链接</a>
+        				</div>
+        				<div class="width100 float_l text_c border_t margin_t20 padding_t20 color_gray fon_siz12">
+        					<span>© 2016 imoroc.com 京ICP备13042132号</span>
+        				</div>
+        			</div>
+        		</div>
 
-
+<!--
 
 
 
@@ -740,26 +701,59 @@
 				<a href="#" target="_blank">蜀ICP备00000000号</a>
 
 			</div>
-		</div>
+		</div> -->
 
 
 
 		<script>
-		var a=	new Vue({
+
+            var a=	new Vue({
 				el: '#queryCourse',
 				mounted: function() {
-					this.queryKeicheng();
-					this.queryKeichengContent();
+                    this.getQueryString("departmentId");
+                    this.queryKeicheng();
+                    this.showPage();
 				},
-				data() {
-				    return{
-					sites: [],
-                    courseList:[],
-                    page: 1,
-                    pageSize: 10,
-                    courDepid:''
-				}},
+				data:{
+
+				        //课程分类数据
+					     sites: [],
+						//课程分类Id
+                        courDepid:'',
+                        //总项目数
+                        totalCount:'',
+                        //分页数
+                        pageCount:'',
+                        //当前页面
+                        pageCurrent: 1,
+                        //分页大小
+                        pagesize: 10,
+                        //显示分页按钮数
+                        showPages: 5,
+                        //开始显示的分页按钮
+                        showPagesStart: 1,
+                        //结束显示的分页按钮
+                        showPageEnd: 20,
+                        //分页数据
+                        courseList:[]
+
+
+
+				},
 				methods: {
+				    //获取首页传过来的参数
+                    getQueryString(name) {
+                        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+                        var r = window.location.search.substr(1).match(reg);
+                        if (r != null) {
+                            this.courDepid=decodeURIComponent(r[2]);
+                            this.queryKeichengContent(this.courDepid)
+                        }else{
+                            this.queryKeichengContent();
+                        }
+                        return '';
+                    },
+                    //查询课程分类
 					queryKeicheng() {
 
 						axios({
@@ -770,41 +764,86 @@
 							this.sites = res.data.message;
 						})
 					},
-                    pageChange(page) {
-                        this.page = page;
-                    },
+                    //根据分类Id查询课程
                     queryKeichengContent(val){
+
                         axios({
                             method: 'get',
                             url:'/api/student/curricularTaxonomy/getCourse',
                             params:{
                                 courDepid:val,
-                                page:this.page,
-                                pageSize:this.pageSize
+                                page:this.pageCurrent,
+                                pageSize:this.pagesize
                             }
 
                         }).then(res =>{
                             console.log(res);
                             this.courseList=res.data.message.content;
+                            this.totalCount=res.data.message.totalElements;
+                            this.pageCount= Math.ceil(res.data.message.totalElements/this.pagesize);
+                            if (this.pageCount > this.showPages) {
 
-                        })
+                                if (this.pageCurrent <= (this.showPages - 1) / 2) {
+                                    this.showPagesStart = 1;
+                                    this.showPageEnd = this.showPages - 1;
+                                    console.log("showPage1")
+                                }
+                                else if (this.pageCurrent >= this.pageCount - (this.showPages - 3) / 2) {
+                                    this.showPagesStart = this.pageCount - this.showPages + 2;
+                                    this.showPageEnd = this.pageCount;
+                                    console.log("showPage2")
+                                }
+                                else {
+                                    console.log("showPage3")
+                                    this.showPagesStart = this.pageCurrent - (this.showPages - 3) / 2;
+                                    this.showPageEnd = this.pageCurrent + (this.showPages - 3) / 2;
+                                }
+                            }
+                        });
+
+                    },
+                    //分页方法
+                    showPage: function (pageIndex, $event, forceRefresh) {
+                        if (pageIndex > 0) {//当pageIndex>0说明pageIndex有值
+                            if (pageIndex > this.pageCount) {//当pageIndex大于//分页数时，
+                                pageIndex = this.pageCount;//pageIndex必须=this.pageCount;
+                            }else{
+                                //判断数据是否需要更新
+                                var currentPageCount = Math.ceil(this.totalCount / this.pagesize);
+                                if (currentPageCount != this.pageCount) {
+                                    pageIndex = 1;
+                                    this.pageCount = currentPageCount;
+
+                                }
+                                else if (this.pageCurrent == pageIndex && currentPageCount == this.pageCount && typeof (forceRefresh) == "undefined") {
+
+                                        return;
+
+                                }
+                                    this.pageCurrent=pageIndex;//当前页面=pageIndex;
+                                    this.queryKeichengContent();
+
+							}
+                            //处理分页点中样式
+                            var buttons = $("#pager").find("span");
+                            for (var i = 0; i < buttons.length; i++) {
+
+                                if (buttons.eq(i).html() != pageIndex) {
+
+                                    buttons.eq(i).removeClass("active");
+                                }
+                                else {
+                                    buttons.eq(i).addClass("active");
+                                }
+                            }
+
+
+                        }
                     }
-				}
+
+                }
 			})
 
-			//获取a标签url中的参数的方法
-			function getQueryString(name) {
-				var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-				var r = window.location.search.substr(1).match(reg);
-				if (r != null) {
-					return decodeURIComponent(r[2]);
-				}
-				return '';
-			}
-
-			//取出课程分类id...
-			var departmentId = getQueryString("departmentId");
-			console.log("取到的课程分类id为：" + departmentId);
 		</script>
 	</body>
 
