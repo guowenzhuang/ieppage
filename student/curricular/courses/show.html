@@ -110,7 +110,8 @@
 								<h4 class="media-heading">{{courName}}</h4>
 
 								<div class="msg-desc">
-									<h4>开课时间:{{courOpentime}}<!-- 开课时间:2018年12月13日 ~ 2019年01月31日 --> </h4>
+									<h4>开课时间:{{courOpentime}}<!-- 开课时间:2018年12月13日 ~ 2019年01月31日 -->
+									</h4>
 
 								</div>
 
@@ -119,11 +120,11 @@
 								</div>
 								<div class="msg-desc">
 									<h4> 已有{{renshu}}人参加</h4>
-									
-								<!-- 	<button @click="add1" class="bootcamp-infobox-buy">{{baoming}}</button> -->
+
+									<!-- 	<button @click="add1" class="bootcamp-infobox-buy">{{baoming}}</button> -->
 								</div>
 								<div class="msg-desc">
-									<el-button @click="add1" type="primary" >{{baoming}}</el-button>
+									<el-button @click="add1" type="primary">{{baoming}}</el-button>
 								</div>
 
 							</div>
@@ -227,7 +228,7 @@
 									</h4>
 								</div>
 
-							
+
 
 								<div class="lab-item ">
 									<div class="lab-item-status">
@@ -249,7 +250,7 @@
 										</span></h4>
 								</div>
 
-						
+
 
 							</div>
 							<div role="tabpanel" class="tab-pane course-comment" id="comments">
@@ -261,60 +262,49 @@
 													<div class="col-sm-2 question-item-author">
 														<div class="user-avatar ">
 															<a class="avatar" href="../user/13/study.html" target="_blank">
-																<img src="https://dn-simplecloud.xxxxxx.com/gravataradmin.png?imageView2/1/w/100/h/100">
+																<img src="../img/002.jpg">
 															</a>
 														</div>
 													</div>
 													<div class="col-sm-10">
 														<h4>
-															<img src="../img/topQuestion.png">
+															<!-- <img src="../img/topQuestion.png"> -->
+
 															<samp v-text="c.content"></samp>
 															<!-- <a class="question-item-title" href="show.html" target="_blank"> 实验楼百楼俱乐部成立，欢迎100楼的你加入！</a> -->
 														</h4>
 														<div class="question-item-summary">
 															<div class="user-username ">
 																<a class="avatar" href="../user/13/study.html" target="_blank">
-																	shiyanlouadmin
+																	<samp v-text="c.sid"></samp>
 																</a>
-																<span class="user-level">L14</span>
+																<!-- 	<span class="user-level">L14</span> -->
 															</div>
-															<span class="question-item-date">3小时前</span>
-															最后回复 <span class="question-item-date">
+															<span>发表于</span>
+															<span class="question-item-date" v-text="c.mtime"></span>
+															<!-- 最后回复 <span class="question-item-date">
 																<div class="user-username ">
 																	<a class="username" href="/user/256544" target="_blank">
 																		芃逆明
 																	</a>
 																	<span class="user-level">L38</span>
-																</div>
+																</div> -->
 															</span>
 														</div>
 													</div>
 												</div>
 												<div class="col-md-2 question-item-rank">
 													<div class="question-item-answered">
-														<div>89</div>
-														<div>回复</div>
+														<div @click="dainzan">
+															<a>👍</a>
+														</div>
+														<div><span v-text="c.praise"></span></div>
 													</div>
-													<div class="question-item-views">
-														<div>2409</div>
-														<div>查看</div>
-													</div>
+
 												</div>
 											</li>
 									</div>
 								</div>
-
-
-								<!-- <div v-for="c in contents" class="comment-title">
-										<samp v-text="c.content"></samp>
-									</div> 
-									<div class="comment-list">
-										<samp v-text="c.sid"></samp>
-									</div>
-									<div class="pagination-container">
-										<samp v-text="c.content"></samp>
-									</div>
-									<div class="pagination-container"></div> -->
 
 							</div>
 
@@ -527,7 +517,7 @@
 			<div class="width_1200 margin_auto">
 				<div class="width100 float_l text_c margin_b30">
 					<a class="img_backg5" href="#"></a>
-					<a class="img_backg6 posi_relative wexinmaxianshi" href="#"><i class="weixinweima dis_none"><img src="img/idx-btm.png"></i></a>
+					<a class="img_backg6 posi_relative wexinmaxianshi" href="#"><i class="weixinweima dis_none"><img src="../../img/idx-btm.png"></i></a>
 					<a class="img_backg7" href="#"></a>
 					<a class="img_backg8" href="#"></a>
 				</div>
@@ -550,15 +540,15 @@
 			var menu = new Vue({
 				el: "#details",
 				mounted: function() {
-					//	this.sid = sessionStorage.getItem("userid");
+					this.sid = sessionStorage.getItem("userid");
 					this.getQueryString("courId");
 					this.chaxun()
 					this.people()
 				},
 				data: {
 					//urlPre: "http://127.0.0.1:8060",
-					courId: 1,
-					sid: "1",
+					courId: "courId",
+					sid: "userid",
 					//courId: "",
 					courName: "",
 					courTeaid: "",
@@ -575,9 +565,9 @@
 					courPropaedeutics: "",
 					courIsputaway: "",
 					courCommentcount: "",
-					courOpentime:"",
-					courClasshour:"",
-					renshu: "",
+					courOpentime: "2018年10月13日 ~ 2019年01月31日",
+					courClasshour: "3-5",
+					renshu: "0",
 					baoming: "立即参加",
 					page: 1,
 					size: 10,
@@ -647,10 +637,10 @@
 							this.courResources = res.courResources;
 							this.courPropaedeutics = res.courPropaedeutics;
 							this.courPageview = res.courPageview;
-							this.courOpentime=res.courOpentime;
-							this.courClasshour=res.courClasshour;
-							
-							
+							this.courOpentime = res.courOpentime;
+							this.courClasshour = res.courClasshour;
+
+
 						})
 					},
 					people: function() {
@@ -694,6 +684,10 @@
 
 
 						})
+					},
+					dainzan: function() {
+						//点赞
+						console.log("1111");
 					}
 				}
 
