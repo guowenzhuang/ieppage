@@ -978,8 +978,32 @@
 
             },
 
-
+            /*点击创建试卷()最后的创建试卷*/
             addparperanniu() {
+                alert("创建试卷了");
+                let params = new URLSearchParams();
+                params.append("parperid", this.parperid);
+                axios({
+                    method: 'post',
+                    url: '/api/exam/examrubric/createparper',
+                    data: params,
+
+                }).then(res => {
+                    /**
+                     *虽然不知道为什么但是这一句话不加的话
+                     * 下面获取到的success以及其他的属性不是想要的样子
+                     */
+                    res = res.data;
+                    if (res.success) {
+                        this.$notify({title: "成功", message: res.message, type: 'success'});
+                    } else {
+                        this.$notify.error({title: "失败", message: res.message})
+                    }
+
+
+                })
+
+
                 this.bigdialog = false;
                 this.addparper = false;
             },
