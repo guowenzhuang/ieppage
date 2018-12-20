@@ -10,47 +10,123 @@
     <script src="js/index.js"></script>
     <style>
 
-        .el-aside {
-            background-color: #D3DCE6;
-            color: #333;
-            text-align: center;
-            line-height: 200px;
-            height: auto;
-            border: saddlebrown 2px solid;
+        li {
+            list-style: none;
+            text-align: left;
+            margin-left: 80px;
         }
 
-        .el-main {
-            background-color: #E9EEF3;
-            color: #333;
-            text-align: center;
-            line-height: 160px;
-            height: auto;
-            border: saddlebrown 2px solid;
-        }
+
     </style>
+
 
 </head>
 <body>
 
+<h1 align="center">试卷显示</h1>
+<hr>
+<br><br><br>
+
 <div id="app" align="center">
 
-    <el-container>
-        <el-aside width="200px">Aside</el-aside>
-        <el-main>Main</el-main>
-    </el-container>
+    <ol v-for="site in sites">
+        <li style="margin-left: 20px">
+            <h2>({{site.index}}):{{site.rubric}} {{site.score}}分</h2>
+        </li>
+
+        <li v-if="site.snne">
+            <font size="4">A:{{site.answerA}}</font>
+
+        </li>
+        <li>
+            <font size="4">B:{{site.answerB}}</font>
+
+        </li>
+        <li>
+            <font size="4">C:{{site.answerC}}</font>
+
+
+        </li>
+        <li>
+            <font size="4">D:{{site.answerD}}</font>
+        </li>
+        <br><br>
+    </ol>
+
 
 </div>
+
 
 </body>
 <script>
 
+    /*自动在请求中添加请求头*/
+    axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
+    /*获取登陆人的userid*/
+    var userid = sessionStorage.getItem("userid");
+
     var main = new Vue({
         el: '#app',
-        data() {
-            return {}
+
+        data: {
+
+            sites: [
+                {
+                    snne: false,
+                    index: 1,
+                    score: 3,
+                    rubric: '在HTML中插入JavaScript脚本片段,一般使用标记<!-- -->',
+                    answerA: "Spring ./......",
+                    answerB: "Spring ./......",
+                    answerC: "Spring ./......",
+                    answerD: "Spring ./......",
+                },
+                {
+                    snne: false,
+                    index: 2,
+                    score: 1,
+
+                    rubric: '在HTML中插入JavaScript脚本片段,一般使用标记<!-- -->',
+                    answerA: "Spring ./......",
+                    answerB: "Spring ./......",
+                    answerC: "Spring ./......",
+                    answerD: "Spring ./......",
+                },
+                {
+                    snne: false,
+                    index: 3,
+                    score: 1,
+
+                    rubric: '在HTML中插入JavaScript脚本片段,一般使用标记<!-- -->',
+                    answerA: "Spring ./......",
+                    answerB: "Spring ./......",
+                    answerC: "Spring ./......",
+                    answerD: "Spring ./......",
+                },
+            ],
+
         },
 
-        methods: {}
+        methods: {
+            query() {
+
+
+                axios({
+                    method: 'post',
+                    url: '/api/exam//',
+                    params: {
+                        teaId: userid,
+                    },
+
+                }).then(res => {
+                    res = res.data;
+                    this.options3 = res.message;
+
+                })
+            },
+
+        },
+
 
     })
 
