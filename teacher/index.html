@@ -15,7 +15,7 @@
 <div id="app">
     <el-container>
         <el-header>
-
+            {{username}} 你好
         </el-header>
         <el-container>
 
@@ -57,7 +57,7 @@
                     children: 'children',
                     label: 'name'
                 },
-
+                    username:''
 
 
             }
@@ -134,7 +134,7 @@
 
         },
         mounted() {
-
+            this.username=sessionStorage.getItem("username")
             //初始化菜单
             this.queryMenu();
             //this.changTree();
