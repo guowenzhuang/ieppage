@@ -148,21 +148,25 @@
 				</div>
 
 				<div id="tuijian" class="width100 float_l">
-					<el-row>
-						<el-col :span="6" v-for="(o, index) in 2" :key="o" :offset="index > 0 ? 2 : 0">
-							<el-card :body-style="{ padding: '0px' }">
-								<img src="~examples/assets/images/hamburger.png" class="image">
-								<div style="padding: 14px;">
-									<span>推荐课程名称</span>
-									<div class="bottom clearfix">
-										<time class="time">{{ currentDate }}</time>
-										<el-button type="text" class="button">操作按钮</el-button>
-									</div>
-								</div>
-							</el-card>
-						</el-col>
-					</el-row>
-
+					
+					
+					<div class="width_224 height172 float_l margin_r10 border_shadow jingguoxianshi over_pos bianshou" v-for="r in recommended">
+						<a class="color_black" :href="'curricular/courses/show.html?courId='+r.courId">
+						<div class="width100 float_l img_100 z_inx_1">
+							<img src="img/uiz7.jpg">
+						</div>
+						<div class="img_backg2 donghua">
+							<span class="margin_t15 float_l ">{{r.courName}}</span>
+							<span class="float_l fon_siz12 line_hei16 color_gray margin_t5 posi_relative ">{{r.courDetails}}</span>
+						</div>
+						<div class="width100 float_l padding_lr20 height48 fon_siz12 line_hei48 z_inx_3 posi_relative backg_white">
+							<!-- <span class="float_l color_red">￥88.00</span> -->
+							<span class="float_r color_gray"><span>{{r.courStudypeople}}</span>人在学</span>
+						</div>
+						</a>
+					</div>
+					
+					
 				</div>
 			</div>
 		</div>
@@ -170,21 +174,24 @@
 		<script>
 			var tuijian = new Vue({
 				el: "#tuijian",
+				mounted: function() {
+					this.queryTuiJian()
+				},
 				data: {
 					currentDate: new Date(),
 					recommended:[]
 				},
 				methods: {
 					queryTuiJian: function() {
-						var wz=02;
 						axios({
 							method: 'get',
-							url: '/api/student/home/queryTuiJian',
-							data:wz
+							url: '/api/student/home/getRecommended',
+							
 						}).then(res => {
-							console.log(res.data.success);
-							console.log(res.data.message);
-							//this.recommended=res.data.message;
+							console.log(res.data);
+							
+							this.recommended=res.data;
+							
 						})
 					}
 				}
