@@ -154,17 +154,10 @@
 												<div class="question-item-summary">
 													<div class="user-username ">
 														<!-- 用户名称 -->
-														<a class="avatar" href="#" target="_blank">发帖人</a>
+														<a class="avatar" href="#" target="_blank">{{post.userName}}</a>
 													</div>
 													<!-- 回复时间和最后回复人名称 -->
 													<span class="question-item-date">{{post.replyTime}}</span>
-													<!--最后回复--> <span class="question-item-date">
-														<div class="user-username ">
-															<a class="username" href="#" target="_blank">
-																最后回复人
-															</a>
-														</div>
-													</span>
 												</div>
 											</div>
 										</div>
@@ -436,12 +429,10 @@
 					btnNew: function(){
 						this.orderBy = "replyTime";
 						this.queryPost();
-						console.log('orderBy==>' + orderBy);
 					},
 					btnHot: function(){
 						this.orderBy="replyLikenum";
 						this.queryPost();
-						console.log('orderBy==>' + orderBy);
 					},
 					jumpPostDetails: function(post) {
 						
@@ -454,10 +445,7 @@
 							headers: {
 								//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
 							}
-						}).then(res => {
-							//res = res.data;
-
-						})
+						});
 						console.log('post==>' + post.replyContent);
 						sessionStorage.setItem("postContent", post.replyContent);
 						sessionStorage.setItem("postTime", post.replyTime);
@@ -466,6 +454,7 @@
 						sessionStorage.setItem("postTitle", post.postTitle);
 						sessionStorage.setItem("postId", post.postId);
 						sessionStorage.setItem("postBrowse", post.replyBrowse);
+						sessionStorage.setItem("postUsername", post.userName);
 						window.location.href="postDetails.html";
 
 					}
