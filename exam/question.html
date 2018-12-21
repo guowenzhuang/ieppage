@@ -8,6 +8,17 @@
     <script src="js/index.js"></script>
     <script src="js/axios.js"></script>
 
+    <style>
+        .el-table .warning-row {
+            background: oldlace;
+        }
+
+        .el-table .success-row {
+            background: #f0f9eb;
+        }
+
+    </style>
+
 
 </head>
 <body>
@@ -49,7 +60,7 @@
     <!--element表格-->
     <div style="width: 100%;">
         <template>
-            <el-table :data="rubricList" style=" width: auto">
+            <el-table :data="rubricList" :row-class-name="tableRowClassName" style=" width: auto">
                 <!--<el-table-column prop="id" label="序号" :show-overflow-tooltip="true">
                 </el-table-column>-->
                 <el-table-column prop="rubricttype" label="试题类型" :show-overflow-tooltip="true">
@@ -490,6 +501,15 @@
         },
         /*方法函数写在这里面*/
         methods: {
+            /*行行显示不同的颜色*/
+            tableRowClassName({row, rowIndex}) {
+                if (rowIndex % 4 === 0) {
+                    return 'warning-row';
+                } else if (rowIndex % 2 === 0) {
+                    return 'success-row';
+                }
+                return '';
+            },
 
 
             /*根据userid查询所拥有的课程*/
@@ -775,7 +795,7 @@
             /*点击查看试题的的时候调用这个(选择题显示选择题的对话框,填空题显示填空的,判断显示判断的)*/
             checkDetail(val) {
 
-               /* alert("sdafsdf")*/
+                /* alert("sdafsdf")*/
                 this.id = val.id;
                 this.answerid = val.answerId;
                 this.inputupdate = val.content;
@@ -821,8 +841,8 @@
                     this.duoinputD = val.D;
                     this.duoinputupdate = val.content;
 
-                   /* alert("sdafsdaf")
-                    alert(val.answerId);*/
+                    /* alert("sdafsdaf")
+                     alert(val.answerId);*/
 
                     var result = val.answerId.split(",");
                     /*alert(result)*/
@@ -834,28 +854,28 @@
                                 this.duoupdateform1 = "A";
                             }, 1)
                         } else {
-                                this.duoupdateform1 = "";
+                            this.duoupdateform1 = "";
                         }
                         if (result[i] == val.Bid) {
                             window.setTimeout(() => {
                                 this.duoupdateform2 = "B";
                             }, 1)
                         } else {
-                                this.duoupdateform2 = "";
+                            this.duoupdateform2 = "";
                         }
                         if (result[i] == val.Cid) {
                             window.setTimeout(() => {
                                 this.duoupdateform3 = "C";
                             }, 1)
                         } else {
-                                this.duoupdateform3 = "";
+                            this.duoupdateform3 = "";
                         }
                         if (result[i] == val.Did) {
                             window.setTimeout(() => {
                                 this.duoupdateform4 = "D";
                             }, 1)
                         } else {
-                                this.duoupdateform4 = "";
+                            this.duoupdateform4 = "";
                         }
                     }
 
@@ -975,6 +995,14 @@
                 })
             }
             ,
+
+
+
+
+
+
+
+
 
             /*分页的每页条数*/
             handleSizeChange(val) {
