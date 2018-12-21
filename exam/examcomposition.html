@@ -724,6 +724,106 @@
         /*方法函数写在这里面*/
         methods: {
 
+            /*点击查看试题的的时候调用这个(选择题显示选择题的对话框,填空题显示填空的,判断显示判断的)*/
+            checkDetail(val) {
+
+                /*alert(val.answerId);*/
+
+                this.id = val.id;
+                this.answerid = val.answerId;
+                this.inputupdate = val.content;
+                this.type = val.rubricttype;
+                this.inputA = val.A;
+                this.inputB = val.B;
+                this.inputC = val.C;
+                this.inputD = val.D;
+                this.aaaa = val.Aid;
+                this.bbbb = val.Bid;
+                this.cccc = val.Cid;
+                this.dddd = val.Did;
+                this.list = val;
+
+                if (val.rubricttype == "单选题") {
+                    this.dialogVisibleselect = true;
+
+                    if (val.answerId == val.Aid) {
+                        window.setTimeout(() => {
+                            this.updateform = "A";
+                        }, 1)
+                    } else if (val.answerId == val.Bid) {
+                        window.setTimeout(() => {
+                            this.updateform = "B";
+                        }, 1)
+                    } else if (val.answerId == val.Cid) {
+                        window.setTimeout(() => {
+                            this.updateform = "C";
+                        }, 1)
+                    } else if (val.answerId == val.Did) {
+                        window.setTimeout(() => {
+                            this.updateform = "D";
+                        }, 1)
+                    } else {
+                        this.updateform = "";
+                    }
+                } else if (val.rubricttype == "多选题") {
+                    this.duoinputA = val.A;
+                    this.duoinputB = val.B;
+                    this.duoinputC = val.C;
+                    this.duoinputD = val.D;
+                    this.duoinputupdate = val.content;
+
+                    var result = val.answerId.split(",");
+                    for (var i = 0; i < result.length; i++) {
+
+                        if (result[i] == val.Aid) {
+                            window.setTimeout(() => {
+                                this.duoupdateform1 = "A";
+                            }, 1)
+                        }
+
+                        if (result[i] == val.Bid) {
+                            window.setTimeout(() => {
+                                this.duoupdateform2 = "B";
+                            }, 1)
+                        }
+                        if (result[i] == val.Cid) {
+                            window.setTimeout(() => {
+                                this.duoupdateform3 = "C";
+                            }, 1)
+                        }
+                        if (result[i] == val.Did) {
+                            window.setTimeout(() => {
+                                this.duoupdateform4 = "D";
+                            }, 1)
+                        }
+                    }
+                    this.updatedialogVisibleduo = true;
+
+
+                }
+                else if (val.rubricttype == "填空题") {
+
+
+                    this.dialogVisiblepack = true;
+                    this.packrubric = val.content;
+                    this.packanswer = val.answerId;
+
+
+                } else if (val.rubricttype == "判断题") {
+                    this.judgerubric = val.content
+
+                    if (val.answerId == "正确") {
+                        this.value3 = true;
+                    } else if (val.answerId == "错误") {
+                        this.value3 = false;
+                    }
+                    this.dialogVisiblejudge = true;
+
+                }
+
+
+            },
+
             /*添加试卷*/
             selectrubric() {
                 this.addparper = true;
@@ -878,8 +978,32 @@
 
             },
 
-
+            /*点击创建试卷()最后的创建试卷*/
             addparperanniu() {
+                alert("创建试卷了");
+                let params = new URLSearchParams();
+                params.append("parperid", this.parperid);
+                axios({
+                    method: 'post',
+                    url: '/api/exam/examrubric/createparper',
+                    data: params,
+
+                }).then(res => {
+                    /**
+                     *虽然不知道为什么但是这一句话不加的话
+                     * 下面获取到的success以及其他的属性不是想要的样子
+                     */
+                    res = res.data;
+                    if (res.success) {
+                        this.$notify({title: "成功", message: res.message, type: 'success'});
+                    } else {
+                        this.$notify.error({title: "失败", message: res.message})
+                    }
+
+
+                })
+
+
                 this.bigdialog = false;
                 this.addparper = false;
             },
@@ -1171,100 +1295,6 @@
 
             },
 
-            /*点击查看试题的的时候调用这个(选择题显示选择题的对话框,填空题显示填空的,判断显示判断的)*/
-            checkDetail(val) {
-                this.id = val.id;
-                this.answerid = val.answerId;
-                this.inputupdate = val.content;
-                this.type = val.rubricttype;
-                this.inputA = val.A;
-                this.inputB = val.B;
-                this.inputC = val.C;
-                this.inputD = val.D;
-                this.aaaa = val.Aid;
-                this.bbbb = val.Bid;
-                this.cccc = val.Cid;
-                this.dddd = val.Did;
-
-                this.list = val;
-
-                if (val.rubricttype == "单选题") {
-                    this.dialogVisibleselect = true;
-
-                    if (val.answerId == val.Aid) {
-                        window.setTimeout(() => {
-                            this.updateform = "A";
-                        }, 1)
-                    } else if (val.answerId == val.Bid) {
-                        window.setTimeout(() => {
-                            this.updateform = "B";
-                        }, 1)
-                    } else if (val.answerId == val.Cid) {
-                        window.setTimeout(() => {
-                            this.updateform = "C";
-                        }, 1)
-                    } else if (val.answerId == val.Did) {
-                        window.setTimeout(() => {
-                            this.updateform = "D";
-                        }, 1)
-                    }
-                } else if (val.rubricttype == "多选题") {
-                    this.duoinputA = val.A;
-                    this.duoinputB = val.B;
-                    this.duoinputC = val.C;
-                    this.duoinputD = val.D;
-                    this.duoinputupdate = val.content;
-
-                    var result = val.answerId.split(",");
-                    for (var i = 0; i < result.length; i++) {
-
-                        if (result[i] == val.Aid) {
-                            window.setTimeout(() => {
-                                this.duoupdateform1 = "A";
-                            }, 1)
-                        }
-                        if (result[i] == val.Bid) {
-                            window.setTimeout(() => {
-                                this.duoupdateform2 = "B";
-                            }, 1)
-                        }
-                        if (result[i] == val.Cid) {
-                            window.setTimeout(() => {
-                                this.duoupdateform3 = "C";
-                            }, 1)
-                        }
-                        if (result[i] == val.Did) {
-                            window.setTimeout(() => {
-                                this.duoupdateform4 = "D";
-                            }, 1)
-                        }
-                    }
-                    this.updatedialogVisibleduo = true;
-
-
-                }
-                else if (val.rubricttype == "填空题") {
-
-
-                    this.dialogVisiblepack = true;
-                    this.packrubric = val.content;
-                    this.packanswer = val.answerId;
-
-
-                } else if (val.rubricttype == "判断题") {
-                    this.judgerubric = val.content
-
-                    if (val.answerId == "正确") {
-                        this.value3 = true;
-                    } else if (val.answerId == "错误") {
-                        this.value3 = false;
-                    }
-                    this.dialogVisiblejudge = true;
-
-                }
-
-
-            },
 
             /*新增取消按钮*/
             addquxiao() {
