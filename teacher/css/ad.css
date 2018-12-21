@@ -6,3 +6,11 @@
 .el-form-item__content{
     margin-top: 20px;
 }
+.el-main {
+    padding-top: 0;
+}
+
+.el-message-box__wrapper {
+    bottom: auto;
+    top: 80px;
+}
