@@ -17,6 +17,7 @@
 		<link rel="stylesheet" href="../app/css/libs/videojs/5.11.7/video-js.min.css">
 		<link rel="stylesheet" href="../app/css/dest/styles.css?=2016121272249">
 		<link rel="stylesheet" type="text/css" href="../layui/css/layui.css" />
+		<link rel="stylesheet" href="../css/index.css" />
 		<script src="../layui/layui.js"></script>
 		<script src="../js/jquery.min.js"></script>
 		<script src="../js/vue.min.js"></script>
@@ -99,7 +100,8 @@
 							data: {
 								replyContent: replyText,
 								postId: sessionStorage.getItem("postId"),
-								userId: "9357593e-02dc-47ab-b304-910e3411a897"
+								userId: sessionStorage.getItem("userId"),
+								pId: 0
 							},
 							beforeSend: function(request) {
 								// 禁用按钮防止重复提交
@@ -194,7 +196,6 @@
 					<div class="content question-detail">
 						<div class="question-headline">
 							<span class="question-title"> {{postTitle}}</span>
-							<span class="question-figure">3 回复</span>
 							<span class="question-figure">{{postBrowse}} 查看</span>
 						</div>
 						<div class="question-author">
@@ -205,7 +206,7 @@
 								</a>
 							</div>
 							<div class="user-username ">
-								<a class="username" href="#" target="_blank"> 发帖人 </a>
+								<a class="username" href="#" target="_blank"> {{postUsername}} </a>
 							</div>
 
 							<span>{{postTime}}</span>
@@ -214,19 +215,22 @@
 						<div class="question-content markdown-body">
 							<p>{{postContent}}</p>
 							<div class="labreport-detail-like">
-								<!-- 举报 -->
-								<span class="btn btn-default btn-weiboshare">
-									<i class="layui-icon layui-icon-circle-dot" id="report" style="font-size: 20px; color: #6D6D6D;"></i>
-									<i class="el-icon-warning"></i>
+								<!-- 回复 -->
+								<span class="btn btn-weiboshare">
+									<a class="layui-btn layui-btn-normal layui-btn-sm layui-btn-radius">回复</a>
 								</span>
-
+								<!-- 举报 -->
+								<span class="btn  btn-weiboshare">
+									<i class="el-icon-warning" <!-- @click="reportReply(reply)" -->></i>
+								</span>
 								<!-- 点赞 -->
-								<span class="btn btn-default btn-weiboshare" v-if="">
+								<span class="btn  btn-weiboshare" v-if="postLike">
 									<i class="layui-icon layui-icon-praise" v-on:click="replyLike(reply)" style="font-size: 20px; color: #CC0033;"></i>
 								</span>
-								<span class="btn btn-default btn-weiboshare" v-else>
+								<span class="btn  btn-weiboshare" v-else>
 									<i class="layui-icon layui-icon-praise" v-on:click="replyLike(reply)" style="font-size: 20px; color: #6D6D6D;"></i>
 								</span>
+
 							</div>
 						</div>
 
@@ -246,15 +250,14 @@
 								<div class="answer-detail">
 									<span class="comment-reply">
 										<div class="user-username ">
-											<a class="username" href="#" target="_blank">回复人姓名</a>
+											<a class="username" href="#" target="_blank">{{reply.replyUsername}}</a>
 										</div>
 									</span>
 									<span class="comment-parent" v-if="reply.isReply">
 										回复
 										<div class="user-username ">
-											<a class="username" href="/user/347060" target="_blank">被回复人姓名</a>
+											<a class="username" href="/user/347060" target="_blank">{{reply.byUsername}}</a>
 										</div>
-
 									</span>
 									<span class="comment-parent" v-else>
 
@@ -267,17 +270,23 @@
 										<span class="create-time">{{reply.replyTime}}</span>
 									</div>
 									<div class="labreport-detail-like">
+										<!-- 回复 -->
+										<span class="btn btn-weiboshare">
+											<template>
+												<el-button size="small" type="success" plain @click="replyUser(reply.replyId)">回复</el-button>
+											</template>
+										</span>
+
 										<!-- 举报 -->
-										<span class="btn btn-default btn-weiboshare">
-											<i class="layui-icon layui-icon-circle-dot" id="report" style="font-size: 20px; color: #6D6D6D;"></i>
-											<i class="el-icon-warning"></i>
+										<span class="btn btn-weiboshare">
+											<i class="el-icon-warning" @click="reportReply(reply)"></i>
 										</span>
 
 										<!-- 点赞 -->
-										<span class="btn btn-default btn-weiboshare" v-if="reply.isLike">
+										<span class="btn  btn-weiboshare" v-if="reply.isLike">
 											<i class="layui-icon layui-icon-praise" v-on:click="replyLike(reply)" style="font-size: 20px; color: #CC0033;"></i>
 										</span>
-										<span class="btn btn-default btn-weiboshare" v-else>
+										<span class="btn  btn-weiboshare" v-else>
 											<i class="layui-icon layui-icon-praise" v-on:click="replyLike(reply)" style="font-size: 20px; color: #6D6D6D;"></i>
 										</span>
 									</div>
@@ -333,6 +342,9 @@
 					return {
 
 						isLike: "",
+						postLike: "",
+						postReport: '',
+						postUsername: sessionStorage.getItem("postUsername"),
 						postContent: sessionStorage.getItem("postContent"),
 						postBrowse: sessionStorage.getItem("postBrowse"),
 						postTime: sessionStorage.getItem("postTime"),
@@ -347,7 +359,7 @@
 					queryReply: function() {
 						let params = new URLSearchParams();
 						params.append("postId", sessionStorage.getItem("postId"));
-						params.append("userId", "9357593e-02dc-47ab-b304-910e3411a897")
+						params.append("userId", sessionStorage.getItem("userId"))
 						axios({
 							method: 'post',
 							url: '/api/bbs/reply/getReplyByPostId',
@@ -361,10 +373,27 @@
 							console.log('replyList==>' + this.replyList);
 						})
 					},
+					userIsPost: function(){
+						let params = new URLSearchParams();
+						params.append("replyId", sessionStorage.getItem("replyId"));
+						params.append("userId", sessionStorage.getItem("userId"));
+						axios({
+							method: 'post',
+							url: '/api/bbs/post/userIsPost',
+							data: params,
+							headers: {
+								//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
+							}
+						}).then(res=>{
+							res=res.data;
+							this.postLike=res.isLikePost;
+							this.postReport=res.isReportPost;
+						})
+					},
 					replyLike: function(reply) {
 						let params = new URLSearchParams();
 						params.append("replyId", reply.replyId);
-						params.append("userId", "9357593e-02dc-47ab-b304-910e3411a897");
+						params.append("userId", sessionStorage.getItem("userId"));
 						params.append("isLike", reply.isLike);
 						axios({
 							method: 'post',
@@ -376,29 +405,36 @@
 						}).then(res => {
 							res = res.data;
 							if (res.success) {
-								alert(res.message);
 								this.$message({
-									message: '恭喜你，这是一条成功消息',
+									message: res.message,
 									type: 'success'
 								});
 								this.queryReply();
 							} else {
-								this.$message.error('错了哦，这是一条错误消息');
+								this.$message.error(res.message);
 							}
 
 						})
 
-					}
-					/* replyReport: function(reply) {
-						if (reply.isReport) {
-							alert("你已举报过该用户")
-						} else {
+					},
+					replyUser: function(replyId) {
+						this.$prompt('请输入回复内容', '回复', {
+							confirmButtonText: '确定',
+							cancelButtonText: '取消',
+							inputPattern: /\S/,
+							inputErrorMessage: '回复内容不能为空'
+						}).then(({
+							value
+						}) => {
+							console.log("replyId====>" + replyId);
 							let params = new URLSearchParams();
-							params.append("replyId", reply.replyId);
-							params.append("userId", "9357593e-02dc-47ab-b304-910e3411a897");
+							params.append("replyContent", value);
+							params.append("postId", sessionStorage.getItem("postId"));
+							params.append("pId", replyId);
+							params.append("userId", sessionStorage.getItem("userId"));
 							axios({
 								method: 'post',
-								url: '/api/bbs/reply/userReport',
+								url: '/api/bbs/reply/insertReply',
 								data: params,
 								headers: {
 									//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
@@ -406,19 +442,71 @@
 							}).then(res => {
 								res = res.data;
 								if (res.success) {
-									alert(res.message);
 									this.$message({
-										message: '恭喜你，这是一条成功消息',
+										message: res.message,
 										type: 'success'
 									});
 									this.queryReply();
 								} else {
-									this.$message.error('错了哦，这是一条错误消息');
+									this.$message.error(res.message);
 								}
-
 							})
+						}).catch(() => {
+							this.$message({
+								type: 'info',
+								message: '取消输入'
+							});
+						});
+					},
+					reportReply: function(reply) {
+						if (reply.isReport) {
+							this.$message({
+								type: 'info',
+								message: '你已举报过该用户'
+							});
+						} else {
+							this.$prompt('请输入举报内容', '举报', {
+								confirmButtonText: '确定',
+								cancelButtonText: '取消',
+								inputPattern: /\S/,
+								inputErrorMessage: '举报内容不能为空'
+							}).then(({
+								value
+							}) => {
+								let params = new URLSearchParams();
+								params.append("replyId", reply.replyId);
+								params.append("userId", sessionStorage.getItem("userId"));
+								params.append("reportReason", value);
+								axios({
+									method: 'post',
+									url: '/api/bbs/reply/userReport',
+									data: params,
+									headers: {
+										//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
+									}
+								}).then(res => {
+									res = res.data;
+									if (res.success) {
+										this.$message({
+											message: res.message,
+											type: 'success'
+										});
+										this.queryReply();
+									} else {
+										this.$message.error(res.message);
+									}
+
+								})
+
+							}).catch(() => {
+								this.$message({
+									type: 'info',
+									message: '取消输入'
+								});
+							});
 						}
-					} */
+
+					}
 
 				}
 			})
