@@ -191,6 +191,14 @@
 							<el-button type="primary" @click="deleteport()">确 定</el-button>
 						</span>
 					</el-dialog>
+					<el-dialog :visible.sync="dialogVisible4" width="30%" :before-close="handleClose">
+					<!-- 	<el-input v-model="reportId" placeholder="Id" style="width: 50px; line-height: 10px;"></el-input> -->
+						<span>确定删除吗？</span>
+						<span slot="footer" class="dialog-footer">
+							<el-button @click="dialogVisible4 = false">取 消</el-button>
+							<el-button type="primary" @click="deletepost()">确 定</el-button>
+						</span>
+					</el-dialog>
 
 					<el-pagination class="fy" layout="prev, pager, next" @current-change="current_change" :total="total" :page-size="pagesize"
 					 background>
@@ -261,6 +269,7 @@
              dialogVisible: false,
              dialogVisible2: false,
 						 dialogVisible3: false,
+						 dialogVisible4: false,
              dialogTableVisible:false,
 						 dialogTableVisible2:false,
              total: 50,//默认数据总数
@@ -522,9 +531,13 @@
 																				})
 												
 																		}, 
-						delete(val){
+						delete(row){
+							this.dialogVisible4=true;
+							this.replyId=row.replyId;
+							},
+							deletereply(){
 							let params = new URLSearchParams();
-							                params.append("replyId", val.replyId)
+						 params.append("replyId", val.replyId)
 							                axios({
 							                    method: 'post',
 							                    url: '/api/bbs/post/deletePost',
