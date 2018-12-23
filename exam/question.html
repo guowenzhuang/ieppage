@@ -30,7 +30,7 @@
     <div align="center">
         <a href="examcomposition.html">哈哈哈</a>
         <!--<el-button type="primary" icon="el-icon-plus" @click="querycourse()" size="small" round>ccc</el-button>-->
-        <el-button type="primary" icon="el-icon-plus" @click="dialogVisibletype = true" size="small" round>新增试题
+        <el-button type="primary" icon="el-icon-plus" @click="dialogVisibletype = true" size="small" plain round>新增试题
         </el-button>
         <font size="4">题干:</font>
         <el-input v-model="rubric" placeholder="请输入内容" style="width: 150px;" size="small"></el-input>
@@ -52,7 +52,8 @@
         <!--<font size="4">章节:</font>
         <el-input v-model="section" placeholder="请输入内容" style="width: 120px;" size="small"></el-input>-->
 
-        <el-button type="primary" icon="el-icon-search" @click="query()" v-on:keyup.13="submit" size="small" round>
+        <el-button type="primary" icon="el-icon-search" @click="query()" v-on:keyup.13="submit" size="small" plain
+                   round>
             搜索
         </el-button>
     </div>
@@ -995,13 +996,6 @@
                 })
             }
             ,
-
-
-
-
-
-
-
 
 
             /*分页的每页条数*/

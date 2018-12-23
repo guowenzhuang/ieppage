@@ -157,9 +157,9 @@
 						</el-col>
 						<el-col :span="10">
 							<div class="grid-content bg-purple">
-								<h3>亲爱的疯狂的年轻人</h3>
+								<h3>亲爱的{{courName}}</h3>
 								<hr />
-								<h4>欢迎你加入课程《音乐心理学》，赶快开启学习之旅吧~</h4>
+								<h4>欢迎你加入课程《{{courName}}》，赶快开启学习之旅吧~</h4>
 							</div>
 						</el-col>
 						<el-col :span="2">
@@ -283,8 +283,16 @@
 
 
 		<script>
+			/*自动在请求中添加请求头*/
+			axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
+
 			var app = new Vue({
 				el: "#app",
+				mounted: function() {
+					this.sid = sessionStorage.getItem("userid");
+					this.getQueryString("courId");
+					this.chaxun();
+				},
 				data() {
 					return {
 						tabPosition1: 'left',
@@ -292,12 +300,71 @@
 						currentDate: new Date(),
 						activeNames: ['1'],
 
+						courId: "",
+						sid: "",
+						courName: "",
+						courTeaid: "",
+						courDepid: "",
+						courPicurl: "",
+						courPrice: "",
+						courNocount: "",
+						courContent: "",
+						courDetails: "",
+						courPageview: "",
+						courScore: "",
+						courTarget: "",
+						courResources: "",
+						courPropaedeutics: "",
+						courIsputaway: "",
+						courCommentcount: "",
+
+
 					};
 				},
 				methods: {
 					handleChange(val) {
 						console.log(val);
-					}
+					},
+					/* 获取cid  */
+					getQueryString: function(name) {
+						var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+						var r = window.location.search.substr(1).match(reg);
+						if (r != null) {
+							this.courId = decodeURIComponent(r[2]);
+							//console.log(this.courId+"课程id");
+						}
+
+						return '';
+					},
+					chaxun: function() {
+
+						axios({
+							method: 'get',
+							url: `/api/student/curricularTaxonomy/getCoursedetails`,
+							params: {
+								courId: this.courId
+								//sid: this.sid,
+							}
+						}).then(res => {
+							//http://localhost/ieppage/student/curricular/courses/show.html
+							res = res.data[0];
+							//console.log(res);
+							//console.log(res.courContent);
+							this.courName = res.courName;
+							this.courContent = res.courContent;
+							this.courDetails = res.courDetails;
+							this.courTarget = res.courTarget;
+							this.courResources = res.courResources;
+							this.courPropaedeutics = res.courPropaedeutics;
+							this.courPageview = res.courPageview;
+							this.courOpentime = res.courOpentime;
+							this.courClasshour = res.courClasshour;
+					
+						})
+					},
+					
+
+
 				}
 
 
