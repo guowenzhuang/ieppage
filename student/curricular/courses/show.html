@@ -590,7 +590,9 @@
 						return '';
 					},
 					add1: function() {
-                     //alert("this.baoming"+this.baoming)
+                         if(this.sid=="" || this.sid==null){
+                             window.location.href="\\login.html"
+                         }else{
 						if(this.baoming=="立即参加"){
                             axios({
 
@@ -615,9 +617,7 @@
                             })
 						}else if(this.baoming="进入学习"){
 						window.location.href="study.html?courId="+this.courId;
-							//alert(this.courId);
-						   // alert("跳转学习页面");
-						}
+						}}
 
 					},
 					chaxun: function() {
@@ -669,7 +669,6 @@
                                     }
                                 })
 							}else if(this.sid=="" || this.sid==null){
-                                alert("未登录");
                                 return this.baoming="立即参加";
 							}
 
