@@ -211,22 +211,26 @@
                       }).then(() => {
 
                            axios({
-                              method: 'post',
-                              url: '/api/teacher/chapter/deleteChapters/'+chaId,
-                             /* params: {
-                                  chaId: row.chaId
-                              },*/
+                              method: 'delete',
+                              url: '/api/teacher/chapter/'+chaId,
+                          }).then(res=>{
+                              res=res.data;
+                              if(res.success){
+                                  this.$message({
+                                      type: 'success',
+                                      message: '删除成功!',
+                                  });
+                              }else{
+                                  this.$message({
+                                      type: 'error',
+                                      message: '删除失败!',
+                                  });
+                              }
+                           })
 
-                          })
-                          this.$message({
-
-                              type: 'success',
-                              message: '删除成功!',
-
-                          });
 
                           this.queryMenu();
-                          location.reload()
+                          //location.reload()
                       }).catch(() => {
                           this.$message({
                               type: 'info',
