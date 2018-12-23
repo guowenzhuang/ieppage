@@ -28,6 +28,15 @@
 <br><br><br>
 
 <div id="app" align="center">
+    <el-row>
+        <el-button type="primary" plain round>主要按钮</el-button>
+    </el-row>
+
+    <template>
+        <div id="resumeId">
+            <resumeHtml ref="resume" @on-download="download"/>
+        </div>
+    </template>
 
     <ol v-for="site in sites">
         <li style="margin-left: 20px">
@@ -61,69 +70,32 @@
 <script>
 
     /*自动在请求中添加请求头*/
-    axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
+    /*axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");*/
     /*获取登陆人的userid*/
-    var userid = sessionStorage.getItem("userid");
+    /* var userid = sessionStorage.getItem("userid");*/
 
     var main = new Vue({
         el: '#app',
 
-        data: {
-
-            sites: [
-                {
-                    snne: false,
-                    index: 1,
-                    score: 3,
-                    rubric: '在HTML中插入JavaScript脚本片段,一般使用标记<!-- -->',
-                    answerA: "Spring ./......",
-                    answerB: "Spring ./......",
-                    answerC: "Spring ./......",
-                    answerD: "Spring ./......",
-                },
-                {
-                    snne: false,
-                    index: 2,
-                    score: 1,
-
-                    rubric: '在HTML中插入JavaScript脚本片段,一般使用标记<!-- -->',
-                    answerA: "Spring ./......",
-                    answerB: "Spring ./......",
-                    answerC: "Spring ./......",
-                    answerD: "Spring ./......",
-                },
-                {
-                    snne: false,
-                    index: 3,
-                    score: 1,
-
-                    rubric: '在HTML中插入JavaScript脚本片段,一般使用标记<!-- -->',
-                    answerA: "Spring ./......",
-                    answerB: "Spring ./......",
-                    answerC: "Spring ./......",
-                    answerD: "Spring ./......",
-                },
-            ],
-
-        },
+        data: {},
 
         methods: {
-            query() {
+            /* query() {
 
 
-                axios({
-                    method: 'post',
-                    url: '/api/exam//',
-                    params: {
-                        teaId: userid,
-                    },
+                 axios({
+                     method: 'post',
+                     url: '/api/exam//',
+                     params: {
+                         teaId: userid,
+                     },
 
-                }).then(res => {
-                    res = res.data;
-                    this.options3 = res.message;
+                 }).then(res => {
+                     res = res.data;
+                     this.options3 = res.message;
 
-                })
-            },
+                 })
+             },*/
 
         },
 

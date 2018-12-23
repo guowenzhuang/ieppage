@@ -127,9 +127,10 @@
 
         methods: {
             getCommit(row) {
-               var courId=row.courId;
-               alert(courId)
-             window.location.href="admin.html?courId="+courId
+                var courId=row.courId;
+                localStorage.setItem("courId",courId);
+                window.location.href="admin.html?courId="+courId
+
              },
             handleSelectionChange(val) {
                 this.selectUserData = val

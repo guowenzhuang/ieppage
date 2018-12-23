@@ -16,8 +16,7 @@
 		<link rel="stylesheet" href="../app/css/libs/katex/0.6.0/katex.min.css">
 		<link rel="stylesheet" href="../app/css/libs/videojs/5.11.7/video-js.min.css">
 		<link rel="stylesheet" href="../app/css/dest/styles.css?=2016121272249">
-		<link rel="stylesheet" type="text/css" href="../layui/css/layui.css" />
-		<script src="../layui/layui.js"></script>
+		<link rel="stylesheet" href="../css/index.css" />
 		<script src="../js/jquery.min.js"></script>
 		<script src="../js/vue.min.js"></script>
 		<script src="../js/axios.js"></script>
@@ -63,80 +62,6 @@
             font-size: 14px;
         }
     </style>
-		<script type="text/javascript">
-			layui.use('layedit', function() {
-				var layedit = layui.layedit,
-					$ = layui.jquery;
-				var index = layedit.build('demo'); //建立编辑器
-
-				var postContent;
-				var active = {
-					content: function() {
-						postContent = layedit.getContent(index);
-						alert(layedit.getContent(index)); //获取编辑器内容
-					},
-					text: function() {
-						alert(layedit.getText(index)); //获取编辑器纯文本内容
-					},
-					selection: function() {
-						alert(layedit.getSelection(index));
-					}
-				};
-
-				$("#btn_public").on('click', function() {
-					var type = $(this).data('type');
-					active[type] ? active[type].call(this) : '';
-					
-					var postTitle=$("#postTitle").val();
-					alert(postContent+" "+postTitle);
-					
-					if (postContent == "" || postTitle == "") {
-						layer.msg("请完善帖子信息", {
-							icon: 7,
-							time: 1000,
-						});
-					} else {
-						
-						$.ajax({
-							url: '/api/bbs/post/insertPost',
-							type: 'post',
-							data: {
-								content: postContent,
-								title: postTitle,
-								userId: "9357593e-02dc-47ab-b304-910e3411a897"
-							},
-							beforeSend: function(request) {
-								// 禁用按钮防止重复提交
-								$("#btn_public").attr({
-									disabled: "disabled"
-								});
-								//设置请求头
-								//request.setRequestHeader("BBG-Key", "ab9ef204-3253-49d4-b229-3cc2383480a6");
-							},
-							success: function(data) {
-								if (data.success) {
-									layer.msg(data.message, {
-										icon: 6, //成功的表情 
-										time: 1000, //1秒关闭（如果不配置，默认是3秒） 
-									}, function() {
-										window.location.href="post.html";
-									});
-
-								} else {
-									layer.msg(data.message, {
-										icon: 5,
-										time: 1000,
-									});
-									return;
-								}
-							},
-
-						});
-					}
-				})
-
-			});
-		</script>
 
 
 	</head>
@@ -184,48 +109,84 @@
 
 
 		<div class="container layout layout-margin-top">
-
-			<ol class="breadcrumb">
-				<li><a href="index.html">讨论区</a></li>
-				<li><a href="#">发表新帖</a></li>
-			</ol>
-
-			<div class="row">
+			<div class="row" id="course">
+				<div class="col-md-3 layout-side">
+					<el-col>
+						<el-menu default-active="4" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
+							<el-menu-item index="1">
+								<span slot="title">导航一</span>
+							</el-menu-item>
+							<el-menu-item index="2">
+								<span slot="title">导航二</span>
+							</el-menu-item>
+							<el-menu-item index="3">
+								<span slot="title">导航三</span>
+							</el-menu-item>
+							<el-menu-item index="4">
+								<span slot="title">讨论区</span>
+							</el-menu-item>
+						</el-menu>
+					</el-col>
+				</div>
 				<div class="col-md-9 layout-body">
 
 					<div class="content question-detail">
+						<span>
+							<el-button type="primary">发起主题</el-button>
+						</span>
+						<hr />
+						<p><i>主题板块</i></p>
+						<div>
+							<ul class="row question-items">
+								<li class="question-item">
+									<div class="col-md-10">
+										<div class="col-sm-2 question-item-author">
+											<div class="user-avatar ">
+												<i class="el-icon-question" style="width:20px;height:20px"></i>
+											</div>
+										</div>
+										<div class="col-sm-10">
+											<h4>
+												<a class="question-item-title" v-on:click="jumpPostDetails(post)" target="_blank">
+													板块名称</a>
+											</h4>
+											<div class="question-item-summary">
+												<span class="question-item-date">板块描述</span>
+											</div>
+										</div>
+									</div>
+								</li>
+							</ul>
 
-						<label class="layui-form-label">标题</label>
-						<br />
-						<br />
-						<input type="text" id="postTitle" name="title" required lay-verify="required" placeholder="请输入标题" autocomplete="off"
-						 class="layui-input">
-						</input>
-
-						<label class="layui-form-label">内容</label>
-						<br />
-						<br />
-						<div class="your-answer words-ctrl">
-							<textarea id="demo" id="public"></textarea>
-							<br />
-							<button class="layui-btn" data-type="content" id="btn_public">发表新帖</button>
 						</div>
+
 					</div>
 
 				</div>
-				<div class="col-md-3 layout-side">
 
-					<div class="side-image">
-						<a href="#" target="_blank">
-							<!-- 用户头像 -->
-							<img src="#" />
-							<!-- 用户昵称 -->
-							<a href="#">用户昵称</a>
-						</a>
-					</div>
-
-				</div>
 			</div>
+
+			<script type="text/javascript">
+				var course = new Vue({
+					el: "#course",
+					mounted: function() {
+
+					},
+					data() {
+						return {
+
+						}
+					},
+					methods: {
+						handleOpen(key, keyPath) {
+							console.log(key, keyPath);
+						},
+						handleClose(key, keyPath) {
+							console.log(key, keyPath);
+						}
+					}
+				})
+			</script>
 
 		</div>
 
@@ -298,6 +259,6 @@
 			</div>
 		</div>
 
-
 	</body>
+
 </html>

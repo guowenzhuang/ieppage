@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>贴吧分类管理</title>
+		<link rel="stylesheet" type="text/css" href="../css/iview.css">
+		<script src="../js/vue.min.js"></script>
+		<script src="../js/iview.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="../css/index.css" />
+		<script src="../js/index.js"></script>
+		<script src="../js/axios.js"></script>
+
+	</head>
+	<body>
+
+
+		<div id="app" align="center">
+			<el-container>
+				<el-aside width="200px">
+					<el-col>
+						<el-menu default-active="2" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"
+						 background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
+							<el-submenu index="1">
+								<template slot="title">
+									<i class="el-icon-location"></i>
+									<span>贴吧分类管理</span>
+								</template>
+								<el-menu-item-group>
+									<el-menu-item index="1-1"><a href="index.html">帖子管理</a></el-menu-item>
+									<el-menu-item index="1-2"><a href="types.html">回复管理</a></el-menu-item>
+									<el-menu-item index="1-3">分类管理</el-menu-item>
+								</el-menu-item-group>
+							</el-submenu>
+						</el-menu>
+					</el-col>
+				</el-aside>
+				<el-main>
+					<div>
+						<el-button type="primary" round @click="inserttype()">新增
+						</el-button>
+						<!--条件查询的条件输入框-->
+						<font size="4">类型名称:</font>
+						<el-input v-model="typeName" placeholder="请输入内容" style="width: 150px; line-height: 50px;"></el-input>
+						
+						<el-button type="primary" icon="el-icon-search" @click="querytypename()" round>搜索</el-button>
+
+					</div>
+
+					<div style="width: 100%;">
+						<template>
+							<!--element表格-->
+							<el-table :data="typelist" style=" width: auto">
+								<el-table-column type="index" label="序号" :show-overflow-tooltip="true">
+								</el-table-column>
+								<el-table-column prop="typeName" label="帖子类型名称" :show-overflow-tooltip="true">
+								</el-table-column>
+								<el-table-column prop="typeDescribe" label="帖子类型描述" :show-overflow-tooltip="true">
+								</el-table-column>
+
+								<el-table-column prop="operation" label="操作" align="center" min-width="80">
+									<template slot-scope="scope">
+										<el-button type="danger" icon="el-icon-delete" circle @click="deletet(scope.row)" size="mini"></el-button>
+										
+										<el-button type="warning" icon="el-icon-edit" circle @click="updatetype(scope.row)" size="mini"></el-button>
+									</template>
+								</el-table-column>
+								
+							
+							</el-table>
+						</template>
+					</div>
+                    
+<el-dialog title="新增类型" :visible.sync="dialogFormVisible">
+	<el-input v-model="typeId" placeholder="Id" style="width: 50px; line-height: 10px;"></el-input>
+  <el-form :model="form">
+    <el-form-item label="类型名称" :label-width="formLabelWidth">
+		<el-input v-model="typeName" placeholder="请输入内容" style="width: 150px;"></el-input>
+      
+    </el-form-item>
+    <el-form-item label="类型描述" :label-width="formLabelWidth">
+	<el-input v-model="typeDescribe" placeholder="请输入内容" style="width: 200px;"></el-input>
+    </el-form-item>
+  </el-form>
+  <div slot="footer" class="dialog-footer">
+    <el-button @click="dialogFormVisible = false">取 消</el-button>
+    <el-button type="primary" @click="insert()">确 定</el-button>
+  </div>
+</el-dialog>
+
+<el-dialog title="修改类型" :visible.sync="dialogFormVisible2">
+	<el-input v-model="typeId" placeholder="Id" style="width: 50px; line-height: 10px;"></el-input>
+  <el-form :model="form">
+    <el-form-item label="类型名称" :label-width="formLabelWidth">
+		<el-input v-model="typeName" placeholder="na" style="width: 150px;"></el-input>
+      
+    </el-form-item>
+    <el-form-item label="类型描述" :label-width="formLabelWidth">
+	<el-input v-model="typeDescribe" placeholder="de" style="width: 200px;"></el-input>
+    </el-form-item>
+  </el-form>
+  <div slot="footer" class="dialog-footer">
+    <el-button @click="dialogFormVisible2 = false">取 消</el-button>
+    <el-button type="primary" @click="update()">确 定</el-button>
+  </div>
+</el-dialog>
+			
+           
+ <el-dialog :visible.sync="dialogVisible">
+ <el-input v-model="typeId" placeholder="Id" style="width: 50px; line-height: 10px;"></el-input>
+ <span>确定删除吗？</span>
+ <span slot="footer" class="dialog-footer">
+     <el-button @click="dialogVisible = false">取 消</el-button>
+     <el-button type="primary" @click="deletetype()">确 定</el-button>
+        </span>
+      </el-dialog>
+	
+
+<!-- 					<el-pagination class="fy" layout="prev, pager, next" @current-change="current_change" :total="total" :page-size="pagesize"
+					 background>
+					</el-pagination> -->
+				</el-main>
+			</el-container>
+
+		</div>
+	</body>
+
+	<script>
+
+
+		var Main = new Vue({
+        el: '#app',
+
+        /*初始化方法放在这里面(相当于页面加载事件)*/
+        mounted: function () {
+            
+            this.querytype();
+        },
+
+        
+        /*数据*/
+        data() {
+            return {
+
+             isStick: "",
+             isSelect: "",
+			 typeDescribe:"",
+             typeName:"",
+			 typeId: "",
+             
+             
+             dialogVisible: false,
+             dialogFormVisible: false,
+			 dialogFormVisible2: false,
+
+             total: 50,//默认数据
+             pagesize: 10,//每页的数据条数
+             currentPage: 1,//默认开始页面
+			 typelist: []
+            };
+        },
+        /*方法函数写在这里面*/
+        methods: {
+
+            addrudic() {
+                alert("dsaf")
+
+
+            },
+                    querytype() {
+                        axios({
+                            method: 'post',
+                            url: '/api/bbs/type/getAllType',
+                            headers: {
+                                //"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
+                            }
+                        }).then(res => {
+                            res = res.data;
+                            this.typelist = res;
+                          
+        					console.log('typelist==>'+this.typelist);
+                        })
+        
+                    },
+            querytypename() {
+                let params = new URLSearchParams();
+				params.append("typeName", this.typeName);
+                axios({
+                    method: 'post',
+                    url: '/api/bbs/type/queryByTypeName',
+                    data: params,
+                    headers: {
+                        //"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
+                    }
+                }).then(res => {
+                    res = res.data;
+                    this.typelist = res;
+                  
+					console.log('typelist==>'+this.typelist);
+                })
+
+            },
+           inserttype(){
+           	this.dialogFormVisible=true;
+           },
+           		insert(val){
+           			
+           			let params = new URLSearchParams();
+           			params.append("typeName", this.typeName);
+           			params.append("typeDescribe", this.typeDescribe);
+           			axios({
+           				method: 'post',
+           				url: '/api/bbs/type/addOneType',
+           				data: params,
+           				headers: {
+           					//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
+           				}
+           			}).then(res => {
+           				res=res.data
+           			if (res.success) {
+           														
+           			alert(res.message)
+           			
+           			this.querytype();
+           				
+           			} else {
+           			alert(res.message)
+           						}
+           												
+           		
+           				})
+           		},	
+           			deletet(row){
+           			this.dialogVisible=true;
+           			this.typeId=row.typeId;
+           			},
+           									
+           									
+           			deletetype(){
+           			let params = new URLSearchParams();
+           			params.append("typeId",this.typeId);
+           			axios({
+           			method: 'post',
+           			url: '/api/bbs/type/delType',
+           			data: params,
+           			headers: {
+           			//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
+           			}
+           					}).then(res => {
+           				res=res.data
+           				if (res.success) {
+           				alert(res.message)
+           				this.dialogVisible=false;
+           				this.querytype();
+           				} else {
+           					alert(res.message)
+           									}
+           												
+           		
+           										})
+           								},
+           				updatetype(row){
+           				this.dialogFormVisible2=true;
+           				this.typeId=row.typeId;
+						this.typeName=row.typeName;
+						this.typeDescribe=row.typeDescribe;
+           				},
+           										
+           										
+           				update(){
+           				let params = new URLSearchParams();
+           				params.append("typeId",this.typeId);
+           				params.append("typeName", this.typeName);
+           				params.append("typeDescribe", this.typeDescribe);
+           				axios({
+           				method: 'post',
+           				url: '/api/bbs/type/upType',
+           				data: params,
+           				headers: {
+           				//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
+           				}
+           						}).then(res => {
+           					res=res.data
+           					if (res.success) {
+           					alert(res.message)
+           					this.dialogFormVisible2=false;
+           					this.querytype();
+           					} else {
+           						alert(res.message)
+           										}
+           													
+           			
+           											})
+           									},
+         
+
+            /*对话框关闭与否触发的方法*/
+            handleClose(done) {
+                this.$confirm('确认关闭？')
+                    .then(_ => {
+                        done();
+                    })
+                    .catch(_ => {
+                    });
+            },
+
+            handleSizeChange(val) {
+                this.pagesize = val;
+                console.log(this.pagesize)  //每页下拉显示数据
+            },
+
+            handleCurrentChange() {
+                this.currentPage = currentPage;
+                console.log(this.currentPage)  //点击第几页
+            },
+
+            created: function () {
+                this.total = this.tableData.length;
+            },
+            current_change: function (currentPage) {
+                this.currentPage = currentPage;
+            },
+						handleOpen(key, keyPath) {
+							console.log(key, keyPath);
+						},
+						handleClose(key, keyPath) {
+							console.log(key, keyPath);
+						}
+        }
+
+    });
+
+</script>
+
+	<style type="text/css">
+		.el-aside {
+			background-color: #D3DCE6;
+			color: #333;
+			text-align: center;
+			line-height: 200px;
+		}
+
+		.el-main {
+			background-color: #E9EEF3;
+			color: #333;
+			text-align: center;
+			line-height: 160px;
+		}
+	</style>
+	</body>
+</html>
