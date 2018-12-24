@@ -12,16 +12,16 @@
 		<link rel="stylesheet" href="../../app/css/libs/katex/0.6.0/katex.min.css">
 		<link rel="stylesheet" href="../../app/css/libs/videojs/5.11.7/video-js.min.css">
 		<link rel="stylesheet" href="../../app/css/dest/styles.css?=2016121272249">
-		
+
 		<link rel="stylesheet" type="text/css" href="../../../bootstrap/css/bootstrap-theme.min.css">
 		<link rel="stylesheet" type="text/css" href="../../../css/muke.css">
 
 		<style>
 
 			/* modal 模态框*/
-    #invite-user .modal-body {
-      overflow: hidden;
-    }
+        #invite-user .modal-body {
+            overflow: hidden;
+        }
 		#invite-user .modal-body .form-label {
 			margin-bottom: 16px;
 			font-size:14px;
@@ -58,7 +58,7 @@
     </style>
 
 		<style>
-		a:hover,
+			a:hover,
     a:focus {
         text-decoration: none;
     }
@@ -94,7 +94,7 @@
 
 	<body>
 
-<!-- 顶部 -->
+		<!-- 顶部 -->
 		<div class="width100 float_l" style="margin-top: -70px;">
 			<div class="width100 float_l height80 line_hei80">
 
@@ -129,7 +129,6 @@
 						<a class="btn btn-default navbar-btn sign-up" data-sign="signup" href="#sign-modal" data-toggle="modal">注册</a>
 					</div>
 				</div>
-
 			</div>
 		</div>
 
@@ -141,18 +140,16 @@
 					<div class="col-md-9 clearfix">
 						<div class="pull-left userinfo-banner-avatar">
 							<div class="user-avatar ">
-								<a class="avatar" href="/user/13" target="_blank">
-									<img src="https://dn-simplecloud.xxxxxx.com/gravatarc51ce410c124a10e0db5e4b97fc2af39.png?v=1439957390221&amp;imageView2/1/w/200/h/200">
-								</a>
-								<a class="member-icon" href="/vip" target="_blank">
-									<img src="../../img/vip-icon.png">
+							<!-- 	用戶头像 -->
+								<a class="avatar" href="#" target="_blank">
+									<img src="#">
 								</a>
 							</div>
 						</div>
 						<div class="pull-left userinfo-banner-details">
 							<div class="userinfo-banner-meta">
 								<div class="user-username ">
-									<a class="username" href="/user/13" target="_blank">用户名</a>
+									<a class="username" href="#" target="_blank">用户名</a>
 								</div>
 							</div>
 							<div class="userinfo-banner-status">
@@ -169,118 +166,111 @@
 				</div>
 			</div>
 		</div>
-		
-		
 		<div class="container layout">
 			<div class="row">
 				<div class="col-md-9 layout-body">
-					<div class="content">
+					<div class="content" role="tabpanel">
 						<ul class="nav nav-tabs" rolw="tablist">
-							<li role="presentation" class="active">
+							<li role="presentation">
 								<a href="questions.html" role="tab">讨论</a>
 							</li>
-							<li role="presentation">
+							<li role="presentation"  class="active">
 								<a href="course.html" role="tab">课程</a>
-							</li>					
+							</li>
 						</ul>
+
 						<div class="tab-content">
 							<div role="tabpanel" class="tab-pane active">
 								<div class="row">
 									<div class="col-md-12">
 										<a>
-											<span class="label label-success">发表的主题</span>
+											<span class="label label-success">全部</span>
 										</a>
 										<a>
-											<span class="label label-default">发表的回复</span>
+											<span class="label label-default">未看完</span>
+										</a>
+										<a>
+											<span class="label label-default">已看完</span>
 										</a>
 									</div>
+
+									<div class="col-md-4 col-sm-6  course">
+										<a class="course-box" href="../../courses/show.html">
+											<div class="sign-box">
+											</div>
+											<div class="course-img">
+												<img alt="Hadoop部署及管理" src="https://dn-simplecloud.xxxxxx.com/ncn35.jpg">
+											</div>
+											<div class="course-body">
+												<span class="course-title" data-toggle="tooltip" data-placement="bottom" title="Hadoop部署及管理">Hadoop部署及管理</span>
+											</div>
+											<div class="course-footer">
+												<span class="course-per-num pull-left">
+													<i class="fa fa-users"></i>4246
+												</span>
+											</div>
+										</a>
+									</div>
+
+
+									<!-- 分页 -->
+									<nav class="pagination-container">
+										<ul class="pagination">
+											<li class="disabled">
+												<a href="#" aria-label="Previous">
+													<span aria-hidden="true">上一页</span>
+												</a>
+											</li>
+
+											<li class="active">
+												<a href="/user/13?page=1">1</a>
+											</li>
+
+											<li class="">
+												<a aria-label="Next" href="/user/13?page=2">
+													<span aria-hidden="true">下一页</span>
+												</a>
+											</li>
+										</ul>
+									</nav>
+
 								</div>
-								
-								<ul class="row question-items">
-									<!-- 讨论列表 -->
-									<li class="question-item">
-										<div class="col-md-10">
-											<div class="col-sm-2 question-item-author">
-												<div class="user-avatar ">
-													<a class="avatar" href="/user/13" target="_blank">
-														<img src="https://dn-simplecloud.xxxxxx.com/gravatarc51ce410c124a10e0db5e4b97fc2af39.png?v=1439957390221&amp;imageView2/1/w/200/h/200">
-													</a>
-													<a class="member-icon" href="/vip" target="_blank">
-														<img src="../../img/vip-icon.png">
-													</a>
-												</div>
-											</div>
-											<div class="col-sm-10">
-												<h4>
-													<a class="question-item-title" href="../../questions/show.html" target="_blank">
-														实验楼高级会员：增加会员课程助教答疑服务和训练营5折优惠</a>
-												</h4>
-												<div class="question-item-summary">
-													<div class="user-username ">
-														<a class="username" href="/user/13" target="_blank">
-															石
-														</a>
-														<span class="user-level">L195</span>
-													</div>
-													<span class="question-item-date">2016-12-16 12:49</span>
-													最后回复 <span class="question-item-date">
-														<div class="user-username ">
-															<a class="username" href="/user/3858" target="_blank">
-																Cloud君
-															</a>
-															<span class="user-level">L28</span>
-														</div>
-													</span>
-												</div>
-											</div>
-										</div>
-										<div class="col-md-2 question-item-rank">
-											<div class="question-item-answered">
-												<div>1</div>
-												<div>回复</div>
-											</div>
-											<div class="question-item-views">
-												<div>47</div>
-												<div>查看</div>
-											</div>
-										</div>
-									</li>			
-								</ul>
 							</div>
 						</div>
 					</div>
-				</div>
-				
-				
-				<div class="col-md-3 layout-side">
 
-					<a class="side-sda apply-git" href="http://git.xxxxxx.com/shilei" target="_blank">
+				</div>
+
+				<!-- 页面右侧 -->
+				<div class="col-md-3 layout-side">
+					<a class="side-sda apply-git" href="#" target="_blank">
 						<img src="../../img/my-git.png">
 						<span>代码库</span>
 					</a>
-
 					<div class="sidebox user-visitors">
 						<div class="sidebox-header">
 							<h4 class="sidebox-title">最近来访</h4>
 						</div>
+
 						<div class="sidebox-body">
 							<div class="col-dm-12">
 								<a class="row" href="/user/345538">
 									<div class="col-xs-2">
-										<img src="https://dn-simplecloud.xxxxxx.com/gravatar345538.png?v=1483141057082&amp;imageView2/1/w/200/h/200">
+										<img src="#">
 									</div>
 									<div class="col-xs-10">
 										<div>PKU_Hao</div>
-										<div>1小时前</div>
+										<div>12分钟前</div>
 									</div>
 								</a>
 							</div>
 						</div>
 					</div>
 				</div>
+
 			</div>
 		</div>
-
+		
 		<!-- 页脚 -->
 		<div class="width100 float_l padding_t30 height193">
 			<div class="width_1200 margin_auto">

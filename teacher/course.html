@@ -168,22 +168,7 @@
                 })
 
             },
-            /*tableClick(row, event, column){
-                //  console.log(row,event,column)
-                if (row.courId>0) {
-                    this.addCourseDialog.title = '用户修改'
-                    // 用户数据赋值
-                    let user = row
-                    this.setAddUserDialogData(user.courId, user.courName, user.courPrice)
-                    // 弹出框显示
-                    // this.addCourseDialog.show = true
-                } else {
-                    this.$message({
-                        message: '请选择并只选中一条数据',
-                        type: 'warning'
-                    })
-                }
-            },*/
+
 
             showUpdateUserDialog(row){
                 this.addCourseDialog.courId=row.courId;
@@ -246,6 +231,7 @@
 
             //点击删除
             handleDelete(index, row) {
+
                 this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
@@ -300,6 +286,7 @@
                     params: {
                         page: this.page,
                         pageSize: this.pageSize,
+                        courName:this.cour_name,
 
                     },
                     headers: {

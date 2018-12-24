@@ -5,7 +5,7 @@
     <title>课程资料</title>
     <link rel="stylesheet" href="js/elementui/index.css">
     <script src="js/vue.js"></script>
-    <script  src="js/elementui/index.js"></script>
+    <script src="js/elementui/index.js"></script>
     <script src="js/axios.min.js"></script>
     <link rel="stylesheet" href="css/ad.css">
 
@@ -31,22 +31,25 @@
             <el-row :gutter="20" type="flex">
                 <el-col :span="3">
                     <div>&nbsp;</div>
-                  <el-button type="primary" @click="addChapterShow">新增章节</el-button>
+                    <el-button type="info"
+                               @click="addChapterShow">新增章节</el-button>
                 </el-col>
                 <el-col :span="2">
                     <div>&nbsp;</div>
                     <el-button icon="el-icon-refresh" type="primary" onclick=" window.location.reload();">刷新</el-button>
+
                 </el-col>
             </el-row>
             <el-row :gutter="20" style="margin-top: 20px;" label-position="left">
                 <el-table
+
                         :data="moduleData">
                     <el-table-column type="expand">
                         <template slot-scope="props">
-                           <my-table :module-data="props.row.children"></my-table>
+                            <my-table :module-data="props.row.children"></my-table>
                         </template>
                     </el-table-column>
-                   <el-table-column
+                    <el-table-column
                             label="模块名称"
                             prop="chaName">
                     </el-table-column>
@@ -54,8 +57,12 @@
                     <el-table-column
                             label="模块操作">
                         <template slot-scope="scope">
-                          <!-- <el-button type="text" @click="updateModuleShow(scope.row)">课次信息</el-button>-->
-                           <el-button type="text" @click="deleteModule(scope.row)">删除模块</el-button>
+                            <!-- <el-button type="primary" icon="el-icon-edit"></el-button>-->
+                            <el-button type="info" round size="mini" icon="el-icon-plus"
+                                       @click="addChapterShow(scope.row)"></el-button>
+                            <!-- <el-button type="text" @click="updateModuleShow(scope.row)">课次信息</el-button>-->
+                            <el-button type="danger" round size="mini" icon="el-icon-delete"
+                                       @click="deleteModule(scope.row.chaId)"></el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -63,16 +70,18 @@
         </el-main>
     </el-container>
     <el-dialog
+
             width="40%"
             :title="add.title"
             :visible.sync="add.show">
-        <el-form   ref="addForm" label-position="left" :model="add" label-width="80px">
+        <el-form ref="addForm" label-position="left" :model="add" label-width="80px">
 
             <el-form-item prop="chaName" label="章节名称">
-                <el-input placeholder="请输入章节名称" v-model="add.chaName"  ></el-input>
+                <el-input placeholder="请输入章节名称" v-model="add.chaName"></el-input>
             </el-form-item>
+
             <el-form-item>
-               <el-button type="primary" @click="addUser">新增</el-button>
+                <el-button type="primary" @click="addUser">新增</el-button>
             </el-form-item>
         </el-form>
     </el-dialog>
@@ -80,13 +89,13 @@
             width="40%"
             :title="add.title"
             :visible.sync="update.show"
-           >
-        <el-form   ref="addForm" label-position="left" :model="update" label-width="80px">
+    >
+        <el-form ref="addForm" label-position="left" :model="update" label-width="80px">
 
             <el-tabs v-model="activeName" @tab-click="handleClick">
                 <el-tab-pane label="视频" name="first">
                     <el-form-item prop="chaName" label="章节名称">
-                        <el-input  v-model="update.chaName"  ></el-input>
+                        <el-input v-model="update.chaName"></el-input>
                     </el-form-item>
                     <el-form-item label="视频">
                         <el-radio-group v-model="form.resource">
@@ -106,8 +115,8 @@
 
 
             <el-form-item>
-            <el-button type="primary">保存</el-button>
-           </el-form-item>
+                <el-button type="primary" @click="saveVideo">保存</el-button>
+            </el-form-item>
         </el-form>
     </el-dialog>
 </div>
@@ -122,7 +131,7 @@
             moduleData: []
         },
         template: `
-           <el-table :data="moduleData">
+           <el-table :data="moduleData" >
                          <el-table-column type="expand">
                             <template slot-scope="props">
                             <my-table  :module-data="props.row.children"></my-table>
@@ -136,8 +145,12 @@
                          <el-table-column
                             label="模块操作">
                         <template slot-scope="scope">
-                            <el-button type="text" @click="updateModuleShow(scope.row)">课次信息</el-button>
-                            <el-button type="text" @click="deleteModule(scope.row)">删除章节</el-button>
+                         <el-button type="info" round size="mini"  icon="el-icon-plus" @click="addChapterShow(scope.row)"></el-button>
+                          <!-- <el-button type="text" @click="updateModuleShow(scope.row)">课次信息</el-button>-->
+                           <el-button type="danger" round size="mini"  icon="el-icon-delete" @click="deleteModule(scope.row.chaId)"></el-button>
+
+                            <el-button type="primary" round size="mini"  icon="el-icon-edit" @click="updateModuleShow(scope.row)"></el-button>
+
                         </template>
                     </el-table-column>
                     </el-table>
@@ -146,8 +159,11 @@
             updateModuleShow(row) {
                 v.updateModuleShow(row);
             },
-            deleteModule(id){
+            deleteModule(id) {
                 v.deleteModule(id);
+            },
+            addChapterShow(row) {
+                v.addChapterShow(row);
             }
         }
     });
@@ -157,23 +173,22 @@
             return {
                 form: {
                     resource: '',
-
                 },
                 activeName: 'first',
                 moduleData: [],
                 add: {
                     title: '',
-                    courId:'',
-                    chaId:'',
-                    chaCourid:'',
+                    courId: '',
+                    chaId: '',
+                    chaCourid: '',
                     show: false,
                     chaName: '',
                     chaParentid: [],
 
                 },
-                update:{
+                update: {
                     title: '',
-                    chaId:'',
+                    chaId: '',
                     chaName: '',
                     show: false,
                 }
@@ -181,66 +196,108 @@
             };
         },
         methods: {
+            handleClick() {
 
+            },
             //点击删除
-            deleteModule(row) {
+            deleteModule(chaId) {
 
                 this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning',
-                    center: true
+                          confirmButtonText: '确定',
+                          cancelButtonText: '取消',
+                          type: 'warning',
+                          center: true
 
-                }).then(() => {
+                      }).then(() => {
 
-                    axios({
-                        method: 'post',
-                        url: '/api/teacher/chapter/deleteChapters',
-                        params: {
-                            chaId: row.chaId
-                        },
-
-                    })
-
-                    this.$message({
-                        type: 'success',
-                        message: '删除成功!',
-
-                    });
-
-                    this.queryMenu();
-                    location.reload()
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消删除'
-                    });
-                })
+                           axios({
+                              method: 'delete',
+                              url: '/api/teacher/chapter/'+chaId,
+                          }).then(res=>{
+                              res=res.data;
+                              if(res.success){
+                                  this.$message({
+                                      type: 'success',
+                                      message: '删除成功!',
+                                  });
+                              }else{
+                                  this.$message({
+                                      type: 'error',
+                                      message: '删除失败!',
+                                  });
+                              }
+                           })
 
 
+                          this.queryMenu();
+                          //location.reload()
+                      }).catch(() => {
+                          this.$message({
+                              type: 'info',
+                              message: '已取消删除'
+                          });
+                      })
 
 
             },
-
-            updateModuleShow(row) {
-                this.add.title="课次信息";
-                this.update.chaName = row.chaName;
-                this.update.show=true;
-           },
-            //新增
-            addUser(){
-                var courId= localStorage.getItem("courId")
+            saveVideo() {
                 let params = new URLSearchParams()
                 params.append('chaId', this.add.chaId)
                 params.append('chaName', this.add.chaName)
-                params.append('chaParentid', 0)
+                params.append('chaViurl', this.add.chaViurl)
+                params.append('chaPpturl', this.add.chaPpturl)
+                params.append('chaDocurl', this.add.chaDocurl)
+
+                this.$refs['addForm'].validate((valid) => {
+                    axios({
+                        method: 'post',
+                        url: '/api/teacher/chapter/updateCourseAll',
+                        data: params,
+                    })
+                        .then(() => {
+                            this.$message({
+                                type: 'success',
+                                message: '修改成功!',
+                            });
+                            this.add.show = false
+                            this.queryMenu();
+                        }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '修改失败'
+                        });
+                    })
+                })
+            },
+
+            updateModuleShow(row) {
+                    this.add.title = "课次信息";
+                    this.update.chaViurl = '',
+                    this.update.chaPpturl = '',
+                    this.update.chaDocurl = '',
+                    this.update.chaName = row.chaName;
+                    this.update.chaId = row.chaId;
+                    this.update.show = true;
+            },
+
+            //新增
+            addUser() {
+                var courId = localStorage.getItem("courId")
+                let params = new URLSearchParams()
+                params.append('chaName', this.add.chaName)
+                if(this.add.chaId>0){
+                    params.append('chaParentid', this.add.chaId)
+                }else{
+                    params.append('chaParentid', 0)
+                }
+
                 params.append('chaCourid', courId)
                 this.$refs['addForm'].validate((valid) => {
                     if (valid) {
                         axios({
-                            method:'post',
+                            method: 'post',
                             url: '/api/teacher/chapter/addChapters',
-                            data:params,
+                            data: params,
                             headers: {
                                 "Authorization": "bearer " + sessionStorage.getItem("access_token")
                             }
@@ -265,24 +322,27 @@
                     }
                 });
             },
-            addChapterShow(){
-                this.add.chaName="";
-                this.add.title="新增用户";
-                this.add.show=true;
-             },
+            addChapterShow(row) {
+                this.add.chaId = row.chaId;
+                this.add.chaName = '';
+                // this.add.chaParentid="";
+                this.add.show = true;
+                this.add.title = "新增章节";
+
+            },
             queryMenu() {
-              var courId= localStorage.getItem("courId")
+                var courId = localStorage.getItem("courId")
 
 
                 axios({
                     method: "get",
                     url: "/api/teacher/chapter/queryChapter",
-                    params:{
-                        courId:courId
+                    params: {
+                        courId: courId
                     },
                 }).then(res => {
-                  res=res.data;
-                  this.moduleData=res;
+                    res = res.data;
+                    this.moduleData = res;
                 })
             },
         },
@@ -290,11 +350,11 @@
 
             //初始化菜单
             this.queryMenu();
-            this.add.courId=localStorage.getItem("courId");
+            this.add.courId = localStorage.getItem("courId");
 
         }
     };
     var Ctor = Vue.extend(Main)
-    let v= new Ctor().$mount('#app')
+    let v = new Ctor().$mount('#app')
 </script>
 </html>

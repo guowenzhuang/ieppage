@@ -58,7 +58,7 @@
 								</el-table-column>
 								<el-table-column prop="replyContent" label="回复内容" :show-overflow-tooltip="true">
 								</el-table-column>
-								<el-table-column prop="userName" label="回复人" :show-overflow-tooltip="true">
+								<el-table-column prop="replyUsername" label="回复人" :show-overflow-tooltip="true">
 								</el-table-column>
 								<el-table-column prop="replyTime" label="回复时间" :show-overflow-tooltip="true">
 								</el-table-column>
@@ -221,7 +221,7 @@
 
              replyId: "",
              postId:"",
-             userName: "",
+             replyUsername: "",
              isStick: "",
              isSelect: "",
              replyTime: "",
@@ -267,8 +267,7 @@
             queryreply() {
 
                 let params = new URLSearchParams();
-                params.append("userName", this.userName);
-                params.append("orderBy", this.orderBy);
+								params.append("orderBy", this.orderBy);
 								params.append("page",this.currentPage);
 								params.append("rows",this.pagesize);
                 axios({

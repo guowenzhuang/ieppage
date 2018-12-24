@@ -21,6 +21,7 @@
     <button onclick="longtj()">提交</button>
 </div>
 <script>
+    axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
 
     const   MB=1024*1024;
     function longtj() {
@@ -33,7 +34,6 @@
             data: formData,
             headers: {
                 'Content-Type': 'multipart/form-data',
-                "Authorization": "bearer " + sessionStorage.getItem("access_token")
             }
         }).then(res => {
             res = res.data;
@@ -70,7 +70,6 @@
             data: formData,
             headers: {
                 'Content-Type': 'multipart/form-data',
-                "Authorization": "bearer " + sessionStorage.getItem("access_token")
             }
         }).then(res => {
             if (slice.size >= MB) {
@@ -83,9 +82,14 @@
                     method: 'post',
                     url: '/api/oss/long/loadUploadEnd',
                     data: params,
-                    headers: {
-                        "Authorization": "bearer " + sessionStorage.getItem("access_token")
-                    }
+                }).then(res=>{
+                    axios({
+                        method: 'get',
+                        url: '/api/oss/getUrl',
+                        params: {
+                            path:path
+                        },
+                    })
                 })
             }
         })
@@ -109,8 +113,16 @@
             data: formData,
             headers: {
                 'Content-Type': 'multipart/form-data',
-                "Authorization": "bearer " + sessionStorage.getItem("access_token")
             }
+        }).then(res=>{
+            res=res.data;
+            axios({
+                method: 'get',
+                url: '/api/oss/getUrl',
+                params:{
+                    path:'test/a.jpg'
+                }
+            })
         })
     }
 </script>
