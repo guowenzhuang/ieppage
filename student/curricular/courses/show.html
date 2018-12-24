@@ -8,7 +8,7 @@
 		<meta http-equiv="Cache-Control" content="o-transform">
 		<meta http-equiv="Cache-Control" content="no-siteapp">
 		<meta name="csrf-token" content="1483780974##87f89328c5616669f00302a263fe9061bb852818">
-		<title> Linux 基础入门（新版） - 实验楼</title>
+		<title>智慧教学平台</title>
 		<meta content="实验楼课程分为基础课和项目课，内容涵盖了Linux、Python、Java、C语言、Ruby、Android、IOS开发、大数据、信息安全等IT技术领域。" name="description">
 		<meta content="实验楼课程,IT培训课程,IT实训课程,IT在线课程,all" name="keywords">
 		<meta content="" name="author">
@@ -538,7 +538,12 @@
 
 		<script>
             /*自动在请求中添加请求头*/
-            axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
+						var token=sessionStorage.getItem("access_token");
+						if(token!=null){
+							axios.defaults.headers.common['Authorization'] = "bearer " + token;
+						}
+						
+          
 			var menu = new Vue({
 				el: "#details",
 				mounted: function() {
@@ -585,13 +590,15 @@
 						if (r != null) {
 							this.courId = decodeURIComponent(r[2]);
 							//console.log(this.courId+"this.courId");
+							//sessionStorage.setItem("courId",this.courId);
+							
 						}
 
 						return '';
 					},
 					add1: function() {
                          if(this.sid=="" || this.sid==null){
-                             window.location.href="\\login.html"
+                             window.location.href="\\login.html?callback-url=http://127.0.0.1/student/curricular/courses/show.html?courId="+this.courId;
                          }else{
 						if(this.baoming=="立即参加"){
 							//我是傻逼
