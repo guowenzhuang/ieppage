@@ -28,7 +28,7 @@
 
     <!--条件查询的条件输入框-->
     <div align="center">
-        <a href="examcomposition.html">哈哈哈</a>
+        <!--  <a href="examcomposition.html">哈哈哈</a>-->
         <!--<el-button type="primary" icon="el-icon-plus" @click="querycourse()" size="small" round>ccc</el-button>-->
         <el-button type="primary" icon="el-icon-plus" @click="dialogVisibletype = true" size="small" plain round>新增试题
         </el-button>
@@ -36,6 +36,7 @@
         <el-input v-model="rubric" placeholder="请输入内容" style="width: 150px;" size="small"></el-input>
         <font size="4">试题的类型:</font>
         <el-select v-model="typecc" placeholder="请选择" size="small">
+
             <el-option v-for="item in options2" :key="item.value" :label="item.label" :value="item.value"
                        :disabled="item.disabled">
             </el-option>
@@ -95,7 +96,6 @@
 
         </template>
     </div>
-
 
     <!--选择新增的试题类型-->
     <el-dialog title="选择新增题型" :visible.sync="dialogVisibletype" width="60%" :before-close="handleClose">
@@ -368,7 +368,6 @@
 
     </el-dialog>
 
-
     <!--分页-->
     <el-pagination class="fy"
                    layout="prev, pager, next"
@@ -525,7 +524,6 @@
                 }).then(res => {
                     res = res.data;
                     this.options3 = res.message;
-
                 })
 
 
