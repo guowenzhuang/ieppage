@@ -24,11 +24,12 @@
 		<link rel="stylesheet" href="../app/css/libs/katex/0.6.0/katex.min.css">
 		<link rel="stylesheet" href="../app/css/libs/videojs/5.11.7/video-js.min.css">
 		<link rel="stylesheet" href="../app/css/dest/styles.css?=2016121272249">
-		
+
 		<link rel="stylesheet" type="text/css" href="../../bootstrap/css/bootstrap-theme.min.css">
 		<link rel="stylesheet" type="text/css" href="../../css/muke.css">
-		
-		
+		<script src="../../js/vue.min.js"></script>
+		<script src="../../js/axios.min.js"></script>
+
 
 		<style>
 			@font-face {
@@ -80,22 +81,22 @@
 	</head>
 
 	<body>
-<!-- 顶部 -->
+		<!-- 顶部 -->
 		<div class="width100 float_l" style="margin-top: -70px;">
 			<div class="width100 float_l height80 line_hei80">
 
 				<!-- 顶部左边 -->
 				<div class="float_l">
 					<div class="float_l margin_l20">
-						
-						<a href="../../index.html">	<img src="../../img/uiz1.png"></a>
+
+						<a href="../../index.html"> <img src="../../img/uiz1.png"></a>
 
 					</div>
 					<div class="float_l">
 						<ul class="ul_li fon_siz16">
 							<li><a class="color_black" href="../courses/index.html">课程</a></li>
 							<li><a class="color_black" href="">院系</a></li>
-							<li><a class="color_black" href="">名师专栏</a></li>
+							<li><a class="color_black" href="../paths/index.html">名师专栏</a></li>
 
 						</ul>
 					</div>
@@ -128,24 +129,31 @@
 			<div class="row">
 				<div class="col-md-9 layout-body">
 
-					<div class="content">
+					<div class="content" id="tea">
 						<div class="row">
-
-							<div class="col-sm-6">
+							
+                            <div v-for="tea in teachers">
+							<div class="col-sm-6" v-for="t in tea">
 								<a href="show.html" target="_blank">
 									<div class="path-item">
 										<div class="col-xs-5 col-md-4  path-img">
 											<img src="../img/1471513730333.png">
 										</div>
 										<div class="col-xs-7 col-md-8">
-											<div class="path-name">新手入门</div>
-											<div class="path-course-num"><span>6</span> 门课程</div>
+											
+											<div class="path-name">{{t.teaSex}}</div>
+											<div class="path-course-num">{{t.teaName}}</div>
+											<!-- <div class="path-name"></div>
+											
+											<div class="path-course-num">{{t.teaSex}}</div>
+											<!-- <div class="path-name"></div> -->
+											<!--<div class="path-course-num"></div> -->
 										</div>
 									</div>
 								</a>
 							</div>
-
-							<div class="col-sm-6">
+                            </div>
+							<!-- <div class="col-sm-6">
 								<a href="show.html" target="_blank">
 									<div class="path-item">
 										<div class="col-xs-5 col-md-4  path-img">
@@ -239,9 +247,7 @@
 											<div class="path-name">PHP研发工程师</div>
 											<div class="path-course-num"><span>30</span> 门课程</div>
 										</div>
-										<!--<div class="desc-layer">
-                        <div class="center">PHP 技术路径中包含入门知识、PHP 编程基础、PHP Web 框架、项目实战和项目进阶五个模块。模块中的课程将带着你逐步深入，学会如何使用 PHP 实现项目一个博客，聊天室，MVC框架及搜索系统等。完成本路径所有实验课，将具备使用 PHP 独立开发 Web 应用的能力。</div>
-                    </div>-->
+										
 									</div>
 								</a>
 							</div>
@@ -256,9 +262,7 @@
 											<div class="path-name">Web前端工程师</div>
 											<div class="path-course-num"><span>34</span> 门课程</div>
 										</div>
-										<!--<div class="desc-layer">
-                        <div class="center">Web 前端学习路径中首先实践 HTML、CSS、JavaScript、jQuery、HTML5等基础知识，然后完成实现页面特效组件、网页游戏、Web应用等一系列项目，帮助你通过动手实践成长为合格的 Web 前端工程师。</div>
-                    </div>-->
+										
 									</div>
 								</a>
 							</div>
@@ -273,9 +277,7 @@
 											<div class="path-name">Linux研发工程师</div>
 											<div class="path-course-num"><span>27</span> 门课程</div>
 										</div>
-										<!--<div class="desc-layer">
-                        <div class="center">Linux 研发学习路径中首先学习 Linux基础、C语言、Git、GDB、数据结构等基础知识，然后完成 TCP/IP、MySQL 数据库、操作系统等实验课程。项目阶段将实现 cp、ls、touch、ping等一系列Linux命令和端口扫描、Web服务器、聊天室等网络应用，帮助你通过动手实践入门 Linux 系统研发。</div>
-                    </div>-->
+										
 									</div>
 								</a>
 							</div>
@@ -289,14 +291,10 @@
 										<div class="col-xs-7 col-md-8">
 											<div class="path-name">NodeJS研发工程师</div>
 											<div class="path-course-num"><span>21</span> 门课程</div>
-										</div>
-										<!--<div class="desc-layer">
-                        <div class="center">NodeJS 学习路径中将通过使用 NodeJS 实现博客、在线笔记、爬虫、即时搜索、漂流瓶、端口扫描器等应用，学习并实践 NodeJS 编程基础和Web 应用开发等技术。完成本路径的所有实验课，将能够使用 NodeJS 独立实现 Web 应用程序。</div>
-                    </div>-->
 									</div>
 								</a>
-							</div>
-
+							</div> -->
+							<!-- 
 							<div class="col-sm-6">
 								<a href="show.html" target="_blank">
 									<div class="path-item">
@@ -306,20 +304,19 @@
 										<div class="col-xs-7 col-md-8">
 											<div class="path-name">MongoDB工程师</div>
 											<div class="path-course-num"><span>6</span> 门课程</div>
-										</div>
-										<!--<div class="desc-layer">
-                        <div class="center">MongoDB 技术路径中首先学习 Linux、Bash、MySQL基础知识，然后依次学习并实践 Memcached、Redis 和 MongoDB技术。本路径的实验将帮助你逐步入门 MongoDB 这类 NoSQL 数据库。</div>
-                    </div>-->
+										</div>                      
 									</div>
 								</a>
-							</div>
+							</div> -->
+
+
 
 						</div>
 					</div>
 
 				</div>
-				
-				
+
+
 				<div class="col-md-3 layout-side">
 
 					<div class="panel panel-default panel-userinfo">
@@ -336,7 +333,7 @@
 								</div>
 								<div class="media-body">
 
-									<span class="media-heading username">欢迎来到实验楼</span>
+									<span class="media-heading username">欢迎来到智慧教学平台</span>
 									<p class="vip-remain">做实验，学编程</p>
 
 								</div>
@@ -611,33 +608,57 @@
 					});
 				}
 			});
+
+			var teas = new Vue({
+				el: "#tea",
+				mounted: function() {
+					
+					this.queryTeacher()
+				},
+				data: {
+					teachers: []
+				},
+				methods: {
+					queryTeacher: function() {
+						axios({
+							method: 'get',
+							url: '/api/student/home/getTeachers',
+						}).then(res => {
+							console.log(res.data.success);
+							console.log(res.data.message);
+
+							this.teachers = res.data.message;
+						})
+					}
+				}
+			})
 		</script>
 
 
 
 		<!-- 页脚 -->
-				<div class="width100 float_l padding_t30 height193">
-					<div class="width_1200 margin_auto">
-						<div class="width100 float_l text_c margin_b30">
-							<a class="img_backg5" href="#"></a>
-							<a class="img_backg6 posi_relative wexinmaxianshi" href="#"><i class="weixinweima dis_none"><img src="img/idx-btm.png"></i></a>
-							<a class="img_backg7" href="#"></a>
-							<a class="img_backg8" href="#"></a>
-						</div>
-						<div class="width100 float_l text_c yejiao color_gray">
-							<a>关于我们</a>
-							<a>企业合作</a>
-							<a>人才招聘</a>
-							<a>讲师招募</a>
-							<a>联系我们</a>
-							<a>意见反馈</a>
-							<a>友情链接</a>
-						</div>
-						<div class="width100 float_l text_c border_t margin_t20 padding_t20 color_gray fon_siz12">
-							<span>© 2016 imoroc.com 京ICP备13042132号</span>
-						</div>
-					</div>
+		<div class="width100 float_l padding_t30 height193">
+			<div class="width_1200 margin_auto">
+				<div class="width100 float_l text_c margin_b30">
+					<a class="img_backg5" href="#"></a>
+					<a class="img_backg6 posi_relative wexinmaxianshi" href="#"><i class="weixinweima dis_none"><img src="img/idx-btm.png"></i></a>
+					<a class="img_backg7" href="#"></a>
+					<a class="img_backg8" href="#"></a>
 				</div>
+				<div class="width100 float_l text_c yejiao color_gray">
+					<a>关于我们</a>
+					<a>企业合作</a>
+					<a>人才招聘</a>
+					<a>讲师招募</a>
+					<a>联系我们</a>
+					<a>意见反馈</a>
+					<a>友情链接</a>
+				</div>
+				<div class="width100 float_l text_c border_t margin_t20 padding_t20 color_gray fon_siz12">
+					<span>© 2016 imoroc.com 京ICP备13042132号</span>
+				</div>
+			</div>
+		</div>
 
 	</body>
 </html>
