@@ -31,8 +31,9 @@
             <el-row :gutter="20" type="flex">
                 <el-col :span="3">
                     <div>&nbsp;</div>
-                    <el-button type="info"
-                               @click="addChapterShow">新增章节</el-button>
+                    <el-button type="primary"
+                               @click="addChapterShow">新增章节
+                    </el-button>
                 </el-col>
                 <el-col :span="2">
                     <div>&nbsp;</div>
@@ -98,10 +99,15 @@
                         <el-input v-model="update.chaName"></el-input>
                     </el-form-item>
                     <el-form-item label="视频">
-                        <el-radio-group v-model="form.resource">
-                            <el-radio label="免费"></el-radio>
-                            <el-radio label="试听"></el-radio>
-                        </el-radio-group>
+                        <!-- <el-radio-group v-model="form.resource">
+                             <el-radio label="免费"></el-radio>
+                             <el-radio label="试听"></el-radio>
+                         </el-radio-group>-->
+                        <el-form-item>
+                            <el-input type="file" id="longfile"></el-input>
+                            <el-button @click="longtj()">提交</el-button>
+                        </el-form-item>
+
                     </el-form-item>
                 </el-tab-pane>
                 <el-tab-pane label="ppt" name="second">
@@ -170,7 +176,9 @@
     var Main = {
 
         data() {
+
             return {
+
                 form: {
                     resource: '',
                 },
@@ -190,12 +198,115 @@
                     title: '',
                     chaId: '',
                     chaName: '',
+                    chaTime: '',
+                    chaViurl:'',
                     show: false,
                 }
+
 
             };
         },
         methods: {
+            longtj() {
+                let formData = new FormData();
+                let path = "test/test.mp4";
+                formData.append('path', path);
+                axios({
+                    method: 'post',
+                    url: '/api/oss/long/longUploadFirst',
+                    data: formData,
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    }
+                }).then(res => {
+                    res = res.data;
+                    let uploadId = res.message;
+                    longtjContent(uploadId, path);
+                })
+            },
+            longtjContent(uploadId, path) {
+                let file = document.getElementById("longfile").files[0];
+                let i = 0;
+                longWhile(file, i, uploadId, path);
+            },
+
+            longWhile(file, i, uploadId, path) {
+                let end = (i + 1) * MB;
+                if (end > file.size) {
+                    end = file.size
+                }
+                let slice = file.slice(i * MB, end);
+                console.log(slice);
+                console.log(file);
+                console.log(end);
+                console.log(i);
+                let formData = new FormData();
+                formData.append("file", slice);
+                formData.append("uploadId", uploadId);
+                formData.append("path", path);
+                i++;
+                axios({
+                    method: 'post',
+                    url: '/api/oss/long/loadUploadConenet',
+                    data: formData,
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    }
+                }).then(res => {
+                    if (slice.size >= MB) {
+                        longWhile(file, i, uploadId, path);
+                    } else {
+                        let params = new URLSearchParams();
+                        params.append("uploadId", uploadId);
+                        params.append("path", path);
+                        axios({
+                            method: 'post',
+                            url: '/api/oss/long/loadUploadEnd',
+                            data: params,
+                        }).then(res => {
+                            axios({
+                                method: 'get',
+                                url: '/api/oss/getUrl',
+                                params: {
+                                    path: path
+                                },
+                            })
+                        })
+                    }
+                })
+                    .catch(error => {
+                        console.log("错误");
+                        i--;
+                        longWhile(file, i, uploadId, path);
+                    })
+            },
+
+
+            tj() {
+                let formData = new FormData();
+                let file = document.getElementById("file").files[0];
+                console.log(file);
+                formData.append('file', file);
+                formData.append('path', "/test/a.jpg");
+                axios({
+                    method: 'post',
+                    url: '/api/oss/upload',
+                    data: formData,
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    }
+                }).then(res => {
+                    res = res.data;
+                    axios({
+                        method: 'get',
+                        url: '/api/oss/getUrl',
+                        params: {
+                            path: 'test/a.jpg'
+                        }
+                    })
+                })
+            },
+
             handleClick() {
 
             },
@@ -203,81 +314,81 @@
             deleteModule(chaId) {
 
                 this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-                          confirmButtonText: '确定',
-                          cancelButtonText: '取消',
-                          type: 'warning',
-                          center: true
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning',
+                    center: true
 
-                      }).then(() => {
+                }).then(() => {
 
-                           axios({
-                              method: 'delete',
-                              url: '/api/teacher/chapter/'+chaId,
-                          }).then(res=>{
-                              res=res.data;
-                              if(res.success){
-                                  this.$message({
-                                      type: 'success',
-                                      message: '删除成功!',
-                                  });
-                              }else{
-                                  this.$message({
-                                      type: 'error',
-                                      message: '删除失败!',
-                                  });
-                              }
-                           })
+                    axios({
+                        method: 'delete',
+                        url: '/api/teacher/chapter/' + chaId,
+                    }).then(res => {
+                        res = res.data;
+                        if (res.success) {
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功!',
+                            });
+                        } else {
+                            this.$message({
+                                type: 'error',
+                                message: '删除失败!有子级不能删除',
+                            });
+                        }
+                    })
 
 
-                          this.queryMenu();
-                          //location.reload()
-                      }).catch(() => {
-                          this.$message({
-                              type: 'info',
-                              message: '已取消删除'
-                          });
-                      })
+                    this.queryMenu();
+                    //location.reload()
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                })
 
 
             },
+            //修改视频
             saveVideo() {
+
                 let params = new URLSearchParams()
                 params.append('chaId', this.add.chaId)
                 params.append('chaName', this.add.chaName)
                 params.append('chaViurl', this.add.chaViurl)
-                params.append('chaPpturl', this.add.chaPpturl)
-                params.append('chaDocurl', this.add.chaDocurl)
-
+                params.append('chaTime', this.add.chaTime)
                 this.$refs['addForm'].validate((valid) => {
                     axios({
                         method: 'post',
-                        url: '/api/teacher/chapter/updateCourseAll',
+                        url: '/api/teacher/chapter/updateChaViurlAtime',
                         data: params,
                     })
-                        .then(() => {
-                            this.$message({
-                                type: 'success',
-                                message: '修改成功!',
-                            });
-                            this.add.show = false
-                            this.queryMenu();
-                        }).catch(() => {
-                        this.$message({
-                            type: 'info',
-                            message: '修改失败'
+                    then(() => {
+                         this.$message({
+                            type: 'success',
+                            message: '修改成功!',
                         });
                     })
+                    this.add.show = false
+                    this.queryMenu()
+                        .catch(() => {
+                            this.$message({
+                                type: 'info',
+                                message: '修改失败'
+                            });
+                        })
                 })
             },
 
             updateModuleShow(row) {
-                    this.add.title = "课次信息";
-                    this.update.chaViurl = '',
-                    this.update.chaPpturl = '',
-                    this.update.chaDocurl = '',
-                    this.update.chaName = row.chaName;
-                    this.update.chaId = row.chaId;
-                    this.update.show = true;
+                this.update.title = "课次信息";
+                this.update.chaViurl = '',
+                 this.update.chaTime = '',
+                 this.update.chaName = row.chaName;
+                this.update.chaId = row.chaId;
+                this.update.show = true;
             },
 
             //新增
@@ -285,9 +396,9 @@
                 var courId = localStorage.getItem("courId")
                 let params = new URLSearchParams()
                 params.append('chaName', this.add.chaName)
-                if(this.add.chaId>0){
+                if (this.add.chaId > 0) {
                     params.append('chaParentid', this.add.chaId)
-                }else{
+                } else {
                     params.append('chaParentid', 0)
                 }
 
@@ -357,4 +468,5 @@
     var Ctor = Vue.extend(Main)
     let v = new Ctor().$mount('#app')
 </script>
+
 </html>
