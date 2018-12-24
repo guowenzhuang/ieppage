@@ -200,19 +200,19 @@
 
                 //角色
 
-                let roleNames=res.info.roleNames;
+                let roleNames = res.info.roleNames;
                 sessionStorage.setItem("roleNames", roleNames);
                 //用户名
                 sessionStorage.setItem("username", res.info.name);
                 sessionStorage.setItem("userid", res.info.id);
 
-                let callback=getParam("callback-url");
-                if(callback!=null){
-                    window.location.href=callback;
-                    return ;
+                let callback = getParam("callback-url");
+                if (callback != null && callback!='') {
+                    window.location.href = callback;
+                    return;
                 }
                 let url = authoritiesToUrl(roleNames[0]);
-                window.location.href=url;
+                window.location.href = url;
                 //axios.defaults.headers.common['Authorization'] = "bearer " + res.access_token;
             });
             return false;
@@ -231,14 +231,13 @@
                     return "admin/index.html";
             }
         }
+
         //获取参数
         function getParam(paramName) {
-            paramValue = "", isFound = !1;
-            if (this.location.search.indexOf("?") == 0 && this.location.search.indexOf("=") > 1) {
-                arrSource = unescape(this.location.search).substring(1, this.location.search.length).split("&"), i = 0;
-                while (i < arrSource.length && !isFound) arrSource[i].indexOf("=") > 0 && arrSource[i].split("=")[0].toLowerCase() == paramName.toLowerCase() && (paramValue = arrSource[i].split("=")[1], isFound = !0), i++
-            }
-            return paramValue == "" && (paramValue = null), paramValue
+            let url = this.location.search;
+            let i=url.indexOf(paramName)+paramName.length+1;
+            let action=url.substring(i);
+            return action;
         }
 
         //注册
