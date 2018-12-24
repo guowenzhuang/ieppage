@@ -72,8 +72,6 @@
 								</el-table-column>
 								<el-table-column prop="replyReportnum" label="举报数" :show-overflow-tooltip="true">
 								</el-table-column>
-								<el-table-column prop="typeName" label="帖子类型" :show-overflow-tooltip="true">
-								</el-table-column>
 
 								<el-table-column prop="operation" label="帖子操作" align="center" min-width="80">
 									<template slot-scope="scope">
@@ -111,14 +109,14 @@
 									<el-table-column property="typeName" label="类型名称" width="150"></el-table-column>
 									<el-table-column prop="operation" label="操作" align="center" min-width="50">
 										<template slot-scope="scope">
-									<el-button type="info" icon="el-icon-d-arrow-right" circle @click="deleteTYPE(scope.row)" size="mini"></el-button>
+											<el-button type="info" icon="el-icon-d-arrow-right" circle @click="deleteTYPE(scope.row)" size="mini"></el-button>
 											</el-button>
 										</template>
 									</el-table-column>
 								</el-table>
 							</el-aside>
-							
-							
+
+
 							<el-main>
 								<span>NO贴子类型</span>
 								<el-table :data="typelistno">
@@ -126,8 +124,8 @@
 									<el-table-column property="typeName" label="类型名称" width="150"></el-table-column>
 									<el-table-column prop="operation" label="操作" align="center" min-width="50">
 										<template slot-scope="scope">
-								<el-button type="info" icon="el-icon-d-arrow-left" circle @click="insertTYPE(scope.row)" size="mini"></el-button>
-								
+											<el-button type="info" icon="el-icon-d-arrow-left" circle @click="insertTYPE(scope.row)" size="mini"></el-button>
+
 											</el-button>
 										</template>
 									</el-table-column>
@@ -135,15 +133,15 @@
 							</el-main>
 						</el-container>
 					</el-dialog>
-           
-           					<el-dialog :visible.sync="dialogVisible2" width="30%" :before-close="handleClose">
-           						<el-input v-model="reportId" placeholder="Id" style="width: 50px; line-height: 10px;"></el-input>
-           						<span>确定删除吗？</span>
-           						<span slot="footer" class="dialog-footer">
-           							<el-button @click="dialogVisible2 = false">取 消</el-button>
-           							<el-button type="primary" @click="deleteport()">确 定</el-button>
-           						</span>
-           					</el-dialog>
+
+					<el-dialog :visible.sync="dialogVisible2" width="30%" :before-close="handleClose">
+						<el-input v-model="reportId" placeholder="Id" style="width: 50px; line-height: 10px;"></el-input>
+						<span>确定删除吗？</span>
+						<span slot="footer" class="dialog-footer">
+							<el-button @click="dialogVisible2 = false">取 消</el-button>
+							<el-button type="primary" @click="deleteport()">确 定</el-button>
+						</span>
+					</el-dialog>
 					<el-dialog title="帖子内容详情" :visible.sync="dialogVisible" width="60%" :before-close="handleClose">
 						<el-input type="textarea" :rows="10" placeholder="请输入内容" v-model="textarea"></el-input>
 						<span slot="footer" class="dialog-footer">
@@ -152,7 +150,7 @@
 					</el-dialog>
 
 					<el-dialog title="举报详情" :visible.sync="dialogTableVisible">
-				 <!-- <el-input v-model="replyId" placeholder="Id" style="width: 50px; line-height: 10px;"></el-input>
+						<!-- <el-input v-model="replyId" placeholder="Id" style="width: 50px; line-height: 10px;"></el-input>
  -->
 						<el-table :data="reportlist">
 							<el-table-column property="userId" label="举报人ID" width="100"></el-table-column>
@@ -165,30 +163,38 @@
 							</el-table-column>
 						</el-table>
 					</el-dialog>
-         				<el-dialog title="帖子ID回复列" :visible.sync="dialogTableVisible2">
-         				<!-- <el-input v-model="replyId" placeholder="Id" style="width: 50px; line-height: 10px;"></el-input>
+					<el-dialog title="帖子ID回复列" :visible.sync="dialogTableVisible2">
+						<!-- <el-input v-model="replyId" placeholder="Id" style="width: 50px; line-height: 10px;"></el-input>
          -->
-         					<el-table :data="replyList">
-         						<el-table-column type="index" label="序号" :show-overflow-tooltip="true">
-         						</el-table-column>
-         						<el-table-column property="replyContent" label="回复内容" width="250"></el-table-column>
-										<el-table-column property="replyTime" label="回复时间" width="100"></el-table-column>
-         						<el-table-column prop="operation" label="回复操作" align="center" min-width="80">
-         							<template slot-scope="scope">
-         								<el-button type="danger" icon="el-icon-delete" circle @click="deletereply(scope.row)" size="mini"></el-button>
-         								</el-button>
-												<el-button type="danger" round @click="hahahss(scope.row)" size="mini">回复举报
-												</el-button>
-         							</template>
-         						</el-table-column>
-         					</el-table>
-         				</el-dialog>
+						<el-table :data="replyList">
+							<el-table-column type="index" label="序号" :show-overflow-tooltip="true">
+							</el-table-column>
+							<el-table-column property="replyContent" label="回复内容" width="250"></el-table-column>
+							<el-table-column property="replyTime" label="回复时间" width="100"></el-table-column>
+							<el-table-column prop="operation" label="回复操作" align="center" min-width="80">
+								<template slot-scope="scope">
+									<el-button type="danger" icon="el-icon-delete" circle @click="deletereply(scope.row)" size="mini"></el-button>
+									</el-button>
+									<el-button type="danger" round @click="hahahss(scope.row)" size="mini">回复举报
+									</el-button>
+								</template>
+							</el-table-column>
+						</el-table>
+					</el-dialog>
 					<el-dialog :visible.sync="dialogVisible2" width="30%" :before-close="handleClose">
-					<!-- 	<el-input v-model="reportId" placeholder="Id" style="width: 50px; line-height: 10px;"></el-input> -->
+						<!-- 	<el-input v-model="reportId" placeholder="Id" style="width: 50px; line-height: 10px;"></el-input> -->
 						<span>确定删除吗？</span>
 						<span slot="footer" class="dialog-footer">
 							<el-button @click="dialogVisible2 = false">取 消</el-button>
 							<el-button type="primary" @click="deleteport()">确 定</el-button>
+						</span>
+					</el-dialog>
+					<el-dialog :visible.sync="dialogVisible4" width="30%" :before-close="handleClose">
+						<!-- 	<el-input v-model="reportId" placeholder="Id" style="width: 50px; line-height: 10px;"></el-input> -->
+						<span>确定删除吗？</span>
+						<span slot="footer" class="dialog-footer">
+							<el-button @click="dialogVisible4 = false">取 消</el-button>
+							<el-button type="primary" @click="deletepost()">确 定</el-button>
 						</span>
 					</el-dialog>
 
@@ -261,6 +267,7 @@
              dialogVisible: false,
              dialogVisible2: false,
 						 dialogVisible3: false,
+						 dialogVisible4: false,
              dialogTableVisible:false,
 						 dialogTableVisible2:false,
              total: 50,//默认数据总数
@@ -316,65 +323,59 @@
 
             },
 						
-						hahah(row){
-												 
-													this.dialogTableVisible=true;
-												  this.replyId=row.replyId;
-														let params = new URLSearchParams();
-														params.append("replyId",this.replyId);
-													axios({
-																							method: 'post',
-																							url: '/api/bbs/report/getreport',
-																							data: params,
-																							headers: {
-																									//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
-																							}
-																					}).then(res => {
-																							res = res.data;
-																	this.reportlist = res.rows;
-																	
-																						console.log('reportlist==>'+this.reportlist);
-																					})
-												},
-					hahahss(row){
-											
-												this.dialogTableVisible=true;
-												this.replyId=row.replyId;
-													let params = new URLSearchParams();
-													params.append("replyId",this.replyId);
-												axios({
-																						method: 'post',
-																						url: '/api/bbs/report/getreport',
-																						data: params,
-																						headers: {
-																								//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
-																						}
-																				}).then(res => {
-																						res = res.data;
-																this.reportlist = res.rows;
-																
-																					console.log('reportlist==>'+this.reportlist);
-																				})
-											},
-							replys(row){
+						hahah(row){												 
+								this.dialogTableVisible=true;
+								this.replyId=row.replyId;
+								let params = new URLSearchParams();
+								params.append("replyId",this.replyId);
+								axios({
+											method: 'post',
+											url: '/api/bbs/report/getreport',
+											data: params,
+											headers: {
+													//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
+											}
+								}).then(res => {
+											res = res.data;
+											this.reportlist = res.rows;
+											console.log('reportlist==>'+this.reportlist);
+								})
+						},
+					  hahahss(row){
+								this.dialogTableVisible=true;
+								this.replyId=row.replyId;
+								let params = new URLSearchParams();
+								params.append("replyId",this.replyId);
+								axios({
+										method: 'post',
+										url: '/api/bbs/report/getreport',
+										data: params,
+										headers: {
+												//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
+										}
+								}).then(res => {
+										res = res.data;
+										this.reportlist = res.rows;
+										console.log('reportlist==>'+this.reportlist);
+								})
+						},
+						replys(row){
 								this.dialogTableVisible2=true;
 								this.postId=row.postId;
 									let params = new URLSearchParams();
 									params.append("postId",this.postId);
 								axios({
-																		method: 'post',
-																		url: '/api/bbs/reply/getReplyByPostId',
-																		data: params,
-																		headers: {
-																				//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
-																		}
-																}).then(res => {
-																		res = res.data;
-												this.replyList = res.rows;
-												
-																	console.log('replyList==>'+this.replyList);
-																})
-																
+										method: 'post',
+										url: '/api/bbs/reply/getReplyList',
+										data: params,
+										headers: {
+												//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
+										}
+								}).then(res => {
+										res = res.data;
+										this.replyList = res.rows;												
+										console.log('replyList==>'+this.replyList);
+								})																
 							}	,																		
 													setTYPE(row){
 														this.dialogVisible3=true;
@@ -522,9 +523,13 @@
 																				})
 												
 																		}, 
-						delete(val){
+						delete(row){
+							this.dialogVisible4=true;
+							this.replyId=row.replyId;
+							},
+							deletereply(){
 							let params = new URLSearchParams();
-							                params.append("replyId", val.replyId)
+						 params.append("replyId", val.replyId)
 							                axios({
 							                    method: 'post',
 							                    url: '/api/bbs/post/deletePost',
@@ -543,29 +548,6 @@
 							                    }
 							                })
 						},
-
-            /*删除一个试题*/
-           /*delete(val) {
-                let params = new URLSearchParams();
-                params.append("id", val.id)
-                axios({
-                    method: 'post',
-                    url: '/api/exam/rubric/deleteredicbyid',
-                    data:
-                    params,
-
-                    headers: {
-                        "Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUwNTc3MCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjllMjI1MDUyLTViNDQtNGI0MS05ZTRkLTk4NmNhMTJjZWZkZCIsImNsaWVudF9pZCI6ImllcCJ9.qxP1BynI41fIAAgXxeS-hYVIxdbiIpcjy3GQXrhPEh8"
-                    }
-                }).then(res => {
-                    if (res.success) {
-                        this.reload();
-                        alert(res.message)
-                    } else {
-                        alert(res.message)
-                    }
-                })
-            },*/
 
             /*对话框关闭与否触发的方法*/
             handleClose(done) {
