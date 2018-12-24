@@ -51,6 +51,25 @@
                     </el-table-column>
                     <el-table-column prop="courCommentcount" label="评价数">
                     </el-table-column>
+                    <el-table-column label="是否推荐">
+                        <template slot-scope="scope">
+                            <el-button type="text" size="small" v-if="scope.row.isRecommend">已推荐</el-button>
+                            <el-button type="text" size="small" v-else>未推荐</el-button>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="操作">
+                        <template slot-scope="scope">
+                            <div style="display: flex;">
+                                <div v-if="scope.row.isRecommend">
+                                    <el-button type="text" @click="addShow(scope.row)" size="mini">继续推荐</el-button>
+                                    <el-button type="text" size="mini" @click="qxtj(scope.row)">取消推荐</el-button>
+                                </div>
+                                <div v-else>
+                                    <el-button type="text" @click="addShow(scope.row)" size="mini">推荐</el-button>
+                                </div>
+                            </div>
+                        </template>
+                    </el-table-column>
                 </el-table>
             </el-row>
             <el-row type="flex" justify="center">
@@ -64,6 +83,59 @@
             </el-row>
         </el-main>
     </el-container>
+    <div>
+        <el-dialog
+                title="推荐"
+                :visible.sync="add.show">
+            <el-row type="flex" justify="center" align="middle">
+                <el-col :span="5">
+                    请选择推荐位置;
+                </el-col>
+                <el-col :span="8">
+                    <el-select clearable v-model="add.positionId" placeholder="请选择">
+                        <el-option
+                                v-for="item in add.positionData"
+                                :key="item.code"
+                                :label="item.name"
+                                :value="item.id">
+                        </el-option>
+                    </el-select>
+                </el-col>
+            </el-row>
+            <el-row type="flex" justify="center" align="middle">
+                <el-col :span="5">
+                    请选择权重;
+                </el-col>
+                <el-col :span="8">
+                    <el-input-number v-model="add.weight" :min="1" :max="100"></el-input-number>
+                </el-col>
+            </el-row>
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="addRecommend">确 定</el-button>
+                <el-button @click="add.show = false">取 消</el-button>
+            </span>
+        </el-dialog>
+        <el-dialog
+                title="推荐"
+                :visible.sync="del.show">
+            <el-row type="flex" justify="center" align="middle">
+                <el-col :span="6">
+                    请选择要取消的位置;
+                </el-col>
+                <el-col :span="10">
+                    <el-checkbox-group v-model="del.positionId">
+                        <el-checkbox :key="item.id" :label="item.id" v-for="item in del.positionData">
+                            {{item.name}}
+                        </el-checkbox>
+                    </el-checkbox-group>
+                </el-col>
+            </el-row>
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="delRecommend">确 定</el-button>
+                <el-button @click="del.show = false">取 消</el-button>
+            </span>
+        </el-dialog>
+    </div>
 </div>
 </body>
 <script>
@@ -79,12 +151,101 @@
                     page: 1,
                     pageSize: 10,
                     courName: '',
-                    orderBy:''
+                    orderBy: ''
+                },
+                add: {
+                    show: false,
+                    positionData: [],
+                    positionId: '9357593e-02dc-47ab-b304-910f3511a897',
+                    weight: 0
+                },
+                activeData: {},
+                del:{
+                    show:false,
+                    positionData:[],
+                    positionId:[]
                 }
             }
         },
         methods: {
+            delRecommend(){
+                axios({
+                    method:'delete',
+                    url:'/api/admin/recommend',
+                    params:{
+                        coursetId:this.activeData.courId,
+                        positionIds:this.del.positionId.join(",")
+                    }
+                }).then(res=>{
+                    res=res.data;
+                    if(res.success){
+                        this.$message({
+                            message: res.message,
+                            type: 'success'
+                        })
+                        this.del.show=false;
 
+                    }
+                })
+            },
+            qxtj(row){
+                this.activeData = row;
+                axios({
+                    method:'get',
+                    url:'/api/admin/position/getname/'+row.courId
+                }).then(res=>{
+                    res=res.data;
+                    this.del.positionData=res;
+                    this.del.show=true;
+                    this.queryCourse();
+                })
+            },
+            addRecommend() {
+                axios({
+                    method: 'post',
+                    url: '/api/admin/recommend',
+                    data: {
+                        coursetId: this.activeData.courId,
+                        positionId: this.add.positionId,
+                        weight: this.add.weight
+                    }
+                }).then(res => {
+                    res = res.data;
+                    if (res.success) {
+                        this.$message({
+                            message: res.message,
+                            type: 'success'
+                        })
+                        this.add.show = false;
+                        this.queryCourse();
+                    }else{
+                        this.$message({
+                            message: res.message,
+                            type: 'error'
+                        })
+                    }
+                })
+            },
+            addShow(row) {
+                this.activeData = row;
+                this.queryPositionAll(() => {
+                    this.add.show = true;
+                });
+            },
+            queryPositionAll(fun) {
+                if (this.add.positionData.length < 1) {
+                    axios({
+                        method: 'get',
+                        url: '/api/admin/position'
+                    }).then(res => {
+                        res = res.data;
+                        this.add.positionData = res;
+                        fun();
+                    })
+                } else {
+                    fun();
+                }
+            },
             search() {
                 this.query.page = 1;
                 this.queryCourse();

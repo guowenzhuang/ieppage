@@ -173,6 +173,7 @@
             }
         }
     });
+    const MB=1024*1024;
     var Main = {
 
         data() {
@@ -208,38 +209,35 @@
         },
         methods: {
             longtj() {
-                let formData = new FormData();
-                let path = "test/test.mp4";
-                formData.append('path', path);
+                let file = document.getElementById("longfile").files[0];
+                console.log(file)
+                let path="video/"+new Date().getTime()+file.name;
+                let params=new URLSearchParams();
+                params.append("path",path)
                 axios({
                     method: 'post',
                     url: '/api/oss/long/longUploadFirst',
-                    data: formData,
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    }
+                    data: params,
                 }).then(res => {
                     res = res.data;
                     let uploadId = res.message;
-                    longtjContent(uploadId, path);
+                    this.longtjContent(uploadId, path);
                 })
             },
             longtjContent(uploadId, path) {
                 let file = document.getElementById("longfile").files[0];
                 let i = 0;
-                longWhile(file, i, uploadId, path);
+                this.longWhile(file, i, uploadId, path);
             },
 
             longWhile(file, i, uploadId, path) {
                 let end = (i + 1) * MB;
-                if (end > file.size) {
+                let isNotEnd=true;
+                if (end >= file.size) {
                     end = file.size
+                    isNotEnd=false;
                 }
                 let slice = file.slice(i * MB, end);
-                console.log(slice);
-                console.log(file);
-                console.log(end);
-                console.log(i);
                 let formData = new FormData();
                 formData.append("file", slice);
                 formData.append("uploadId", uploadId);
@@ -253,8 +251,8 @@
                         'Content-Type': 'multipart/form-data',
                     }
                 }).then(res => {
-                    if (slice.size >= MB) {
-                        longWhile(file, i, uploadId, path);
+                    if (slice.size >= MB && isNotEnd) {
+                        this.longWhile(file, i, uploadId, path);
                     } else {
                         let params = new URLSearchParams();
                         params.append("uploadId", uploadId);
@@ -264,13 +262,32 @@
                             url: '/api/oss/long/loadUploadEnd',
                             data: params,
                         }).then(res => {
-                            axios({
+                            res=res.data.message;
+                            console.log("path",res.path);
+                            console.log("lastModified",file.lastModified);
+                            console.log("size",file.size);
+                            console.log("type",file.type);
+                            let url = URL.createObjectURL(file);
+                            let audioElement = new Audio(url);
+
+                            let duration;
+                            audioElement.addEventListener("loadedmetadata", function (_event) {
+                                duration = audioElement.duration;
+                                var hour = parseInt((duration)/3600);
+                                var minute = parseInt((duration%3600)/60);
+                                var second = Math.ceil(duration%60);
+                                //console.log(Math.floor(ele.duration));
+                                //document.write("这段视频的时长为："+hour+"小时，"+minute+"分，"+second+"秒");
+                                console.log("这段视频的时长为："+hour+"小时，"+minute+"分，"+second+"秒")
+
+                            });
+                       /*     axios({
                                 method: 'get',
                                 url: '/api/oss/getUrl',
                                 params: {
                                     path: path
                                 },
-                            })
+                            })*/
                         })
                     }
                 })
