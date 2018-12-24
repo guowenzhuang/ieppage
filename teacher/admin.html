@@ -88,7 +88,7 @@
     </el-dialog>
     <el-dialog
             width="40%"
-            :title="add.title"
+            :title="update.title"
             :visible.sync="update.show"
     >
         <el-form ref="addForm" label-position="left" :model="update" label-width="80px">
@@ -103,20 +103,20 @@
                              <el-radio label="免费"></el-radio>
                              <el-radio label="试听"></el-radio>
                          </el-radio-group>-->
-                        <el-form-item>
+                        <el-form-item >
                             <el-input type="file" id="longfile"></el-input>
                             <el-button @click="longtj()">提交</el-button>
                         </el-form-item>
 
                     </el-form-item>
                 </el-tab-pane>
-                <el-tab-pane label="ppt" name="second">
+              <!--  <el-tab-pane label="ppt" name="second">
                     配置管理
                 </el-tab-pane>
                 <el-tab-pane label="文档" name="third">
                     角色管理
                 </el-tab-pane>
-
+-->
             </el-tabs>
 
 
@@ -198,8 +198,12 @@
                 update: {
                     title: '',
                     chaId: '',
+                    courId:'',
                     chaName: '',
+                    chaType:'',
                     chaTime: '',
+                    chalastModified:'',
+                    chaSize:'',
                     chaViurl:'',
                     show: false,
                 }
@@ -271,7 +275,7 @@
                             let audioElement = new Audio(url);
 
                             let duration;
-                            audioElement.addEventListener("loadedmetadata", function (_event) {
+                            audioElement.addEventListener("loadedmetadata",  (_event) =>{
                                 duration = audioElement.duration;
                                 var hour = parseInt((duration)/3600);
                                 var minute = parseInt((duration%3600)/60);
@@ -279,7 +283,11 @@
                                 //console.log(Math.floor(ele.duration));
                                 //document.write("这段视频的时长为："+hour+"小时，"+minute+"分，"+second+"秒");
                                 console.log("这段视频的时长为："+hour+"小时，"+minute+"分，"+second+"秒")
-
+                                this.update.chaViurl = res.path;
+                                this.update.chalastModified=file.lastModified;
+                                this.update.chaSize=file.size;
+                                this.update.chaType=file.type;
+                                this.update.chaTime=hour+"-"+minute+"-"+second;
                             });
                        /*     axios({
                                 method: 'get',
@@ -370,27 +378,30 @@
             },
             //修改视频
             saveVideo() {
-
+                var courId = localStorage.getItem("courId")
                 let params = new URLSearchParams()
-                params.append('chaId', this.add.chaId)
-                params.append('chaName', this.add.chaName)
-                params.append('chaViurl', this.add.chaViurl)
-                params.append('chaTime', this.add.chaTime)
+                params.append('chaCourid', courId)
+                params.append('chaId', this.update.chaId)
+                params.append('chaName', this.update.chaName)
+                params.append('chaViurl', this.update.chaViurl)
+                params.append('chaType', this.update.chaType)
+                params.append('chalastModified', this.update.chalastModified)
+                params.append('chaTime', this.update.chaTime)
+                params.append('chaSize', this.update.chaSize)
                 this.$refs['addForm'].validate((valid) => {
-                    axios({
+                        axios({
                         method: 'post',
-                        url: '/api/teacher/chapter/updateChaViurlAtime',
+                        url: '/api/teacher/chapter/updateChapters',
                         data: params,
                     })
-                    then(() => {
-                         this.$message({
+                        .then((res) => {
+                       this.$message({
                             type: 'success',
                             message: '修改成功!',
                         });
-                    })
-                    this.add.show = false
-                    this.queryMenu()
-                        .catch(() => {
+                        this.update.show = false
+                        this.queryMenu()
+                    }).catch(() => {
                             this.$message({
                                 type: 'info',
                                 message: '修改失败'
@@ -400,12 +411,16 @@
             },
 
             updateModuleShow(row) {
-                this.update.title = "课次信息";
-                this.update.chaViurl = '',
-                 this.update.chaTime = '',
+                 this.update.title = "课次信息";
+                 this.update.chaViurl = '';
+                this.update.chalastModified = '';
+                 this.update.chaType ='';
+                 this.update.chaTime = '';
+                 this.update.chaSize = '';
+                 this.update.chaId =row.chaId;
                  this.update.chaName = row.chaName;
-                this.update.chaId = row.chaId;
-                this.update.show = true;
+
+                 this.update.show = true
             },
 
             //新增
