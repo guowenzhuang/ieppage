@@ -224,7 +224,21 @@
                 });
                 let params=new URLSearchParams();
                 params.append("pids",pids.join(","));
-
+                axios({
+                    method:'post',
+                    url:"/api/admin/role/setPermission/"+this.activeData.id,
+                    data:params
+                }).then(res=>{
+                    res=res.data;
+                    if(res.success){
+                        this.$message({
+                            showClose: true,
+                            message: '设置成功',
+                            type: 'success'
+                        });
+                        this.permission.show = false;
+                    }
+                })
             },
             //模块树单击事件
             treeCheck(row, isCheck) {

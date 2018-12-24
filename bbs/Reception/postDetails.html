@@ -16,6 +16,9 @@
 		<link rel="stylesheet" href="../app/css/libs/katex/0.6.0/katex.min.css">
 		<link rel="stylesheet" href="../app/css/libs/videojs/5.11.7/video-js.min.css">
 		<link rel="stylesheet" href="../app/css/dest/styles.css?=2016121272249">
+
+		<link rel="stylesheet" type="text/css" href="../css/bootstrap-theme.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/muke.css">
 		<link rel="stylesheet" type="text/css" href="../layui/css/layui.css" />
 		<link rel="stylesheet" href="../css/index.css" />
 		<script src="../layui/layui.js"></script>
@@ -143,50 +146,52 @@
 	<body>
 
 
-		<nav class="navbar navbar-default navbar-fixed-top header">
-			<div class="container">
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#header-navbar-collapse"
-					 aria-expanded="false">
-						<span class="sr-only">智慧教学平台</span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
-					<a class="navbar-brand" href="../index.html">
-						<img src="../img/logo_03.png">
-					</a>
+		<!-- 顶部 -->
+		<div class="width100 float_l" style="margin-top: -70px;">
+			<div class="width100 float_l height80 line_hei80">
+
+				<!-- 顶部左边 -->
+				<div class="float_l">
+					<div class="float_l margin_l20">
+						<a href="#"><img src="../img/uiz1.png"></a>
+					</div>
+					<div class="float_l">
+						<ul class="ul_li fon_siz16">
+							<li><a class="color_black" href="../courses/index.html">课程</a></li>
+							<li><a class="color_black" href="">院系</a></li>
+							<li><a class="color_black" href="">名师专栏</a></li>
+
+						</ul>
+					</div>
 				</div>
-				<div class="collapse navbar-collapse" id="header-navbar-collapse">
-					<ul class="nav navbar-nav">
-						<li class="">
-							<a href="../questions/index.html">讨论区</a>
-						</li>
 
-					</ul>
-
-
-					<div class="navbar-right btns">
+				<!-- 顶部右边 -->
+				<div class="float_r">
+					<div class="float_l top_input">
+						<input class="posi_relative" type="text" name="" id="" placeholder="请输入想搜索的内容...">
+						<img class="img_sousuo bianshou" src="../img/uiz4.png">
+					</div>
+					<div class="float_l margin_l20">
+						<img src="../img/uiz5.png">
+					</div>
+					<div class="float_l margin_l35">
+						<img src="../img/uiz6.png">
+					</div>
+					<div class="float_l margin_l30 margin_r40">
 						<a class="btn btn-default navbar-btn sign-in" data-sign="signin" href="#sign-modal" data-toggle="modal">登录</a>
 						<a class="btn btn-default navbar-btn sign-up" data-sign="signup" href="#sign-modal" data-toggle="modal">注册</a>
 					</div>
-
-
-					<form class="navbar-form navbar-right" action="../search" method="get" role="search">
-						<div class="form-group">
-							<input type="text" class="form-control" name="search" autocomplete="off" placeholder="搜索 课程/问答">
-						</div>
-					</form>
 				</div>
+
 			</div>
-		</nav>
+		</div>
 
 
 
 		<div class="container layout layout-margin-top">
 
 			<ol class="breadcrumb">
-				<li><a href="index.html">讨论区</a></li>
+				<li><a href="post.html">讨论区</a></li>
 				<li><a href="#">帖子详情</a></li>
 			</ol>
 
@@ -217,18 +222,24 @@
 							<div class="labreport-detail-like">
 								<!-- 回复 -->
 								<span class="btn btn-weiboshare">
-									<a class="layui-btn layui-btn-normal layui-btn-sm layui-btn-radius">回复</a>
+									<template>
+										<el-button size="small" type="success" plain>回复</el-button>
+									</template>
 								</span>
+
 								<!-- 举报 -->
-								<span class="btn  btn-weiboshare">
-									<i class="el-icon-warning" <!-- @click="reportReply(reply)" -->></i>
+								<span class="btn  btn-weiboshare" v-if="postReport">
+									<el-button type="warning" size="small" disabled>举报</el-button>
+								</span>
+								<span class="btn  btn-weiboshare" v-else>
+									<el-button type="warning" size="small" @click="userReportPost()">举报</el-button>
 								</span>
 								<!-- 点赞 -->
 								<span class="btn  btn-weiboshare" v-if="postLike">
-									<i class="layui-icon layui-icon-praise" v-on:click="replyLike(reply)" style="font-size: 20px; color: #CC0033;"></i>
+									<i class="layui-icon layui-icon-praise" v-on:click="userLikePost()" style="font-size: 20px; color: #CC0033;"></i>
 								</span>
 								<span class="btn  btn-weiboshare" v-else>
-									<i class="layui-icon layui-icon-praise" v-on:click="replyLike(reply)" style="font-size: 20px; color: #6D6D6D;"></i>
+									<i class="layui-icon layui-icon-praise" v-on:click="userLikePost()" style="font-size: 20px; color: #6D6D6D;"></i>
 								</span>
 
 							</div>
@@ -278,8 +289,11 @@
 										</span>
 
 										<!-- 举报 -->
-										<span class="btn btn-weiboshare">
-											<i class="el-icon-warning" @click="reportReply(reply)"></i>
+										<span class="btn  btn-weiboshare" v-if="reply.isReport">
+											<el-button type="warning" size="small" disabled>举报</el-button>
+										</span>
+										<span class="btn  btn-weiboshare" v-else>
+											<el-button type="warning" size="small" @click="reportReply(reply)">举报</el-button>
 										</span>
 
 										<!-- 点赞 -->
@@ -336,6 +350,7 @@
 
 				mounted: function() {
 					this.queryReply();
+					this.userIsPost();
 
 				},
 				data() {
@@ -373,7 +388,8 @@
 							console.log('replyList==>' + this.replyList);
 						})
 					},
-					userIsPost: function(){
+					/* 用户是否举报或点赞该贴 */
+					userIsPost: function() {
 						let params = new URLSearchParams();
 						params.append("replyId", sessionStorage.getItem("replyId"));
 						params.append("userId", sessionStorage.getItem("userId"));
@@ -384,10 +400,10 @@
 							headers: {
 								//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
 							}
-						}).then(res=>{
-							res=res.data;
-							this.postLike=res.isLikePost;
-							this.postReport=res.isReportPost;
+						}).then(res => {
+							res = res.data;
+							this.postLike = res.isLikePost;
+							this.postReport = res.isReportPost;
 						})
 					},
 					replyLike: function(reply) {
@@ -459,53 +475,113 @@
 						});
 					},
 					reportReply: function(reply) {
-						if (reply.isReport) {
+						this.$prompt('请输入举报内容', '举报', {
+							confirmButtonText: '确定',
+							cancelButtonText: '取消',
+							inputPattern: /\S/,
+							inputErrorMessage: '举报内容不能为空'
+						}).then(({
+							value
+						}) => {
+							let params = new URLSearchParams();
+							params.append("replyId", reply.replyId);
+							params.append("userId", sessionStorage.getItem("userId"));
+							params.append("reportReason", value);
+							axios({
+								method: 'post',
+								url: '/api/bbs/reply/userReport',
+								data: params,
+								headers: {
+									//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
+								}
+							}).then(res => {
+								res = res.data;
+								if (res.success) {
+									this.$message({
+										message: res.message,
+										type: 'success'
+									});
+									this.queryReply();
+								} else {
+									this.$message.error(res.message);
+								}
+
+							})
+
+						}).catch(() => {
 							this.$message({
 								type: 'info',
-								message: '你已举报过该用户'
+								message: '取消输入'
 							});
-						} else {
-							this.$prompt('请输入举报内容', '举报', {
-								confirmButtonText: '确定',
-								cancelButtonText: '取消',
-								inputPattern: /\S/,
-								inputErrorMessage: '举报内容不能为空'
-							}).then(({
-								value
-							}) => {
-								let params = new URLSearchParams();
-								params.append("replyId", reply.replyId);
-								params.append("userId", sessionStorage.getItem("userId"));
-								params.append("reportReason", value);
-								axios({
-									method: 'post',
-									url: '/api/bbs/reply/userReport',
-									data: params,
-									headers: {
-										//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
-									}
-								}).then(res => {
-									res = res.data;
-									if (res.success) {
-										this.$message({
-											message: res.message,
-											type: 'success'
-										});
-										this.queryReply();
-									} else {
-										this.$message.error(res.message);
-									}
+						});
 
-								})
-
-							}).catch(() => {
+					},
+					userLikePost: function() {
+						let params = new URLSearchParams();
+						params.append("replyId", sessionStorage.getItem("replyId"));
+						params.append("userId", sessionStorage.getItem("userId"));
+						params.append("isLike", this.postLike);
+						axios({
+							method: 'post',
+							url: '/api/bbs/reply/replyLike',
+							data: params,
+							headers: {
+								//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
+							}
+						}).then(res => {
+							res = res.data;
+							if (res.success) {
 								this.$message({
-									type: 'info',
-									message: '取消输入'
+									message: res.message,
+									type: 'success'
 								});
-							});
-						}
+								this.userIsPost();
+							} else {
+								this.$message.error(res.message);
+							}
 
+						})
+					},
+					userReportPost: function() {
+						this.$prompt('请输入举报内容', '举报', {
+							confirmButtonText: '确定',
+							cancelButtonText: '取消',
+							inputPattern: /\S/,
+							inputErrorMessage: '举报内容不能为空'
+						}).then(({
+							value
+						}) => {
+							let params = new URLSearchParams();
+							params.append("replyId", sessionStorage.getItem("replyId"));
+							params.append("userId", sessionStorage.getItem("userId"));
+							params.append("reportReason", value);
+							axios({
+								method: 'post',
+								url: '/api/bbs/reply/userReport',
+								data: params,
+								headers: {
+									//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
+								}
+							}).then(res => {
+								res = res.data;
+								if (res.success) {
+									this.$message({
+										message: res.message,
+										type: 'success'
+									});
+									this.userIsPost();
+								} else {
+									this.$message.error(res.message);
+								}
+
+							})
+
+						}).catch(() => {
+							this.$message({
+								type: 'info',
+								message: '取消输入'
+							});
+						});
 					}
 
 				}
@@ -515,75 +591,27 @@
 
 
 
-		<div class="modal fade" id="sign-modal" tabindex="-1" role="dialog">
-
-		</div>
-
-		<div class="footer">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-4 clearfix footer-col">
-						<img src="../img/logo_03.png">
-						<div class="footer-slogan">动手做实验，轻松学编程</div>
-						<div class="col-xs-2">
-							<div class="social-item footer-weixin-item">
-								<i class="fa fa-weixin"></i>
-								<div class="footer-weixin">
-									<img src="../img/footer-weixin.png">
-								</div>
-							</div>
-						</div>
-						<div class="col-xs-2">
-							<div class="social-item footer-qq-item">
-								<i class="fa fa-qq"></i>
-							</div>
-						</div>
-						<div class="col-xs-2">
-							<div class="social-item footer-weibo-item">
-								<a href="#" target="_blank">
-									<i class="fa fa-weibo"></i>
-								</a>
-							</div>
-						</div>
-					</div>
-					<div class="col-xs-6 col-sm-3 col-md-2 footer-col">
-						<div class="col-title">公司</div>
-						<a href="../aboutus/index.html" target="_blank">关于我们</a><br>
-						<a href="../contact/index.html" target="_blank">联系我们</a><br>
-						<a href="#" target="_blank">加入我们</a><br>
-						<a href="#" target="_blank">技术博客</a><br>
-					</div>
-					<div class="col-xs-6 col-sm-3 col-md-2 footer-col">
-						<div class="col-title">合作</div>
-						<a href="../contribute/index.html" target="_blank">我要投稿</a><br>
-						<a href="../labs/index.html" target="_blank">教师合作</a><br>
-						<a href="../edu/index.html" target="_blank">高校合作</a><br>
-						<a href="../friends/index.html" target="_blank">友情链接</a>
-					</div>
-					<div class="col-xs-6 col-sm-3 col-md-2 footer-col">
-						<div class="col-title">服务</div>
-						<a href="../bootcamp/index.html" target="_blank">实战训练营</a><br>
-						<a href="../vip/index.html" target="_blank">会员服务</a><br>
-						<a href="../courses/reports/index.html" target="_blank">实验报告</a><br>
-						<a href="../questions/index.html?tag=%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98" target="_blank">常见问题</a><br>
-						<a href="../privacy/index.html" target="_blank">隐私条款</a>
-					</div>
-					<div class="col-xs-6 col-sm-3 col-md-2 footer-col">
-						<div class="col-title">学习路径</div>
-						<a href="../paths/python/index.html" target="_blank">Python学习路径</a><br>
-						<a href="../paths/linuxdev/index.html" target="_blank">Linux学习路径</a><br>
-						<a href="../paths/bigdata/index.html" target="_blank">大数据学习路径</a><br>
-						<a href="../paths/java/index.html" target="_blank">Java学习路径</a><br>
-						<a href="../paths/php/index.html" target="_blank">PHP学习路径</a><br>
-						<a href="../paths/index.html" , target="_blank">全部</a>
-					</div>
+		<!-- 页脚 -->
+		<div class="width100 float_l padding_t30 height193">
+			<div class="width_1200 margin_auto">
+				<div class="width100 float_l text_c margin_b30">
+					<a class="img_backg5" href="#"></a>
+					<a class="img_backg6 posi_relative wexinmaxianshi" href="#"><i class="weixinweima dis_none"><img src="img/idx-btm.png"></i></a>
+					<a class="img_backg7" href="#"></a>
+					<a class="img_backg8" href="#"></a>
 				</div>
-			</div>
-			<div class="text-center copyright">
-				<span>Copyright @2013-2016 在线教育</span>
-				<span class="ver-line"> | </span>
-				<a href="#" target="_blank">蜀ICP备00000000号</a>
-
+				<div class="width100 float_l text_c yejiao color_gray">
+					<a>关于我们</a>
+					<a>企业合作</a>
+					<a>人才招聘</a>
+					<a>讲师招募</a>
+					<a>联系我们</a>
+					<a>意见反馈</a>
+					<a>友情链接</a>
+				</div>
+				<div class="width100 float_l text_c border_t margin_t20 padding_t20 color_gray fon_siz12">
+					<span>© 2016 imoroc.com 京ICP备13042132号</span>
+				</div>
 			</div>
 		</div>
 
