@@ -5,85 +5,124 @@
     <title>学生测试</title>
     <link rel="stylesheet" type="text/css" href="css/iview.css">
     <script src="js/vue.min.js"></script>
-    <script src="js/iview.min.js"></script>
     <link rel="stylesheet" type="text/css" href="css/index.css"/>
     <script src="js/index.js"></script>
     <script src="js/axios.js"></script>
 </head>
 <body>
- <div id="app">
-     <el-table :data="tableData" style="width: 100%;text-align: center">
+<div id="app">
+    <el-table :data="tableData" style="width: 100%;text-align: center">
 
-         <el-table-column
-                 align="center"
-                 label="试卷标题"
-                 width="180">
-             <template slot-scope="scope">
-                 <span style="margin-left: 10px">{{ scope.row.title }}</span>
-             </template>
-         </el-table-column>
-         <el-table-column
-                 align="center"
-                 label="考试科目"
-                 width="180">
-             <template slot-scope="scope">
-                <span v-for="item in courselist" v-if="scope.row.subject==item.courId">
-                    {{item.courName}}
-                </span>
-             </template>
-         </el-table-column>
-         <el-table-column
-                 align="center"
-                 label="开考时间"
-                 width="180">
-             <template slot-scope="scope">
-                 <span style="margin-left: 10px">{{ scope.row.examtime }}</span>
-             </template>
-         </el-table-column>
-         <el-table-column
-                 align="center"
-                 label="考试时长(分钟)"
-                 width="200">
-             <template slot-scope="scope">
-                 <span style="margin-left: 10px">{{ scope.row.duration }}</span>
-             </template>
-         </el-table-column>
-         <el-table-column
-                 align="center"
-                 label="考试状态"
-                 width="100"
-         >
-             <template slot-scope="scope">
-                 <el-tag
-                         plain
-                         size="medium"
-                         :type="scope.row.state=='考试中'?'success':scope.row.state=='未开考'?'warning':scope.row.state=='未开放'?'info':''">
-                     {{scope.row.state}}
-                 </el-tag>
-             </template>
-         </el-table-column>
-         <el-table-column align="center" align="center" label="操作">
-             <template slot-scope="scope" type="text" size="mini">
+        <el-table-column
+                align="center"
+                label="试卷标题"
+        >
+            <template slot-scope="scope">
+                <span style="margin-left: 10px">{{ scope.row.title }}</span>
+            </template>
+        </el-table-column>
+        <el-table-column
+                align="center"
+                label="开考时间"
+        >
+            <template slot-scope="scope">
+                <span style="margin-left: 10px">{{ scope.row.examtime }}</span>
+            </template>
+        </el-table-column>
+        <el-table-column
+                align="center"
+                label="考试时长(分钟)"
+        >
+            <template slot-scope="scope">
+                <span style="margin-left: 10px">{{ scope.row.duration }}</span>
+            </template>
+        </el-table-column>
+        <el-table-column
+                align="center"
+                label="考试状态"
+
+        >
+            <template slot-scope="scope">
+                <el-tag
+                        plain
+                        size="medium"
+                        :type="scope.row.state=='考试中'?'success':scope.row.state=='未开考'?'warning':''">
+                    {{scope.row.state}}
+                </el-tag>
+            </template>
+        </el-table-column>
+        <el-table-column align="center" align="center" label="操作">
+            <template slot-scope="scope" type="text" size="mini">
                 <el-button
                         size="mini"
                         type="primary"
-                        @click="handleDelete(scope.$index,scope.row)">进入考试
+                        @click="handltest(scope.row)">进入考试
                 </el-button>
 
 
-             </template>
-         </el-table-column>
-     </el-table>
- </div>
+            </template>
+        </el-table-column>
+    </el-table>
+</div>
 <script>
+    axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
     new Vue({
-        el:"#app",
-        data:{
-            tableData:[]
+        el: "#app",
+        data: {
+            tableData: []
         },
-        methods:{
-            query(){
-            }
+        mounted: function () {
+            this.query();
+            // this.querycourse();
+            /* this.queryrubric();*/
+
+        },
+        methods: {
+            query() {
+
+                let params = new URLSearchParams();
+                params.append("subject", "5");
+                axios.get('/api/exam/examParper/querySubjectType', {
+                        params: params
+                    }
+                ).then(res => {
+
+                    res = res.data;
+                    this.tableData = res;
+
+                })
+            },
+            handltest(row) {
+                let token = sessionStorage.getItem("access_token")
+                if (token) {
+                    console.log("token" + token);
+                    let params = new URLSearchParams();
+                    params.append("parerid", row.id);
+                    params.append("begintime", new Date(row.examtime));
+                    params.append("examtime", row.duration);
+                    axios({
+                        method: 'post',
+                        url: '/api/exam/examrubric/beginexam',
+                        data: params,
+
+                    }).then(res => {
+                        if (res.data.success) {
+                           window.location.href = "/exam/Studentexamination.html?name="+row.id;
+                        } else {
+                            this.$notify({
+                                title: '失败',
+                                message: res.data.message,
+                                type: 'warning'
+                            });
+                        }
+
+                    })
+                } else {
+                    window.location.href = "/login.html?callback-url=http://127.0.0.1/exam/StudentTest.html"
+                }
+
+
+            },
 
         }
     })
