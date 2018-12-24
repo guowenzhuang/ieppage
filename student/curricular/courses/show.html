@@ -537,16 +537,15 @@
 		</div>
 
 		<script>
-            /*自动在请求中添加请求头*/
-						var token=sessionStorage.getItem("access_token");
-						if(token!=null){
-							axios.defaults.headers.common['Authorization'] = "bearer " + token;
-						}
-						
-          
 			var menu = new Vue({
 				el: "#details",
 				mounted: function() {
+					/*自动在请求中添加请求头*/
+					var token = sessionStorage.getItem("access_token");
+					if (token != null) {
+						axios.defaults.headers.common['Authorization'] = "bearer " + token;
+					}
+
 					this.sid = sessionStorage.getItem("userid");
 					this.getQueryString("courId");
 					this.chaxun()
@@ -579,8 +578,8 @@
 					page: 1,
 					size: 10,
 					contents: [],
-                    praise:'',
-					cidlist:[]
+					praise: '',
+					cidlist: []
 
 				},
 				methods: {
@@ -591,42 +590,42 @@
 							this.courId = decodeURIComponent(r[2]);
 							//console.log(this.courId+"this.courId");
 							//sessionStorage.setItem("courId",this.courId);
-							
+              sessionStorage.setItem("courId",this.courId);
 						}
 
 						return '';
 					},
 					add1: function() {
-                         if(this.sid=="" || this.sid==null){
-                             window.location.href="\\login.html?callback-url=http://127.0.0.1/student/curricular/courses/show.html?courId="+this.courId;
-                         }else{
-						if(this.baoming=="立即参加"){
-							//我是傻逼
-							
-                            axios({
+						if (this.sid == "" || this.sid == null) {
+							window.location.href =
+								"\\login.html?callback-url=http://127.0.0.1/student/curricular/courses/show.html?courId=" + this.courId;
+						} else {
+							if (this.baoming == "立即参加") {
+								
+								axios({
+									method: 'post',
+									url: `/api/student/studentPart/add`,
+									params: {
+										courId: this.courId,
+										sid: this.sid,
 
-                                method: 'post',
-                                url: `/api/student/studentPart/add`,
-                                params: {
-                                    courId: this.courId,
-                                    sid: this.sid,
+									}
+								}).then(res => {
+									//http://localhost/ieppage/student/curricular/courses/show.html
 
-                                }
-                            }).then(res => {
-                                //http://localhost/ieppage/student/curricular/courses/show.html
+									this.people();
+									//this.courId = res.data;
+									if (res.data.success == true) {
+										this.baoming = res.data.message;
 
-                                this.people();
-                                //this.courId = res.data;
-                                if (res.data.success == true) {
-                                    this.baoming = res.data.message;
-
-                                } else {
-                                    this.baoming = res.data.message;
-                                }
-                            })
-						}else if(this.baoming="进入学习"){
-						window.location.href="study.html?courId="+this.courId;
-						}}
+									} else {
+										this.baoming = res.data.message;
+									}
+								})
+							} else if (this.baoming = "进入学习") {
+								window.location.href = "study.html?courId=" + this.courId;
+							}
+						}
 
 					},
 					chaxun: function() {
@@ -652,33 +651,33 @@
 							this.courPageview = res.courPageview;
 							this.courOpentime = res.courOpentime;
 							this.courClasshour = res.courClasshour;
-                            //1.未登录this.baoming显示立即参加
-                            //2.已登录未参加本门课程this.baoming显示立即参加
-                            //3.已登录已参加本门课程this.baoming显示进入学习
-                            if(this.sid!="" && this.sid!=null){
+							//1.未登录this.baoming显示立即参加
+							//2.已登录未参加本门课程this.baoming显示立即参加
+							//3.已登录已参加本门课程this.baoming显示进入学习
+							if (this.sid != "" && this.sid != null) {
 
-                                axios({
-                                    method: 'get',
-                                    url: `/api/student/studentPart/query`,
-                                    params: {
-                                        sid: this.sid,
+								axios({
+									method: 'get',
+									url: `/api/student/studentPart/query`,
+									params: {
+										sid: this.sid,
 
-                                    }
-                                }).then(res =>{
-                                    this.cidlist=res.data;
+									}
+								}).then(res => {
+									this.cidlist = res.data;
 
-                                    for(var i=0;i<this.cidlist.length;i++){
+									for (var i = 0; i < this.cidlist.length; i++) {
 
-                                            //console.log("用户ID"+this.cidlist[i].cid);
-                                        if(this.cidlist[i].cid==this.courId){
-                                            console.log("课程id"+this.cidlist[i].cid);
-                                          return this.baoming="进入学习";
-                                        }
+										//console.log("用户ID"+this.cidlist[i].cid);
+										if (this.cidlist[i].cid == this.courId) {
+											console.log("课程id" + this.cidlist[i].cid);
+											return this.baoming = "进入学习";
+										}
 
-                                    }
-                                })
-							}else if(this.sid=="" || this.sid==null){
-                                return this.baoming="立即参加";
+									}
+								})
+							} else if (this.sid == "" || this.sid == null) {
+								return this.baoming = "立即参加";
 							}
 
 
@@ -720,7 +719,7 @@
 					},
 					dainzan: function() {
 						//点赞
-                       /* axios({
+						/* axios({
                             method: 'post',
                             url: `api/student/comment/addComment`,
                             params: {
