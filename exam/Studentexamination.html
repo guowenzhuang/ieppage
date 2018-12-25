@@ -28,11 +28,11 @@
 
 </head>
 <body>
-<div class="main">
+<div class="main" id="app">
     <!--nr start-->
-    <div class="test_main">
+    <div class="test_main" :data="tableData">
         <div class="nr_left">
-            <div class="test" >
+            <div class="test">
                 <form action="" method="post">
                     <div class="test_title">
                         <p class="test_time">
@@ -45,81 +45,40 @@
                         <div class="test_content_title">
                             <h2>单选题</h2>
                             <p>
-                                <span>共</span><i class="content_lit">60</i><span>题，</span><span>合计</span><i
-                                    class="content_fs">60</i><span>分</span>
+                                <span>共</span><i
+                                    class="content_lit">{{tableData.radionum}}</i><span>题</span>
                             </p>
                         </div>
                     </div>
                     <div class="test_content_nr">
                         <ul>
 
-                            <li id="qu_0_0" v-for="site in tableData" v-if="site.rubricttype==='单选题'">
+                            <li :id="forId(index)" v-for="(site,index) in radiorubricList">
                                 <div class="test_content_nr_tt">
-                                    <i>1</i><span>(1分)</span>
-                                    <font>{{site.content}}</font><b class="icon iconfont">&#xe881;</b>
+                                    <i>{{index+1}}</i><span>({{site.score}}分)</span>
+                                    <font>{{site.content}}</font>
                                 </div>
 
-                               <!-- <div class="test_content_nr_main">
+                                <div class="test_content_nr_main">
                                     <ul>
+                                       <span>
+                                        <li class="option" v-for="siteexamanswers in site.examanswers">
 
-                                        <li class="option" v-for="siteexamanswers in tableData.examanswers">
-
-                                            <input type="radio" class="radioOrCheck" name="answer1"
-                                                   id="0_answer_1_option_1"/>
-
-
+                                            <input type="radio"  class="radioOrCheck" :name="forId(index)"  @click="radioTest(site,siteexamanswers)"
+                                            />
                                             <label>
-                                                A.
+                                                {{siteexamanswers.optiones}}.
                                                 <p class="ue" style="display: inline;">{{siteexamanswers.content}}</p>
                                             </label>
                                         </li>
 
-                                        <li class="option">
-
-                                            <input type="radio" class="radioOrCheck" name="answer1"
-                                                   id="0_answer_1_option_2"/>
-
-
-                                            <label for="0_answer_1_option_2">
-                                                B.
-                                                <p class="ue" style="display: inline;">在缺陷单界面中点击“推进流程”按钮</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-                                            <input type="radio" class="radioOrCheck" name="answer1"
-                                                   id="0_answer_1_option_3"/>
-
-
-                                            <label for="0_answer_1_option_3">
-                                                C.
-                                                <p class="ue" style="display: inline;">在缺陷单界面中点击“提交”按钮</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-                                            <input type="radio" class="radioOrCheck" name="answer1"
-                                                   id="0_answer_1_option_4"/>
-
-
-                                            <label for="0_answer_1_option_4">
-                                                D.
-                                                <p class="ue" style="display: inline;">后台启动流程推进</p>
-                                            </label>
-                                        </li>
-
-                                    </ul>
-                                </div>-->
+                                    </span></ul>
+                                </div>
                             </li>
 
 
                         </ul>
                     </div>
-
-
-
 
 
                     <!-------------------------------------------------------------------------------------------->
@@ -128,68 +87,78 @@
                         <div class="test_content_title">
                             <h2>多选题</h2>
                             <p>
-                                <span>共</span><i class="content_lit">30</i><span>题，</span><span>合计</span><i
-                                    class="content_fs">30</i><span>分</span>
+                                <span>共</span><i
+                                    class="content_lit">{{tableData.multiplenum}}</i><span>题</span>
                             </p>
                         </div>
                     </div>
                     <div class="test_content_nr">
                         <ul>
 
-                            <li id="qu_1_0">
+                            <li :id="forIdduxuan(index)" v-for="(site,index) in duorubricList" >
                                 <div class="test_content_nr_tt">
-                                    <i>1</i><span>(1分)</span>
-                                    <font>以下属于南方电网员工职业操守中明文规定的有()</font><b class="icon iconfont">&#xe881;</b>
+                                    <i>{{index+1}}</i><span>({{site.score}}分)</span>
+                                    <font>{{site.content}}</font>
                                 </div>
 
+                                <div class="test_content_nr_main" ><!--@mouseleave="leave() "-->
+                                    <ul >
+
+                                        <li class="option" v-for="siteexamanswers in site.examanswers" @change="duoxuanTest(site)">
+
+
+                                            <input type="checkbox" class="radioOrCheckduo" :name="forIdduxuan(index)" :value="siteexamanswers.id" v-model="net_car"
+                                                   />
+
+                                            <label >
+                                                {{siteexamanswers.optiones}}.
+                                                <p class="ue" style="display: inline;">{{siteexamanswers.content}}</p>
+                                            </label>
+                                        </li>
+
+
+                                    </ul>
+                                </div>
+                            </li>
+
+
+                        </ul>
+                    </div>
+                    <!--判题-->
+                    <div class="test_content">
+                        <div class="test_content_title">
+                            <h2>判断题</h2>
+                            <p>
+                                <span>共</span><i
+                                    class="content_lit">{{tableData.judgenum}}</i><span>题</span>
+                            </p>
+                        </div>
+
+                    </div>
+                    <div class="test_content_nr">
+                        <ul>
+                            <li :id="forIdpanduan(index)" v-for="(site,index) in judgerubricList">
+                                <div class="test_content_nr_tt">
+                                    <i>{{index+1}}</i><span>({{site.score}}分)</span>
+                                    <font>{{site.content}}</font>
+                                </div>
                                 <div class="test_content_nr_main">
                                     <ul>
 
                                         <li class="option">
 
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer1"
-                                                   id="1_answer_1_option_1"/>
-
-                                            <label for="1_answer_1_option_1">
-                                                A.
-                                                <p class="ue" style="display: inline;">热爱祖国、热爱南网、热爱岗位</p>
+                                            <input type="radio" class="radioOrCheckpanduan"  :name="forIdpanduan(index)" @click="panduanTestdui(site)"
+                                            />
+                                            <label>
+                                                <p class="ue" style="display: inline;">正确</p>
                                             </label>
                                         </li>
-
                                         <li class="option">
 
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer1"
-                                                   id="1_answer_1_option_2"/>
-
-                                            <label for="1_answer_1_option_2">
-                                                B.
-                                                <p class="ue" style="display: inline;">遵纪守法、忠于职守、令行禁止</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer1"
-                                                   id="1_answer_1_option_3"/>
-
-                                            <label for="1_answer_1_option_3">
-                                                C.
-                                                <p class="ue" style="display: inline;">客户至上、诚实守信、优质服务</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer1"
-                                                   id="1_answer_1_option_4"/>
-
-                                            <label for="1_answer_1_option_4">
-                                                D.
-                                                <p class="ue" style="display: inline;">公平竞争、互相监督、服从监管</p>
+                                            <input type="radio" class="radioOrCheckpanduan"  :name="forIdpanduan(index)" @click="panduanTestcuo(site)"
+                                            />
+                                            <label>
+                                                <p class="ue" style="display: inline;">错误</p>
                                             </label>
                                         </li>
 
@@ -197,1710 +166,38 @@
                                 </div>
                             </li>
 
-                            <li id="qu_1_1">
+
+                        </ul>
+                    </div>
+                    <!--填空题-->
+                    <div class="test_content">
+                        <div class="test_content_title">
+                            <h2>填空题</h2>
+                            <p>
+                                <span>共</span><i
+                                    class="content_lit">{{tableData.fillnum}}</i><span>题</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="test_content_nr">
+                        <ul>
+                            <li :id="forIdtiankong(index)" v-for="(site,index) in packrubricList">
                                 <div class="test_content_nr_tt">
-                                    <i>2</i><span>(1分)</span>
-                                    <font>以下属于南方电网员工职业禁区的有()</font><b class="icon iconfont">&#xe881;</b>
+                                    <i>{{index+1}}</i><span>({{site.score}}分)</span>
+                                    <font>{{site.content}}</font>
                                 </div>
-
                                 <div class="test_content_nr_main">
-                                    <ul>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer2"
-                                                   id="1_answer_2_option_1"/>
-
-                                            <label for="1_answer_2_option_1">
-                                                A.
-                                                <p class="ue" style="display: inline;">严禁违反人文道德</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer2"
-                                                   id="1_answer_2_option_2"/>
-
-                                            <label for="1_answer_2_option_2">
-                                                B.
-                                                <p class="ue" style="display: inline;">严禁违反安全规定</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer2"
-                                                   id="1_answer_2_option_3"/>
-
-                                            <label for="1_answer_2_option_3">
-                                                C.
-                                                <p class="ue" style="display: inline;">严禁违背行风规定</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer2"
-                                                   id="1_answer_2_option_4"/>
-
-                                            <label for="1_answer_2_option_4">
-                                                D.
-                                                <p class="ue" style="display: inline;">严禁违反财经纪律</p>
-                                            </label>
-                                        </li>
-
-                                    </ul>
+                                    答案:<el-input
+                                        type="textarea"
+                                        v-model="site.examanswers"
+                                        autosize
+                                        placeholder="请输入答案"
+                                        @change="tiankongtest(site)"
+                                >
+                                </el-input>每个空的答案用逗号隔开,比如:Javaweb,Javaoop,Mybatis
                                 </div>
                             </li>
 
-                            <li id="qu_1_2">
-                                <div class="test_content_nr_tt">
-                                    <i>3</i><span>(1分)</span>
-                                    <font>对 “热爱祖国、热爱南网、热爱岗位”理解正确的是()</font><b class="icon iconfont">&#xe881;</b>
-                                </div>
-
-                                <div class="test_content_nr_main">
-                                    <ul>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer3"
-                                                   id="1_answer_3_option_1"/>
-
-                                            <label for="1_answer_3_option_1">
-                                                A.
-                                                <p class="ue" style="display: inline;">坚持南网的利益高于一切</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer3"
-                                                   id="1_answer_3_option_2"/>
-
-                                            <label for="1_answer_3_option_2">
-                                                B.
-                                                <p class="ue" style="display: inline;">
-                                                    忠诚南网事业，维护南网利益，实践南网文化，维护南网形象，与公司同呼吸、共命运</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer3"
-                                                   id="1_answer_3_option_3"/>
-
-                                            <label for="1_answer_3_option_3">
-                                                C.
-                                                <p class="ue" style="display: inline;">人往高处走，水往低处流，专注于爬上更高的岗位</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer3"
-                                                   id="1_answer_3_option_4"/>
-
-                                            <label for="1_answer_3_option_4">
-                                                D.
-                                                <p class="ue" style="display: inline;">个人利益第一，南网利益第二</p>
-                                            </label>
-                                        </li>
-
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li id="qu_1_3">
-                                <div class="test_content_nr_tt">
-                                    <i>4</i><span>(1分)</span>
-                                    <font>优质服务工作的主线是（）</font><b class="icon iconfont">&#xe881;</b>
-                                </div>
-
-                                <div class="test_content_nr_main">
-                                    <ul>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer4"
-                                                   id="1_answer_4_option_1"/>
-
-                                            <label for="1_answer_4_option_1">
-                                                A.
-                                                <p class="ue" style="display: inline;">以客户为中心，提高供电可靠率、减少客户停电时间</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer4"
-                                                   id="1_answer_4_option_2"/>
-
-                                            <label for="1_answer_4_option_2">
-                                                B.
-                                                <p class="ue" style="display: inline;">以客户为中心，为客户节省更多的花费</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer4"
-                                                   id="1_answer_4_option_3"/>
-
-                                            <label for="1_answer_4_option_3">
-                                                C.
-                                                <p class="ue" style="display: inline;">以公司利益为中心，从客户手中赚取更多的金钱</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer4"
-                                                   id="1_answer_4_option_4"/>
-
-                                            <label for="1_answer_4_option_4">
-                                                D.
-                                                <p class="ue" style="display: inline;">以公司利益为中心，提高供电可靠率、减少客户投诉率</p>
-                                            </label>
-                                        </li>
-
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li id="qu_1_4">
-                                <div class="test_content_nr_tt">
-                                    <i>5</i><span>(1分)</span>
-                                    <font>职业操守中明确注明需要增强的意识有哪些（）
-                                        ①道德意识 ②忧患意识 ③环保意识 ④自律意识 ⑤节约意识</font><b class="icon iconfont">&#xe881;</b>
-                                </div>
-
-                                <div class="test_content_nr_main">
-                                    <ul>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer5"
-                                                   id="1_answer_5_option_1"/>
-
-                                            <label for="1_answer_5_option_1">
-                                                A.
-                                                <p class="ue" style="display: inline;">①②③④⑤</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer5"
-                                                   id="1_answer_5_option_2"/>
-
-                                            <label for="1_answer_5_option_2">
-                                                B.
-                                                <p class="ue" style="display: inline;">①②③</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer5"
-                                                   id="1_answer_5_option_3"/>
-
-                                            <label for="1_answer_5_option_3">
-                                                C.
-                                                <p class="ue" style="display: inline;">②③④</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer5"
-                                                   id="1_answer_5_option_4"/>
-
-                                            <label for="1_answer_5_option_4">
-                                                D.
-                                                <p class="ue" style="display: inline;">②③⑤</p>
-                                            </label>
-                                        </li>
-
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li id="qu_1_5">
-                                <div class="test_content_nr_tt">
-                                    <i>6</i><span>(1分)</span>
-                                    <font>以下不属于严禁违反的行风规定的是（）</font><b class="icon iconfont">&#xe881;</b>
-                                </div>
-
-                                <div class="test_content_nr_main">
-                                    <ul>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer6"
-                                                   id="1_answer_6_option_1"/>
-
-                                            <label for="1_answer_6_option_1">
-                                                A.
-                                                <p class="ue" style="display: inline;">严禁乱加价、乱收费、乱摊派</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer6"
-                                                   id="1_answer_6_option_2"/>
-
-                                            <label for="1_answer_6_option_2">
-                                                B.
-                                                <p class="ue" style="display: inline;">严禁人情电、关系电、权力电</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer6"
-                                                   id="1_answer_6_option_3"/>
-
-                                            <label for="1_answer_6_option_3">
-                                                C.
-                                                <p class="ue" style="display: inline;">严禁损害公司形象</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer6"
-                                                   id="1_answer_6_option_4"/>
-
-                                            <label for="1_answer_6_option_4">
-                                                D.
-                                                <p class="ue" style="display: inline;">严禁推诿、搪塞客户咨询、查询、投诉、举报等服务诉求。</p>
-                                            </label>
-                                        </li>
-
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li id="qu_1_6">
-                                <div class="test_content_nr_tt">
-                                    <i>7</i><span>(1分)</span>
-                                    <font>以下哪项行为需要经过授权与批准（）</font><b class="icon iconfont">&#xe881;</b>
-                                </div>
-
-                                <div class="test_content_nr_main">
-                                    <ul>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer7"
-                                                   id="1_answer_7_option_1"/>
-
-                                            <label for="1_answer_7_option_1">
-                                                A.
-                                                <p class="ue" style="display: inline;">下班</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer7"
-                                                   id="1_answer_7_option_2"/>
-
-                                            <label for="1_answer_7_option_2">
-                                                B.
-                                                <p class="ue" style="display: inline;">学习提高岗位专业技能</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer7"
-                                                   id="1_answer_7_option_3"/>
-
-                                            <label for="1_answer_7_option_3">
-                                                C.
-                                                <p class="ue" style="display: inline;">发生紧急事件需要员工立刻采取措施时</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer7"
-                                                   id="1_answer_7_option_4"/>
-
-                                            <label for="1_answer_7_option_4">
-                                                D.
-                                                <p class="ue" style="display: inline;">以公司名义进行考察、谈判、签约、提供担保和证明时</p>
-                                            </label>
-                                        </li>
-
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li id="qu_1_7">
-                                <div class="test_content_nr_tt">
-                                    <i>8</i><span>(1分)</span>
-                                    <font>以下不属于“节约环保、居安思危、艰苦创业”内容的是（）</font><b class="icon iconfont">&#xe881;</b>
-                                </div>
-
-                                <div class="test_content_nr_main">
-                                    <ul>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer8"
-                                                   id="1_answer_8_option_1"/>
-
-                                            <label for="1_answer_8_option_1">
-                                                A.
-                                                <p class="ue" style="display: inline;">务必继续保持谦虚、谨慎、不骄、不躁的作风</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer8"
-                                                   id="1_answer_8_option_2"/>
-
-                                            <label for="1_answer_8_option_2">
-                                                B.
-                                                <p class="ue" style="display: inline;">务必继续保持艰苦奋斗的作风</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer8"
-                                                   id="1_answer_8_option_3"/>
-
-                                            <label for="1_answer_8_option_3">
-                                                C.
-                                                <p class="ue" style="display: inline;">清醒地看到发展过程中面临的严峻挑战</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer8"
-                                                   id="1_answer_8_option_4"/>
-
-                                            <label for="1_answer_8_option_4">
-                                                D.
-                                                <p class="ue" style="display: inline;">不做出任何有损公司形象的事情</p>
-                                            </label>
-                                        </li>
-
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li id="qu_1_8">
-                                <div class="test_content_nr_tt">
-                                    <i>9</i><span>(1分)</span>
-                                    <font>跌落式熔断器安装时螺母（ ）</font><b class="icon iconfont">&#xe881;</b>
-                                </div>
-
-                                <div class="test_content_nr_main">
-                                    <ul>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer9"
-                                                   id="1_answer_9_option_1"/>
-
-                                            <label for="1_answer_9_option_1">
-                                                A.
-                                                <p class="ue" style="display: inline;">安装时螺母朝上</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer9"
-                                                   id="1_answer_9_option_2"/>
-
-                                            <label for="1_answer_9_option_2">
-                                                B.
-                                                <p class="ue" style="display: inline;">安装时螺母朝下</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer9"
-                                                   id="1_answer_9_option_3"/>
-
-                                            <label for="1_answer_9_option_3">
-                                                C.
-                                                <p class="ue" style="display: inline;">无要求</p>
-                                            </label>
-                                        </li>
-
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li id="qu_1_9">
-                                <div class="test_content_nr_tt">
-                                    <i>10</i><span>(1分)</span>
-                                    <font>新装的跌落式熔断器绝缘电阻应大于（ ）</font><b class="icon iconfont">&#xe881;</b>
-                                </div>
-
-                                <div class="test_content_nr_main">
-                                    <ul>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer10"
-                                                   id="1_answer_10_option_1"/>
-
-                                            <label for="1_answer_10_option_1">
-                                                A.
-                                                <p class="ue" style="display: inline;">300兆欧</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer10"
-                                                   id="1_answer_10_option_2"/>
-
-                                            <label for="1_answer_10_option_2">
-                                                B.
-                                                <p class="ue" style="display: inline;">400兆欧</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer10"
-                                                   id="1_answer_10_option_3"/>
-
-                                            <label for="1_answer_10_option_3">
-                                                C.
-                                                <p class="ue" style="display: inline;">500兆欧</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer10"
-                                                   id="1_answer_10_option_4"/>
-
-                                            <label for="1_answer_10_option_4">
-                                                D.
-                                                <p class="ue" style="display: inline;">600兆欧</p>
-                                            </label>
-                                        </li>
-
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li id="qu_1_10">
-                                <div class="test_content_nr_tt">
-                                    <i>11</i><span>(1分)</span>
-                                    <font>跌落式熔断器安装完成进行自检的内容错误的是（ ）</font><b class="icon iconfont">&#xe881;</b>
-                                </div>
-
-                                <div class="test_content_nr_main">
-                                    <ul>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer11"
-                                                   id="1_answer_11_option_1"/>
-
-                                            <label for="1_answer_11_option_1">
-                                                A.
-                                                <p class="ue" style="display: inline;">跌落式熔断器安装夹角是否符合</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer11"
-                                                   id="1_answer_11_option_2"/>
-
-                                            <label for="1_answer_11_option_2">
-                                                B.
-                                                <p class="ue" style="display: inline;">左右晃动跌落式熔断器柱体检查其是否安装牢固</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer11"
-                                                   id="1_answer_11_option_3"/>
-
-                                            <label for="1_answer_11_option_3">
-                                                C.
-                                                <p class="ue" style="display: inline;">试拉合跌落熔断器三次，检查其是否接触良好</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer11"
-                                                   id="1_answer_11_option_4"/>
-
-                                            <label for="1_answer_11_option_4">
-                                                D.
-                                                <p class="ue" style="display: inline;">检查跌落式熔断器选择是否正确</p>
-                                            </label>
-                                        </li>
-
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li id="qu_1_11">
-                                <div class="test_content_nr_tt">
-                                    <i>12</i><span>(1分)</span>
-                                    <font>10kV配电线路上导线弧垂调整需要的工具不包括（ ）</font><b class="icon iconfont">&#xe881;</b>
-                                </div>
-
-                                <div class="test_content_nr_main">
-                                    <ul>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer12"
-                                                   id="1_answer_12_option_1"/>
-
-                                            <label for="1_answer_12_option_1">
-                                                A.
-                                                <p class="ue" style="display: inline;">缘操作棒、绝缘手套、绝缘鞋</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer12"
-                                                   id="1_answer_12_option_2"/>
-
-                                            <label for="1_answer_12_option_2">
-                                                B.
-                                                <p class="ue" style="display: inline;">验电器（10kV）、接地线、登杆工具、安全带、安全帽</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer12"
-                                                   id="1_answer_12_option_3"/>
-
-                                            <label for="1_answer_12_option_3">
-                                                C.
-                                                <p class="ue" style="display: inline;">头灯、梯子</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer12"
-                                                   id="1_answer_12_option_4"/>
-
-                                            <label for="1_answer_12_option_4">
-                                                D.
-                                                <p class="ue" style="display: inline;">卡线器、紧线器</p>
-                                            </label>
-                                        </li>
-
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li id="qu_1_12">
-                                <div class="test_content_nr_tt">
-                                    <i>13</i><span>(1分)</span>
-                                    <font>安装拉、合跌落式熔断器前,关于脚扣应做的检查错误的是（ ）</font><b class="icon iconfont">&#xe881;</b>
-                                </div>
-
-                                <div class="test_content_nr_main">
-                                    <ul>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer13"
-                                                   id="1_answer_13_option_1"/>
-
-                                            <label for="1_answer_13_option_1">
-                                                A.
-                                                <p class="ue" style="display: inline;">脚扣的材料</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer13"
-                                                   id="1_answer_13_option_2"/>
-
-                                            <label for="1_answer_13_option_2">
-                                                B.
-                                                <p class="ue" style="display: inline;">
-                                                    对脚扣进行外观检查，检查脚扣各焊接处有无脱焊、断裂，胶套有无脱落</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer13"
-                                                   id="1_answer_13_option_3"/>
-
-                                            <label for="1_answer_13_option_3">
-                                                C.
-                                                <p class="ue" style="display: inline;">各固定螺栓是否缺失，脚扣有无变形</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer13"
-                                                   id="1_answer_13_option_4"/>
-
-                                            <label for="1_answer_13_option_4">
-                                                D.
-                                                <p class="ue" style="display: inline;">脚扣系带是否完好，调节是否灵活</p>
-                                            </label>
-                                        </li>
-
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li id="qu_1_13">
-                                <div class="test_content_nr_tt">
-                                    <i>14</i><span>(1分)</span>
-                                    <font>安装拉、合跌落式熔断器,登高时是否要对登高工具进行冲击检查实验（ ）</font><b class="icon iconfont">&#xe881;</b>
-                                </div>
-
-                                <div class="test_content_nr_main">
-                                    <ul>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer14"
-                                                   id="1_answer_14_option_1"/>
-
-                                            <label for="1_answer_14_option_1">
-                                                A.
-                                                <p class="ue" style="display: inline;">是</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer14"
-                                                   id="1_answer_14_option_2"/>
-
-                                            <label for="1_answer_14_option_2">
-                                                B.
-                                                <p class="ue" style="display: inline;">否</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer14"
-                                                   id="1_answer_14_option_3"/>
-
-                                            <label for="1_answer_14_option_3">
-                                                C.
-                                                <p class="ue" style="display: inline;">视情况而定</p>
-                                            </label>
-                                        </li>
-
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li id="qu_1_14">
-                                <div class="test_content_nr_tt">
-                                    <i>15</i><span>(1分)</span>
-                                    <font>安装一组10kV跌落式熔断器,关于脚扣应做检查错误的是（ ）</font><b class="icon iconfont">&#xe881;</b>
-                                </div>
-
-                                <div class="test_content_nr_main">
-                                    <ul>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer15"
-                                                   id="1_answer_15_option_1"/>
-
-                                            <label for="1_answer_15_option_1">
-                                                A.
-                                                <p class="ue" style="display: inline;">生产厂家</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer15"
-                                                   id="1_answer_15_option_2"/>
-
-                                            <label for="1_answer_15_option_2">
-                                                B.
-                                                <p class="ue" style="display: inline;">
-                                                    对脚扣进行外观检查，检查脚扣各焊接处有无脱焊、断裂，胶套有无脱落</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer15"
-                                                   id="1_answer_15_option_3"/>
-
-                                            <label for="1_answer_15_option_3">
-                                                C.
-                                                <p class="ue" style="display: inline;">各固定螺栓是否缺失，脚扣有无变形</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer15"
-                                                   id="1_answer_15_option_4"/>
-
-                                            <label for="1_answer_15_option_4">
-                                                D.
-                                                <p class="ue" style="display: inline;">脚扣系带是否完好，调节是否灵活</p>
-                                            </label>
-                                        </li>
-
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li id="qu_1_15">
-                                <div class="test_content_nr_tt">
-                                    <i>16</i><span>(1分)</span>
-                                    <font>安装一组10kV跌落式熔断器,当配电变压器容量在100kVA以上时，应按变压器额定电流的（ ）选择高压熔断丝</font><b
-                                        class="icon iconfont">&#xe881;</b>
-                                </div>
-
-                                <div class="test_content_nr_main">
-                                    <ul>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer16"
-                                                   id="1_answer_16_option_1"/>
-
-                                            <label for="1_answer_16_option_1">
-                                                A.
-                                                <p class="ue" style="display: inline;">1～1.5倍</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer16"
-                                                   id="1_answer_16_option_2"/>
-
-                                            <label for="1_answer_16_option_2">
-                                                B.
-                                                <p class="ue" style="display: inline;">1.5～2倍</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer16"
-                                                   id="1_answer_16_option_3"/>
-
-                                            <label for="1_answer_16_option_3">
-                                                C.
-                                                <p class="ue" style="display: inline;">2～2.5倍</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer16"
-                                                   id="1_answer_16_option_4"/>
-
-                                            <label for="1_answer_16_option_4">
-                                                D.
-                                                <p class="ue" style="display: inline;">2～3倍</p>
-                                            </label>
-                                        </li>
-
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li id="qu_1_16">
-                                <div class="test_content_nr_tt">
-                                    <i>17</i><span>(1分)</span>
-                                    <font>登安装一组10kV跌落式熔断器,高时是否要对登高工具进行冲击检查实验（ ）</font><b
-                                        class="icon iconfont">&#xe881;</b>
-                                </div>
-
-                                <div class="test_content_nr_main">
-                                    <ul>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer17"
-                                                   id="1_answer_17_option_1"/>
-
-                                            <label for="1_answer_17_option_1">
-                                                A.
-                                                <p class="ue" style="display: inline;">需要</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer17"
-                                                   id="1_answer_17_option_2"/>
-
-                                            <label for="1_answer_17_option_2">
-                                                B.
-                                                <p class="ue" style="display: inline;">不需要</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer17"
-                                                   id="1_answer_17_option_3"/>
-
-                                            <label for="1_answer_17_option_3">
-                                                C.
-                                                <p class="ue" style="display: inline;">视情况而定</p>
-                                            </label>
-                                        </li>
-
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li id="qu_1_17">
-                                <div class="test_content_nr_tt">
-                                    <i>18</i><span>(1分)</span>
-                                    <font>单一制电价计算公式为（ ）</font><b class="icon iconfont">&#xe881;</b>
-                                </div>
-
-                                <div class="test_content_nr_main">
-                                    <ul>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer18"
-                                                   id="1_answer_18_option_1"/>
-
-                                            <label for="1_answer_18_option_1">
-                                                A.
-                                                <p class="ue" style="display: inline;">电费＝电电度电费+功率因数+调整电费</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer18"
-                                                   id="1_answer_18_option_2"/>
-
-                                            <label for="1_answer_18_option_2">
-                                                B.
-                                                <p class="ue" style="display: inline;">
-                                                    电费＝电电度电费+功率因数+调整电费+代征地方附加+基它加价</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer18"
-                                                   id="1_answer_18_option_3"/>
-
-                                            <label for="1_answer_18_option_3">
-                                                C.
-                                                <p class="ue" style="display: inline;">电费＝电电度电费+调整电费+代征地方附加+基它加价</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer18"
-                                                   id="1_answer_18_option_4"/>
-
-                                            <label for="1_answer_18_option_4">
-                                                D.
-                                                <p class="ue" style="display: inline;">
-                                                    电费＝(电电度电费+功率因数+调整电费+代征地方附加+基它加价)*电能表的倍率</p>
-                                            </label>
-                                        </li>
-
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li id="qu_1_18">
-                                <div class="test_content_nr_tt">
-                                    <i>19</i><span>(1分)</span>
-                                    <font>新装、增容、变更与终止用电当月的基本电费（ ）</font><b class="icon iconfont">&#xe881;</b>
-                                </div>
-
-                                <div class="test_content_nr_main">
-                                    <ul>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer19"
-                                                   id="1_answer_19_option_1"/>
-
-                                            <label for="1_answer_19_option_1">
-                                                A.
-                                                <p class="ue" style="display: inline;">
-                                                    按实用天数(日用电不足24小时的，按一天)计算，每日按全月基本电费1/30计算。事故停电、检修停电、计划限电不扣减基本电费</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer19"
-                                                   id="1_answer_19_option_2"/>
-
-                                            <label for="1_answer_19_option_2">
-                                                B.
-                                                <p class="ue" style="display: inline;">
-                                                    按实用天数(日用电不足24小时的，按一天)计算，每日按全月基本电费1/30计算。事故停电、检修停电、计划限电扣减基本电费</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer19"
-                                                   id="1_answer_19_option_3"/>
-
-                                            <label for="1_answer_19_option_3">
-                                                C.
-                                                <p class="ue" style="display: inline;">
-                                                    按实用天数(日用电不足24小时的，按一天)计算，每日按全月基本电费1/15计算。事故停电、检修停电、计划限电不扣减基本电费</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer19"
-                                                   id="1_answer_19_option_4"/>
-
-                                            <label for="1_answer_19_option_4">
-                                                D.
-                                                <p class="ue" style="display: inline;">
-                                                    按实用天数(日用电不足24小时的，按一天)计算，每日按全月基本电费1/15计算。事故停电、检修停电、计划限电扣减基本电费</p>
-                                            </label>
-                                        </li>
-
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li id="qu_1_19">
-                                <div class="test_content_nr_tt">
-                                    <i>20</i><span>(1分)</span>
-                                    <font>不属于配电线路巡视的内容是（ ）</font><b class="icon iconfont">&#xe881;</b>
-                                </div>
-
-                                <div class="test_content_nr_main">
-                                    <ul>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer20"
-                                                   id="1_answer_20_option_1"/>
-
-                                            <label for="1_answer_20_option_1">
-                                                A.
-                                                <p class="ue" style="display: inline;">沿线及杆塔情况</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer20"
-                                                   id="1_answer_20_option_2"/>
-
-                                            <label for="1_answer_20_option_2">
-                                                B.
-                                                <p class="ue" style="display: inline;">导线、避雷线、金具、绝缘子情况</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer20"
-                                                   id="1_answer_20_option_3"/>
-
-                                            <label for="1_answer_20_option_3">
-                                                C.
-                                                <p class="ue" style="display: inline;">打印电费发票</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer20"
-                                                   id="1_answer_20_option_4"/>
-
-                                            <label for="1_answer_20_option_4">
-                                                D.
-                                                <p class="ue" style="display: inline;">断路器、隔离开关、避雷器、变压器情况</p>
-                                            </label>
-                                        </li>
-
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li id="qu_1_20">
-                                <div class="test_content_nr_tt">
-                                    <i>21</i><span>(1分)</span>
-                                    <font>下列属于线路巡视的目的是（ ）</font><b class="icon iconfont">&#xe881;</b>
-                                </div>
-
-                                <div class="test_content_nr_main">
-                                    <ul>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer21"
-                                                   id="1_answer_21_option_1"/>
-
-                                            <label for="1_answer_21_option_1">
-                                                A.
-                                                <p class="ue" style="display: inline;">掌握线路及设备运行情况，包括沿线的环境情况，做到心中有数</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer21"
-                                                   id="1_answer_21_option_2"/>
-
-                                            <label for="1_answer_21_option_2">
-                                                B.
-                                                <p class="ue" style="display: inline;">确保线路架设整齐美观</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer21"
-                                                   id="1_answer_21_option_3"/>
-
-                                            <label for="1_answer_21_option_3">
-                                                C.
-                                                <p class="ue" style="display: inline;">借巡视之便外出游玩</p>
-                                            </label>
-                                        </li>
-
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li id="qu_1_21">
-                                <div class="test_content_nr_tt">
-                                    <i>22</i><span>(1分)</span>
-                                    <font>什么叫定期巡视（ ）</font><b class="icon iconfont">&#xe881;</b>
-                                </div>
-
-                                <div class="test_content_nr_main">
-                                    <ul>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer22"
-                                                   id="1_answer_22_option_1"/>
-
-                                            <label for="1_answer_22_option_1">
-                                                A.
-                                                <p class="ue" style="display: inline;">由专职巡线员按规定的巡视周期（一般为每月一次）巡视线路</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer22"
-                                                   id="1_answer_22_option_2"/>
-
-                                            <label for="1_answer_22_option_2">
-                                                B.
-                                                <p class="ue" style="display: inline;">由领导安排巡线员对线路进行周期性巡视</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer22"
-                                                   id="1_answer_22_option_3"/>
-
-                                            <label for="1_answer_22_option_3">
-                                                C.
-                                                <p class="ue" style="display: inline;">在节假日以及气候骤变时对线路进行的巡视</p>
-                                            </label>
-                                        </li>
-
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li id="qu_1_22">
-                                <div class="test_content_nr_tt">
-                                    <i>23</i><span>(1分)</span>
-                                    <font>什么叫特殊巡视（ ）</font><b class="icon iconfont">&#xe881;</b>
-                                </div>
-
-                                <div class="test_content_nr_main">
-                                    <ul>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer23"
-                                                   id="1_answer_23_option_1"/>
-
-                                            <label for="1_answer_23_option_1">
-                                                A.
-                                                <p class="ue" style="display: inline;">由专职巡线员按规定的巡视周期（一般为每月一次）巡视线路</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer23"
-                                                   id="1_answer_23_option_2"/>
-
-                                            <label for="1_answer_23_option_2">
-                                                B.
-                                                <p class="ue" style="display: inline;">由领导安排巡线员对线路进行周期性巡视</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer23"
-                                                   id="1_answer_23_option_3"/>
-
-                                            <label for="1_answer_23_option_3">
-                                                C.
-                                                <p class="ue" style="display: inline;">在节假日以及气候骤变时对线路进行的巡视</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer23"
-                                                   id="1_answer_23_option_4"/>
-
-                                            <label for="1_answer_23_option_4">
-                                                D.
-                                                <p class="ue" style="display: inline;">在线路发生故障后进行的巡视</p>
-                                            </label>
-                                        </li>
-
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li id="qu_1_23">
-                                <div class="test_content_nr_tt">
-                                    <i>24</i><span>(1分)</span>
-                                    <font>线路巡视中检查杆塔本身时，各部件应无歪斜现象，电杆偏离线路中心线不应大于（ ）m；倾斜度不应大于杆长的（ ）</font><b
-                                        class="icon iconfont">&#xe881;</b>
-                                </div>
-
-                                <div class="test_content_nr_main">
-                                    <ul>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer24"
-                                                   id="1_answer_24_option_1"/>
-
-                                            <label for="1_answer_24_option_1">
-                                                A.
-                                                <p class="ue" style="display: inline;">0.05 1%</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer24"
-                                                   id="1_answer_24_option_2"/>
-
-                                            <label for="1_answer_24_option_2">
-                                                B.
-                                                <p class="ue" style="display: inline;">0.1 1.5%</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer24"
-                                                   id="1_answer_24_option_3"/>
-
-                                            <label for="1_answer_24_option_3">
-                                                C.
-                                                <p class="ue" style="display: inline;">0.15 1.5%</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer24"
-                                                   id="1_answer_24_option_4"/>
-
-                                            <label for="1_answer_24_option_4">
-                                                D.
-                                                <p class="ue" style="display: inline;">0.1 2.0%</p>
-                                            </label>
-                                        </li>
-
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li id="qu_1_24">
-                                <div class="test_content_nr_tt">
-                                    <i>25</i><span>(1分)</span>
-                                    <font>线路巡视中横担歪斜不超过长度的（ ）</font><b class="icon iconfont">&#xe881;</b>
-                                </div>
-
-                                <div class="test_content_nr_main">
-                                    <ul>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer25"
-                                                   id="1_answer_25_option_1"/>
-
-                                            <label for="1_answer_25_option_1">
-                                                A.
-                                                <p class="ue" style="display: inline;">1%</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer25"
-                                                   id="1_answer_25_option_2"/>
-
-                                            <label for="1_answer_25_option_2">
-                                                B.
-                                                <p class="ue" style="display: inline;">1.5%</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer25"
-                                                   id="1_answer_25_option_3"/>
-
-                                            <label for="1_answer_25_option_3">
-                                                C.
-                                                <p class="ue" style="display: inline;">2%</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer25"
-                                                   id="1_answer_25_option_4"/>
-
-                                            <label for="1_answer_25_option_4">
-                                                D.
-                                                <p class="ue" style="display: inline;">2.5%</p>
-                                            </label>
-                                        </li>
-
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li id="qu_1_25">
-                                <div class="test_content_nr_tt">
-                                    <i>26</i><span>(1分)</span>
-                                    <font>线路巡视中检查线夹的内容不包括（ ）</font><b class="icon iconfont">&#xe881;</b>
-                                </div>
-
-                                <div class="test_content_nr_main">
-                                    <ul>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer26"
-                                                   id="1_answer_26_option_1"/>
-
-                                            <label for="1_answer_26_option_1">
-                                                A.
-                                                <p class="ue" style="display: inline;">检查线夹大小尺寸</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer26"
-                                                   id="1_answer_26_option_2"/>
-
-                                            <label for="1_answer_26_option_2">
-                                                B.
-                                                <p class="ue" style="display: inline;">检查线夹有无缺少螺丝和垫圈</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer26"
-                                                   id="1_answer_26_option_3"/>
-
-                                            <label for="1_answer_26_option_3">
-                                                C.
-                                                <p class="ue" style="display: inline;">检查线夹是否有螺母松扣、开口销丢失或脱出现象</p>
-                                            </label>
-                                        </li>
-
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li id="qu_1_26">
-                                <div class="test_content_nr_tt">
-                                    <i>27</i><span>(1分)</span>
-                                    <font>以下线路巡视中检查拉线的主要内容不包括（ ）</font><b class="icon iconfont">&#xe881;</b>
-                                </div>
-
-                                <div class="test_content_nr_main">
-                                    <ul>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer27"
-                                                   id="1_answer_27_option_1"/>
-
-                                            <label for="1_answer_27_option_1">
-                                                A.
-                                                <p class="ue" style="display: inline;">检查拉线基础是否有松动、土壤下沉、基础上拔等情况,
-                                                    拉线是否松弛、锈蚀、断股</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer27"
-                                                   id="1_answer_27_option_2"/>
-
-                                            <label for="1_answer_27_option_2">
-                                                B.
-                                                <p class="ue" style="display: inline;">检查拉线长度</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer27"
-                                                   id="1_answer_27_option_3"/>
-
-                                            <label for="1_answer_27_option_3">
-                                                C.
-                                                <p class="ue" style="display: inline;">
-                                                    检查拉线棒、楔型线夹、UT型线夹、抱箍等是否有锈蚀和松动，UT型线夹螺母是否丢失</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer27"
-                                                   id="1_answer_27_option_4"/>
-
-                                            <label for="1_answer_27_option_4">
-                                                D.
-                                                <p class="ue" style="display: inline;">
-                                                    检查避雷线与引下线连接处是否缺少夹具，接地引下线与接地装置连接线是否断线或松动，接地螺母是否松动或丢失</p>
-                                            </label>
-                                        </li>
-
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li id="qu_1_27">
-                                <div class="test_content_nr_tt">
-                                    <i>28</i><span>(1分)</span>
-                                    <font>不属于拉、合跌落式熔断器所需要的工具是（ ）</font><b class="icon iconfont">&#xe881;</b>
-                                </div>
-
-                                <div class="test_content_nr_main">
-                                    <ul>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer28"
-                                                   id="1_answer_28_option_1"/>
-
-                                            <label for="1_answer_28_option_1">
-                                                A.
-                                                <p class="ue" style="display: inline;">安全帽、安全带</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer28"
-                                                   id="1_answer_28_option_2"/>
-
-                                            <label for="1_answer_28_option_2">
-                                                B.
-                                                <p class="ue" style="display: inline;">绝缘手套、绝缘鞋、绝缘棒</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer28"
-                                                   id="1_answer_28_option_3"/>
-
-                                            <label for="1_answer_28_option_3">
-                                                C.
-                                                <p class="ue" style="display: inline;">脚扣（登高工具）</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer28"
-                                                   id="1_answer_28_option_4"/>
-
-                                            <label for="1_answer_28_option_4">
-                                                D.
-                                                <p class="ue" style="display: inline;">验电器</p>
-                                            </label>
-                                        </li>
-
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li id="qu_1_28">
-                                <div class="test_content_nr_tt">
-                                    <i>29</i><span>(1分)</span>
-                                    <font>电量是以电能表记录的用电千瓦数为依据计算的。根据客户电能表的安装位置，有几种计算方式，下列属于低供低计的计算方式是（ ）</font><b
-                                        class="icon iconfont">&#xe881;</b>
-                                </div>
-
-                                <div class="test_content_nr_main">
-                                    <ul>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer29"
-                                                   id="1_answer_29_option_1"/>
-
-                                            <label for="1_answer_29_option_1">
-                                                A.
-                                                <p class="ue" style="display: inline;">
-                                                    电量=TA×TV×（当月电能表计量示数-上月电能表计量示数）</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer29"
-                                                   id="1_answer_29_option_2"/>
-
-                                            <label for="1_answer_29_option_2">
-                                                B.
-                                                <p class="ue" style="display: inline;">电量=TA×（当月电能表计量示数-上月电能表计量示数）</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer29"
-                                                   id="1_answer_29_option_3"/>
-
-                                            <label for="1_answer_29_option_3">
-                                                C.
-                                                <p class="ue" style="display: inline;">电量=TA×（当月电能表计量示数-上月电能表计量示数）</p>
-                                            </label>
-                                        </li>
-
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li id="qu_1_29">
-                                <div class="test_content_nr_tt">
-                                    <i>30</i><span>(1分)</span>
-                                    <font>以变压器容量计算基本电费的用户,其备用的变压器（含高压电动机）说法正确的是（ ）</font><b class="icon iconfont">&#xe881;</b>
-                                </div>
-
-                                <div class="test_content_nr_main">
-                                    <ul>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer30"
-                                                   id="1_answer_30_option_1"/>
-
-                                            <label for="1_answer_30_option_1">
-                                                A.
-                                                <p class="ue" style="display: inline;">所有状态皆需缴纳基本电费</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer30"
-                                                   id="1_answer_30_option_2"/>
-
-                                            <label for="1_answer_30_option_2">
-                                                B.
-                                                <p class="ue" style="display: inline;">所有状态皆不用缴纳基本电费</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer30"
-                                                   id="1_answer_30_option_3"/>
-
-                                            <label for="1_answer_30_option_3">
-                                                C.
-                                                <p class="ue" style="display: inline;">
-                                                    属冷备用状态并经供电企业加封的，不用交基本电费，属热备用状态的或未经加封的，需缴纳基本电费</p>
-                                            </label>
-                                        </li>
-
-                                        <li class="option">
-
-
-                                            <input type="checkbox" class="radioOrCheck" name="answer30"
-                                                   id="1_answer_30_option_4"/>
-
-                                            <label for="1_answer_30_option_4">
-                                                D.
-                                                <p class="ue" style="display: inline;">
-                                                    属冷备用状态并经供电企业加封的，需缴纳基本电费，属热备用状态的或未经加封的，不用交基本电费</p>
-                                            </label>
-                                        </li>
-
-                                    </ul>
-                                </div>
-                            </li>
 
                         </ul>
                     </div>
@@ -1914,10 +211,10 @@
                 <div class="rt_nr1">
                     <div class="rt_nr1_title">
                         <h1>
-                            <i class="icon iconfont">&#xe692;</i>答题卡
+                           </i>答题卡
                         </h1>
                         <p class="test_time">
-                            <i class="icon iconfont">&#xe6fb;</i><b class="alt-1">01:40</b>
+                            <b class="alt-1" id="tmesss">01:40</b>
                         </p>
                     </div>
 
@@ -1925,132 +222,13 @@
                         <div class="rt_content_tt">
                             <h2>单选题</h2>
                             <p>
-                                <span>共</span><i class="content_lit">60</i><span>题</span>
+                                <span>共</span><i
+                                    class="content_lit">{{tableData.radionum}}</i><span>题</span>
                             </p>
                         </div>
                         <div class="rt_content_nr answerSheet">
                             <ul>
-
-                                <li><a href="#qu_0_0">1</a></li>
-
-                                <li><a href="#qu_0_1">2</a></li>
-
-                                <li><a href="#qu_0_2">3</a></li>
-
-                                <li><a href="#qu_0_3">4</a></li>
-
-                                <li><a href="#qu_0_4">5</a></li>
-
-                                <li><a href="#qu_0_5">6</a></li>
-
-                                <li><a href="#qu_0_6">7</a></li>
-
-                                <li><a href="#qu_0_7">8</a></li>
-
-                                <li><a href="#qu_0_8">9</a></li>
-
-                                <li><a href="#qu_0_9">10</a></li>
-
-                                <li><a href="#qu_0_10">11</a></li>
-
-                                <li><a href="#qu_0_11">12</a></li>
-
-                                <li><a href="#qu_0_12">13</a></li>
-
-                                <li><a href="#qu_0_13">14</a></li>
-
-                                <li><a href="#qu_0_14">15</a></li>
-
-                                <li><a href="#qu_0_15">16</a></li>
-
-                                <li><a href="#qu_0_16">17</a></li>
-
-                                <li><a href="#qu_0_17">18</a></li>
-
-                                <li><a href="#qu_0_18">19</a></li>
-
-                                <li><a href="#qu_0_19">20</a></li>
-
-                                <li><a href="#qu_0_20">21</a></li>
-
-                                <li><a href="#qu_0_21">22</a></li>
-
-                                <li><a href="#qu_0_22">23</a></li>
-
-                                <li><a href="#qu_0_23">24</a></li>
-
-                                <li><a href="#qu_0_24">25</a></li>
-
-                                <li><a href="#qu_0_25">26</a></li>
-
-                                <li><a href="#qu_0_26">27</a></li>
-
-                                <li><a href="#qu_0_27">28</a></li>
-
-                                <li><a href="#qu_0_28">29</a></li>
-
-                                <li><a href="#qu_0_29">30</a></li>
-
-                                <li><a href="#qu_0_30">31</a></li>
-
-                                <li><a href="#qu_0_31">32</a></li>
-
-                                <li><a href="#qu_0_32">33</a></li>
-
-                                <li><a href="#qu_0_33">34</a></li>
-
-                                <li><a href="#qu_0_34">35</a></li>
-
-                                <li><a href="#qu_0_35">36</a></li>
-
-                                <li><a href="#qu_0_36">37</a></li>
-
-                                <li><a href="#qu_0_37">38</a></li>
-
-                                <li><a href="#qu_0_38">39</a></li>
-
-                                <li><a href="#qu_0_39">40</a></li>
-
-                                <li><a href="#qu_0_40">41</a></li>
-
-                                <li><a href="#qu_0_41">42</a></li>
-
-                                <li><a href="#qu_0_42">43</a></li>
-
-                                <li><a href="#qu_0_43">44</a></li>
-
-                                <li><a href="#qu_0_44">45</a></li>
-
-                                <li><a href="#qu_0_45">46</a></li>
-
-                                <li><a href="#qu_0_46">47</a></li>
-
-                                <li><a href="#qu_0_47">48</a></li>
-
-                                <li><a href="#qu_0_48">49</a></li>
-
-                                <li><a href="#qu_0_49">50</a></li>
-
-                                <li><a href="#qu_0_50">51</a></li>
-
-                                <li><a href="#qu_0_51">52</a></li>
-
-                                <li><a href="#qu_0_52">53</a></li>
-
-                                <li><a href="#qu_0_53">54</a></li>
-
-                                <li><a href="#qu_0_54">55</a></li>
-
-                                <li><a href="#qu_0_55">56</a></li>
-
-                                <li><a href="#qu_0_56">57</a></li>
-
-                                <li><a href="#qu_0_57">58</a></li>
-
-                                <li><a href="#qu_0_58">59</a></li>
-
-                                <li><a href="#qu_0_59">60</a></li>
-
+                                <li v-for="n in radionum"><a :href="forIdd(n-1)">{{n}}</a></li>
                             </ul>
                         </div>
                     </div>
@@ -2059,72 +237,43 @@
                         <div class="rt_content_tt">
                             <h2>多选题</h2>
                             <p>
-                                <span>共</span><i class="content_lit">30</i><span>题</span>
+                                <span>共</span><i class="content_lit">{{tableData.multiplenum}}</i><span>题</span>
                             </p>
                         </div>
                         <div class="rt_content_nr answerSheet">
                             <ul>
 
-                                <li><a href="#qu_1_0">1</a></li>
+                                <li v-for="n in duorubricnum"><a :href="forIddduoxuan(n-1)">{{n}}</a></li>
 
-                                <li><a href="#qu_1_1">2</a></li>
 
-                                <li><a href="#qu_1_2">3</a></li>
-
-                                <li><a href="#qu_1_3">4</a></li>
-
-                                <li><a href="#qu_1_4">5</a></li>
-
-                                <li><a href="#qu_1_5">6</a></li>
-
-                                <li><a href="#qu_1_6">7</a></li>
-
-                                <li><a href="#qu_1_7">8</a></li>
-
-                                <li><a href="#qu_1_8">9</a></li>
-
-                                <li><a href="#qu_1_9">10</a></li>
-
-                                <li><a href="#qu_1_10">11</a></li>
-
-                                <li><a href="#qu_1_11">12</a></li>
-
-                                <li><a href="#qu_1_12">13</a></li>
-
-                                <li><a href="#qu_1_13">14</a></li>
-
-                                <li><a href="#qu_1_14">15</a></li>
-
-                                <li><a href="#qu_1_15">16</a></li>
-
-                                <li><a href="#qu_1_16">17</a></li>
-
-                                <li><a href="#qu_1_17">18</a></li>
-
-                                <li><a href="#qu_1_18">19</a></li>
-
-                                <li><a href="#qu_1_19">20</a></li>
-
-                                <li><a href="#qu_1_20">21</a></li>
-
-                                <li><a href="#qu_1_21">22</a></li>
-
-                                <li><a href="#qu_1_22">23</a></li>
-
-                                <li><a href="#qu_1_23">24</a></li>
-
-                                <li><a href="#qu_1_24">25</a></li>
-
-                                <li><a href="#qu_1_25">26</a></li>
-
-                                <li><a href="#qu_1_26">27</a></li>
-
-                                <li><a href="#qu_1_27">28</a></li>
-
-                                <li><a href="#qu_1_28">29</a></li>
-
-                                <li><a href="#qu_1_29">30</a></li>
-
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="rt_content">
+                        <div class="rt_content_tt">
+                            <h2>判断题</h2>
+                            <p>
+                                <span>共</span><i
+                                    class="content_lit">{{tableData.judgenum}}</i><span>题</span>
+                            </p>
+                        </div>
+                        <div class="rt_content_nr answerSheet">
+                            <ul>
+                                <li v-for="n in panduantinum"><a :href="forIdpanduanp(n-1)">{{n}}</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="rt_content">
+                        <div class="rt_content_tt">
+                            <h2>填空题</h2>
+                            <p>
+                                <span>共</span><i
+                                    class="content_lit">{{tableData.fillnum}}</i><span>题</span>
+                            </p>
+                        </div>
+                        <div class="rt_content_nr answerSheet">
+                            <ul>
+                                <li v-for="n in tiankongnum"><a :href="forIdtiankongtt(n-1)">{{n}}</a></li>
                             </ul>
                         </div>
                     </div>
@@ -2169,26 +318,40 @@
 
         });
     });
-    function parseUrl(){
-        var url=location.href;
-        var i=url.indexOf('?');
-        if(i==-1)return;
-        var querystr=url.substr(i+1);
-        var arr1=querystr.split('&');
-        var arr2=new Object();
-        for  (i in arr1){
-            var ta=arr1[i].split('=');
-            arr2[ta[0]]=ta[1];
+
+    function parseUrl() {
+        var url = location.href;
+        var i = url.indexOf('?');
+        if (i == -1) return;
+        var querystr = url.substr(i + 1);
+        var arr1 = querystr.split('&');
+        var arr2 = new Object();
+        for (i in arr1) {
+            var ta = arr1[i].split('=');
+            arr2[ta[0]] = ta[1];
         }
         return arr2;
     }
+
     var v = parseUrl();//解析所有参数
     axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
-
+    let userid = sessionStorage.getItem("userid")
     new Vue({
-        el:".main",
-        data:{
-            tableData:{}
+        el: "#app",
+        data: {
+            net_car1: [],
+            net_car: [],
+            tableData: [{}],
+            radionum: "",
+            duorubricnum:'',
+            panduantinum:'',
+            tiankongnum:'',
+            daoTime:"",
+            radiorubricList: [{}],
+            duorubricList: [{}],
+            packrubricList: [{}],
+            judgerubricList: [{}]
+
 
         },
         mounted: function () {
@@ -2197,26 +360,134 @@
             /* this.queryrubric();*/
 
         },
-        methods:{
-            query(){
-               let  testid=v['name'];
+        methods: {
+            query() {
+                let testid = v['name'];
                 let params = new URLSearchParams();
                 params.append("examparper", testid);
-                /*axios.get('/api/exam/examrubric/queryexamrubricer', {
-                        params: params
-                    }
-                )*/
                 axios({
                     method: 'post',
                     url: '/api/exam/examrubric/queryexamrubricer',
                     data: params,
 
                 }).then(res => {
-                    res = res.data;
-                    this.tableData = res;
+                    //res = res.data.examrubricList;
+                    this.radiorubricList = res.data.radiorubricList;
+
+                    this.duorubricList = res.data.duorubricList;
+                    this.packrubricList = res.data.packrubricList;
+                    this.judgerubricList = res.data.judgerubricList;
+                    this.tableData = res.data.parpercontent;
+                    this.radionum=res.data.parpercontent.radionum;
+                    this.duorubricnum=res.data.parpercontent.multiplenum;
+                    this.panduantinum=res.data.parpercontent.judgenum;
+                    this.tiankongnum=res.data.parpercontent.fillnum;
 
                 })
             },
+            /*点击单选按钮*/
+            radioTest(site,siteexamanswers){
+                let params = new URLSearchParams();
+                params.append("studentId", userid);
+                params.append("examparperId", this.tableData.id);
+                params.append("examrubricId", site.id);
+                params.append("selectanswerId", siteexamanswers.id);
+                axios({
+                    method: 'post',
+                    url: '/api/exam/examrubric/examend',
+                    data: params,
+
+                }).then(res => {
+                    console.log(res);
+
+                })
+            },
+            /*点正确按钮*/
+            panduanTestdui(site){
+                let params = new URLSearchParams();
+                params.append("studentId", userid);
+                params.append("examparperId", this.tableData.id);
+                params.append("examrubricId", site.id);
+                params.append("selectanswerId", "正确");
+                axios({
+                    method: 'post',
+                    url: '/api/exam/examrubric/examend',
+                    data: params,
+
+                }).then(res => {
+
+
+                })
+                    },
+            /*点错误按钮*/
+            panduanTestcuo(site){
+                let params = new URLSearchParams();
+                params.append("studentId", userid);
+                params.append("examparperId", this.tableData.id);
+                params.append("examrubricId", site.id);
+                params.append("selectanswerId", "错误");
+                axios({
+                    method: 'post',
+                    url:  '/api/exam/examrubric/examend',
+                    data: params,
+
+                }).then(res => {
+
+
+                })
+            },
+            /*填空失去焦点*/
+            tiankongtest(site){
+                let params = new URLSearchParams();
+                params.append("studentId", userid);
+                params.append("examparperId", this.tableData.id);
+                params.append("examrubricId", site.id);
+                params.append("selectanswerId",site.examanswers);
+                axios({
+                    method: 'post',
+                    url:  '/api/exam/examrubric/examend',
+                    data: params,
+
+                }).then(res => {
+
+
+                })
+            },
+            /*多选题*/
+            duoxuanTest(site){
+                this.net_car1=this.net_car;
+               console.log("id"+this.net_car);
+               console.log("id00"+this.net_car1);
+            },
+            /*鼠标移出*/
+            leave(){
+                this.net_car1=[];
+                console.log("空"+this.net_car1);
+            },
+
+            forId: function (index) {
+                return "qu_0_" + index
+            },
+            forIdduxuan: function (index) {
+                return "qu_1_" + index
+            },
+            forIdpanduan: function (index) {
+                return "qu_2_" + index
+            }, forIdtiankong: function (index) {
+                return "qu_3_" + index
+            },
+            forIdd: function (index) {
+                return "#qu_0_" + index
+            },
+            forIddduoxuan: function (index) {
+                return "#qu_1_" + index
+            },
+            forIdpanduanp:function (index) {
+                return "#qu_2_" + index
+            },forIdtiankongtt:function (index) {
+                return "#qu_3_" + index
+            }
+
         }
     })
 
