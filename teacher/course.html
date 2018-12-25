@@ -69,8 +69,12 @@
                 <el-input placeholder="请输入课程价格" v-model="addCourseDialog.courPrice" ></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" v-if="addCourseDialog.nameDisabled" @click="updateCourse">确 定</el-button>
-                <el-button type="primary" v-else @click="addUser" >新增</el-button>
+                <el-input type="file" id="Picurlfile"></el-input>
+                <el-button @click="Picurltj()">提交</el-button>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" v-if="addCourseDialog.nameDisabled"  @click="updateCourse" :disabled="addCourseDialog.disabled">确 定</el-button>
+                <el-button type="primary" v-else @click="addUser" :disabled="addCourseDialog.disabled">新增</el-button>
             </el-form-item>
         </el-form>
     </el-dialog>
@@ -92,6 +96,8 @@
 
 <script>
 
+    axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
+    axios.defaults.headers.common['Content-Type'] = 'application/json;charset=UTF-8';
     var Main = {
 
         data() {
@@ -111,6 +117,8 @@
                     courTeaid: '',
                     //课程的价格
                     courPrice:'',
+                    courPicurl:'',
+                    disabled:false,
                     nameDisabled:true,
 
                 },
@@ -126,6 +134,39 @@
         },
 
         methods: {
+            Picurltj() {
+                let file = document.getElementById("Picurlfile").files[0];
+                if (file == null) {
+                    this.$message({
+                        message: '请选择文档再提交',
+                        type: 'warning'
+                    })
+                    return;
+                }
+                let path = "courPicurl/" + new Date().getTime() + file.name;
+                this.addCourseDialog.disabled=true;
+                let formData = new FormData();
+                formData.append('path', path);
+                formData.append('file', file);
+                axios({
+                    method: 'post',
+                    url: '/api/oss/upload',
+                    data: formData,
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    }
+                }).then(res=>{
+                    res=res.data;
+                    this.addCourseDialog.disabled=false;
+                    if(res.success){
+                        this.$message({
+                            message:'上传完成',
+                            type:"success"
+                        })
+                        this.addCourseDialog.courPicurl=res.message.path;
+                    }
+                })
+            },
             getCommit(row) {
                 var courId=row.courId;
                 localStorage.setItem("courId",courId);
@@ -141,7 +182,7 @@
                 params.append('courId', this.addCourseDialog.courId)
                 params.append('courName', this.addCourseDialog.courName)
                 params.append('courPrice', this.addCourseDialog.courPrice)
-
+                params.append('courPicurl', this.addCourseDialog.courPicurl)
 
                 this.$refs['addForm'].validate((valid) => {
                     axios({
@@ -174,6 +215,7 @@
                 this.addCourseDialog.courId=row.courId;
                 this.addCourseDialog.courName=row.courName;
                 this.addCourseDialog.courPrice=row.courPrice;
+                this.addCourseDialog.courPicurl="";
                 this.addCourseDialog.show = true
                 this.addCourseDialog.nameDisabled=true;
 
@@ -181,11 +223,11 @@
             //新增
             addUser(){
                 let teaid=sessionStorage.getItem("userid");
-                alert(teaid)
-                let params = new URLSearchParams()
+               let params = new URLSearchParams()
                 params.append('courId', this.addCourseDialog.courId)
                 params.append('courName', this.addCourseDialog.courName)
                 params.append('courPrice', this.addCourseDialog.courPrice)
+                params.append('courPicurl', this.addCourseDialog.courPicurl)
                 params.append('courTeaid', teaid)
 
                 this.$refs['addForm'].validate((valid) => {
@@ -220,10 +262,11 @@
             },
 
             showAddCourseDialog() {
-
+                this.addCourseDialog.courId="";
                 this.addCourseDialog.courName="";
                 this.addCourseDialog.courPrice="";
                 this.addCourseDialog.courTeaid="";
+                this.addCourseDialog.courPicurl="";
                 this.addCourseDialog.nameDisabled=false;
                 this.addCourseDialog.title="新增用户";
                 this.addCourseDialog.show=true;
