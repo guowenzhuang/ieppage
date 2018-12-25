@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="js/vue.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/index.css"/>
+    <script src="js/index.js"></script>
+    <script src="js/axios.js"></script>
+
+
+</head>
+<body>
+
+<div id="app">
+
+    <!--element表格-->
+    <div style="width: 100%;">
+        <template>
+            <el-table :data="rubricList" :row-class-name="tableRowClassName" style=" width: auto">
+
+                <el-table-column prop="rubricttype" label="试题类型" :show-overflow-tooltip="true">
+                </el-table-column>
+                <el-table-column prop="content" label="题干" :show-overflow-tooltip="true">
+                </el-table-column>
+                <el-table-column prop="answerId" label="答案id" :show-overflow-tooltip="true">
+                </el-table-column>
+                <el-table-column prop="operation" label="操作" align="center" min-width="100">
+                    <template slot-scope="scope">
+                        <el-button type="primary" round @click="checkDetail(scope.row)" size="mini">查看
+                        </el-button>
+                        <el-button type="danger" round @click="deleterubric(scope.row)" size="mini">删除
+                        </el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+
+        </template>
+    </div>
+
+
+</div>
+
+</body>
+
+<script>
+    var mian = new Vue({
+
+        el: '#app',
+
+        mounted: function () {
+
+
+        },
+        data() {
+            return {}
+        },
+
+        methods: {}
+
+
+    })
+
+</script>
+
+</html>

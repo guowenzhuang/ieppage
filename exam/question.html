@@ -501,6 +501,7 @@
         },
         /*方法函数写在这里面*/
         methods: {
+
             /*行行显示不同的颜色*/
             tableRowClassName({row, rowIndex}) {
                 if (rowIndex % 4 === 0) {
@@ -510,7 +511,6 @@
                 }
                 return '';
             },
-
 
             /*根据userid查询所拥有的课程*/
             querycourse: function () {
