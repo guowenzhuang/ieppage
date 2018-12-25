@@ -31,6 +31,7 @@
 <div class="main" id="app">
     <!--nr start-->
     <div class="test_main" :data="tableData">
+
         <div class="nr_left">
             <div class="test">
                 <form action="" method="post">
@@ -39,6 +40,15 @@
                             <i class="icon iconfont">&#xe6fb;</i><b class="alt-1">01:40</b>
                         </p>
                         <font><input type="button" name="test_jiaojuan" value="交卷"></font>
+                    </div>
+                    <div class="test_content">
+                        <div class="test_content_title">
+                            <h2 >考试题目:<span style="margin-left:30px;color: red">{{tableData.title}}</span></h2>
+                            <h2 >考试时长:<span style="margin-left:20px;color: red">{{tableData.duration}}分钟</span></h2>
+                            <p style="float: right">
+                                <span>共:{{tableData.total}}</span><span>分</span>
+                            </p>
+                        </div>
                     </div>
 
                     <div class="test_content">
@@ -391,7 +401,9 @@
                 params.append("studentId", userid);
                 params.append("examparperId", this.tableData.id);
                 params.append("examrubricId", site.id);
+                params.append("score", site.score);
                 params.append("selectanswerId", siteexamanswers.id);
+
                 axios({
                     method: 'post',
                     url: '/api/exam/examrubric/examend',
@@ -407,6 +419,7 @@
                 let params = new URLSearchParams();
                 params.append("studentId", userid);
                 params.append("examparperId", this.tableData.id);
+                params.append("score", site.score);
                 params.append("examrubricId", site.id);
                 params.append("selectanswerId", "正确");
                 axios({
@@ -415,7 +428,7 @@
                     data: params,
 
                 }).then(res => {
-
+                    console.log(res);
 
                 })
                     },
@@ -424,6 +437,7 @@
                 let params = new URLSearchParams();
                 params.append("studentId", userid);
                 params.append("examparperId", this.tableData.id);
+                params.append("score", site.score);
                 params.append("examrubricId", site.id);
                 params.append("selectanswerId", "错误");
                 axios({
@@ -432,15 +446,16 @@
                     data: params,
 
                 }).then(res => {
-
+                    console.log(res);
 
                 })
             },
-            /*填空失去焦点*/
+            /*填空更改之后触发*/
             tiankongtest(site){
                 let params = new URLSearchParams();
                 params.append("studentId", userid);
                 params.append("examparperId", this.tableData.id);
+                params.append("score", site.score);
                 params.append("examrubricId", site.id);
                 params.append("selectanswerId",site.examanswers);
                 axios({
@@ -450,7 +465,7 @@
 
                 }).then(res => {
 
-
+                    console.log(res);
                 })
             },
             /*多选题*/
