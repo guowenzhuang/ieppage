@@ -99,29 +99,34 @@
                         <el-input v-model="update.chaName"></el-input>
                     </el-form-item>
                     <el-form-item label="视频">
-                        <!-- <el-radio-group v-model="form.resource">
-                             <el-radio label="免费"></el-radio>
-                             <el-radio label="试听"></el-radio>
-                         </el-radio-group>-->
-                        <el-form-item >
+                       <el-form-item>
                             <el-input type="file" id="longfile"></el-input>
                             <el-button @click="longtj()">提交</el-button>
                         </el-form-item>
+                        <div v-show="update.proShow">
+                            <el-progress :stroke-width="18" :text-inside="true"
+                                         :percentage="update.progress"></el-progress>
+                        </div>
+                  </el-form-item>
+                </el-tab-pane>
+                  <el-tab-pane label="ppt" name="second">
+                      <el-form-item>
+                          <el-input type="file" id="pptfile"></el-input>
+                          <el-button @click="ppttj()">提交</el-button>
+                      </el-form-item>
+                  </el-tab-pane>
+                  <el-tab-pane label="文档" name="third">
+                      <el-form-item>
+                          <el-input type="file" id="dofile"></el-input>
+                          <el-button @click="dotj()">提交</el-button>
+                      </el-form-item>
+                  </el-tab-pane>
 
-                    </el-form-item>
-                </el-tab-pane>
-              <!--  <el-tab-pane label="ppt" name="second">
-                    配置管理
-                </el-tab-pane>
-                <el-tab-pane label="文档" name="third">
-                    角色管理
-                </el-tab-pane>
--->
             </el-tabs>
 
 
             <el-form-item>
-                <el-button type="primary" @click="saveVideo">保存</el-button>
+                <el-button type="primary" :disabled="update.disabled" @click="saveVideo">保存</el-button>
             </el-form-item>
         </el-form>
     </el-dialog>
@@ -173,7 +178,7 @@
             }
         }
     });
-    const MB=1024*1024;
+    const MB = 1024 * 1024;
     var Main = {
 
         data() {
@@ -198,31 +203,116 @@
                 update: {
                     title: '',
                     chaId: '',
-                    courId:'',
+                    courId: '',
                     chaName: '',
-                    chaType:'',
+                    chaType: '',
                     chaTime: '',
-                    chalastModified:'',
-                    chaSize:'',
-                    chaViurl:'',
+                    chalastModified: '',
+                    chaSize: '',
+                    chaViurl: '',
                     show: false,
-                }
-
+                    //当前进度
+                    progress: 0,
+                    //进度条是否显示
+                    proShow: false,
+                    //百分之一代表的字节
+                    complete:0,
+                    //首次进度
+                    firstJd:20,
+                    disabled:false,
+                    chaPpturl:'',
+                    chaDocurl:''
+                },
 
             };
         },
         methods: {
+            dotj(){
+                let file = document.getElementById("dofile").files[0];
+                if (file == null) {
+                    this.$message({
+                        message: '请选择文档再提交',
+                        type: 'warning'
+                    })
+                    return;
+                }
+                let path = "docurl/" + new Date().getTime() + file.name;
+                this.update.disabled=true;
+                let formData = new FormData();
+                formData.append('path', path);
+                formData.append('file', file);
+                axios({
+                    method: 'post',
+                    url: '/api/oss/upload',
+                    data: formData,
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    }
+                }).then(res=>{
+                    res=res.data;
+                    this.update.disabled=false;
+                    if(res.success){
+                        this.$message({
+                            message:'上传完成',
+                            type:"success"
+                        })
+                        this.update.chaDocurl=res.message.path;
+                    }
+                })
+            },
+            ppttj(){
+                let file = document.getElementById("pptfile").files[0];
+                if (file == null) {
+                    this.$message({
+                        message: '请选择ppt再提交',
+                        type: 'warning'
+                    })
+                    return;
+                }
+                let path = "ppt/" + new Date().getTime() + file.name;
+                this.update.disabled=true;
+                let formData = new FormData();
+                formData.append('path', path);
+                formData.append('file', file);
+                axios({
+                    method: 'post',
+                    url: '/api/oss/upload',
+                    data: formData,
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    }
+                }).then(res=>{
+                    res=res.data;
+                    this.update.disabled=false;
+                    if(res.success){
+                        this.$message({
+                            message:'上传完成',
+                            type:"success"
+                        })
+                        this.update.chaPpturl=res.message.path;
+                    }
+                })
+            },
             longtj() {
                 let file = document.getElementById("longfile").files[0];
-                console.log(file)
-                let path="video/"+new Date().getTime()+file.name;
-                let params=new URLSearchParams();
-                params.append("path",path)
+                if (file == null) {
+                    this.$message({
+                        message: '请选择视频文件再提交',
+                        type: 'warning'
+                    })
+                    return;
+                }
+                let path = "video/" + new Date().getTime() + file.name;
+                let params = new URLSearchParams();
+                params.append("path", path)
+                this.update.proShow = true;
                 axios({
                     method: 'post',
                     url: '/api/oss/long/longUploadFirst',
                     data: params,
                 }).then(res => {
+                    this.update.disabled=true;
+                    this.update.progress=this.update.firstJd;
                     res = res.data;
                     let uploadId = res.message;
                     this.longtjContent(uploadId, path);
@@ -230,16 +320,17 @@
             },
             longtjContent(uploadId, path) {
                 let file = document.getElementById("longfile").files[0];
+                this.update.complete = file.size / (100-this.update.firstJd);
                 let i = 0;
                 this.longWhile(file, i, uploadId, path);
             },
 
             longWhile(file, i, uploadId, path) {
                 let end = (i + 1) * MB;
-                let isNotEnd=true;
+                let isNotEnd = true;
                 if (end >= file.size) {
                     end = file.size
-                    isNotEnd=false;
+                    isNotEnd = false;
                 }
                 let slice = file.slice(i * MB, end);
                 let formData = new FormData();
@@ -256,6 +347,7 @@
                     }
                 }).then(res => {
                     if (slice.size >= MB && isNotEnd) {
+                        this.update.progress=parseInt(end/this.update.complete)+this.update.firstJd;
                         this.longWhile(file, i, uploadId, path);
                     } else {
                         let params = new URLSearchParams();
@@ -266,36 +358,42 @@
                             url: '/api/oss/long/loadUploadEnd',
                             data: params,
                         }).then(res => {
-                            res=res.data.message;
-                            console.log("path",res.path);
-                            console.log("lastModified",file.lastModified);
-                            console.log("size",file.size);
-                            console.log("type",file.type);
+                            this.update.progress=100;
+                            this.update.disabled=false;
+                            this.$message({
+                                message:'上传完成',
+                                type:"success"
+                            })
+                            res = res.data.message;
+                            console.log("path", res.path);
+                            console.log("lastModified", file.lastModified);
+                            console.log("size", file.size);
+                            console.log("type", file.type);
                             let url = URL.createObjectURL(file);
                             let audioElement = new Audio(url);
 
                             let duration;
-                            audioElement.addEventListener("loadedmetadata",  (_event) =>{
+                            audioElement.addEventListener("loadedmetadata", (_event) => {
                                 duration = audioElement.duration;
-                                var hour = parseInt((duration)/3600);
-                                var minute = parseInt((duration%3600)/60);
-                                var second = Math.ceil(duration%60);
+                                var hour = parseInt((duration) / 3600);
+                                var minute = parseInt((duration % 3600) / 60);
+                                var second = Math.ceil(duration % 60);
                                 //console.log(Math.floor(ele.duration));
                                 //document.write("这段视频的时长为："+hour+"小时，"+minute+"分，"+second+"秒");
-                                console.log("这段视频的时长为："+hour+"小时，"+minute+"分，"+second+"秒")
+                                console.log("这段视频的时长为：" + hour + "小时，" + minute + "分，" + second + "秒")
                                 this.update.chaViurl = res.path;
-                                this.update.chalastModified=file.lastModified;
-                                this.update.chaSize=file.size;
-                                this.update.chaType=file.type;
-                                this.update.chaTime=hour+"-"+minute+"-"+second;
+                                this.update.chalastModified = file.lastModified;
+                                this.update.chaSize = file.size;
+                                this.update.chaType = file.type;
+                                this.update.chaTime = hour + "-" + minute + "-" + second;
                             });
-                       /*     axios({
-                                method: 'get',
-                                url: '/api/oss/getUrl',
-                                params: {
-                                    path: path
-                                },
-                            })*/
+                            /*     axios({
+                                     method: 'get',
+                                     url: '/api/oss/getUrl',
+                                     params: {
+                                         path: path
+                                     },
+                                 })*/
                         })
                     }
                 })
@@ -388,39 +486,42 @@
                 params.append('chalastModified', this.update.chalastModified)
                 params.append('chaTime', this.update.chaTime)
                 params.append('chaSize', this.update.chaSize)
+                params.append('chaPpturl', this.update.chaPpturl)
+                params.append('chaDocurl', this.update.chaDocurl)
                 this.$refs['addForm'].validate((valid) => {
-                        axios({
+                    axios({
                         method: 'post',
                         url: '/api/teacher/chapter/updateChapters',
                         data: params,
                     })
                         .then((res) => {
-                       this.$message({
-                            type: 'success',
-                            message: '修改成功!',
-                        });
-                        this.update.show = false
-                        this.queryMenu()
-                    }).catch(() => {
                             this.$message({
-                                type: 'info',
-                                message: '修改失败'
+                                type: 'success',
+                                message: '修改成功!',
                             });
-                        })
+                            this.update.show = false
+                            this.queryMenu()
+                        }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '修改失败'
+                        });
+                    })
                 })
             },
 
             updateModuleShow(row) {
-                 this.update.title = "课次信息";
-                 this.update.chaViurl = '';
+                this.update.title = "课次信息";
+                this.update.chaViurl = '';
                 this.update.chalastModified = '';
-                 this.update.chaType ='';
-                 this.update.chaTime = '';
-                 this.update.chaSize = '';
-                 this.update.chaId =row.chaId;
-                 this.update.chaName = row.chaName;
-
-                 this.update.show = true
+                this.update.chaType = '';
+                this.update.chaTime = '';
+                this.update.chaSize = '';
+                this.update.chaId = row.chaId;
+                this.update.chaName = row.chaName;
+                this.update.proShow=false;
+                this.update.show = true
+                this.update.disabled=false;
             },
 
             //新增
