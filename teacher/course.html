@@ -31,12 +31,19 @@
                 type="index"
                 width="50">
         </el-table-column>
-
+        <el-table-column prop="courPicurl" label="课程图片">
+            <template slot-scope="scope">
+                <div class="photo">
+             <img style="width:100px" :src="scope.row.courPicurl">
+                </div>
+            </template>
+        </el-table-column>
         <el-table-column prop="courPrice" label="课程价格">
         </el-table-column>
-        <el-table-column prop="courName" label="课程名称">
+
+        <el-table-column show-overflow-tooltip prop="courName" label="课程名称">
         </el-table-column>
-        <el-table-column prop="courContent" show-overflow-tooltip
+        <el-table-column prop="courContent"
                          show-overflow-tooltip label="课程描述">
         </el-table-column>
 
@@ -67,6 +74,9 @@
             </el-form-item>
             <el-form-item prop="courPrice" label="课程价格">
                 <el-input placeholder="请输入课程价格" v-model="addCourseDialog.courPrice" ></el-input>
+            </el-form-item>
+            <el-form-item prop="courContent" label="课程内容">
+                <el-input placeholder="请输入课程价格" v-model="addCourseDialog.courContent" ></el-input>
             </el-form-item>
             <el-form-item>
                 <el-input type="file" id="Picurlfile"></el-input>
@@ -117,6 +127,7 @@
                     courTeaid: '',
                     //课程的价格
                     courPrice:'',
+                    courContent:'',
                     courPicurl:'',
                     disabled:false,
                     nameDisabled:true,
@@ -165,7 +176,15 @@
                         })
                         this.addCourseDialog.courPicurl=res.message.path;
                     }
+                    axios({
+                        method: 'get',
+                        url: '/api/oss/getUrl',
+                        params:{
+                            path:path
+                        }
+                    })
                 })
+
             },
             getCommit(row) {
                 var courId=row.courId;
@@ -176,14 +195,14 @@
             handleSelectionChange(val) {
                 this.selectUserData = val
             },
-            // 修改用户
+            // 修改章节
             updateCourse() {
                 let params = new URLSearchParams()
                 params.append('courId', this.addCourseDialog.courId)
                 params.append('courName', this.addCourseDialog.courName)
                 params.append('courPrice', this.addCourseDialog.courPrice)
                 params.append('courPicurl', this.addCourseDialog.courPicurl)
-
+                params.append('courContent', this.addCourseDialog.courContent)
                 this.$refs['addForm'].validate((valid) => {
                     axios({
                         method: 'post',
@@ -215,7 +234,8 @@
                 this.addCourseDialog.courId=row.courId;
                 this.addCourseDialog.courName=row.courName;
                 this.addCourseDialog.courPrice=row.courPrice;
-                this.addCourseDialog.courPicurl="";
+                this.addCourseDialog.courPicurl='';
+                this.addCourseDialog.courContent=row.courContent;
                 this.addCourseDialog.show = true
                 this.addCourseDialog.nameDisabled=true;
 
@@ -228,6 +248,7 @@
                 params.append('courName', this.addCourseDialog.courName)
                 params.append('courPrice', this.addCourseDialog.courPrice)
                 params.append('courPicurl', this.addCourseDialog.courPicurl)
+                params.append('courContent', this.addCourseDialog.courContent)
                 params.append('courTeaid', teaid)
 
                 this.$refs['addForm'].validate((valid) => {
@@ -267,8 +288,9 @@
                 this.addCourseDialog.courPrice="";
                 this.addCourseDialog.courTeaid="";
                 this.addCourseDialog.courPicurl="";
+                this.addCourseDialog.courContent="";
                 this.addCourseDialog.nameDisabled=false;
-                this.addCourseDialog.title="新增用户";
+                this.addCourseDialog.title="新增章节";
                 this.addCourseDialog.show=true;
             },
 
