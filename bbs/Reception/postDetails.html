@@ -103,7 +103,7 @@
 							data: {
 								replyContent: replyText,
 								postId: sessionStorage.getItem("postId"),
-								userId: sessionStorage.getItem("userId"),
+								userId: sessionStorage.getItem("userid"),
 								pId: 0
 							},
 							beforeSend: function(request) {
@@ -329,7 +329,7 @@
 							<!-- 用户头像 -->
 							<img src="#">
 							<!-- 用户昵称 -->
-							<a href="#"></a>
+							<a href="#">{{username}}</a>
 						</a>
 					</div>
 					<div class="sidebox side-list related-question">
@@ -366,6 +366,7 @@
 						userId: sessionStorage.getItem("userId"),
 						replyId: sessionStorage.getItem("replyId"),
 						postTitle: sessionStorage.getItem("postTitle"),
+						username: sessionStorage.getItem("username");
 						replyList: []
 
 					}
@@ -392,7 +393,7 @@
 					userIsPost: function() {
 						let params = new URLSearchParams();
 						params.append("replyId", sessionStorage.getItem("replyId"));
-						params.append("userId", sessionStorage.getItem("userId"));
+						params.append("userId", sessionStorage.getItem("userid"));
 						axios({
 							method: 'post',
 							url: '/api/bbs/post/userIsPost',
@@ -409,7 +410,7 @@
 					replyLike: function(reply) {
 						let params = new URLSearchParams();
 						params.append("replyId", reply.replyId);
-						params.append("userId", sessionStorage.getItem("userId"));
+						params.append("userId", sessionStorage.getItem("userid"));
 						params.append("isLike", reply.isLike);
 						axios({
 							method: 'post',
@@ -447,7 +448,7 @@
 							params.append("replyContent", value);
 							params.append("postId", sessionStorage.getItem("postId"));
 							params.append("pId", replyId);
-							params.append("userId", sessionStorage.getItem("userId"));
+							params.append("userId", sessionStorage.getItem("userid"));
 							axios({
 								method: 'post',
 								url: '/api/bbs/reply/insertReply',
@@ -485,7 +486,7 @@
 						}) => {
 							let params = new URLSearchParams();
 							params.append("replyId", reply.replyId);
-							params.append("userId", sessionStorage.getItem("userId"));
+							params.append("userId", sessionStorage.getItem("userid"));
 							params.append("reportReason", value);
 							axios({
 								method: 'post',
@@ -519,7 +520,7 @@
 					userLikePost: function() {
 						let params = new URLSearchParams();
 						params.append("replyId", sessionStorage.getItem("replyId"));
-						params.append("userId", sessionStorage.getItem("userId"));
+						params.append("userId", sessionStorage.getItem("userid"));
 						params.append("isLike", this.postLike);
 						axios({
 							method: 'post',
@@ -553,7 +554,7 @@
 						}) => {
 							let params = new URLSearchParams();
 							params.append("replyId", sessionStorage.getItem("replyId"));
-							params.append("userId", sessionStorage.getItem("userId"));
+							params.append("userId", sessionStorage.getItem("userid"));
 							params.append("reportReason", value);
 							axios({
 								method: 'post',
