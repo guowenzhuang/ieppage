@@ -1,0 +1,543 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>在线考试</title>
+
+    <link href="css/main.css" rel="stylesheet" type="text/css"/>
+    <link href="css/iconfont.css" rel="stylesheet" type="text/css"/>
+    <link href="css/test.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" type="text/css" href="css/iview.css">
+    <script src="js/vue.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/index.css"/>
+    <script src="js/index.js"></script>
+    <script src="js/axios.js"></script>
+
+    <script>
+
+
+    </script>
+
+    <style>
+        .hasBeenAnswer {
+            background: #5d9cec;
+            color: #fff;
+        }
+    </style>
+
+</head>
+<body>
+<div class="main" id="app">
+    <!--nr start-->
+    <div class="test_main" :data="tableData">
+
+        <div class="nr_left">
+            <div class="test">
+                <form action="" method="post">
+                    <div class="test_title">
+                        <p class="test_time">
+                            <b class="alt-1">01:40</b>
+                        </p>
+                        <font><input type="button" name="test_jiaojuan" value="交卷" @click="endtest" ></font>
+                    </div>
+                    <div class="test_content">
+                        <div class="test_content_title">
+                            <h2>考试题目:<span style="margin-left:30px;color: red">{{tableData.title}}</span></h2>
+                            <h2>考试时长:<span style="margin-left:20px;color: red">{{tableData.duration}}分钟</span></h2>
+                            <p style="float: right">
+                                <span>共:{{tableData.total}}</span><span>分</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="test_content">
+                        <div class="test_content_title">
+                            <h2>单选题</h2>
+                            <p>
+                                <span>共</span><i
+                                    class="content_lit">{{tableData.radionum}}</i><span>题</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="test_content_nr">
+                        <ul>
+
+                            <li :id="forId(index)" v-for="(site,index) in radiorubricList">
+                                <div class="test_content_nr_tt">
+                                    <i>{{index+1}}</i><span>({{site.score}}分)</span>
+                                    <font>{{site.content}}</font>
+                                </div>
+
+                                <div class="test_content_nr_main">
+                                    <ul>
+                                       <span>
+                                        <li class="option" v-for="siteexamanswers in site.examanswers">
+
+                                            <input type="radio" class="radioOrCheck" :name="forId(index)"
+                                                   @click="radioTest(site,siteexamanswers)"
+                                            />
+                                            <label>
+                                                {{siteexamanswers.optiones}}.
+                                                <p class="ue" style="display: inline;">{{siteexamanswers.content}}</p>
+                                            </label>
+                                        </li>
+
+                                    </span></ul>
+                                </div>
+                            </li>
+
+
+                        </ul>
+                    </div>
+
+
+                    <!-------------------------------------------------------------------------------------------->
+
+                    <div class="test_content">
+                        <div class="test_content_title">
+                            <h2>多选题</h2>
+                            <p>
+                                <span>共</span><i
+                                    class="content_lit">{{tableData.multiplenum}}</i><span>题</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="test_content_nr">
+                        <ul>
+
+                            <li :id="forIdduxuan(index)" v-for="(site,index) in duorubricList">
+                                <div class="test_content_nr_tt">
+                                    <i>{{index+1}}</i><span>({{site.score}}分)</span>
+                                    <font>{{site.content}}</font>
+                                </div>
+
+                                <div class="test_content_nr_main"><!--@mouseleave="leave() "-->
+
+                                    <el-checkbox-group v-model="site.checks">
+
+                                    <ul>
+
+                                        <li class="option" v-for="siteexamanswers in site.examanswers"
+                                            @change="duoxuanTest(site)">
+
+
+                                          <!--  <input type="checkbox" class="radioOrCheckduo" :name="forIdduxuan(index)"
+                                                   :value="siteexamanswers.id" v-model="net_car"
+                                            />-->
+
+                                                <el-checkbox :label="siteexamanswers.id" >{{siteexamanswers.optiones}}.{{siteexamanswers.content}}</el-checkbox>
+
+
+
+                                        </li>
+
+
+                                    </ul>
+                                    </el-checkbox-group>
+
+                                </div>
+                            </li>
+
+
+                        </ul>
+                    </div>
+                    <!--判题-->
+                    <div class="test_content">
+                        <div class="test_content_title">
+                            <h2>判断题</h2>
+                            <p>
+                                <span>共</span><i
+                                    class="content_lit">{{tableData.judgenum}}</i><span>题</span>
+                            </p>
+                        </div>
+
+                    </div>
+                    <div class="test_content_nr">
+                        <ul>
+                            <li :id="forIdpanduan(index)" v-for="(site,index) in judgerubricList">
+                                <div class="test_content_nr_tt">
+                                    <i>{{index+1}}</i><span>({{site.score}}分)</span>
+                                    <font>{{site.content}}</font>
+                                </div>
+                                <div class="test_content_nr_main">
+                                    <ul>
+
+                                        <li class="option">
+
+                                            <input type="radio" class="radioOrCheckpanduan" :name="forIdpanduan(index)"
+                                                   @click="panduanTestdui(site)"
+                                            />
+                                            <label>
+                                                <p class="ue" style="display: inline;">正确</p>
+                                            </label>
+                                        </li>
+                                        <li class="option">
+
+                                            <input type="radio" class="radioOrCheckpanduan" :name="forIdpanduan(index)"
+                                                   @click="panduanTestcuo(site)"
+                                            />
+                                            <label>
+                                                <p class="ue" style="display: inline;">错误</p>
+                                            </label>
+                                        </li>
+
+                                    </ul>
+                                </div>
+                            </li>
+
+
+                        </ul>
+                    </div>
+                    <!--填空题-->
+                    <div class="test_content">
+                        <div class="test_content_title">
+                            <h2>填空题</h2>
+                            <p>
+                                <span>共</span><i
+                                    class="content_lit">{{tableData.fillnum}}</i><span>题</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="test_content_nr">
+                        <ul>
+                            <li :id="forIdtiankong(index)" v-for="(site,index) in packrubricList">
+                                <div class="test_content_nr_tt">
+                                    <i>{{index+1}}</i><span>({{site.score}}分)</span>
+                                    <font>{{site.content}}</font>
+                                </div>
+                                <div class="test_content_nr_main">
+                                    答案:
+                                    <el-input
+                                            type="textarea"
+                                            v-model="site.examanswers"
+                                            autosize
+                                            placeholder="请输入答案"
+                                            @change="tiankongtest(site)"
+                                    >
+                                    </el-input>
+                                    每个空的答案用逗号隔开,比如:Javaweb,Javaoop,Mybatis
+                                </div>
+                            </li>
+
+
+                        </ul>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+        <div class="nr_right">
+            <div class="nr_rt_main">
+                <div class="rt_nr1">
+                    <div class="rt_nr1_title">
+                        <h1>
+                            </i>答题卡
+                        </h1>
+                        <p class="test_time">
+                            <b class="alt-1" id="tmesss">01:40</b>
+                        </p>
+                    </div>
+
+                    <div class="rt_content">
+                        <div class="rt_content_tt">
+                            <h2>单选题</h2>
+                            <p>
+                                <span>共</span><i
+                                    class="content_lit">{{tableData.radionum}}</i><span>题</span>
+                            </p>
+                        </div>
+                        <div class="rt_content_nr answerSheet">
+                            <ul>
+                                <li v-for="n in radionum"><a :href="forIdd(n-1)">{{n}}</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="rt_content">
+                        <div class="rt_content_tt">
+                            <h2>多选题</h2>
+                            <p>
+                                <span>共</span><i class="content_lit">{{tableData.multiplenum}}</i><span>题</span>
+                            </p>
+                        </div>
+                        <div class="rt_content_nr answerSheet">
+                            <ul>
+
+                                <li v-for="n in duorubricnum"><a :href="forIddduoxuan(n-1)">{{n}}</a></li>
+
+
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="rt_content">
+                        <div class="rt_content_tt">
+                            <h2>判断题</h2>
+                            <p>
+                                <span>共</span><i
+                                    class="content_lit">{{tableData.judgenum}}</i><span>题</span>
+                            </p>
+                        </div>
+                        <div class="rt_content_nr answerSheet">
+                            <ul>
+                                <li v-for="n in panduantinum"><a :href="forIdpanduanp(n-1)">{{n}}</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="rt_content">
+                        <div class="rt_content_tt">
+                            <h2>填空题</h2>
+                            <p>
+                                <span>共</span><i
+                                    class="content_lit">{{tableData.fillnum}}</i><span>题</span>
+                            </p>
+                        </div>
+                        <div class="rt_content_nr answerSheet">
+                            <ul>
+                                <li v-for="n in tiankongnum"><a :href="forIdtiankongtt(n-1)">{{n}}</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!--nr end-->
+    <div class="foot"></div>
+</div>
+
+<script src="js/jquery-1.11.3.min.js"></script>
+<script src="js/jquery.easy-pie-chart.js"></script>
+<!--时间js-->
+<script src="js/jquery.countdown.js"></script>
+<script>
+    window.jQuery(function ($) {
+        "use strict";
+
+        $('time').countDown({
+            with_separators: false
+        });
+        $('.alt-1').countDown({
+            css_class: 'countdown-alt-1'
+        });
+        $('.alt-2').countDown({
+            css_class: 'countdown-alt-2'
+        });
+
+    });
+    $(function () {
+        $('li.option label').click(function () {
+            debugger;
+            var examId = $(this).closest('.test_content_nr_main').closest('li').attr('id'); // 得到题目ID
+            var cardLi = $('a[href=#' + examId + ']'); // 根据题目ID找到对应答题卡
+            // 设置已答题
+            if (!cardLi.hasClass('hasBeenAnswer')) {
+                cardLi.addClass('hasBeenAnswer');
+            }
+
+        });
+    });
+
+    function parseUrl() {
+        var url = location.href;
+        var i = url.indexOf('?');
+        if (i == -1) return;
+        var querystr = url.substr(i + 1);
+        var arr1 = querystr.split('&');
+        var arr2 = new Object();
+        for (i in arr1) {
+            var ta = arr1[i].split('=');
+            arr2[ta[0]] = ta[1];
+        }
+        return arr2;
+    }
+
+    var v = parseUrl();//解析所有参数
+    axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
+    let userid = sessionStorage.getItem("userid")
+    new Vue({
+        el: "#app",
+        data: {
+            net_car1: [],
+            net_car: [],
+            tableData: [{}],
+            radionum: "",
+            duorubricnum: '',
+            panduantinum: '',
+            tiankongnum: '',
+            daoTime: "",
+            radiorubricList: [{}],
+            duorubricList: [{}],
+            packrubricList: [{}],
+            judgerubricList: [{}]
+
+
+        },
+        mounted: function () {
+            this.query();
+            // this.querycourse();
+            /* this.queryrubric();*/
+
+        },
+        methods: {
+            /*点击交卷*/
+            endtest(){
+             alert();
+            },
+            query() {
+                let testid = v['name'];
+                let params = new URLSearchParams();
+                params.append("examparper", testid);
+                axios({
+                    method: 'post',
+                    url: '/api/exam/examrubric/queryexamrubricer',
+                    data: params,
+
+                }).then(res => {
+                    //res = res.data.examrubricList;
+                    this.radiorubricList = res.data.radiorubricList;
+
+                    this.duorubricList = res.data.duorubricList.map(item => {
+                        item.checks=[];
+                        return item;
+                    });
+
+                    this.packrubricList = res.data.packrubricList;
+                    this.judgerubricList = res.data.judgerubricList;
+                    this.tableData = res.data.parpercontent;
+                    this.radionum = res.data.parpercontent.radionum;
+                    this.duorubricnum = res.data.parpercontent.multiplenum;
+                    this.panduantinum = res.data.parpercontent.judgenum;
+                    this.tiankongnum = res.data.parpercontent.fillnum;
+
+                })
+            },
+            /*点击单选按钮*/
+            radioTest(site, siteexamanswers) {
+                let params = new URLSearchParams();
+                params.append("studentId", userid);
+                params.append("examparperId", this.tableData.id);
+                params.append("examrubricId", site.id);
+                params.append("score", site.score);
+                params.append("selectanswerId", siteexamanswers.id);
+
+                axios({
+                    method: 'post',
+                    url: '/api/exam/examrubric/examend',
+                    data: params,
+
+                }).then(res => {
+                    console.log(res);
+
+                })
+            },
+            /*点正确按钮*/
+            panduanTestdui(site) {
+                let params = new URLSearchParams();
+                params.append("studentId", userid);
+                params.append("examparperId", this.tableData.id);
+                params.append("score", site.score);
+                params.append("examrubricId", site.id);
+                params.append("selectanswerId", "正确");
+                axios({
+                    method: 'post',
+                    url: '/api/exam/examrubric/examend',
+                    data: params,
+
+                }).then(res => {
+                    console.log(res);
+
+                })
+            },
+            /*点错误按钮*/
+            panduanTestcuo(site) {
+                let params = new URLSearchParams();
+                params.append("studentId", userid);
+                params.append("examparperId", this.tableData.id);
+                params.append("score", site.score);
+                params.append("examrubricId", site.id);
+                params.append("selectanswerId", "错误");
+                axios({
+                    method: 'post',
+                    url: '/api/exam/examrubric/examend',
+                    data: params,
+
+                }).then(res => {
+                    console.log(res);
+
+                })
+            },
+            /*填空更改之后触发*/
+            tiankongtest(site) {
+                let params = new URLSearchParams();
+                params.append("studentId", userid);
+                params.append("examparperId", this.tableData.id);
+                params.append("score", site.score);
+                params.append("examrubricId", site.id);
+                params.append("selectanswerId", site.examanswers);
+                axios({
+                    method: 'post',
+                    url: '/api/exam/examrubric/examend',
+                    data: params,
+
+                }).then(res => {
+
+                    console.log(res);
+                })
+            },
+            /*多选题*/
+            duoxuanTest(site) {
+                let params = new URLSearchParams();
+                params.append("studentId", userid);
+                params.append("examparperId", this.tableData.id);
+                params.append("examrubricId", site.id);
+                params.append("score", site.score);
+                params.append("selectanswerId", site.checks);
+                axios({
+                    method: 'post',
+                    url: '/api/exam/examrubric/examend',
+                    data: params,
+
+                }).then(res => {
+
+                    console.log(res);
+                })
+            },
+            /*鼠标移出*/
+            leave() {
+                this.net_car1 = [];
+                console.log("空" + this.net_car1);
+            },
+
+            forId: function (index) {
+                return "qu_0_" + index
+            },
+            forIdduxuan: function (index) {
+                return "qu_1_" + index
+            },
+            forIdpanduan: function (index) {
+                return "qu_2_" + index
+            }, forIdtiankong: function (index) {
+                return "qu_3_" + index
+            },
+            forIdd: function (index) {
+                return "#qu_0_" + index
+            },
+            forIddduoxuan: function (index) {
+                return "#qu_1_" + index
+            },
+            forIdpanduanp: function (index) {
+                return "#qu_2_" + index
+            }, forIdtiankongtt: function (index) {
+                return "#qu_3_" + index
+            }
+
+        }
+    })
+
+</script>
+</body>
+</html>
