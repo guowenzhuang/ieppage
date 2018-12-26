@@ -596,35 +596,37 @@
 						return '';
 					},
 					add1: function() {
-						if (this.sid == "" || this.sid == null) {
-							window.location.href =
-								"\\login.html?callback-url=http://127.0.0.1/student/curricular/courses/show.html?courId=" + this.courId;
+						if (sessionStorage.getItem("access_token") != null) {
+
+
+                            if (this.baoming == "立即参加") {
+
+                                axios({
+                                    method: 'post',
+                                    url: `/api/student/studentPart/add`,
+                                    params: {
+                                        courId: this.courId,
+                                        sid: this.sid,
+
+                                    }
+                                }).then(res => {
+                                    //http://localhost/ieppage/student/curricular/courses/show.html
+
+                                    this.people();
+                                    //this.courId = res.data;
+                                    if (res.data.success == true) {
+                                        this.baoming = res.data.message;
+
+                                    } else {
+                                        this.baoming = res.data.message;
+                                    }
+                                })
+                            } else if (this.baoming = "进入学习") {
+                                window.location.href = "study.html?courId=" + this.courId;
+                            }
 						} else {
-							if (this.baoming == "立即参加") {
-								
-								axios({
-									method: 'post',
-									url: `/api/student/studentPart/add`,
-									params: {
-										courId: this.courId,
-										sid: this.sid,
-
-									}
-								}).then(res => {
-									//http://localhost/ieppage/student/curricular/courses/show.html
-
-									this.people();
-									//this.courId = res.data;
-									if (res.data.success == true) {
-										this.baoming = res.data.message;
-
-									} else {
-										this.baoming = res.data.message;
-									}
-								})
-							} else if (this.baoming = "进入学习") {
-								window.location.href = "study.html?courId=" + this.courId;
-							}
+                            window.location.href =
+                                "\\login.html?callback-url=http://127.0.0.1/student/curricular/courses/show.html?courId=" + this.courId;
 						}
 
 					},
@@ -655,7 +657,7 @@
 							//1.未登录this.baoming显示立即参加
 							//2.已登录未参加本门课程this.baoming显示立即参加
 							//3.已登录已参加本门课程this.baoming显示进入学习
-							if (this.sid != "" && this.sid != null) {
+							if (sessionStorage.getItem("access_token")!= "" && sessionStorage.getItem("access_token") != null) {
 
 								axios({
 									method: 'get',
