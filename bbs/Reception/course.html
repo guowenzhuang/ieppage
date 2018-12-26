@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>讨论区 - 智慧教学平台</title>
+		<link rel="stylesheet" href="../static/font-awesome//4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="../static/highlight.js/9.8.0/monokai-sublime.min.css">
+		<link rel="stylesheet" href="../app/css/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+		<link rel="stylesheet" href="../app/css/libs/katex/0.6.0/katex.min.css">
+		<link rel="stylesheet" href="../app/css/libs/videojs/5.11.7/video-js.min.css">
+		<link rel="stylesheet" href="../app/css/dest/styles.css?=2016121272249">
+
+		<link rel="stylesheet" type="text/css" href="../css/bootstrap-theme.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/muke.css">
+		<link rel="stylesheet" href="../css/index.css" />
+		<script src="../js/jquery.min.js"></script>
+		<script src="../js/vue.min.js"></script>
+		<script src="../js/axios.js"></script>
+		<script src="../js/index.js"></script>
+
+		<style>
+			.el-row {
+    margin-bottom: 20px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  .el-col {
+    border-radius: 4px;
+  }
+  .bg-purple-dark {
+    background: #99a9bf;
+  }
+  .bg-purple {
+    background: #d3dce6;
+  }
+  .bg-purple-light {
+    background: #e5e9f2;
+  }
+  .grid-content {
+    border-radius: 4px;
+    min-height: 36px;
+  }
+  .row-bg {
+    padding: 10px 0;
+    background-color: #f9fafc;
+  }
+</style>
+		<script type="text/javascript">
+
+		</script>
+	</head>
+	<body>
+		<div class="tab-content" id="course">
+			<el-button type="primary">发起主题</el-button>
+			<br />
+			<hr />
+			<h4>子版块</h4>
+			<br />
+			<hr />
+			<div>
+				<ul class="row question-items" v-for="type in typeList">
+					<li class="question-item">
+						<div class="col-md-10">
+							<div class="col-sm-12">
+								<h4>
+									<a class="question-item-title" target="_blank">{{type.typeName}}</a>
+								</h4>
+								<div class="question-item-summary">
+									<div class="user-username ">
+										<a class="avatar" href="#" target="_blank">{{type.typeDescribe}}</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<br />
+			<br />
+
+			<h4>全部主题</h4>
+			<br />
+			<hr />
+			<div>
+				<ul v-for="post in postList" class="row question-items" :data="postList.slice((currentPage-1)*pagesize,currentPage*pagesize)">
+					<li class="question-item">
+						<div class="col-md-10">
+							<div class="col-sm-12">
+								<h4>
+									<a class="question-item-title" target="_blank">{{post.postTitle}}</a>
+								</h4>
+								<div class="question-item-summary">
+									<div class="user-username ">
+										<!-- 用户名称 -->
+										<a class="avatar" href="#" target="_blank">用户名</a>
+									</div>
+									<span class="question-item-date">{{post.replyTime}}</span>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-2 question-item-rank">
+							<div class="question-item-answered">
+								<div>{{post.replyLikenum}}</div>
+								<div>点赞</div>
+							</div>
+							<div class="question-item-views">
+								<div>{{post.replyBrowse}}</div>
+								<div>浏览数</div>
+							</div>
+						</div>
+					</li>
+				</ul>
+
+
+				<!-- 分页条-->
+				<el-pagination background layout="prev, pager, next" @current-change="current_change" :total="total">
+				</el-pagination>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		var course = new Vue({
+			el: "#course",
+
+			mounted: function() {
+				this.queryPost();
+				this.queryType();
+			},
+			data() {
+				return {
+					typeName: "",
+					orderBy: "replyTime",
+					courseId: "1",
+					total: 50, //默认数据总数
+					pagesize: 10, //每页的数据条数
+					currentPage: 1, //默认开始页面
+					postList: [],
+					typeList: []
+				}
+			},
+			methods: {
+				queryPost() {
+					let params = new URLSearchParams();
+					params.append("typeName", this.typeName);
+					params.append("page", this.currentPage);
+					params.append("rows", this.pagesize);
+					params.append("orderBy", this.orderBy);
+					params.append("courseId", this.courseId);
+					axios({
+						method: 'post',
+						url: '/api/bbs/coursepost/getAllCoursePost',
+						data: params,
+						headers: {
+							//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
+						}
+					}).then(res => {
+						res = res.data;
+						this.postList = res.rows;
+						this.total = res.total;
+						console.log('posts==>' + this.postList);
+					})
+
+				},
+				current_change: function(currentPage) {
+					this.currentPage = currentPage;
+					this.queryPost();
+				},
+				queryType() {
+					axios({
+						method: 'post',
+						url: '/api/bbs/coursetype/getAllType',
+						headers: {
+							//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
+						}
+					}).then(res => {
+						res = res.data;
+						this.typeList = res;
+						console.log('typeList==>' + this.typeList);
+					})
+				}
+			}
+		})
+	</script>
+</html>
