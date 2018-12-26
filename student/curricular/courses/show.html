@@ -101,7 +101,7 @@
 					<div class="content">
 
 						<div class="media-left bootcamp-courses-media">
-							<img style="width: 410px;height: 268px" class="media-object" src="../img/002.jpg">
+							<img style="width: 410px;height: 268px" class="media-object" :src="courPicurl">
 						</div>
 
 						<div class="media-body bootcamp-courses-body">
@@ -643,6 +643,7 @@
 							console.log(res);
 							console.log(res.courContent);
 							this.courName = res.courName;
+							this.courPicurl=res.courPicurl;
 							this.courContent = res.courContent;
 							this.courDetails = res.courDetails;
 							this.courTarget = res.courTarget;
