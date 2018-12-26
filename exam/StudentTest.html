@@ -66,6 +66,7 @@
 </div>
 <script>
     axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
+    let userid = sessionStorage.getItem("userid");
     new Vue({
         el: "#app",
         data: {
@@ -95,8 +96,9 @@
             handltest(row) {
                 let token = sessionStorage.getItem("access_token")
                 if (token) {
-                    console.log("token" + token);
+
                     let params = new URLSearchParams();
+                    params.append("studentid", userid);
                     params.append("parerid", row.id);
                     params.append("begintime", new Date(row.examtime));
                     params.append("examtime", row.duration);

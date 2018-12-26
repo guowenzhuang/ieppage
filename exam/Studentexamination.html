@@ -37,7 +37,7 @@
                 <form action="" method="post">
                     <div class="test_title">
                         <p class="test_time">
-                            <b class="alt-1">01:40</b>
+                            <b class="alt-1" v-text="keepTime"></b>
                         </p>
                         <font><input type="button" name="test_jiaojuan" value="交卷" @click="endtest" ></font>
                     </div>
@@ -126,7 +126,7 @@
                                                    :value="siteexamanswers.id" v-model="net_car"
                                             />-->
 
-                                                <el-checkbox :label="siteexamanswers.id" >{{siteexamanswers.optiones}}.{{siteexamanswers.content}}</el-checkbox>
+                                                <el-checkbox :label="siteexamanswers.id" border>{{siteexamanswers.optiones}}.{{siteexamanswers.content}}</el-checkbox>
 
 
 
@@ -236,7 +236,7 @@
                             </i>答题卡
                         </h1>
                         <p class="test_time">
-                            <b class="alt-1" id="tmesss">01:40</b>
+                            <b class="alt-1" id="tmesss" v-text="keepTime"></b>
                         </p>
                     </div>
 
@@ -307,6 +307,21 @@
     </div>
     <!--nr end-->
     <div class="foot"></div>
+
+    <!--考试结束对话框-->
+    <el-dialog
+            title="考试结束"
+            :visible.sync="centerDialogVisible"
+            width="30%"
+            :show-close="false"
+            :close-on-press-escape="false"
+            :close-on-click-modal="false"
+            center>
+        <span>考试已结束,最终得分为{{finalScore}}</span>
+        <span slot="footer" class="dialog-footer">
+    <el-button type="primary" @click="kaoshijieshu">确 定</el-button>
+  </span>
+    </el-dialog>
 </div>
 
 <script src="js/jquery-1.11.3.min.js"></script>
@@ -357,12 +372,19 @@
 
     var v = parseUrl();//解析所有参数
     axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
-    let userid = sessionStorage.getItem("userid")
+    let userid = sessionStorage.getItem("userid");
     new Vue({
         el: "#app",
         data: {
-            net_car1: [],
-            net_car: [],
+            //最终得分
+            finalScore:"",
+            centerDialogVisible: false,
+           /*倒计时*/
+            keepTime: '倒计时',
+            limittime:'' ,
+            settime: '',
+            flag: false,
+            /*倒计时*/
             tableData: [{}],
             radionum: "",
             duorubricnum: '',
@@ -378,14 +400,33 @@
         },
         mounted: function () {
             this.query();
+
             // this.querycourse();
             /* this.queryrubric();*/
 
         },
         methods: {
+            /*确认考试结束*/
+            kaoshijieshu(){
+                window.location.href = "/exam/StudentTest.html?"
+            },
             /*点击交卷*/
             endtest(){
-             alert();
+                let params = new URLSearchParams();
+                params.append("studentId", userid);
+                params.append("examparperId", this.tableData.id);
+                axios({
+                    method: 'post',
+                    url: '/api/exam/examrubric/examination',
+                    data: params,
+                }).then(res => {
+
+                        this.finalScore=res.data.remark;
+                        this.centerDialogVisible = true;
+
+
+
+                })
             },
             query() {
                 let testid = v['name'];
@@ -412,6 +453,9 @@
                     this.duorubricnum = res.data.parpercontent.multiplenum;
                     this.panduantinum = res.data.parpercontent.judgenum;
                     this.tiankongnum = res.data.parpercontent.fillnum;
+                    this.limittime=res.data.downtime;
+                    console.log("时间"+this.limittime);
+                    this.StartCountDown();
 
                 })
             },
@@ -506,11 +550,52 @@
                     console.log(res);
                 })
             },
-            /*鼠标移出*/
-            leave() {
-                this.net_car1 = [];
-                console.log("空" + this.net_car1);
+            /*倒计时*/
+            StartCountDown() {
+                var mydate = new Date();
+                mydate.setMinutes(mydate.getMinutes() + this.limittime);
+                this.settime=mydate;
+
+                let time = setInterval(() => {
+                    if (this.flag == true) {
+                        clearInterval(time)
+                    }
+                    this.timeDown()
+                }, 100)
             },
+
+            timeDown() {
+                const endTime = new Date(this.settime);
+                const nowTime = new Date();
+                let leftTime = parseInt((endTime.getTime() - nowTime.getTime()) / 1000);
+                let d = parseInt(leftTime / (24 * 60 * 60));
+                let h = this.formate(parseInt(leftTime / (60 * 60) % 24));
+                let m = this.formate(parseInt(leftTime / 60 % 60));
+                let s = this.formate(parseInt(leftTime % 60));
+                if (leftTime <= 0) {
+                    this.flag = true;
+                    let params = new URLSearchParams();
+                    params.append("studentId", userid);
+                    params.append("examparperId", this.tableData.id);
+                    axios({
+                        method: 'post',
+                        url: '/api/exam/examrubric/examination',
+                        data: params,
+                    }).then(res => {
+                        this.finalScore=res.data.remark;
+                        this.centerDialogVisible = true;
+                    })
+                }
+                this.keepTime = `${h}:${m}:${s}`;
+            },
+            formate(time) {
+                if (time >= 10) {
+                    return time
+                } else {
+                    return `0${time}`
+                }
+            },
+            /*倒计时*/
 
             forId: function (index) {
                 return "qu_0_" + index
