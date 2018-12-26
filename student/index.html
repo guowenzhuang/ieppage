@@ -153,7 +153,7 @@
 					<div class="width_224 height172 float_l margin_r10 border_shadow jingguoxianshi over_pos bianshou" v-for="r in recommended">
 						<a class="color_black" :href="'curricular/courses/show.html?courId='+r.courId">
 						<div class="width100 float_l img_100 z_inx_1">
-							<img src="img/uiz7.jpg">
+							<img :src="r.courPicurl">
 						</div>
 						<div class="img_backg2 donghua">
 							<span class="margin_t15 float_l ">{{r.courName}}</span>
