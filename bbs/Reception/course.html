@@ -1,21 +1,17 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html>
 	<head>
 		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta name="author" content="Lei Shi">
-		<meta http-equiv="Cache-Control" content="o-transform">
-		<meta http-equiv="Cache-Control" content="no-siteapp">
-		<title>发表新帖 - 智慧教育平台</title>
-
-		<link rel="shortcut icon" href="favicon.ico">
+		<title>讨论区 - 智慧教学平台</title>
 		<link rel="stylesheet" href="../static/font-awesome//4.7.0/css/font-awesome.min.css">
 		<link rel="stylesheet" href="../static/highlight.js/9.8.0/monokai-sublime.min.css">
 		<link rel="stylesheet" href="../app/css/libs/bootstrap/3.3.7/css/bootstrap.min.css">
 		<link rel="stylesheet" href="../app/css/libs/katex/0.6.0/katex.min.css">
 		<link rel="stylesheet" href="../app/css/libs/videojs/5.11.7/video-js.min.css">
 		<link rel="stylesheet" href="../app/css/dest/styles.css?=2016121272249">
+
+		<link rel="stylesheet" type="text/css" href="../css/bootstrap-theme.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/muke.css">
 		<link rel="stylesheet" href="../css/index.css" />
 		<script src="../js/jquery.min.js"></script>
 		<script src="../js/vue.min.js"></script>
@@ -23,242 +19,167 @@
 		<script src="../js/index.js"></script>
 
 		<style>
+			.el-row {
+    margin-bottom: 20px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  .el-col {
+    border-radius: 4px;
+  }
+  .bg-purple-dark {
+    background: #99a9bf;
+  }
+  .bg-purple {
+    background: #d3dce6;
+  }
+  .bg-purple-light {
+    background: #e5e9f2;
+  }
+  .grid-content {
+    border-radius: 4px;
+    min-height: 36px;
+  }
+  .row-bg {
+    padding: 10px 0;
+    background-color: #f9fafc;
+  }
+</style>
+		<script type="text/javascript">
 
-			/* modal 模态框*/
-        #invite-user .modal-body {
-            overflow: hidden;
-        }
-		#invite-user .modal-body .form-label {
-			margin-bottom: 16px;
-			font-size:14px;
-		}
-		#invite-user .modal-body .form-invite {
-			width: 80%;
-			padding: 6px 12px;
-			background-color: #eeeeee;
-			border: 1px solid #cccccc;
-			border-radius: 5px;
-			float: left;
-			margin-right: 10px;
-		}
-		#invite-user .modal-body .msg-modal-style {
-			background-color: #7dd383;
-			margin-top: 10px;
-			padding: 6px 0;
-			text-align: center;
-			width: 100%;
-		}
-		#invite-user .modal-body .modal-flash {
-			position: absolute;
-			top: 53px;
-			right: 74px;
-			z-index: 999;
-		}
-		/* end modal */
-
-        .en-footer {
-            padding: 30px;
-            text-align: center;
-            font-size: 14px;
-        }
-    </style>
-
-
+		</script>
 	</head>
-
 	<body>
-
-
-		<nav class="navbar navbar-default navbar-fixed-top header">
-			<div class="container">
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#header-navbar-collapse"
-					 aria-expanded="false">
-						<span class="sr-only">智慧教学平台</span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
-					<a class="navbar-brand" href="../index.html">
-						<img src="../img/logo_03.png">
-					</a>
-				</div>
-				<div class="collapse navbar-collapse" id="header-navbar-collapse">
-					<ul class="nav navbar-nav">
-						<li class="">
-							<a href="../questions/index.html">讨论区</a>
-						</li>
-
-					</ul>
-
-
-					<div class="navbar-right btns">
-						<a class="btn btn-default navbar-btn sign-in" data-sign="signin" href="#sign-modal" data-toggle="modal">登录</a>
-						<a class="btn btn-default navbar-btn sign-up" data-sign="signup" href="#sign-modal" data-toggle="modal">注册</a>
-					</div>
-
-					<form class="navbar-form navbar-right" action="../search" method="get" role="search">
-						<div class="form-group">
-							<input type="text" class="form-control" name="search" autocomplete="off" placeholder="搜索 课程/问答">
-						</div>
-					</form>
-				</div>
-			</div>
-		</nav>
-
-
-
-		<div class="container layout layout-margin-top">
-			<div class="row" id="course">
-				<div class="col-md-3 layout-side">
-					<el-col>
-						<el-menu default-active="4" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
-							<el-menu-item index="1">
-								<span slot="title">导航一</span>
-							</el-menu-item>
-							<el-menu-item index="2">
-								<span slot="title">导航二</span>
-							</el-menu-item>
-							<el-menu-item index="3">
-								<span slot="title">导航三</span>
-							</el-menu-item>
-							<el-menu-item index="4">
-								<span slot="title">讨论区</span>
-							</el-menu-item>
-						</el-menu>
-					</el-col>
-				</div>
-				<div class="col-md-9 layout-body">
-
-					<div class="content question-detail">
-						<span>
-							<el-button type="primary">发起主题</el-button>
-						</span>
-						<hr />
-						<p><i>主题板块</i></p>
-						<div>
-							<ul class="row question-items">
-								<li class="question-item">
-									<div class="col-md-10">
-										<div class="col-sm-2 question-item-author">
-											<div class="user-avatar ">
-												<i class="el-icon-question" style="width:20px;height:20px"></i>
-											</div>
-										</div>
-										<div class="col-sm-10">
-											<h4>
-												<a class="question-item-title" v-on:click="jumpPostDetails(post)" target="_blank">
-													板块名称</a>
-											</h4>
-											<div class="question-item-summary">
-												<span class="question-item-date">板块描述</span>
-											</div>
-										</div>
+		<div class="tab-content" id="course">
+			<el-button type="primary">发起主题</el-button>
+			<br />
+			<hr />
+			<h4>子版块</h4>
+			<br />
+			<hr />
+			<div>
+				<ul class="row question-items" v-for="type in typeList">
+					<li class="question-item">
+						<div class="col-md-10">
+							<div class="col-sm-12">
+								<h4>
+									<a class="question-item-title" target="_blank">{{type.typeName}}</a>
+								</h4>
+								<div class="question-item-summary">
+									<div class="user-username ">
+										<a class="avatar" href="#" target="_blank">{{type.typeDescribe}}</a>
 									</div>
-								</li>
-							</ul>
-
-						</div>
-
-					</div>
-
-				</div>
-
-			</div>
-
-			<script type="text/javascript">
-				var course = new Vue({
-					el: "#course",
-					mounted: function() {
-
-					},
-					data() {
-						return {
-
-						}
-					},
-					methods: {
-						handleOpen(key, keyPath) {
-							console.log(key, keyPath);
-						},
-						handleClose(key, keyPath) {
-							console.log(key, keyPath);
-						}
-					}
-				})
-			</script>
-
-		</div>
-
-
-		<div class="footer">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-4 clearfix footer-col">
-						<img src="../img/logo_03.png">
-						<div class="footer-slogan">动手做实验，轻松学编程</div>
-						<div class="col-xs-2">
-							<div class="social-item footer-weixin-item">
-								<i class="fa fa-weixin"></i>
-								<div class="footer-weixin">
-									<img src="../img/footer-weixin.png">
 								</div>
 							</div>
 						</div>
-						<div class="col-xs-2">
-							<div class="social-item footer-qq-item">
-								<i class="fa fa-qq"></i>
-							</div>
-						</div>
-						<div class="col-xs-2">
-							<div class="social-item footer-weibo-item">
-								<a href="#" target="_blank">
-									<i class="fa fa-weibo"></i>
-								</a>
-							</div>
-						</div>
-					</div>
-					<div class="col-xs-6 col-sm-3 col-md-2 footer-col">
-						<div class="col-title">公司</div>
-						<a href="../aboutus/index.html" target="_blank">关于我们</a><br>
-						<a href="../contact/index.html" target="_blank">联系我们</a><br>
-						<a href="#" target="_blank">加入我们</a><br>
-						<a href="#" target="_blank">技术博客</a><br>
-					</div>
-					<div class="col-xs-6 col-sm-3 col-md-2 footer-col">
-						<div class="col-title">合作</div>
-						<a href="../contribute/index.html" target="_blank">我要投稿</a><br>
-						<a href="../labs/index.html" target="_blank">教师合作</a><br>
-						<a href="../edu/index.html" target="_blank">高校合作</a><br>
-						<a href="../friends/index.html" target="_blank">友情链接</a>
-					</div>
-					<div class="col-xs-6 col-sm-3 col-md-2 footer-col">
-						<div class="col-title">服务</div>
-						<a href="../bootcamp/index.html" target="_blank">实战训练营</a><br>
-						<a href="../vip/index.html" target="_blank">会员服务</a><br>
-						<a href="../courses/reports/index.html" target="_blank">实验报告</a><br>
-						<a href="../questions/index.html?tag=%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98" target="_blank">常见问题</a><br>
-						<a href="../privacy/index.html" target="_blank">隐私条款</a>
-					</div>
-					<div class="col-xs-6 col-sm-3 col-md-2 footer-col">
-						<div class="col-title">学习路径</div>
-						<a href="../paths/python/index.html" target="_blank">Python学习路径</a><br>
-						<a href="../paths/linuxdev/index.html" target="_blank">Linux学习路径</a><br>
-						<a href="../paths/bigdata/index.html" target="_blank">大数据学习路径</a><br>
-						<a href="../paths/java/index.html" target="_blank">Java学习路径</a><br>
-						<a href="../paths/php/index.html" target="_blank">PHP学习路径</a><br>
-						<a href="../paths/index.html" , target="_blank">全部</a>
-					</div>
-				</div>
+					</li>
+				</ul>
 			</div>
-			<div class="text-center copyright">
-				<span>Copyright @2013-2016 在线教育</span>
-				<span class="ver-line"> | </span>
-				<a href="#" target="_blank">蜀ICP备00000000号</a>
+			<br />
+			<br />
 
+			<h4>全部主题</h4>
+			<br />
+			<hr />
+			<div>
+				<ul v-for="post in postList" class="row question-items" :data="postList.slice((currentPage-1)*pagesize,currentPage*pagesize)">
+					<li class="question-item">
+						<div class="col-md-10">
+							<div class="col-sm-12">
+								<h4>
+									<a class="question-item-title" target="_blank">{{post.postTitle}}</a>
+								</h4>
+								<div class="question-item-summary">
+									<div class="user-username ">
+										<!-- 用户名称 -->
+										<a class="avatar" href="#" target="_blank">用户名</a>
+									</div>
+									<span class="question-item-date">{{post.replyTime}}</span>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-2 question-item-rank">
+							<div class="question-item-answered">
+								<div>{{post.replyLikenum}}</div>
+								<div>点赞</div>
+							</div>
+							<div class="question-item-views">
+								<div>{{post.replyBrowse}}</div>
+								<div>浏览数</div>
+							</div>
+						</div>
+					</li>
+				</ul>
+
+
+				<!-- 分页条-->
+				<el-pagination background layout="prev, pager, next" @current-change="current_change" :total="total">
+				</el-pagination>
 			</div>
 		</div>
-
 	</body>
+	<script type="text/javascript">
+		var course = new Vue({
+			el: "#course",
 
+			mounted: function() {
+				this.queryPost();
+				this.queryType();
+			},
+			data() {
+				return {
+					typeName: "",
+					orderBy: "replyTime",
+					courseId: "1",
+					total: 50, //默认数据总数
+					pagesize: 10, //每页的数据条数
+					currentPage: 1, //默认开始页面
+					postList: [],
+					typeList: []
+				}
+			},
+			methods: {
+				queryPost() {
+					let params = new URLSearchParams();
+					params.append("typeName", this.typeName);
+					params.append("page", this.currentPage);
+					params.append("rows", this.pagesize);
+					params.append("orderBy", this.orderBy);
+					params.append("courseId", this.courseId);
+					axios({
+						method: 'post',
+						url: '/api/bbs/coursepost/getAllCoursePost',
+						data: params,
+						headers: {
+							//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
+						}
+					}).then(res => {
+						res = res.data;
+						this.postList = res.rows;
+						this.total = res.total;
+						console.log('posts==>' + this.postList);
+					})
+
+				},
+				current_change: function(currentPage) {
+					this.currentPage = currentPage;
+					this.queryPost();
+				},
+				queryType() {
+					axios({
+						method: 'post',
+						url: '/api/bbs/coursetype/getAllType',
+						headers: {
+							//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
+						}
+					}).then(res => {
+						res = res.data;
+						this.typeList = res;
+						console.log('typeList==>' + this.typeList);
+					})
+				}
+			}
+		})
+	</script>
 </html>
