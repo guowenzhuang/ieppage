@@ -588,9 +588,8 @@
 						var r = window.location.search.substr(1).match(reg);
 						if (r != null) {
 							this.courId = decodeURIComponent(r[2]);
-							//console.log(this.courId+"this.courId");
-							
-              sessionStorage.setItem("courId",this.courId);
+							//console.log(this.courId+"this.courId");					
+                             sessionStorage.setItem("courId",this.courId);
 						}
 
 						return '';
