@@ -1,54 +1,63 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-		<link rel="shortcut icon" href="favicon.ico">
-		<link rel="stylesheet" href="../../static/font-awesome//4.7.0/css/font-awesome.min.css">
-		<link rel="stylesheet" href="../../static/highlight.js/9.8.0/monokai-sublime.min.css">
-		<link rel="stylesheet" href="../../app/css/libs/bootstrap/3.3.7/css/bootstrap.min.css">
-		<link rel="stylesheet" href="../../app/css/libs/katex/0.6.0/katex.min.css">
-		<link rel="stylesheet" href="../../app/css/libs/videojs/5.11.7/video-js.min.css">
-		<link rel="stylesheet" href="../../app/css/dest/styles.css?=2016121272249">
-		
-		<link rel="stylesheet" type="text/css" href="../../../bootstrap/css/bootstrap-theme.min.css">
-		<link rel="stylesheet" type="text/css" href="../../../css/muke.css">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" href="../../static/font-awesome//4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../../static/highlight.js/9.8.0/monokai-sublime.min.css">
+    <link rel="stylesheet" href="../../app/css/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../app/css/libs/katex/0.6.0/katex.min.css">
+    <link rel="stylesheet" href="../../app/css/libs/videojs/5.11.7/video-js.min.css">
+    <link rel="stylesheet" href="../../app/css/dest/styles.css?=2016121272249">
 
-		<style>
+    <link rel="stylesheet" type="text/css" href="../../../bootstrap/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/muke.css">
 
-			/* modal 模态框*/
-    #invite-user .modal-body {
-      overflow: hidden;
-    }
-		#invite-user .modal-body .form-label {
-			margin-bottom: 16px;
-			font-size:14px;
-		}
-		#invite-user .modal-body .form-invite {
-			width: 80%;
-			padding: 6px 12px;
-			background-color: #eeeeee;
-			border: 1px solid #cccccc;
-			border-radius: 5px;
-			float: left;
-			margin-right: 10px;
-		}
-		#invite-user .modal-body .msg-modal-style {
-			background-color: #7dd383;
-			margin-top: 10px;
-			padding: 6px 0;
-			text-align: center;
-			width: 100%;
-		}
-		#invite-user .modal-body .modal-flash {
-			position: absolute;
-			top: 53px;
-			right: 74px;
-			z-index: 999;
-		}
-		/* end modal */
+    <link rel="stylesheet" href="/teacher/js/elementui/index.css">
+    <script src="/teacher/js/vue.js"></script>
+    <script src="/teacher/js/elementui/index.js"></script>
+    <script src="/teacher/js/axios.min.js"></script>
+    <style>
+
+        /* modal 模态框*/
+        #invite-user .modal-body {
+            overflow: hidden;
+        }
+
+        #invite-user .modal-body .form-label {
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+
+        #invite-user .modal-body .form-invite {
+            width: 80%;
+            padding: 6px 12px;
+            background-color: #eeeeee;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            float: left;
+            margin-right: 10px;
+        }
+
+        #invite-user .modal-body .msg-modal-style {
+            background-color: #7dd383;
+            margin-top: 10px;
+            padding: 6px 0;
+            text-align: center;
+            width: 100%;
+        }
+
+        #invite-user .modal-body .modal-flash {
+            position: absolute;
+            top: 53px;
+            right: 74px;
+            z-index: 999;
+        }
+
+        /* end modal */
 
         .en-footer {
             padding: 30px;
@@ -57,256 +66,251 @@
         }
     </style>
 
-		<style>
-		a:hover,
-    a:focus {
-        text-decoration: none;
-    }
-    span.label {
-        display: inline-block;
-        margin: 10px 3px 16px 3px;
-        padding: 6px 16px;
-        border: none;
-        font-size: 14px;
-        font-weight: 100;
-    }
-    span.label-default {
-        color: #999;
-        background: none;
-    }
-    span.label-success {
-        color: #0c9;
-        background: #E7F8F2;
-    }
-    .userinfo-banner [data-toggle="tooltip"] {
-        display: inline-block;
-        border-bottom: dashed 1px #999;;
-        color: #999 !important;
-    }
-	.certificate-item {
-		padding-top: 10px;
-	}
-	.certificate-item a {
-		color: #444;
-	}
-</style>
-	</head>
+    <style>
+        a:hover,
+        a:focus {
+            text-decoration: none;
+        }
 
-	<body>
+        span.label {
+            display: inline-block;
+            margin: 10px 3px 16px 3px;
+            padding: 6px 16px;
+            border: none;
+            font-size: 14px;
+            font-weight: 100;
+        }
 
-<!-- 顶部 -->
-		<div class="width100 float_l" style="margin-top: -70px;">
-			<div class="width100 float_l height80 line_hei80">
+        span.label-default {
+            color: #999;
+            background: none;
+        }
 
-				<!-- 顶部左边 -->
-				<div class="float_l">
-					<div class="float_l margin_l20">
-						<a href="#"><img src="../../../img/uiz1.png"></a>
-					</div>
-					<div class="float_l">
-						<ul class="ul_li fon_siz16">
-							<li><a class="color_black" href="../courses/index.html">课程</a></li>
-							<li><a class="color_black" href="">院系</a></li>
-							<li><a class="color_black" href="">名师专栏</a></li>
-						</ul>
-					</div>
-				</div>
+        span.label-success {
+            color: #0c9;
+            background: #E7F8F2;
+        }
 
-				<!-- 顶部右边 -->
-				<div class="float_r">
-					<div class="float_l top_input">
-						<input class="posi_relative" type="text" name="" id="" placeholder="请输入想搜索的内容...">
-						<img class="img_sousuo bianshou" src="../../../img/uiz4.png">
-					</div>
-					<div class="float_l margin_l20">
-						<img src="../../../img/uiz5.png">
-					</div>
-					<div class="float_l margin_l35">
-						<img src="../../../img/uiz6.png">
-					</div>
-					<div class="float_l margin_l30 margin_r40">
-						<a class="btn btn-default navbar-btn sign-in" data-sign="signin" href="#sign-modal" data-toggle="modal">登录</a>
-						<a class="btn btn-default navbar-btn sign-up" data-sign="signup" href="#sign-modal" data-toggle="modal">注册</a>
-					</div>
-				</div>
+        .userinfo-banner [data-toggle="tooltip"] {
+            display: inline-block;
+            border-bottom: dashed 1px #999;;
+            color: #999 !important;
+        }
 
-			</div>
-		</div>
+        .certificate-item {
+            padding-top: 10px;
+        }
 
+        .certificate-item a {
+            color: #444;
+        }
+    </style>
+</head>
 
+<body>
+<div id="app">
+    <!-- 顶部 -->
+    <div class="width100 float_l" style="margin-top: -70px;">
+        <div class="width100 float_l height80 line_hei80">
 
-		<div class="userinfo-banner layout-no-margin-top">
-			<div class="container layout">
-				<div class="row">
-					<div class="col-md-9 clearfix">
-						<div class="pull-left userinfo-banner-avatar">
-							<div class="user-avatar ">
-								<a class="avatar" href="/user/13" target="_blank">
-									<img src="https://dn-simplecloud.xxxxxx.com/gravatarc51ce410c124a10e0db5e4b97fc2af39.png?v=1439957390221&amp;imageView2/1/w/200/h/200">
-								</a>
-								<a class="member-icon" href="/vip" target="_blank">
-									<img src="../../img/vip-icon.png">
-								</a>
-							</div>
-						</div>
-						<div class="pull-left userinfo-banner-details">
-							<div class="userinfo-banner-meta">
-								<div class="user-username ">
-									<a class="username" href="/user/13" target="_blank">用户名</a>
-								</div>
-							</div>
-							<div class="userinfo-banner-status">
-								<span>学生</span>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-3 userinfo-banner-labinfo">
-						<div class="userinfo-banner-level">
-							<img src="../../img/lou-level.png">
-							<div class="userinfo-current-level"><span>195</span> 楼</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		
-		
-		<div class="container layout">
-			<div class="row">
-				<div class="col-md-9 layout-body">
-					<div class="content">
-						<ul class="nav nav-tabs" rolw="tablist">
-							<li role="presentation" class="active">
-								<a href="questions.html" role="tab">讨论</a>
-							</li>
-							<li role="presentation">
-								<a href="course.html" role="tab">课程</a>
-							</li>					
-						</ul>
-						<div class="tab-content">
-							<div role="tabpanel" class="tab-pane active">
-								<div class="row">
-									<div class="col-md-12">
-										<a>
-											<span class="label label-success">发表的主题</span>
-										</a>
-										<a>
-											<span class="label label-default">发表的回复</span>
-										</a>
-									</div>
-								</div>
-								
-								<ul class="row question-items">
-									<!-- 讨论列表 -->
-									<li class="question-item">
-										<div class="col-md-10">
-											<div class="col-sm-2 question-item-author">
-												<div class="user-avatar ">
-													<a class="avatar" href="/user/13" target="_blank">
-														<img src="#">
-													</a>
-													<a class="member-icon" href="/vip" target="_blank">
-														<img src="../../img/vip-icon.png">
-													</a>
-												</div>
-											</div>
-											<div class="col-sm-10">
-												<h4>
-													<a class="question-item-title" href="../../questions/show.html" target="_blank">
-														实验楼高级会员：增加会员课程助教答疑服务和训练营5折优惠</a>
-												</h4>
-												<div class="question-item-summary">
-													<div class="user-username ">
-														<a class="username" href="/user/13" target="_blank">
-															石
-														</a>
-														<span class="user-level">L195</span>
-													</div>
-													<span class="question-item-date">2016-12-16 12:49</span>
-													最后回复 <span class="question-item-date">
-														<div class="user-username ">
-															<a class="username" href="/user/3858" target="_blank">
-																Cloud君
-															</a>
-															<span class="user-level">L28</span>
-														</div>
-													</span>
-												</div>
-											</div>
-										</div>
-										<div class="col-md-2 question-item-rank">
-											<div class="question-item-answered">
-												<div>1</div>
-												<div>回复</div>
-											</div>
-											<div class="question-item-views">
-												<div>47</div>
-												<div>查看</div>
-											</div>
-										</div>
-									</li>			
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
-				
-				
-				<div class="col-md-3 layout-side">
+            <!-- 顶部左边 -->
+            <div class="float_l">
+                <div class="float_l margin_l20">
+                    <a href="#"><img src="../../../img/uiz1.png"></a>
+                </div>
+                <div class="float_l">
+                    <ul class="ul_li fon_siz16">
+                        <li><a class="color_black" href="/student/curricular/courses/index.html">课程</a></li>
+                        <li><a class="color_black" href="">院系</a></li>
+                        <li><a class="color_black" href="">名师专栏</a></li>
+                    </ul>
+                </div>
+            </div>
 
-					<a class="side-sda apply-git" href="http://git.xxxxxx.com/shilei" target="_blank">
-						<img src="../../img/my-git.png">
-						<span>代码库</span>
-					</a>
+            <!-- 顶部右边 -->
+            <div class="float_r">
+                <div class="float_l top_input">
+                    <input class="posi_relative" type="text" name="" id="" placeholder="请输入想搜索的内容...">
+                    <img class="img_sousuo bianshou" src="../../../img/uiz4.png">
+                </div>
+                <div class="float_l margin_l20">
+                    <img src="../../../img/uiz5.png">
+                </div>
+                <div class="float_l margin_l35">
+                    <img src="../../../img/uiz6.png">
+                </div>
+                <div class="float_l margin_l30 margin_r40">
+                    <a class="btn btn-default navbar-btn sign-in" data-sign="signin" href="#sign-modal"
+                       data-toggle="modal">登录</a>
+                    <a class="btn btn-default navbar-btn sign-up" data-sign="signup" href="#sign-modal"
+                       data-toggle="modal">注册</a>
+                </div>
+            </div>
 
-					<div class="sidebox user-visitors">
-						<div class="sidebox-header">
-							<h4 class="sidebox-title">最近来访</h4>
-						</div>
-						<div class="sidebox-body">
-							<div class="col-dm-12">
-								<a class="row" href="/user/345538">
-									<div class="col-xs-2">
-										<img src="https://dn-simplecloud.xxxxxx.com/gravatar345538.png?v=1483141057082&amp;imageView2/1/w/200/h/200">
-									</div>
-									<div class="col-xs-10">
-										<div>PKU_Hao</div>
-										<div>1小时前</div>
-									</div>
-								</a>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<!-- 页脚 -->
-		<div class="width100 float_l padding_t30 height193">
-			<div class="width_1200 margin_auto">
-				<div class="width100 float_l text_c margin_b30">
-					<a class="img_backg5" href="#"></a>
-					<a class="img_backg6 posi_relative wexinmaxianshi" href="#"><i class="weixinweima dis_none"><img src="../../../img/idx-btm.png"></i></a>
-					<a class="img_backg7" href="#"></a>
-					<a class="img_backg8" href="#"></a>
-				</div>
-				<div class="width100 float_l text_c yejiao color_gray">
-					<a>关于我们</a>
-					<a>企业合作</a>
-					<a>人才招聘</a>
-					<a>讲师招募</a>
-					<a>联系我们</a>
-					<a>意见反馈</a>
-					<a>友情链接</a>
-				</div>
-				<div class="width100 float_l text_c border_t margin_t20 padding_t20 color_gray fon_siz12">
-					<span>© 2016 imoroc.com 京ICP备13042132号</span>
-				</div>
-			</div>
-		</div>
+        </div>
+    </div>
 
 
+    <div class="userinfo-banner layout-no-margin-top">
+        <div class="container layout">
+            <div class="row">
+                <div class="col-md-9 clearfix">
+                    <div class="pull-left userinfo-banner-avatar">
+                        <div class="user-avatar ">
+                            <a class="avatar" href="javascript:void(0)">
+                                <img :src="active.photo">
+                            </a>
+                            <!--<a class="member-icon" href="/vip" target="_blank">
+                                <img src="../../img/vip-icon.png">
+                            </a>-->
+                        </div>
+                    </div>
+                    <div class="pull-left userinfo-banner-details">
+                        <div class="userinfo-banner-meta">
+                            <div class="user-username ">
+                                <a class="username" href="/user/13" target="_blank">用户名</a>
+                            </div>
+                        </div>
+                        <div class="userinfo-banner-status">
+                            <span>{{active.loginName}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 userinfo-banner-labinfo">
+                    <div class="userinfo-banner-level">
+                        <img src="../../img/lou-level.png">
+                        <div class="userinfo-current-level"><span>195</span> 楼</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
-	</body>
+    <div class="container layout">
+        <div class="row">
+            <div class="col-md-9 layout-body">
+                <div class="content">
+                    <ul class="nav nav-tabs" rolw="tablist">
+                        <li role="presentation" class="active">
+                            <a href="javascript:void(0)" role="tab">讨论</a>
+                        </li>
+                        <li role="presentation">
+                            <a href="course.html" role="tab">课程</a>
+                        </li>
+                    </ul>
+                    <div>
+                        <el-tabs v-model="activeTabValue" type="card">
+                            <el-tab-pane label="发表的主题" name="zt">
+
+                                <el-card shadow="hover" v-for="(item,i) in themeData" :key="item.postId"
+                                         style="margin-bottom: 20px;" class="box-card">
+                                    <div>
+                                        <a href="#" style="font-size: 18px;">{{item.postTitle}}</a>
+                                    </div>
+                                    <div style="margin-top: 16px;">
+                                        <div>{{userName}}发表于:{{item.replyTime}}</div>
+                                        <div style="float: right">
+                                            <i class="glyphicon glyphicon-thumbs-up"></i>
+                                            {{item.replyLikenum}}
+                                        </div>
+                                    </div>
+                                </el-card>
+
+                                <el-pagination
+                                        layout="prev, pager, next"
+                                        :current-page.sync="themeQuery.page"
+                                        :page-size="themeQuery.rows"
+                                        @current-change="queryTheme"
+                                        :total="themeQuery.total">
+                                </el-pagination>
+                            </el-tab-pane>
+                            <el-tab-pane label="发表的回复" name="hf">
+                                <el-card shadow="hover" :key="item.replyId" v-for="(item,i) in replyData"
+                                         style="margin-bottom: 20px;" class="box-card">
+                                    <div style=" white-space: nowrap; text-overflow:ellipsis; overflow:hidden; ">
+                                        <a href="#" style="font-size: 16px;">
+                                            {{item.replyContent}}
+                                        </a>
+                                    </div>
+                                    <div style="margin-top: 16px;">
+                                        <div>{{userName}}回复于:{{item.replyTime}}</div>
+                                        <div style="float: right">
+                                            <i class="glyphicon glyphicon-thumbs-up"></i>
+                                            {{item.replyLikenum}}
+                                        </div>
+                                    </div>
+                                </el-card>
+
+                                <el-pagination
+                                        layout="prev, pager, next"
+                                        :current-page.sync="replyQuery.page"
+                                        :page-size="replyQuery.rows"
+                                        @current-change="queryReply"
+                                        :total="replyQuery.total">
+                                </el-pagination>
+                            </el-tab-pane>
+                            <el-tab-pane label="发表的评价" name="pl">
+                                <el-card shadow="hover" :key="item.mid" v-for="(item,i) in evaluationData"
+                                         style="margin-bottom: 20px;" class="box-card">
+                                    <div style=" white-space: nowrap; text-overflow:ellipsis; overflow:hidden; ">
+                                        <a href="#" style="font-size: 16px;">
+                                            {{item.content}}
+                                        </a>
+                                    </div>
+                                    <div style="margin-top: 16px;">
+                                        <div>{{userName}}回复于:{{item.mtime}}</div>
+                                        <div style="float: right">
+                                            <i class="glyphicon glyphicon-thumbs-up"></i>
+                                            {{item.praise}}
+                                        </div>
+                                    </div>
+                                </el-card>
+
+                                <el-pagination
+                                        layout="prev, pager, next"
+                                        :current-page.sync="evaluationQuery.page"
+                                        :page-size="evaluationQuery.rows"
+                                        @current-change="queryEvaluation"
+                                        :total="evaluationQuery.total">
+                                </el-pagination>
+                            </el-tab-pane>
+                        </el-tabs>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <div class="width100 float_l padding_t30 height193">
+        <div class="width_1200 margin_auto">
+            <div class="width100 float_l text_c margin_b30">
+                <a class="img_backg5" href="#"></a>
+                <a class="img_backg6 posi_relative wexinmaxianshi" href="#"><i class="weixinweima dis_none"><img
+                        src="../../../img/idx-btm.png"></i></a>
+                <a class="img_backg7" href="#"></a>
+                <a class="img_backg8" href="#"></a>
+            </div>
+            <div class="width100 float_l text_c yejiao color_gray">
+                <a>关于我们</a>
+                <a>企业合作</a>
+                <a>人才招聘</a>
+                <a>讲师招募</a>
+                <a>联系我们</a>
+                <a>意见反馈</a>
+                <a>友情链接</a>
+            </div>
+            <div class="width100 float_l text_c border_t margin_t20 padding_t20 color_gray fon_siz12">
+                <span>© 2016 imoroc.com 京ICP备13042132号</span>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+</body>
+<script src="js/questjs.js"></script>
 </html>

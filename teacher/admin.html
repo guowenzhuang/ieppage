@@ -160,7 +160,7 @@
                           <!-- <el-button type="text" @click="updateModuleShow(scope.row)">课次信息</el-button>-->
                            <el-button type="danger" round size="mini"  icon="el-icon-delete" @click="deleteModule(scope.row.chaId)"></el-button>
 
-                            <el-button type="primary" round size="mini"  icon="el-icon-edit" @click="updateModuleShow(scope.row)"></el-button>
+                            <el-button v-if="scope.row.children==null || scope.row.children.size==0" type="primary" round size="mini"  icon="el-icon-edit" @click="updateModuleShow(scope.row)"></el-button>
 
                         </template>
                     </el-table-column>

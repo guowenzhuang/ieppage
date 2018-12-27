@@ -45,7 +45,7 @@
             </el-aside>
             <el-main>
                 <el-tabs type="card" v-model="activeid" closable @tab-remove="removeTab">
-                    <el-tab-pane v-for="tab in tabs" :name="tab.id" :label="tab.name">
+                    <el-tab-pane v-for="tab in tabs" :key="tab.id" :name="tab.id" :label="tab.name">
                         <iframe width='100%' height='1800px' frameborder="0" scrolling="no" :src="tab.path"></iframe>
                     </el-tab-pane>
                 </el-tabs>
