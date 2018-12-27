@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../teacher/js/elementui/index.css">
+    <script src="../teacher/js/vue.js"></script>
+    <script src="../teacher/js/elementui/index.js"></script>
+    <script src="../teacher/js/axios.min.js"></script>
+    <style>
+        .el-main {
+            padding-top: 0;
+        }
+        .el-message-box__wrapper {
+            bottom: auto;
+            top:80px;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <el-container>
+        <el-main>
+            <el-row :gutter="20" type="flex">
+                <el-col :span="4">
+                    <div>用户名:</div>
+                    <el-input v-model="query.name" placeholder="请输入院系"></el-input>
+                </el-col>
+                <el-col :span="2">
+                    <span>&nbsp;</span>
+                    <div>
+                        <el-button type="primary" @click="search">搜索</el-button>
+                    </div>
+                </el-col>
+                <el-col :span="2">
+                    <span>&nbsp;</span>
+                    <div>
+                        <el-button type="success" @click="addDepartShow">新增院系</el-button>
+                    </div>
+                </el-col>
+                <el-col :span="2">
+                    <div>&nbsp;</div>
+                    <el-button icon="el-icon-refresh" type="primary" onclick=" window.location.reload();">刷新</el-button>
+                </el-col>
+            </el-row>
+            <el-row :gutter="20" style="margin-top: 20px;">
+                <el-table
+                        :data="departmentData" border>
+                    <el-table-column
+                            type="index"
+                            width="50">
+                    </el-table-column>
+                    <el-table-column
+                            prop="name"
+                            label="院系名称">
+                    </el-table-column>
+                    <el-table-column
+                            prop="weight"
+                            label="权重">
+                    </el-table-column>
+                    <el-table-column label="操作">
+                        <template slot-scope="scope">
+                            <el-button type="text" @click="updateDepartShow(scope.row)">修改</el-button>
+                            <el-button type="text" @click="deleteDepart(scope.row)">删除</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </el-row>
+            <el-row type="flex" justify="center">
+                <el-pagination
+                        layout="prev, pager, next"
+                        :current-page.sync="query.page"
+                        :page-size="query.rows"
+                        @current-change="departmentQuery"
+                        :total="total">
+                </el-pagination>
+            </el-row>
+        </el-main>
+    </el-container>
+    <div>
+        <el-dialog
+                :title="add.title"
+                :visible.sync="add.show">
+            <el-form  :rules="addRules" ref="addForm" :model="add" label-position="left" label-width="80px">
+                <el-form-item prop="name" label="院系名称">
+                    <el-input v-model="add.name" ></el-input>
+                </el-form-item>
+                <el-form-item prop="weight" label="权重">
+                    <el-input-number v-model="add.weight"  :min="1" :max="100" label="请输入权重"></el-input-number>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" v-if="add.title=='新增院系'" @click="addDepart">新增</el-button>
+                    <el-button type="primary" v-else  @click="updateDepart">修改</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
+
+    </div>
+</div>
+</body>
+<script>
+    axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
+    axios.defaults.headers.common['Content-Type'] = 'application/json;charset=UTF-8';
+    const main = {
+        data(){
+            return{
+                addRules:{
+                    name: [
+                        { required: true, message: '请输入院系名称', trigger: 'blur' },
+                    ],
+                    weight: [
+                        { required: true, message: '请输入权重', trigger: 'blur' },
+                    ],
+
+
+                },
+                departmentData:[],
+                query:{
+                    name:'',
+                    page:1,
+                    rows:10
+                },
+                total:0,
+                add:{
+                    show:false,
+                    title:'',
+                    name:'',
+                    weight:''
+                },
+                active:{}
+            }
+        },
+        methods:{
+            //删除院系
+            deleteDepart(row){
+                this.$confirm('此操作将永久删除该院系, 是否继续?', '提示', {
+                    cancelButtonText: '取消',
+                    confirmButtonText: '确定',
+                    type: 'warning'
+                }).then(() => {
+                    axios({
+                        method:"delete",
+                        url:'/api/admin/depart/'+row.departmentId
+                    })
+                        .then(res=>{
+                            res=res.data;
+                            this.$message({
+                                type: 'success',
+                                message: res.message
+                            });
+                            this.departmentQuery();
+                        })
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            //修改院系
+            updateDepart(){
+                axios({
+                    method:'put',
+                    url:'/api/admin/depart/'+this.active.departmentId,
+                    data:this.add
+                }).then(res=>{
+                    res=res.data;
+                    if(res.success){
+                        this.$message({
+                            message: res.message,
+                            type: 'success'
+                        });
+                        this.add.show=false;
+                        this.departmentQuery();
+                    }
+                })
+            },
+            //修改院系框显示
+            updateDepartShow(row){
+                this.active=row;
+                this.add.name=row.name;
+                this.add.weight=row.weight;
+                this.add.title="修改院系";
+                this.add.show=true;
+            },
+            //新增院系
+            addDepart(){
+                axios({
+                    method:'post',
+                    url:'/api/admin/depart',
+                    data:this.add
+                }).then(res=>{
+                    res=res.data;
+                    if(res.success){
+                        this.$message({
+                            message: res.message,
+                            type: 'success'
+                        });
+                        this.add.show=false;
+                        this.departmentQuery();
+                    }
+                })
+            },
+            //搜索
+            search(){
+                this.query.page=1;
+                this.departmentQuery();
+            },
+            //新增院系弹出框显示
+            addDepartShow(){
+                this.add.title="新增院系";
+                this.add.show=true;
+            },
+            //院系查询
+            departmentQuery(){
+                axios({
+                    method:'get',
+                    url:'/api/admin/depart',
+                    params:this.query
+                }).then(res=>{
+                    res=res.data;
+                    this.total=res.total;
+                    this.departmentData=res.rows;
+                })
+            }
+        },
+        mounted(){
+            this.departmentQuery();
+        }
+    };
+
+    const Component = Vue.extend(main);
+    new Component().$mount('#app')
+</script>
+</html>

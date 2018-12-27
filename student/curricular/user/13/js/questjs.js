@@ -9,15 +9,87 @@ let main={
                 photo:'../../img/user/portrait.jpg',
                 loginName:''
             },
-            activeTabValue:''
+            userId:'',
+            userName:'',
+            activeTabValue:'zt',
+            //主题
+            themeData:[],
+            themeQuery:{
+                page:1,
+                rows:6,
+                total:0
+            },
+            //回复
+            replyData:[],
+            replyQuery:{
+                page:1,
+                rows:6,
+                total:0
+            },
+            //评价
+            evaluationData:[],
+            evaluationQuery:{
+                page:1,
+                rows:6,
+                total:0
+            }
         }
     },
     methods:{
-
+        //查询主题
+        queryTheme(){
+            axios({
+                method:'get',
+                url:'/api/bbs/post/queryPostByUserId',
+                params:{
+                    userId:this.userId,
+                    page:this.themeQuery.page,
+                    rows:this.themeQuery.rows,
+                }
+            }).then(res=>{
+                res=res.data;
+                this.themeQuery.total=res.total;
+                this.themeData=res.rows;
+            })
+        },
+        //查询回复
+        queryReply(){
+            axios({
+                method:'get',
+                url:'/api/bbs/reply/queryReplyByUserId',
+                params:{
+                    userId:this.userId,
+                    page:this.replyQuery.page,
+                    rows:this.replyQuery.rows,
+                }
+            }).then(res=>{
+                res=res.data;
+                this.replyQuery.total=res.total;
+                this.replyData=res.rows;
+            })
+        },
+        //查询评价
+        queryEvaluation(){
+            axios({
+                method:'get',
+                url:'/api/student/comment/queryCommentBySid',
+                params:{
+                    sid:this.userId,
+                    page:this.evaluationQuery.page,
+                    size:this.evaluationQuery.rows,
+                }
+            }).then(res=>{
+                res=res.data;
+                this.evaluationQuery.total=res.total;
+                this.evaluationData=res.rows;
+            })
+        },
     },
     mounted(){
         //查询学生信息
         let id=sessionStorage.getItem("userid");
+        this.userId=id;
+        this.userName=sessionStorage.getItem("username");
         axios({
             method:'get',
             url:'/api/student/stu/'+id
@@ -28,7 +100,9 @@ let main={
                 this.active.photo=res.photo
             }
         })
-
+        this.queryTheme();
+        this.queryReply();
+        this.queryEvaluation();
 
     }
 }
