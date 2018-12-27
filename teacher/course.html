@@ -344,6 +344,7 @@
             },
             //分页查询课程
             queryCourse() {
+                let teaid=sessionStorage.getItem("userid");
 
                 axios({
                     method: 'get',
@@ -352,7 +353,7 @@
                         page: this.page,
                         pageSize: this.pageSize,
                         courName:this.cour_name,
-
+                        courTeaid:teaid
                     },
                     headers: {
                         "Authorization": "bearer " + sessionStorage.getItem("access_token")
