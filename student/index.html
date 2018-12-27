@@ -148,27 +148,27 @@
 				</div>
 
 				<div id="tuijian" class="width100 float_l">
-					
-					
+
+
 					<div class="width_224 height172 float_l margin_r10 border_shadow jingguoxianshi over_pos bianshou" v-for="r in recommended">
 						<a class="color_black" :href="'curricular/courses/show.html?courId='+r.courId">
-						<div class="width100 float_l img_100 z_inx_1">
-							<img :src="r.courPicurl">
-						</div>
-						<div class="img_backg2 donghua">
-							<span class="margin_t15 float_l ">{{r.courName}}</span>
-							<span class="float_l fon_siz12 line_hei16 color_gray margin_t5 posi_relative ">{{r.courDetails}}</span>
-						</div>
-						<div class="width100 float_l padding_lr20 height48 fon_siz12 line_hei48 z_inx_3 posi_relative backg_white">
-							<span class="float_r color_gray"><span>{{r.courStudypeople}}</span>人在学</span>
-						</div>
+							<div class="width100 float_l img_100 z_inx_1">
+								<img :src="r.courPicurl">
+							</div>
+							<div class="img_backg2 donghua">
+								<span class="margin_t15 float_l ">{{r.courName}}</span>
+								<span class="float_l fon_siz12 line_hei16 color_gray margin_t5 posi_relative ">{{r.courContent}}</span>
+							</div>
+							<div class="width100 float_l padding_lr20 height48 fon_siz12 line_hei48 z_inx_3 posi_relative backg_white">
+								<span class="float_r color_gray"><span>{{r.courStudypeople}}</span>人在学</span>
+							</div>
 						</a>
 					</div>
-		
+
 				</div>
 			</div>
 		</div>
-		
+
 		<script>
 			var tuijian = new Vue({
 				el: "#tuijian",
@@ -177,17 +177,17 @@
 				},
 				data: {
 					currentDate: new Date(),
-					recommended:[]
+					recommended: []
 				},
 				methods: {
 					queryTuiJian: function() {
 						axios({
 							method: 'get',
 							url: '/api/student/home/getRecommended',
-							
+
 						}).then(res => {
-							console.log(res.data);					
-							this.recommended=res.data;						
+							console.log(res.data);
+							this.recommended = res.data;
 						})
 					}
 				}
@@ -211,23 +211,22 @@
 					</div>
 				</div>
 				<div class="width_712 float_l margin_r20">
-					
-					<div class="width_224 height172 float_l margin_r20 border_shadow jingguoxianshi over_pos bianshou margin_t10">
+
+					<div class="width_224 height172 float_l margin_r10 border_shadow jingguoxianshi over_pos bianshou margin_t10" v-for="c in computers">
 						<div class="width100 float_l img_100 z_inx_1">
-							<img src="img/uiz7.jpg">
+							<img :src="c.courPicurl">
 						</div>
 						<div class="img_backg2 donghua">
-							<span class="margin_t15 float_l ">飞速上手的跨平台App开发</span>
-							<span class="float_l fon_siz12 line_hei16 color_gray margin_t5 posi_relative ">8小时带领大家步步深入学习标签的基础知识，掌握各种样式的基本用法。</span>
+							<span class="margin_t15 float_l ">{{c.courName}}</span>
+							<span class="float_l fon_siz12 line_hei16 color_gray margin_t5 posi_relative ">{{c.courContent}}</span>
 						</div>
 						<div class="width100 float_l padding_lr20 height48 fon_siz12 line_hei48 z_inx_3 posi_relative backg_white">
-							<span class="float_l color_red">￥88.00</span>
-							<span class="float_r color_gray"><span>499</span>人在学</span>
+							<span class="float_r color_gray"><span>{{c.courStudypeople}}</span>人在学</span>
 						</div>
 					</div>
-					 		 
+
 				</div>
-                 <!-- 右侧广告位-->
+				<!-- 右侧广告位-->
 				<div class="width_224 height364 float_l backg_white border_shadow">
 					<div class="width_224 height172 float_l jingguoxianshi over_pos bianshou">
 						<div class="width100 float_l img_100 z_inx_1">
@@ -257,8 +256,75 @@
 			</div>
 		</div>
 
+
+		<!-- 外语 -->
+		<div class="width100 float_l backg_qiangray padding_b45" id="language">
+			<div class="width_1200 margin_auto">
+				<div class=" width_224 height364 float_l img_backg13 margin_r20">
+					<div class="width100 float_l padding_lr20 color_white fon_siz32 b_weight700 margin_t10">
+						<span>外语<br>各国语言</span>
+					</div>
+					<div class="width100 float_l padding_lr20 color_white fon_siz16 margin_t30 jiantoubianhua bianshou">
+						<span>职业路径<span class="margin_l5 wobianhua">></span></span>
+					</div>
+					<div class="width100 float_l padding_lr20 fon_siz12 bianshou line_hei26 color_blue wobeijingguosa margin_t100">
+						<a>开启语言探索之旅</a>
+						<a>学习一门语言需要记忆规则和词汇</a>
+						<a>双语学习者更擅长记住购物清单、人名和方位</a>
+					</div>
+				</div>
+				<div class="width_712 float_l margin_r20">
+
+					<div class="width_224 height172 float_l margin_r10 border_shadow jingguoxianshi over_pos bianshou margin_t10"
+					 v-for="c in courses">
+						<div class="width100 float_l img_100 z_inx_1">
+							<img :src="c.courPicurl">
+						</div>
+						<div class="img_backg2 donghua">
+							<span class="margin_t15 float_l ">{{c.courName}}</span>
+							<span class="float_l fon_siz12 line_hei16 color_gray margin_t5 posi_relative ">{{c.courContent}}</span>
+						</div>
+						<div class="width100 float_l padding_lr20 height48 fon_siz12 line_hei48 z_inx_3 posi_relative backg_white">
+							<span class="float_r color_gray"><span>{{c.courStudypeople}}</span>人在学</span>
+						</div>
+					</div>
+
+				</div>
+				<!-- 右侧广告位-->
+				<div class="width_224 height364 float_l backg_white border_shadow">
+					<div class="width_224 height172 float_l jingguoxianshi over_pos bianshou">
+						<div class="width100 float_l img_100 z_inx_1">
+							<img src="img/uiz7.jpg">
+						</div>
+						<div class="img_backg2 donghua">
+							<span class="margin_t15 float_l ">飞速上手的跨平台App开发</span>
+							<span class="float_l fon_siz12 line_hei16 color_gray margin_t5 posi_relative ">8小时带领大家步步深入学习标签的基础知识，掌握各种样式的基本用法。</span>
+						</div>
+						<div class="width100 float_l padding_lr20 height48 fon_siz12 line_hei48 z_inx_3 posi_relative backg_white">
+							<span class="float_l color_red">￥88.00</span>
+							<span class="float_r color_gray"><span>499</span>人在学</span>
+						</div>
+					</div>
+
+					<div class="width100 float_l padding_lr20 dadiv">
+						<div class="width100 float_l border_t padding_t10">
+							<ul class="tongli_ys chaochuyincang">
+								<li><a><span class="diandian">.</span>带你学习Ja学习Jadede模板引擎</a></li>
+								<li><a><span class="diandian">.</span>带你学习Ja学习Jadede模板引擎</a></li>
+								<li><a><span class="diandian">.</span>带你学习Ja学习Jadede模板引擎</a></li>
+								<li><a><span class="diandian">.</span>带你学习Ja学习Jadede模板引擎</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+
 		<!-- php 工程师 -->
-		<div class="width100 float_l padding_b45 backg_qiangray">
+		<!-- <div class="width100 float_l padding_b45 backg_qiangray">
 			<div class="width_1200 margin_auto">
 				<div class=" width_224 height364 float_l img_backg13 margin_r20">
 					<div class="width100 float_l padding_lr20 color_white fon_siz32 b_weight700 margin_t10">
@@ -333,7 +399,7 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</div> -->
 
 		<!-- Android 工程师 -->
 		<div class="width100 float_l backg_qiangray padding_b45">
@@ -425,36 +491,43 @@
 			</div>
 		</div>
 		<script>
-			var computer=new Vue({
+			var computer = new Vue({
 				el: "#computer",
 				mounted: function() {
 					this.queryCourseTop6()
 				},
 				data: {
-					courses:[]
+					computers: []
 				},
 				methods: {
 					queryCourseTop6: function() {
 						axios({
 							method: 'get',
 							url: '/api/student/home/getCourseByCategoryTop6',
-							params:{
-								names:'计算机'
-							}				
+							params: {
+								names: '计算机'
+							}
 						}).then(res => {
-							console.log(res.data);					
-							this.courses=res.data;						
+							console.log(res.data.message);
+							this.computers = res.data.message;
 						})
 					}
 				}
 			});
+			
+			var  language=new Vue({
+				
+			});
+			
+			
+			
 		</script>
-		
-		
-		
-		
-		
-		
+
+
+
+
+
+
 
 		<!-- 页脚 -->
 		<div class="width100 float_l padding_t30 height193">
