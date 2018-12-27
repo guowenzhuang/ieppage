@@ -95,7 +95,7 @@
 					<div class="float_l">
 						<ul class="ul_li fon_siz16">
 							<li><a class="color_black" href="../courses/index.html">课程</a></li>
-							<li><a class="color_black" href="">院系</a></li>
+							<li><a class="color_black" href="../../department.html">院系</a></li>
 							<li><a class="color_black" href="../paths/index.html">名师专栏</a></li>
 
 						</ul>
@@ -136,7 +136,7 @@
 								<div class="media bootcamp-courses-item margin_t15" style="width: 500px;" v-for="t in teachers">
 
 									<div class="media-left bootcamp-courses-media">
-										<img style="width: 220px;height: 145px" class="media-object" src="t.teaPhoto" onerror="javascript:this.src='../img/default.jpg';">
+										<img style="width: 220px;height: 145px" class="media-object" :src="t.teaPhoto" onerror="javascript:this.src='../img/default.jpg';">
 									</div>
 
 									<div class="media-body bootcamp-courses-body" style="width: 300px;">
