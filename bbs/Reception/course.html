@@ -10,6 +10,7 @@
 		<link rel="stylesheet" href="../app/css/libs/videojs/5.11.7/video-js.min.css">
 		<link rel="stylesheet" href="../app/css/dest/styles.css?=2016121272249">
 
+		
 		<link rel="stylesheet" type="text/css" href="../css/bootstrap-theme.min.css">
 		<link rel="stylesheet" type="text/css" href="../css/muke.css">
 		<link rel="stylesheet" href="../css/index.css" />
@@ -18,41 +19,35 @@
 		<script src="../js/axios.js"></script>
 		<script src="../js/index.js"></script>
 
-		<style>
-			.el-row {
-    margin-bottom: 20px;
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-  .el-col {
-    border-radius: 4px;
-  }
-  .bg-purple-dark {
-    background: #99a9bf;
-  }
-  .bg-purple {
-    background: #d3dce6;
-  }
-  .bg-purple-light {
-    background: #e5e9f2;
-  }
-  .grid-content {
-    border-radius: 4px;
-    min-height: 36px;
-  }
-  .row-bg {
-    padding: 10px 0;
-    background-color: #f9fafc;
-  }
-</style>
 		<script type="text/javascript">
 
 		</script>
 	</head>
 	<body>
 		<div class="tab-content" id="course">
-			<el-button type="primary">发起主题</el-button>
+			<br />
+			<el-button type="primary" @click="dialogFormVisible = true">发起主题</el-button>
+			
+			<el-dialog title="发起主题" :visible.sync="dialogFormVisible">
+				<el-form :model="form">
+					<el-form-item label="主题板块" :label-width="formLabelWidth">
+						<el-select v-model="form.region" placeholder="请选择主题板块">
+							<el-option  v-for="type in typeList" :label="type.typeName" :value="type.typeName" :key="type.typeId"></el-option>
+						</el-select>
+					</el-form-item>
+					<el-form-item label="主题" :label-width="formLabelWidth">
+						<el-input v-model="form.name" autocomplete="off"></el-input>
+					</el-form-item>
+					<el-form-item label="内容" :label-width="formLabelWidth">
+						<el-input type="textarea" :rows="5" placeholder="请输入内容" v-model="textarea"></el-input>
+					</el-form-item>					
+				</el-form>
+				<div slot="footer" class="dialog-footer">
+					<el-button @click="dialogFormVisible = false">取 消</el-button>
+					<el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+				</div>
+			</el-dialog>
+			
 			<br />
 			<hr />
 			<h4>子版块</h4>
@@ -81,6 +76,10 @@
 
 			<h4>全部主题</h4>
 			<br />
+			<el-button-group>
+				<el-button type="success" size="small" @click="btnNew" plain>最新发表</el-button>
+				<el-button type="success" size="small" @click="btnHot" plain>最高热度</el-button>
+			</el-button-group>
 			<hr />
 			<div>
 				<ul v-for="post in postList" class="row question-items" :data="postList.slice((currentPage-1)*pagesize,currentPage*pagesize)">
@@ -136,7 +135,20 @@
 					pagesize: 10, //每页的数据条数
 					currentPage: 1, //默认开始页面
 					postList: [],
-					typeList: []
+					typeList: [],
+					dialogFormVisible: false,
+					form: {
+						name: '',
+						region: '',
+						date1: '',
+						date2: '',
+						delivery: false,
+						typeList: this.typeList,
+						resource: '',
+						desc: '',
+						textarea: ''
+					},
+					formLabelWidth: '120px'
 				}
 			},
 			methods: {
@@ -178,7 +190,16 @@
 						this.typeList = res;
 						console.log('typeList==>' + this.typeList);
 					})
-				}
+				},
+				btnNew: function(){
+					this.orderBy = "replyTime";
+					this.queryPost();
+				},
+				btnHot: function(){
+					this.orderBy="replyLikenum";
+					this.queryPost();
+				},
+				
 			}
 		})
 	</script>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="js/vue.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/index.css"/>
+    <script src="js/index.js"></script>
+    <script src="js/axios.js"></script>
+
+
+</head>
+<body>
+
+<div id="app">
+
+    <!--element表格-->
+    <div style="width: 100%;">
+        <template>
+            <el-table :data="examparperList" :row-class-name="tableRowClassName" style=" width: auto">
+
+                <el-table-column prop="title" label="卷子标题" :show-overflow-tooltip="true">
+                </el-table-column>
+                <el-table-column label="考试科目" :show-overflow-tooltip="true">
+                    <template slot-scope="scope">
+                <span v-for="item in courselist" v-if="scope.row.subject==item.courId">
+                    {{item.courName}}
+                </span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="examtime" label="开考时间" :show-overflow-tooltip="true">
+                </el-table-column>
+                <el-table-column prop="duration" label="考试时长" :show-overflow-tooltip="true">
+                </el-table-column>
+
+                <el-table-column prop="operation" label="操作" align="center" min-width="100">
+                    <template slot-scope="scope">
+                        <el-button type="primary" round @click="selectexamtotal(scope.row)" size="mini">查看考试成绩
+                        </el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+
+        </template>
+    </div>
+
+
+</div>
+
+</body>
+
+<script>
+
+    /*自动在请求中添加请求头*/
+    axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
+    /*获取登陆人的userid*/
+    var userid = sessionStorage.getItem("userid");
+
+
+    var mian = new Vue({
+
+        el: '#app',
+        mounted: function () {
+            this.querycourse();
+        },
+        data() {
+            return {
+
+                courselist: [],
+
+            }
+        },
+
+        methods: {
+
+            querycourse() {
+                let params = new URLSearchParams();
+                params.append("userid", userid);
+                axios.get('/api/exam/examParper/queryCourByteaId', {
+                        params: params
+                    }
+                ).then(res => {
+                    res = res.data;
+                    this.courselist = res.message;
+
+                })
+            },
+
+
+            query() {
+                let params = new URLSearchParams();
+                params.append("userid", userid);
+                axios.get('/api/exam/examParper/queryCourByteaId', {
+                        params: params
+                    }
+                ).then(res => {
+                    res = res.data;
+                    this.courselist = res.message;
+                })
+            },
+
+            /**
+             * 点击查看成绩
+             *
+             * @param val
+             */
+            selectexamtotal(val) {
+
+
+            },
+
+
+        }
+
+
+    })
+
+</script>
+
+</html>
