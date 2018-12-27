@@ -211,28 +211,29 @@
 								本课程采用百分制计分，单元测验占30%，课程讨论占20%（在“课堂交流区”回复或发帖才计入总分），课程结束考试50%。60分及以上为合格，80分及以上为优秀。课程总评分数达到60分以上者，即可获得合格证书；课程总评分数达到80分以上者，方可获得优秀证书。
 							</h4>
 						</el-tab-pane>
+
 						<el-tab-pane label="课件">
 							<hr />
 							<h3>课件</h3>
-							<hr />
-							<el-progress :text-inside="true" :stroke-width="25" :percentage="80"></el-progress>
 							<el-collapse v-model="activeNames" @change="handleChange">
-								<el-collapse-item>
-									<template slot="title">
-										1.音乐意义 &nbsp;&nbsp;&nbsp; {{ currentDate }}
+
+								<el-collapse-item v-for="c in kejian">
+									<template slot="title" >
+										{{c.chaName}}
 									</template>
-									<div>
-										<h4>
+										<div v-for="s in c.children" style="text-align: left;height: 50px;line-height: 50px;">
+												<span><el-progress type="circle" :percentage="50"  width=15></el-progress></span>
+												{{s.chaName}}
 
-											<el-progress type="circle" :percentage="50" width=35></el-progress>
-											与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；
-
-										</h4>
-									</div>
+										</div>
 								</el-collapse-item>
 							</el-collapse>
 
 						</el-tab-pane>
+
+
+
+
 						<el-tab-pane label="测验与作业">
 							<hr />
 							<h3>测验与作业</h3>
@@ -293,6 +294,7 @@
 					this.sid = sessionStorage.getItem("userid");
 					this.getQueryString("courId");
 					this.chaxun();
+					this.queryChapter();
 				},
 				data() {
 					return {
@@ -318,9 +320,11 @@
 						courPropaedeutics: "",
 						courIsputaway: "",
 						courCommentcount: "",
+						kejian:[],
+                        kejianchildren:[]
 
 
-					};
+                    };
 				},
 				methods: {
 					handleChange(val) {
@@ -363,6 +367,21 @@
 					
 						})
 					},
+					//课程章节
+                    queryChapter(){
+                        axios({
+                            method: 'get',
+                            url: `/api/student/study/queryChapter`,
+                            params: {
+                                cid: this.courId
+                                //sid: this.sid,
+                            }
+                        }).then(res =>{
+                         this.kejian=res.data;
+                            this.kejianchildren=res.data.children
+                         console.log("this.kejianchildren=>"+this.kejianchildren);
+						})
+					}
 					
 
 
