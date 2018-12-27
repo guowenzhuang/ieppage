@@ -721,16 +721,17 @@
 					},
 					dainzan: function(praise,mid) {
 
-						//点赞
 						 axios({
-                            method: 'post',
-                            url: `/api/student/comment/addComment`,
+                            method: 'put',
+                            url: `/api/student/comment/updateComment`,
                             params: {
-                                praise:praise+1,
-								mid:mid
+                                praise:praise,
+								mid:mid,
+								sid:this.sid
                             },
 						}).then(res=>{
                              console.log(res);
+                             this.pinglun();
 						 });
 						console.log("1111");
 					}
