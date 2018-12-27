@@ -295,7 +295,7 @@
 												</div>
 												<div class="col-md-2 question-item-rank">
 													<div class="question-item-answered">
-														<div @click="dainzan">
+														<div @click="dainzan(c.praise,c.mid)">
 															<a>👍</a>
 														</div>
 														<div><span v-text="c.praise"></span></div>
@@ -720,16 +720,19 @@
 
 						})
 					},
-					dainzan: function() {
+					dainzan: function(praise,mid) {
+
 						//点赞
-						/* axios({
+						 axios({
                             method: 'post',
-                            url: `api/student/comment/addComment`,
+                            url: `/api/student/comment/addComment`,
                             params: {
-                                cid: this.courId,
-                               sid: this.sid
+                                praise:praise+1,
+								mid:mid
                             },
-						})*/
+						}).then(res=>{
+                             console.log(res);
+						 });
 						console.log("1111");
 					}
 				}
