@@ -588,7 +588,7 @@
 						var r = window.location.search.substr(1).match(reg);
 						if (r != null) {
 							this.courId = decodeURIComponent(r[2]);
-							//console.log(this.courId+"this.courId");					
+							console.log("token=> bearer "+sessionStorage.getItem("access_token"));
                              sessionStorage.setItem("courId",this.courId);
 						}
 
