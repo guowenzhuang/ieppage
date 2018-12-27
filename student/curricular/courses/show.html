@@ -254,7 +254,7 @@
 
 							</div>
 							<div role="tabpanel" class="tab-pane course-comment" id="comments">
-								<div v-for="c in contents" class="tab-content">
+								<div v-for="c in contents" class="tab-content" :data="contents.slice((currentPage-1)*pagesize,currentPage*pagesize)">
 									<div role="tabpanel" class="tab-pane active">
 										<ul class="row question-items">
 											<li class="question-item">
@@ -268,8 +268,6 @@
 													</div>
 													<div class="col-sm-10">
 														<h4>
-															<!-- <img src="../img/topQuestion.png"> -->
-
 															<samp v-text="c.content"></samp>
 															<!-- <a class="question-item-title" href="show.html" target="_blank"> 实验楼百楼俱乐部成立，欢迎100楼的你加入！</a> -->
 														</h4>
@@ -282,13 +280,7 @@
 															</div>
 															<span>发表于</span>
 															<span class="question-item-date" v-text="c.mtime"></span>
-															<!-- 最后回复 <span class="question-item-date">
-																<div class="user-username ">
-																	<a class="username" href="/user/256544" target="_blank">
-																		芃逆明
-																	</a>
-																	<span class="user-level">L38</span>
-																</div> -->
+				
 															</span>
 														</div>
 													</div>
@@ -303,9 +295,12 @@
 
 												</div>
 											</li>
+										</ul>
 									</div>
 								</div>
-
+								<!-- 分页条-->
+								<el-pagination background layout="prev, pager, next" @current-change="again" :total="total">
+								</el-pagination>
 							</div>
 
 
@@ -575,8 +570,9 @@
 					courClasshour: "3-5",
 					renshu: "0",
 					baoming: "立即参加",
-					page: 1,
-					size: 10,
+					total: 50, //默认数据总数
+					pagesize: 10, //每页的数据条数
+					currentPage: 1, //默认开始页面
 					contents: [],
 					praise: '',
 					cidlist: []
@@ -588,8 +584,8 @@
 						var r = window.location.search.substr(1).match(reg);
 						if (r != null) {
 							this.courId = decodeURIComponent(r[2]);
-							console.log("token=> bearer "+sessionStorage.getItem("access_token"));
-                             sessionStorage.setItem("courId",this.courId);
+							console.log("token=> bearer " + sessionStorage.getItem("access_token"));
+							sessionStorage.setItem("courId", this.courId);
 						}
 
 						return '';
@@ -598,34 +594,34 @@
 						if (sessionStorage.getItem("access_token") != null) {
 
 
-                            if (this.baoming == "立即参加") {
+							if (this.baoming == "立即参加") {
 
-                                axios({
-                                    method: 'post',
-                                    url: `/api/student/studentPart/add`,
-                                    params: {
-                                        courId: this.courId,
-                                        sid: this.sid,
+								axios({
+									method: 'post',
+									url: `/api/student/studentPart/add`,
+									params: {
+										courId: this.courId,
+										sid: this.sid,
 
-                                    }
-                                }).then(res => {
-                                    //http://localhost/ieppage/student/curricular/courses/show.html
+									}
+								}).then(res => {
+									//http://localhost/ieppage/student/curricular/courses/show.html
 
-                                    this.people();
-                                    //this.courId = res.data;
-                                    if (res.data.success == true) {
-                                        this.baoming = res.data.message;
+									this.people();
+									//this.courId = res.data;
+									if (res.data.success == true) {
+										this.baoming = res.data.message;
 
-                                    } else {
-                                        this.baoming = res.data.message;
-                                    }
-                                })
-                            } else if (this.baoming = "进入学习") {
-                                window.location.href = "study.html?courId=" + this.courId;
-                            }
+									} else {
+										this.baoming = res.data.message;
+									}
+								})
+							} else if (this.baoming = "进入学习") {
+								window.location.href = "study.html?courId=" + this.courId;
+							}
 						} else {
-                            window.location.href =
-                                "\\login.html?callback-url=http://127.0.0.1/student/curricular/courses/show.html?courId=" + this.courId;
+							window.location.href =
+								"\\login.html?callback-url=http://127.0.0.1/student/curricular/courses/show.html?courId=" + this.courId;
 						}
 
 					},
@@ -644,7 +640,7 @@
 							console.log(res);
 							console.log(res.courContent);
 							this.courName = res.courName;
-							this.courPicurl=res.courPicurl;
+							this.courPicurl = res.courPicurl;
 							this.courContent = res.courContent;
 							this.courDetails = res.courDetails;
 							this.courTarget = res.courTarget;
@@ -656,7 +652,7 @@
 							//1.未登录this.baoming显示立即参加
 							//2.已登录未参加本门课程this.baoming显示立即参加
 							//3.已登录已参加本门课程this.baoming显示进入学习
-							if (sessionStorage.getItem("access_token")!= "" && sessionStorage.getItem("access_token") != null) {
+							if (sessionStorage.getItem("access_token") != "" && sessionStorage.getItem("access_token") != null) {
 
 								axios({
 									method: 'get',
@@ -707,32 +703,36 @@
 							url: `/api/student/comment/queryCommentByCid`,
 							params: {
 								cid: this.courId,
-								page: this.page,
-								size: this.size
+								page: this.currentPage,
+								size: this.pagesize
 							}
 						}).then(res => {
 							//http://localhost/ieppage/student/curricular/courses/show.html
 							res = res.data;
-							this.contents = res;
-							//console.log(res.content);
-
-
+							this.contents = res.rows;
+							this.total=res.total;
+							//console.log("评论" + res.rows);
+							//console.log("条数" + res.total);
 						})
 					},
-					dainzan: function(praise,mid) {
+					again: function(currentPage) {
+						this.currentPage = currentPage;
+						this.pinglun();
+					},
+					dainzan: function(praise, mid) {
 
-						 axios({
-                            method: 'put',
-                            url: `/api/student/comment/updateComment`,
-                            params: {
-                                praise:praise,
-								mid:mid,
-								sid:this.sid
-                            },
-						}).then(res=>{
-                             console.log(res);
-                             this.pinglun();
-						 });
+						axios({
+							method: 'put',
+							url: `/api/student/comment/updateComment`,
+							params: {
+								praise: praise,
+								mid: mid,
+								sid: this.sid
+							},
+						}).then(res => {
+							console.log(res);
+							this.pinglun();
+						});
 						console.log("1111");
 					}
 				}
