@@ -282,7 +282,7 @@
 					 <a class="color_black" :href="'curricular/courses/show.html?courId='+lan.courId">
 						<div class="width100 float_l img_100 z_inx_1">
 							<!-- courPicurl -->
-							<img src="img/uiz7.jpg" onerror="javascript:this.src='img/timg.jpg';" >
+							<img :src="lan.courPicurl"    />
 						</div>
 						<div class="img_backg2 donghua">
 							<span class="margin_t15 float_l ">{{lan.courName}}</span>
@@ -326,7 +326,7 @@
 		</div>
 
 		<!-- 理学 -->
-		<div class="width100 float_l backg_qiangray padding_b45">
+		<div class="width100 float_l backg_qiangray padding_b45" id="neo">
 			<div class="width_1200 margin_auto">
 				<div class=" width_224 height364 float_l img_backg14 margin_r20">
 					<div class="width100 float_l padding_lr20 color_white fon_siz32 b_weight700 margin_t10">
@@ -342,47 +342,26 @@
 					</div>
 				</div>
 				<div class="width_712 float_l margin_r20">
-					<div class="width_224 height172 float_l margin_r20 border_shadow jingguoxianshi over_pos bianshou">
-						<div class="width100 float_l img_100 z_inx_1">
-							<img src="img/uiz7.jpg">
-						</div>
-						<div class="img_backg2 donghua">
-							<span class="margin_t15 float_l ">飞速上手的跨平台App开发</span>
-							<span class="float_l fon_siz12 line_hei16 color_gray margin_t5 posi_relative ">8小时带领大家步步深入学习标签的基础知识，掌握各种样式的基本用法。</span>
-						</div>
-						<div class="width100 float_l padding_lr20 height48 fon_siz12 line_hei48 z_inx_3 posi_relative backg_white">
-							<span class="float_l color_red">￥88.00</span>
-							<span class="float_r color_gray"><span>499</span>人在学</span>
-						</div>
-					</div>
-					<div class="width_224 height172 float_l margin_r20 border_shadow jingguoxianshi over_pos bianshou">
-						<div class="width100 float_l img_100 z_inx_1">
-							<img src="img/uiz7.jpg">
-						</div>
-						<div class="img_backg2 donghua">
-							<span class="margin_t15 float_l ">飞速上手的跨平台App开发</span>
-							<span class="float_l fon_siz12 line_hei16 color_gray margin_t5 posi_relative ">8小时带领大家步步深入学习标签的基础知识，掌握各种样式的基本用法。</span>
-						</div>
-						<div class="width100 float_l padding_lr20 height48 fon_siz12 line_hei48 z_inx_3 posi_relative backg_white">
-							<span class="float_l color_red">￥88.00</span>
-							<span class="float_r color_gray"><span>499</span>人在学</span>
-						</div>
-					</div>
-					<div class="width_224 height172 float_l border_shadow jingguoxianshi over_pos bianshou">
-						<div class="width100 float_l img_100 z_inx_1">
-							<img src="img/uiz7.jpg">
-						</div>
-						<div class="img_backg2 donghua">
-							<span class="margin_t15 float_l ">飞速上手的跨平台App开发</span>
-							<span class="float_l fon_siz12 line_hei16 color_gray margin_t5 posi_relative ">8小时带领大家步步深入学习标签的基础知识，掌握各种样式的基本用法。</span>
-						</div>
-						<div class="width100 float_l padding_lr20 height48 fon_siz12 line_hei48 z_inx_3 posi_relative backg_white">
-							<span class="float_l color_red">￥88.00</span>
-							<span class="float_r color_gray"><span>499</span>人在学</span>
-						</div>
-					</div>
-				</div>
+					
+					<div class="width_224 height172 float_l margin_r10 border_shadow jingguoxianshi over_pos bianshou margin_t10" v-for="n in neos">
+						<a class="color_black" :href="'curricular/courses/show.html?courId='+n.courId">
 
+						<div class="width100 float_l img_100 z_inx_1">
+							<img :src="n.courPicurl">
+						</div>
+						<div class="img_backg2 donghua">
+							<span class="margin_t15 float_l ">{{n.courName}}</span>
+							<span class="float_l fon_siz12 line_hei16 color_gray margin_t5 posi_relative ">{{n.courContent}}</span>
+						</div>
+						<div class="width100 float_l padding_lr20 height48 fon_siz12 line_hei48 z_inx_3 posi_relative backg_white">
+							<span class="float_r color_gray"><span>{{n.courStudypeople}}</span>人在学</span>
+						</div>
+						
+						</a>
+					</div>		
+				</div>
+                
+				<!-- 右侧广告 -->
 				<div class="width_224 height364 float_l backg_white border_shadow">
 					<div class="width_224 height172 float_l jingguoxianshi over_pos bianshou">
 						<div class="width100 float_l img_100 z_inx_1">
@@ -454,12 +433,42 @@
 							}
 						}).then(res => {
 							console.log(res.data.message);
-							this.languages = res.data.message;
+							this.languages = res.data.message.map(item=>{
+								if(item.courPicurl==null || item.courPicurl==""){
+									item.courPicurl="img/timg.jpg"
+								}
+								return item;
+							});
 						})
 					}
 				}
 				
 			});
+			
+			var neo=new Vue({
+				el:"#neo",
+				mounted: function() {
+					this.queryNeoCourse()
+				},
+				data: {
+					neos: []
+				},
+				methods: {
+					queryNeoCourse: function() {
+						axios({
+							method: 'get',
+							url: '/api/student/home/getCourseByCategoryTop6',
+							params: {
+								names: '理学'
+							}
+						}).then(res => {
+							console.log(res.data.message);
+							this.neos = res.data.message;
+							
+						})
+					}
+				}
+			}); 
 			
 			
 			
