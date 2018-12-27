@@ -30,7 +30,7 @@
 					<div class="float_l">
 						<ul class="ul_li fon_siz16">
 							<li><a class="color_black" href="curricular/courses/index.html">课程</a></li>
-							<li><a class="color_black" href="">院系</a></li>
+							<li><a class="color_black" href="department.html">院系</a></li>
 							<li><a class="color_black" href="curricular/paths/index.html">名师专栏</a></li>
 
 						</ul>
@@ -160,13 +160,11 @@
 							<span class="float_l fon_siz12 line_hei16 color_gray margin_t5 posi_relative ">{{r.courDetails}}</span>
 						</div>
 						<div class="width100 float_l padding_lr20 height48 fon_siz12 line_hei48 z_inx_3 posi_relative backg_white">
-							<!-- <span class="float_l color_red">￥88.00</span> -->
 							<span class="float_r color_gray"><span>{{r.courStudypeople}}</span>人在学</span>
 						</div>
 						</a>
 					</div>
-					
-					
+		
 				</div>
 			</div>
 		</div>
@@ -188,107 +186,20 @@
 							url: '/api/student/home/getRecommended',
 							
 						}).then(res => {
-							console.log(res.data);
-							
-							this.recommended=res.data;
-							
+							console.log(res.data);					
+							this.recommended=res.data;						
 						})
 					}
 				}
 			})
 		</script>
 
-		<!-- web 前端工程师 -->
-		<div class="width100 float_l padding_tb45 backg_qiangray">
-			<div class="width_1200 margin_auto">
-				<div class=" width_224 height364 float_l img_backg3 margin_r20">
-					<div class="width100 float_l padding_lr20 color_white fon_siz32 b_weight700 margin_t10">
-						<span>Web<br>前端工程师</span>
-					</div>
-					<div class="width100 float_l padding_lr20 color_white fon_siz16 margin_t30 jiantoubianhua bianshou">
-						<span>职业路径<span class="margin_l5 wobianhua">></span></span>
-					</div>
-					<div class="width100 float_l padding_lr20 color_white fon_siz12 bianshou line_hei26 color_shenred wobeijingguos margin_t120">
-						<a>jQuery源码探索之旅</a>
-						<a>高德开发者必由之路——JS API篇</a>
-						<a>教你HTML5开发爱心鱼游戏</a>
-					</div>
-				</div>
-				<div class="width_468 float_l margin_r20">
-					<div class=" width100 float_l height172 kaishimeiyou img_backg4 text-center line_hei172 margin_b20">
-						<span class="fon_siz20 color_white b_weight700">像搭积木一样的组件式开发</span>
-					</div>
-					<div class=" width100 float_l height172 kaishimeiyou img_backg9 text-center line_hei172 ">
-						<span class="fon_siz20 color_white b_weight700">web前端设计从入门到精通</span>
-					</div>
-				</div>
-				<div class="width_224 float_l margin_r20">
-					<div class="width_224 height172 float_l border_shadow jingguoxianshi over_pos bianshou margin_b20">
-						<div class="width100 float_l img_100 z_inx_1">
-							<img src="img/uiz7.jpg">
-						</div>
-						<div class="img_backg2 donghua">
-							<span class="margin_t15 float_l ">飞速上手的跨平台App开发</span>
-							<span class="float_l fon_siz12 line_hei16 color_gray margin_t5 posi_relative ">8小时带领大家步步深入学习标签的基础知识，掌握各种样式的基本用法。</span>
-						</div>
-						<div class="width100 float_l padding_lr20 height48 fon_siz12 line_hei48 z_inx_3 posi_relative backg_white">
-							<span class="float_l color_red">￥88.00</span>
-							<span class="float_r color_gray"><span>499</span>人在学</span>
-						</div>
-					</div>
-
-					<div class="width_224 height172 float_l border_shadow jingguoxianshi over_pos bianshou">
-						<div class="width100 float_l img_100 z_inx_1">
-							<img src="img/uiz7.jpg">
-						</div>
-						<div class="img_backg2 donghua">
-							<span class="margin_t15 float_l ">飞速上手的跨平台App开发</span>
-							<span class="float_l fon_siz12 line_hei16 color_gray margin_t5 posi_relative ">8小时带领大家步步深入学习标签的基础知识，掌握各种样式的基本用法。</span>
-						</div>
-						<div class="width100 float_l padding_lr20 height48 fon_siz12 line_hei48 z_inx_3 posi_relative backg_white">
-							<span class="float_l color_red">￥88.00</span>
-							<span class="float_r color_gray"><span>499</span>人在学</span>
-						</div>
-					</div>
-				</div>
-				<div class="width_224 height364 float_l backg_white border_shadow">
-					<div class="width_224 height172 float_l jingguoxianshi over_pos bianshou">
-						<div class="width100 float_l img_100 z_inx_1">
-							<img src="img/uiz7.jpg">
-						</div>
-						<div class="img_backg2 donghua">
-							<span class="margin_t15 float_l ">飞速上手的跨平台App开发</span>
-							<span class="float_l fon_siz12 line_hei16 color_gray margin_t5 posi_relative ">8小时带领大家步步深入学习标签的基础知识，掌握各种样式的基本用法。</span>
-						</div>
-						<div class="width100 float_l padding_lr20 height48 fon_siz12 line_hei48 z_inx_3 posi_relative backg_white">
-							<span class="float_l color_red">￥88.00</span>
-							<span class="float_r color_gray"><span>499</span>人在学</span>
-						</div>
-					</div>
-
-					<div class="width100 float_l padding_lr20 dadiv">
-						<div class="width100 float_l border_t padding_t10">
-							<ul class="tongli_ys chaochuyincang">
-								<li><a><span class="diandian">.</span>带你学习Ja学习Jadede模板引擎</a></li>
-								<li><a><span class="diandian">.</span>带你学习Ja学习Jadede模板引擎</a></li>
-								<li><a><span class="diandian">.</span>带你学习Ja学习Jadede模板引擎</a></li>
-								<li><a><span class="diandian">.</span>带你学习Ja学习Jadede模板引擎</a></li>
-								<li><a><span class="diandian">.</span>带你学习Ja学习Jadede模板引擎</a></li>
-								<li><a><span class="diandian">.</span>带你学习Ja学习Jadede模板引擎</a></li>
-								<li><a><span class="diandian">.</span>带你学习Ja学习Jadede模板引擎</a></li>
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<!-- java 工程师 -->
-		<div class="width100 float_l backg_qiangray padding_b45">
+		<!-- 计算机java 工程师 -->
+		<div class="width100 float_l backg_qiangray padding_b45" id="computer">
 			<div class="width_1200 margin_auto">
 				<div class=" width_224 height364 float_l img_backg11 margin_r20">
 					<div class="width100 float_l padding_lr20 color_white fon_siz32 b_weight700 margin_t10">
-						<span>Java<br>工程师</span>
+						<span>计算机<br>Java工程师</span>
 					</div>
 					<div class="width100 float_l padding_lr20 color_white fon_siz16 margin_t30 jiantoubianhua bianshou">
 						<span>职业路径<span class="margin_l5 wobianhua">></span></span>
@@ -300,10 +211,8 @@
 					</div>
 				</div>
 				<div class="width_712 float_l margin_r20">
-					<div class=" width100 float_l height172 kaishimeiyou img_backg10 text-center line_hei172 margin_b20">
-						<span class="fon_siz20 color_white b_weight700">搞定Java加解密</span>
-					</div>
-					<div class="width_224 height172 float_l margin_r20 border_shadow jingguoxianshi over_pos bianshou">
+					
+					<div class="width_224 height172 float_l margin_r20 border_shadow jingguoxianshi over_pos bianshou margin_t10">
 						<div class="width100 float_l img_100 z_inx_1">
 							<img src="img/uiz7.jpg">
 						</div>
@@ -316,34 +225,9 @@
 							<span class="float_r color_gray"><span>499</span>人在学</span>
 						</div>
 					</div>
-					<div class="width_224 height172 float_l margin_r20 border_shadow jingguoxianshi over_pos bianshou">
-						<div class="width100 float_l img_100 z_inx_1">
-							<img src="img/uiz7.jpg">
-						</div>
-						<div class="img_backg2 donghua">
-							<span class="margin_t15 float_l ">飞速上手的跨平台App开发</span>
-							<span class="float_l fon_siz12 line_hei16 color_gray margin_t5 posi_relative ">8小时带领大家步步深入学习标签的基础知识，掌握各种样式的基本用法。</span>
-						</div>
-						<div class="width100 float_l padding_lr20 height48 fon_siz12 line_hei48 z_inx_3 posi_relative backg_white">
-							<span class="float_l color_red">￥88.00</span>
-							<span class="float_r color_gray"><span>499</span>人在学</span>
-						</div>
-					</div>
-					<div class="width_224 height172 float_l border_shadow jingguoxianshi over_pos bianshou">
-						<div class="width100 float_l img_100 z_inx_1">
-							<img src="img/uiz7.jpg">
-						</div>
-						<div class="img_backg2 donghua">
-							<span class="margin_t15 float_l ">飞速上手的跨平台App开发</span>
-							<span class="float_l fon_siz12 line_hei16 color_gray margin_t5 posi_relative ">8小时带领大家步步深入学习标签的基础知识，掌握各种样式的基本用法。</span>
-						</div>
-						<div class="width100 float_l padding_lr20 height48 fon_siz12 line_hei48 z_inx_3 posi_relative backg_white">
-							<span class="float_l color_red">￥88.00</span>
-							<span class="float_r color_gray"><span>499</span>人在学</span>
-						</div>
-					</div>
+					 		 
 				</div>
-
+                 <!-- 右侧广告位-->
 				<div class="width_224 height364 float_l backg_white border_shadow">
 					<div class="width_224 height172 float_l jingguoxianshi over_pos bianshou">
 						<div class="width100 float_l img_100 z_inx_1">
@@ -372,7 +256,6 @@
 				</div>
 			</div>
 		</div>
-
 
 		<!-- php 工程师 -->
 		<div class="width100 float_l padding_b45 backg_qiangray">
@@ -541,6 +424,37 @@
 				</div>
 			</div>
 		</div>
+		<script>
+			var computer=new Vue({
+				el: "#computer",
+				mounted: function() {
+					this.queryCourseTop6()
+				},
+				data: {
+					courses:[]
+				},
+				methods: {
+					queryCourseTop6: function() {
+						axios({
+							method: 'get',
+							url: '/api/student/home/getCourseByCategoryTop6',
+							params:{
+								names:'计算机'
+							}				
+						}).then(res => {
+							console.log(res.data);					
+							this.courses=res.data;						
+						})
+					}
+				}
+			});
+		</script>
+		
+		
+		
+		
+		
+		
 
 		<!-- 页脚 -->
 		<div class="width100 float_l padding_t30 height193">
@@ -565,8 +479,5 @@
 				</div>
 			</div>
 		</div>
-
-
-
 	</body>
 </html>
