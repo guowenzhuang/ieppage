@@ -101,7 +101,7 @@
 					<div class="content">
 
 						<div class="media-left bootcamp-courses-media">
-							<img style="width: 410px;height: 268px" class="media-object" src="../img/002.jpg">
+							<img style="width: 410px;height: 268px" class="media-object" :src="courPicurl">
 						</div>
 
 						<div class="media-body bootcamp-courses-body">
@@ -295,7 +295,7 @@
 												</div>
 												<div class="col-md-2 question-item-rank">
 													<div class="question-item-answered">
-														<div @click="dainzan">
+														<div @click="dainzan(c.praise,c.mid)">
 															<a>👍</a>
 														</div>
 														<div><span v-text="c.praise"></span></div>
@@ -588,43 +588,44 @@
 						var r = window.location.search.substr(1).match(reg);
 						if (r != null) {
 							this.courId = decodeURIComponent(r[2]);
-							//console.log(this.courId+"this.courId");
-							//sessionStorage.setItem("courId",this.courId);
-              sessionStorage.setItem("courId",this.courId);
+							//console.log(this.courId+"this.courId");					
+                             sessionStorage.setItem("courId",this.courId);
 						}
 
 						return '';
 					},
 					add1: function() {
-						if (this.sid == "" || this.sid == null) {
-							window.location.href =
-								"\\login.html?callback-url=http://127.0.0.1/student/curricular/courses/show.html?courId=" + this.courId;
+						if (sessionStorage.getItem("access_token") != null) {
+
+
+                            if (this.baoming == "立即参加") {
+
+                                axios({
+                                    method: 'post',
+                                    url: `/api/student/studentPart/add`,
+                                    params: {
+                                        courId: this.courId,
+                                        sid: this.sid,
+
+                                    }
+                                }).then(res => {
+                                    //http://localhost/ieppage/student/curricular/courses/show.html
+
+                                    this.people();
+                                    //this.courId = res.data;
+                                    if (res.data.success == true) {
+                                        this.baoming = res.data.message;
+
+                                    } else {
+                                        this.baoming = res.data.message;
+                                    }
+                                })
+                            } else if (this.baoming = "进入学习") {
+                                window.location.href = "study.html?courId=" + this.courId;
+                            }
 						} else {
-							if (this.baoming == "立即参加") {
-								
-								axios({
-									method: 'post',
-									url: `/api/student/studentPart/add`,
-									params: {
-										courId: this.courId,
-										sid: this.sid,
-
-									}
-								}).then(res => {
-									//http://localhost/ieppage/student/curricular/courses/show.html
-
-									this.people();
-									//this.courId = res.data;
-									if (res.data.success == true) {
-										this.baoming = res.data.message;
-
-									} else {
-										this.baoming = res.data.message;
-									}
-								})
-							} else if (this.baoming = "进入学习") {
-								window.location.href = "study.html?courId=" + this.courId;
-							}
+                            window.location.href =
+                                "\\login.html?callback-url=http://127.0.0.1/student/curricular/courses/show.html?courId=" + this.courId;
 						}
 
 					},
@@ -643,6 +644,7 @@
 							console.log(res);
 							console.log(res.courContent);
 							this.courName = res.courName;
+							this.courPicurl=res.courPicurl;
 							this.courContent = res.courContent;
 							this.courDetails = res.courDetails;
 							this.courTarget = res.courTarget;
@@ -654,7 +656,7 @@
 							//1.未登录this.baoming显示立即参加
 							//2.已登录未参加本门课程this.baoming显示立即参加
 							//3.已登录已参加本门课程this.baoming显示进入学习
-							if (this.sid != "" && this.sid != null) {
+							if (sessionStorage.getItem("access_token")!= "" && sessionStorage.getItem("access_token") != null) {
 
 								axios({
 									method: 'get',
@@ -717,16 +719,19 @@
 
 						})
 					},
-					dainzan: function() {
+					dainzan: function(praise,mid) {
+
 						//点赞
-						/* axios({
+						 axios({
                             method: 'post',
-                            url: `api/student/comment/addComment`,
+                            url: `/api/student/comment/addComment`,
                             params: {
-                                cid: this.courId,
-                               sid: this.sid
+                                praise:praise+1,
+								mid:mid
                             },
-						})*/
+						}).then(res=>{
+                             console.log(res);
+						 });
 						console.log("1111");
 					}
 				}

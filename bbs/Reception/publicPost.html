@@ -106,7 +106,7 @@
 							data: {
 								content: postContent,
 								title: postTitle,
-								userId: "9357593e-02dc-47ab-b304-910e3411a897"
+								userId: sessionStorage.getItem("userid")
 							},
 							beforeSend: function(request) {
 								// 禁用按钮防止重复提交
