@@ -21,13 +21,7 @@
 
                 <el-table-column prop="title" label="卷子标题" :show-overflow-tooltip="true">
                 </el-table-column>
-                <el-table-column label="考试科目" :show-overflow-tooltip="true">
-                    <template slot-scope="scope">
-                <span v-for="item in courselist" v-if="scope.row.subject==item.courId">
-                    {{item.courName}}
-                </span>
-                    </template>
-                </el-table-column>
+
                 <el-table-column prop="examtime" label="开考时间" :show-overflow-tooltip="true">
                 </el-table-column>
                 <el-table-column prop="duration" label="考试时长" :show-overflow-tooltip="true">
@@ -55,6 +49,8 @@
     axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
     /*获取登陆人的userid*/
     var userid = sessionStorage.getItem("userid");
+
+    var courseid = sessionStorage.getItem("courseId");
 
 
     var mian = new Vue({
