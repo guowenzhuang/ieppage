@@ -129,6 +129,15 @@
                 }).then(res => {
                     res=res.data;
                     this.menuData=res.message;
+                    this.menuData.unshift({
+                        "id": Date.parse(new Date()),
+                        "name": "个人中心",
+                        "parentId": 0,
+                        "path": "/teacher/personal.html",
+                        "weight": 8,
+                        "iconClass": null,
+                        "children": []
+                    })
                 })
             },
 
