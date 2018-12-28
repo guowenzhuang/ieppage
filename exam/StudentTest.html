@@ -67,6 +67,7 @@
 <script>
     axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
     let userid = sessionStorage.getItem("userid");
+    var courseid = sessionStorage.getItem("courseId");
     new Vue({
         el: "#app",
         data: {
@@ -82,7 +83,7 @@
             query() {
 
                 let params = new URLSearchParams();
-                params.append("subject", "5");
+                params.append("subject", "6");
                 axios.get('/api/exam/examParper/querySubjectType', {
                         params: params
                     }

@@ -373,6 +373,7 @@
     var v = parseUrl();//解析所有参数
     axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
     let userid = sessionStorage.getItem("userid");
+    var courseid = sessionStorage.getItem("courseId");
     new Vue({
         el: "#app",
         data: {
@@ -415,6 +416,7 @@
                 let params = new URLSearchParams();
                 params.append("studentId", userid);
                 params.append("examparperId", this.tableData.id);
+                params.append("courseid", courseid);
                 axios({
                     method: 'post',
                     url: '/api/exam/examrubric/examination',
@@ -559,9 +561,10 @@
                 let time = setInterval(() => {
                     if (this.flag == true) {
                         clearInterval(time)
+                    }else{
+                        this.timeDown()
                     }
-                    this.timeDown()
-                }, 100)
+                }, 1000)
             },
 
             timeDown() {
@@ -574,9 +577,11 @@
                 let s = this.formate(parseInt(leftTime % 60));
                 if (leftTime <= 0) {
                     this.flag = true;
-                    let params = new URLSearchParams();
+                    this.endtest();
+               /*     let params = new URLSearchParams();
                     params.append("studentId", userid);
                     params.append("examparperId", this.tableData.id);
+                    params.append("courseid", courseid);
                     axios({
                         method: 'post',
                         url: '/api/exam/examrubric/examination',
@@ -584,7 +589,7 @@
                     }).then(res => {
                         this.finalScore=res.data.remark;
                         this.centerDialogVisible = true;
-                    })
+                    })*/
                 }
                 this.keepTime = `${h}:${m}:${s}`;
             },
