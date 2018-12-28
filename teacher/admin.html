@@ -51,7 +51,7 @@
                         </template>
                     </el-table-column>
                     <el-table-column
-                            label="模块名称"
+                            label="章节名称"
                             prop="chaName">
                     </el-table-column>
 
@@ -64,6 +64,7 @@
                             <!-- <el-button type="text" @click="updateModuleShow(scope.row)">课次信息</el-button>-->
                             <el-button type="danger" round size="mini" icon="el-icon-delete"
                                        @click="deleteModule(scope.row.chaId)"></el-button>
+                            <el-button>添加章节测试</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -149,7 +150,7 @@
                             </template>
                         </el-table-column>
                         <el-table-column
-                                label="模块名称"
+                                label="章节名称"
                                 prop="chaName">
                         </el-table-column>
 
