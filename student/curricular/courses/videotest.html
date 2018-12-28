@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script type="text/javascript" src="ckplayer/ckplayer.js"></script>
+</head>
+<body>
+<div id="video" style="width:600px;height:400px;"></div>
+
+<button onclick="hq()">点击获取视频观看时间</button>
+<script type="text/javascript">
+    var videoObject = {
+        container: '#video',//“#”代表容器的ID，“.”或“”代表容器的class
+        variable: 'player',//该属性必需设置，值等于下面的new chplayer()的对象
+        flashplayer:false,//如果强制使用flashplayer则设置成true
+        video:'http://iep-oss.oss-cn-beijing.aliyuncs.com/video/15456144605214-13%20%E5%B0%8F%E7%BB%93.mp4',//视频地址
+        loaded:'loadHandler',
+    };
+    var player=new ckplayer(videoObject);
+
+    //在这里取出你的章节id
+    var chapter=1;
+    
+    function loadHandler() {
+        player.addListener('time', timeHandler); //监听播放时间
+    }
+
+    let hiy=0;
+    function timeHandler(t) {
+        hiy=t;
+       console.log("tt",t)
+    }
+
+    function hq(){
+        alert(hiy+"秒")
+    }
+
+</script>
+</body>
+</html>

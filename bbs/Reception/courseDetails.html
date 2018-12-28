@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="Lei Shi">
+		<meta http-equiv="Cache-Control" content="o-transform">
+		<meta http-equiv="Cache-Control" content="no-siteapp">
+		<title>帖子详情 - 智慧教育平台</title>
+
+		<link rel="shortcut icon" href="favicon.ico">
+		<link rel="stylesheet" href="../static/font-awesome//4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="../static/highlight.js/9.8.0/monokai-sublime.min.css">
+		<link rel="stylesheet" href="../app/css/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+		<link rel="stylesheet" href="../app/css/libs/katex/0.6.0/katex.min.css">
+		<link rel="stylesheet" href="../app/css/libs/videojs/5.11.7/video-js.min.css">
+		<link rel="stylesheet" href="../app/css/dest/styles.css?=2016121272249">
+
+		<link rel="stylesheet" type="text/css" href="../css/bootstrap-theme.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/muke.css">
+		<link rel="stylesheet" type="text/css" href="../layui/css/layui.css" />
+		<link rel="stylesheet" href="../css/index.css" />
+		<script src="../layui/layui.js"></script>
+		<script src="../js/jquery.min.js"></script>
+		<script src="../js/vue.min.js"></script>
+		<script src="../js/axios.js"></script>
+		<script src="../js/index.js"></script>
+
+		<style>
+
+			/* modal 模态框*/
+        #invite-user .modal-body {
+            overflow: hidden;
+        }
+		#invite-user .modal-body .form-label {
+			margin-bottom: 16px;
+			font-size:14px;
+		}
+		#invite-user .modal-body .form-invite {
+			width: 80%;
+			padding: 6px 12px;
+			background-color: #eeeeee;
+			border: 1px solid #cccccc;
+			border-radius: 5px;
+			float: left;
+			margin-right: 10px;
+		}
+		#invite-user .modal-body .msg-modal-style {
+			background-color: #7dd383;
+			margin-top: 10px;
+			padding: 6px 0;
+			text-align: center;
+			width: 100%;
+		}
+		#invite-user .modal-body .modal-flash {
+			position: absolute;
+			top: 53px;
+			right: 74px;
+			z-index: 999;
+		}
+		/* end modal */
+
+        .en-footer {
+            padding: 30px;
+            text-align: center;
+            font-size: 14px;
+        }
+    </style>
+		<script type="text/javascript">
+			layui.use('layedit', function() {
+				var layedit = layui.layedit,
+					$ = layui.jquery;
+				var index = layedit.build('demo'); //建立编辑器
+
+				var replyText;
+				var active = {
+					content: function() {
+						replyText = layedit.getContent(index);
+						//alert(layedit.getContent(index)); //获取编辑器内容
+					},
+					text: function() {
+						alert(layedit.getText(index)); //获取编辑器纯文本内容
+					},
+					selection: function() {
+						alert(layedit.getSelection(index));
+					}
+				};
+
+				$("#commit").on('click', function() {
+					var type = $(this).data('type');
+					active[type] ? active[type].call(this) : '';
+
+					if (replyText == "") {
+						layer.msg("请填写回复内容", {
+							icon: 5
+						});
+						return;
+					} else {
+						$.ajax({
+							url: '/api/bbs/coursereply/insertReply',
+							type: 'post',
+							data: {
+								replyContent: replyText,
+								postId: sessionStorage.getItem("courPostId"),
+								userId: sessionStorage.getItem("userid"),
+								courseId: 1,
+								pId: 0
+							},
+							beforeSend: function(request) {
+								// 禁用按钮防止重复提交
+								$("#commit").attr({
+									disabled: "disabled"
+								});
+								//设置请求头
+								//request.setRequestHeader("BBG-Key", "ab9ef204-3253-49d4-b229-3cc2383480a6");
+							},
+							success: function(data) {
+								if (data.success) {
+									layer.msg(data.message, {
+										icon: 6, //成功的表情 
+										time: 1000, //1秒关闭（如果不配置，默认是3秒） 
+									}, function() {
+										location.reload();
+									});
+
+								} else {
+									layer.msg(data.message, {
+										icon: 5,
+										time: 1000,
+									});
+									//失败的表情 
+									return;
+								}
+							},
+
+						});
+					}
+				});
+
+			});
+		</script>
+
+
+	</head>
+
+	<body>
+
+
+		<!-- 顶部 -->
+		<div class="width100 float_l" style="margin-top: -70px;">
+			<div class="width100 float_l height80 line_hei80">
+
+				<!-- 顶部左边 -->
+				<div class="float_l">
+					<div class="float_l margin_l20">
+						<a href="#"><img src="../img/uiz1.png"></a>
+					</div>
+					<div class="float_l">
+						<ul class="ul_li fon_siz16">
+							<li><a class="color_black" href="../courses/index.html">课程</a></li>
+							<li><a class="color_black" href="">院系</a></li>
+							<li><a class="color_black" href="">名师专栏</a></li>
+
+						</ul>
+					</div>
+				</div>
+
+				<!-- 顶部右边 -->
+				<div class="float_r">
+					<div class="float_l top_input">
+						<input class="posi_relative" type="text" name="" id="" placeholder="请输入想搜索的内容...">
+						<img class="img_sousuo bianshou" src="../img/uiz4.png">
+					</div>
+					<div class="float_l margin_l20">
+						<img src="../img/uiz5.png">
+					</div>
+					<div class="float_l margin_l35">
+						<img src="../img/uiz6.png">
+					</div>
+					<div class="float_l margin_l30 margin_r40">
+						<a class="btn btn-default navbar-btn sign-in" data-sign="signin" href="#sign-modal" data-toggle="modal">登录</a>
+						<a class="btn btn-default navbar-btn sign-up" data-sign="signup" href="#sign-modal" data-toggle="modal">注册</a>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+
+
+		<div class="container layout layout-margin-top">
+
+			<ol class="breadcrumb">
+				<li><a href="post.html">讨论区</a></li>
+				<li><a href="#">帖子详情</a></li>
+			</ol>
+
+			<div class="row" id="courseDetalis">
+				<div class="col-md-9 layout-body">
+
+					<div class="content question-detail">
+						<div class="question-headline">
+							<span class="question-title"> {{title}}</span>
+							<span class="question-figure">{{browse}} 查看</span>
+						</div>
+						<div class="question-author">
+							<div class="user-username ">
+								<a class="username" href="#" target="_blank"> {{username}} </a>
+							</div>
+							<span>{{time}}</span>
+						</div>
+						<div class="question-content markdown-body">
+							<p>{{content}}</p>
+							<div class="labreport-detail-like">
+								<!-- 回复 -->
+								<span class="btn btn-weiboshare">
+									<template>
+										<el-button size="small" type="success" plain>回复</el-button>
+									</template>
+								</span>
+
+								<!-- 点赞 -->
+								<span class="btn  btn-weiboshare" v-if="postLike">
+									<i class="layui-icon layui-icon-praise" v-on:click="userLikePost()" style="font-size: 20px; color: #CC0033;"></i>
+								</span>
+								<span class="btn  btn-weiboshare" v-else>
+									<i class="layui-icon layui-icon-praise" v-on:click="userLikePost()" style="font-size: 20px; color: #6D6D6D;"></i>
+								</span>
+
+							</div>
+						</div>
+
+						<div class="question-answers">
+							<p class="ptilte">全部回复</p>
+							<hr />
+
+							<div class="answer-item" v-for="reply in replyList">
+
+								<div class="answer-detail">
+									<span class="comment-reply">
+										<div class="user-username ">
+											<a class="username" href="#" target="_blank">{{reply.replyUsername}}</a>
+										</div>
+									</span>
+									<span class="comment-parent" v-if="reply.isReply">
+										回复
+										<div class="user-username ">
+											<a class="username" href="/user/347060" target="_blank">{{reply.byUsername}}</a>
+										</div>
+									</span>
+									<span class="comment-parent" v-else>
+
+									</span>
+
+									<div class="answer-content markdown-body">
+										<p>{{reply.replyContent}}</p>
+									</div>
+									<div>
+										<span class="create-time">{{reply.replyTime}}</span>
+									</div>
+									<div class="labreport-detail-like">
+										<!-- 回复 -->
+										<span class="btn btn-weiboshare">
+											<template>
+												<el-button size="small" type="success" plain @click="replyUser(reply.replyId)">回复</el-button>
+											</template>
+										</span>
+
+										<!-- 点赞 -->
+										<span class="btn  btn-weiboshare" v-if="reply.isLike">
+											<i class="layui-icon layui-icon-praise" v-on:click="replyLike(reply)" style="font-size: 20px; color: #CC0033;"></i>
+										</span>
+										<span class="btn  btn-weiboshare" v-else>
+											<i class="layui-icon layui-icon-praise" v-on:click="replyLike(reply)" style="font-size: 20px; color: #6D6D6D;"></i>
+										</span>
+									</div>
+
+									<hr />
+								</div>
+							</div>
+
+						</div>
+						<div class="your-answer words-ctrl">
+							<!-- 富文本框位置  -->
+							<textarea id="demo" placeholder="输入回复内容"></textarea>
+
+							<br />
+							<button class="layui-btn" data-type="content" id="commit">提交回复</button>
+
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript">
+			var courseDetalis = new Vue({
+				el: "#courseDetalis",
+
+				mounted: function() {
+					this.queryReply();
+					this.userIsPost();
+				},
+				data() {
+					return {
+						postLike: '',
+						courseId: "1",
+						title: sessionStorage.getItem("title"),
+						content: sessionStorage.getItem("content"),
+						time: sessionStorage.getItem("time"),
+						browse: sessionStorage.getItem("browse"),
+						username: sessionStorage.getItem("courUsername"),
+						postId: sessionStorage.getItem("courPostId"),
+						replyList: []
+					}
+				},
+				methods: {
+					queryReply: function() {
+						let params = new URLSearchParams();
+						params.append("postId", this.postId);
+						params.append("loginUserId", sessionStorage.getItem("userid"));
+						axios({
+							method: 'post',
+							url: '/api/bbs/coursereply/getReplyByPostId',
+							data: params,
+							headers: {
+								//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
+							}
+						}).then(res => {
+							res = res.data;
+							this.replyList = res;
+							console.log('replyList==>' + this.replyList);
+						})
+					},
+					replyLike: function(reply) {
+						let params = new URLSearchParams();
+						params.append("replyId", reply.replyId);
+						params.append("userId", sessionStorage.getItem("userid"));
+						params.append("isLike", reply.isLike);
+						axios({
+							method: 'post',
+							url: '/api/bbs/coursereply/replyLike',
+							data: params,
+							headers: {
+								//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
+							}
+						}).then(res => {
+							res = res.data;
+							if (res.success) {
+								this.$message({
+									message: res.message,
+									type: 'success'
+								});
+								this.queryReply();
+							} else {
+								this.$message.error(res.message);
+							}
+
+						})
+
+					},
+					userLikePost: function() {
+						let params = new URLSearchParams();
+						params.append("replyId", sessionStorage.getItem("courReplyId"));
+						params.append("userId", sessionStorage.getItem("userid"));
+						params.append("isLike", this.postLike);
+						axios({
+							method: 'post',
+							url: '/api/bbs/coursereply/replyLike',
+							data: params,
+							headers: {
+								//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
+							}
+						}).then(res => {
+							res = res.data;
+							if (res.success) {
+								this.$message({
+									message: res.message,
+									type: 'success'
+								});
+								this.userIsPost();
+							} else {
+								this.$message.error(res.message);
+							}
+
+						})
+					},
+					/* 用户是否点赞该贴 */
+					userIsPost: function() {
+						let params = new URLSearchParams();
+						params.append("replyId", sessionStorage.getItem("courReplyId"));
+						params.append("userId", sessionStorage.getItem("userid"));
+						axios({
+							method: 'post',
+							url: '/api/bbs/coursepost/userIsPost',
+							data: params,
+							headers: {
+								//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
+							}
+						}).then(res => {
+							res = res.data;
+							this.postLike = res.isLikePost;
+						})
+					},
+					replyUser: function(replyId) {
+						this.$prompt('请输入回复内容', '回复', {
+							confirmButtonText: '确定',
+							cancelButtonText: '取消',
+							inputPattern: /\S/,
+							inputErrorMessage: '回复内容不能为空'
+						}).then(({
+							value
+						}) => {
+							console.log("replyId====>" + replyId);
+							let params = new URLSearchParams();
+							params.append("replyContent", value);
+							params.append("postId", sessionStorage.getItem("courPostId"));
+							params.append("pId", replyId);
+							params.append("userId", sessionStorage.getItem("userid"));
+							params.append("courseId", this.courseId);
+							axios({
+								method: 'post',
+								url: '/api/bbs/coursereply/insertReply',
+								data: params,
+								headers: {
+									//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
+								}
+							}).then(res => {
+								res = res.data;
+								if (res.success) {
+									this.$message({
+										message: res.message,
+										type: 'success'
+									});
+									this.queryReply();
+								} else {
+									this.$message.error(res.message);
+								}
+							})
+						}).catch(() => {
+							this.$message({
+								type: 'info',
+								message: '取消输入'
+							});
+						});
+					}
+				}
+			})
+		</script>
+
+		<!-- 页脚 -->
+		<div class="width100 float_l padding_t30 height193">
+			<div class="width_1200 margin_auto">
+				<div class="width100 float_l text_c margin_b30">
+					<a class="img_backg5" href="#"></a>
+					<a class="img_backg6 posi_relative wexinmaxianshi" href="#"><i class="weixinweima dis_none"><img src="img/idx-btm.png"></i></a>
+					<a class="img_backg7" href="#"></a>
+					<a class="img_backg8" href="#"></a>
+				</div>
+				<div class="width100 float_l text_c yejiao color_gray">
+					<a>关于我们</a>
+					<a>企业合作</a>
+					<a>人才招聘</a>
+					<a>讲师招募</a>
+					<a>联系我们</a>
+					<a>意见反馈</a>
+					<a>友情链接</a>
+				</div>
+				<div class="width100 float_l text_c border_t margin_t20 padding_t20 color_gray fon_siz12">
+					<span>© 2016 imoroc.com 京ICP备13042132号</span>
+				</div>
+			</div>
+		</div>
+
+	</body>
+</html>
