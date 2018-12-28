@@ -1,398 +1,449 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 
-	<head>
-		<meta charset="utf-8">
-		<link rel="stylesheet" href="../static/font-awesome//4.7.0/css/font-awesome.min.css">
-		<link rel="stylesheet" href="../static/highlight.js/9.8.0/monokai-sublime.min.css">
-		<link rel="stylesheet" href="../app/css/libs/bootstrap/3.3.7/css/bootstrap.min.css">
-		<link rel="stylesheet" href="../app/css/libs/katex/0.6.0/katex.min.css">
-		<link rel="stylesheet" href="../app/css/libs/videojs/5.11.7/video-js.min.css">
-		<link rel="stylesheet" href="../app/css/dest/styles.css?=2016121272249">
-		<!-- 饿了么插件 -->
-		<link rel="stylesheet" type="text/css" href="../../css/index.css" />
-		<link rel="stylesheet" type="text/css" href="../../bootstrap/css/bootstrap-theme.min.css">
-		<link rel="stylesheet" type="text/css" href="../../css/muke.css">
-		<script src="../../js/vue.min.js"></script>
-		<!-- 饿了么插件 -->
-		<script src="../../js/index.js"></script>
-		<script src="../../js/axios.min.js"></script>
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="../static/font-awesome//4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="../static/highlight.js/9.8.0/monokai-sublime.min.css">
+	<link rel="stylesheet" href="../app/css/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../app/css/libs/katex/0.6.0/katex.min.css">
+	<link rel="stylesheet" href="../app/css/libs/videojs/5.11.7/video-js.min.css">
+	<link rel="stylesheet" href="../app/css/dest/styles.css?=2016121272249">
+	<!-- 饿了么插件 -->
+	<link rel="stylesheet" type="text/css" href="../../bootstrap/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" type="text/css" href="../../css/muke.css">
+	<script src="../../js/vue.min.js"></script>
+	<!-- 饿了么插件 -->
+	<script src="../../js/axios.min.js"></script>
+	<script  src="../../js/elementui/index.js"></script>
+	<link rel="stylesheet" href="../../js/elementui/index.css">
 
-	</head>
-	<!-- 布局 -->
-	<style>
-		.el-header, .el-footer {
-    background-color: #FFFFFF;
-    color: #333;
-    text-align: center;
-    line-height: 60px;
-  }
-  
-  .el-aside {
-    background-color: #D3DCE6;
-    color: #333;
-    text-align: center;
-    line-height: 100px;
-  }
-  
-  .el-main {
-    background-color: #FFFFFF;
-    color: #333;
-    text-align: center;
-    line-height: 160px;
-  }
-  
-  body > .el-container {
-    margin-bottom: 40px; 
+</head>
+<!-- 布局 -->
+<style>
+	.el-header, .el-footer {
+		background-color: #FFFFFF;
+		color: #333;
+		text-align: center;
+		line-height: 60px;
+	}
 
-  }
-  
-  .el-container:nth-child(5) .el-aside,
-  .el-container:nth-child(6) .el-aside {
-    line-height: 260px;
-  }
-  
-  .el-container:nth-child(7) .el-aside {
-    line-height: 320px;
-  }
+	.el-aside {
+		background-color: #D3DCE6;
+		color: #333;
+		text-align: center;
+		line-height: 100px;
+	}
+
+	.el-main {
+		background-color: #FFFFFF;
+		color: #333;
+		text-align: center;
+		line-height: 160px;
+	}
+
+	body > .el-container {
+		margin-bottom: 40px;
+
+	}
+
+	.el-container:nth-child(5) .el-aside,
+	.el-container:nth-child(6) .el-aside {
+		line-height: 260px;
+	}
+
+	.el-container:nth-child(7) .el-aside {
+		line-height: 320px;
+	}
 </style>
 
-	<!-- 布局容器 -->
-	<style>
-		.el-row {
-    margin-bottom: 20px;
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-  .el-col {
-    border-radius: 4px;
-  }
-  .bg-purple-dark {
-    background: #99a9bf;
-  }/* 开始学习页背景 */
-  .bg-purple {
-    background: #FFFFFF;
-  }
-  .bg-purple-light {
-    background: #e5e9f2;
-  }
-  .grid-content {
-    border-radius: 4px;
-    min-height: 80px;
-  }
-  .row-bg {
-    padding: 10px 0;
-    background-color: #f9fafc;
-  }
+<!-- 布局容器 -->
+<style>
+	/*	.el-row {
+margin-bottom: 20px;
+&:last-child {
+  margin-bottom: 0;
+}
+}*/
+	.el-col {
+		border-radius: 4px;
+	}
+	.bg-purple-dark {
+		background: #99a9bf;
+	}/* 开始学习页背景 */
+	.bg-purple {
+		background: #FFFFFF;
+	}
+	.bg-purple-light {
+		background: #e5e9f2;
+	}
+	.grid-content {
+		border-radius: 4px;
+		min-height: 80px;
+	}
+	.row-bg {
+		padding: 10px 0;
+		background-color: #f9fafc;
+	}
 </style>
-	<!-- 卡片 -->
-	<style>
-		.text {
-    font-size: 14px;
-  }
+<!-- 卡片 -->
+<style>
+	.text {
+		font-size: 14px;
+	}
 
-  .item {
-    padding: 18px 0;
-  }
+	.item {
+		padding: 18px 0;
+	}
 
-  .box-card {
-    width: 400px;
-  }
+	.box-card {
+		width: 400px;
+	}
 </style>
-	<body>
-		<!-- 顶部 -->
-		<!-- <div class="width100 float_l" style="margin-top: -70px;">-->
-		<div class="width100 float_l height80 line_hei80">
+<body>
+<!-- 顶部 -->
+<!-- <div class="width100 float_l" style="margin-top: -70px;">-->
+<div class="width100 float_l height80 line_hei80">
 
-			<!-- 顶部左边 -->
-			<div class="float_l">
-				<div class="float_l margin_l20">
-					<a href="../../index.html"> <img src="../../img/uiz1.png"></a>
-				</div>
-				<div class="float_l">
-					<ul class="ul_li fon_siz16">
-						<li><a class="color_black" href="../courses/index.html">课程</a></li>
-						<li><a class="color_black" href="">院系</a></li>
-						<li><a class="color_black" href="../paths/index.html">名师专栏</a></li>
-					</ul>
-				</div>
-			</div>
-
-			<!-- 顶部右边 -->
-			<div class="float_r">
-				<div class="float_l top_input">
-					<input class="posi_relative" type="text" name="" id="" placeholder="请输入想搜索的内容...">
-					<img class="img_sousuo bianshou" src="../../img/uiz4.png">
-				</div>
-				<div class="float_l margin_l20">
-					<img src="../../img/uiz5.png">
-				</div>
-				<div class="float_l margin_l35">
-					<img src="../../img/uiz6.png">
-				</div>
-				<div class="float_l margin_l30 margin_r40">
-					<a class="btn btn-default navbar-btn sign-in" data-sign="signin" href="#sign-modal" data-toggle="modal">登录</a>
-					<a class="btn btn-default navbar-btn sign-up" data-sign="signup" href="#sign-modal" data-toggle="modal">注册</a>
-				</div>
-			</div>
-
+	<!-- 顶部左边 -->
+	<div class="float_l">
+		<div class="float_l margin_l20">
+			<a href="../../index.html"> <img src="../../img/uiz1.png"> </a>
 		</div>
-		<!-- 		
-		</div> -->
+		<div class="float_l">
+			<ul class="ul_li fon_siz16">
+				<li><a class="color_black" href="../courses/index.html">课程</a></li>
+				<li><a class="color_black" href="">院系</a></li>
+				<li><a class="color_black" href="../paths/index.html">名师专栏</a></li>
+			</ul>
+		</div>
+	</div>
+
+	<!-- 顶部右边 -->
+	<div class="float_r">
+		<div class="float_l top_input">
+			<input class="posi_relative" type="text" name="" id="" placeholder="请输入想搜索的内容...">
+			<img class="img_sousuo bianshou" src="../../img/uiz4.png">
+		</div>
+		<div class="float_l margin_l20">
+			<img src="../../img/uiz5.png">
+		</div>
+		<div class="float_l margin_l35">
+			<img src="../../img/uiz6.png">
+		</div>
+		<div class="float_l margin_l30 margin_r40">
+			<a class="btn btn-default navbar-btn sign-in" data-sign="signin" href="#sign-modal" data-toggle="modal">登录</a>
+			<a class="btn btn-default navbar-btn sign-up" data-sign="signup" href="#sign-modal" data-toggle="modal">注册</a>
+		</div>
+	</div>
+
+</div>
+<!--
+</div> -->
 
 
 
-		<div id="app">
-			<!-- 中间部位 -->
+<div id="app">
+	<!-- 中间部位 -->
 
-			<el-main style="height: 600px;">
+	<el-main style="height: 600px;">
 
-				<el-header style="height: 100px;">
+		<el-header style="height: 100px;">
+			<el-row :gutter="20">
+				<el-col :span="6">
+					<div class="grid-content bg-purple">
+						<img :src="courPicurl" style="height: 100px; width: 250px;">
+					</div>
+				</el-col>
+				<el-col :span="10">
+					<div class="grid-content bg-purple">
+						<h3>亲爱的</h3>
+						<hr />
+						<h4>欢迎你加入课程《{{courName}}》</h4>
+					</div>
+				</el-col>
+				<el-col :span="2">
+					<div class="grid-content bg-purple">
+						<el-button type="success">开始学习</el-button>
+					</div>
+				</el-col>
+				<el-col :span="2">
+					<div class="grid-content bg-purple">
+						<!-- <el-button type="success" plain>评价课程</el-button> -->
+						<el-button type="success" @click="dialogFormVisible = true">评价课程</el-button>
+
+						<el-dialog title="评价内容" :visible.sync="dialogFormVisible">
+							<el-form :model="form">
+								<el-form-item label="内容" :label-width="formLabelWidth">
+									<el-input type="textarea" :rows="5" placeholder="请输入对课程的评价信息" v-model="textarea"></el-input>
+								</el-form-item>
+
+							</el-form>
+							<div slot="footer" class="dialog-footer">
+								<el-button @click="dialogFormVisible = false">取 消</el-button>
+								<el-button type="primary" @click="addComment">发 表</el-button>
+							</div>
+						</el-dialog>
+
+					</div>
+				</el-col>
+			</el-row>
+
+		</el-header>
+
+		<!-- 左侧导航 -->
+		<template>
+			<el-tabs :tab-position="tabPosition1">
+				<el-tab-pane label="公告">
+
 					<el-row :gutter="20">
-						<el-col :span="6">
-							<div class="grid-content bg-purple">
-								<img src="../img/002.jpg" style="height: 100px; width: 250px;">
-							</div>
-						</el-col>
-						<el-col :span="10">
-							<div class="grid-content bg-purple">
-								<h3>亲爱的</h3>
+						<el-col :span="20">
+							<div class="grid-content bg-purple " style=" min-height: 300px;">
 								<hr />
-								<h4>欢迎你加入课程《{{courName}}》</h4>
-							</div>
-						</el-col>
-						<el-col :span="2">
-							<div class="grid-content bg-purple">
-								<el-button type="success">开始学习</el-button>
-							</div>
-						</el-col>
-						<el-col :span="2">
-							<div class="grid-content bg-purple">
-								<el-button type="success" plain>评价课程</el-button>
+								<h3>公告</h3>
+								<hr />
+								<h3>欢迎来到《{{courName}}》慕课课堂！</h3>
+								<hr />
+								<h4 v-for="gg in gonggao">
+									{{gg.noConten}}
+									<br />
+									{{gg.noCreattime}}
+									<hr />
+								</h4>
+
 							</div>
 						</el-col>
 					</el-row>
 
-				</el-header>
+				</el-tab-pane>
+				<el-tab-pane label="评分标准">
+					<hr />
+					<h3>评分标准</h3>
+					<hr />
+					<h4>
+						本课程采用百分制计分，单元测验占30%，课程讨论占20%（在“课堂交流区”回复或发帖才计入总分），课程结束考试50%。60分及以上为合格，80分及以上为优秀。课程总评分数达到60分以上者，即可获得合格证书；课程总评分数达到80分以上者，方可获得优秀证书。
+					</h4>
+				</el-tab-pane>
 
-				<!-- 左侧导航 -->
-				<template>
-					<el-tabs :tab-position="tabPosition1">
-						<el-tab-pane label="公告">
-
-							<el-row :gutter="20">
-								<el-col :span="20">
-									<div class="grid-content bg-purple " style=" min-height: 300px;">
-										<hr />
-										<h3>公告</h3>
-										<hr />
-										<h3>欢迎来到《音乐心理学》慕课课堂！</h3>
-										<hr />
-										<h4 />
-										各位学员，大家好！欢迎来到《音乐心理学》慕课课堂。
-										《音乐心理学》是一门艺术与科学的交叉学科，旨在探讨人类的音乐心理与行为。我们将带领大家，一起探秘音乐的心灵之旅。
-										在学习过程中，如有有任何疑问或感悟，欢迎大家在讨论区交流分享。祝大家学有所成！
-										</h4>
-										<hr />
-										<h5>
-											<time class="time">{{ currentDate }}</time>
-										</h5>
-									</div>
-								</el-col>
-							</el-row>
-
-						</el-tab-pane>
-						<el-tab-pane label="评分标准">
-							<hr />
-							<h3>评分标准</h3>
-							<hr />
-							<h4>
-								本课程采用百分制计分，单元测验占30%，课程讨论占20%（在“课堂交流区”回复或发帖才计入总分），课程结束考试50%。60分及以上为合格，80分及以上为优秀。课程总评分数达到60分以上者，即可获得合格证书；课程总评分数达到80分以上者，方可获得优秀证书。
-							</h4>
-						</el-tab-pane>
-
-						<el-tab-pane label="课件">
-							<hr />
-							<h3>课件</h3>
-							<el-collapse v-model="activeNames" @change="handleChange">
-
-								<el-collapse-item v-for="c in kejian">
-									<template slot="title" >
-										{{c.chaName}}
-									</template>
-										<div v-for="s in c.children" style="text-align: left;height: 50px;line-height: 50px;">
-												<span><el-progress type="circle" :percentage="50"  width=15></el-progress></span>
-												{{s.chaName}}
-										</div>
-								</el-collapse-item>
-							</el-collapse>
-
-						</el-tab-pane>
+				<el-tab-pane label="课件">
+					<hr />
+					<h3>课件</h3>
+					<iframe src="chapter.html" width="100%" height="500px" frameborder="0" allowfullscreen></iframe>
+				</el-tab-pane>
 
 
 
 
-						<el-tab-pane label="测验与作业">
-							<hr />
-							<h3>测验与作业</h3>
-							<hr />
-							<h4>1.音乐意义</h4>
-							<hr />
-							<el-collapse v-model="activeNames" @change="handleChange">
-								<el-collapse-item>
-									<template slot="title">
-										<hr />
-										<h4>单元测试 &nbsp;&nbsp;&nbsp;截止时间： {{ currentDate }}</h4>
-										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-										<el-button type="success">前往测试</el-button>
-									</template>
+				<el-tab-pane label="测验与作业">
+					<hr />
+					<h3>测验与作业</h3>
+					<hr />
+					<h4>1.音乐意义</h4>
+					<hr />
+					<el-collapse v-model="activeNames" @change="handleChange">
+						<el-collapse-item>
+							<template slot="title">
+								<hr />
+								<h4>单元测试 &nbsp;&nbsp;&nbsp;截止时间： {{ currentDate }}</h4>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<el-button type="success">前往测试</el-button>
+							</template>
 
-									<div>
-										<hr />
-										<h6>单元测验共5题，全部为单选题，每题答对得2分。</h6>
-										<h5>截止时间&nbsp;&nbsp;&nbsp;{{ currentDate }}</h5>
-										<h6>请务必在截止时间之前提交，截止时间后的提交不再计分</h6>
-										<hr />
-										<h5>有效分数&nbsp;&nbsp;&nbsp;0.00/10.00</h5>
-										<h6>你的每一次测验系统都将为你计分，并提取最高得分作为你的有效分数</h6>
-										<hr />
-										<h5>有效提交次数&nbsp;&nbsp;&nbsp;0/5</h5>
+							<div>
+								<hr />
+								<h6>单元测验共5题，全部为单选题，每题答对得2分。</h6>
+								<h5>截止时间&nbsp;&nbsp;&nbsp;{{ currentDate }}</h5>
+								<h6>请务必在截止时间之前提交，截止时间后的提交不再计分</h6>
+								<hr />
+								<h5>有效分数&nbsp;&nbsp;&nbsp;0.00/10.00</h5>
+								<h6>你的每一次测验系统都将为你计分，并提取最高得分作为你的有效分数</h6>
+								<hr />
+								<h5>有效提交次数&nbsp;&nbsp;&nbsp;0/5</h5>
 
-									</div>
-								</el-collapse-item>
-							</el-collapse>
+							</div>
+						</el-collapse-item>
+					</el-collapse>
 
-						</el-tab-pane>
-						<el-tab-pane label="考试">
-							<iframe src="../../../exam/StudentTest.html" width="100%" frameborder="0">
-								
-							</iframe>
-						</el-tab-pane>
-						<el-tab-pane label="个人成绩">
-							
-						    <iframe src="../../../exam/examendstudent.html" width="100%" frameborder="0">
-						</el-tab-pane>
-						
-						
-						<el-tab-pane label="讨论区">
-							<iframe src="../../../bbs/Reception/course.html" width="100%" height="500px" frameborder="0"></iframe>
-						</el-tab-pane>
-					</el-tabs>
-				</template>
+				</el-tab-pane>
+				<el-tab-pane label="考试">
+					<iframe src="../../../exam/StudentTest.html" width="100%" height="500px" frameborder="0">
 
-				<!-- <end -->
-			</el-main>
-		</div>
+					</iframe>
+				</el-tab-pane>
+				<el-tab-pane label="个人成绩">
+
+					<iframe src="../../../exam/examendstudent.html" width="100%" height="500px" frameborder="0">
+				</el-tab-pane>
 
 
-		<script>
-			/*自动在请求中添加请求头*/
-			axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
+				<el-tab-pane label="讨论区">
+					<iframe src="../../../bbs/Reception/course.html" width="100%" height="500px" frameborder="0"></iframe>
+				</el-tab-pane>
+			</el-tabs>
+		</template>
 
-			var app = new Vue({
-				el: "#app",
-				mounted: function() {
-					this.sid = sessionStorage.getItem("userid");
-					this.getQueryString("courId");
-					this.chaxun();
-					this.queryChapter();
-				},
-				data() {
-					return {
-						tabPosition1: 'left',
-						//tabPosition2: 'right',
-						currentDate: new Date(),
-						activeNames: ['1'],
-
-						courId: "",
-						sid: "",
-						courName: "",
-						courTeaid: "",
-						courDepid: "",
-						courPicurl: "",
-						courPrice: "",
-						courNocount: "",
-						courContent: "",
-						courDetails: "",
-						courPageview: "",
-						courScore: "",
-						courTarget: "",
-						courResources: "",
-						courPropaedeutics: "",
-						courIsputaway: "",
-						courCommentcount: "",
-						kejian:[],
-                        kejianchildren:[]
+		<!-- <end -->
+	</el-main>
+</div>
 
 
-                    };
-				},
-				methods: {
-					handleChange(val) {
-						console.log(val);
-					},
-					/* 获取cid  */
-					getQueryString: function(name) {
-						var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-						var r = window.location.search.substr(1).match(reg);
-						if (r != null) {
-							this.courId = decodeURIComponent(r[2]);
-							//console.log(this.courId+"课程id");
-						}
+<script>
+    /*自动在请求中添加请求头*/
+    axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
 
-						return '';
-					},
-					chaxun: function() {
+    var app = new Vue({
+        el: "#app",
+        mounted: function() {
+            this.sid = sessionStorage.getItem("userid");
+            this.getQueryString("courId");
+            this.chaxun();
+            this.querygonggao();
+        },
+        data() {
+            return {
+                tabPosition1: 'left',
+                //tabPosition2: 'right',
+                currentDate: new Date(),
+                activeNames: ['1'],
 
-						axios({
-							method: 'get',
-							url: `/api/student/curricularTaxonomy/getCoursedetails`,
-							params: {
-								courId: this.courId
-								//sid: this.sid,
-							}
-						}).then(res => {
-							//http://localhost/ieppage/student/curricular/courses/show.html
-							res = res.data[0];
-							//console.log(res);
-							//console.log(res.courContent);
-							this.courName = res.courName;
-							this.courContent = res.courContent;
-							this.courDetails = res.courDetails;
-							this.courTarget = res.courTarget;
-							this.courResources = res.courResources;
-							this.courPropaedeutics = res.courPropaedeutics;
-							this.courPageview = res.courPageview;
-							this.courOpentime = res.courOpentime;
-							this.courClasshour = res.courClasshour;
-					
-						})
-					},
-					//课程章节
-                    queryChapter(){
-                        axios({
-                            method: 'get',
-                            url: `/api/student/study/queryChapter`,
-                            params: {
-                                cid: this.courId
-                                //sid: this.sid,
-                            }
-                        }).then(res =>{
-                         this.kejian=res.data;
-                            this.kejianchildren=res.data.children
-                         console.log("this.kejianchildren=>"+this.kejianchildren);
-						})
-					}
-					
+                courId: "",
+                sid: "",
+                courName: "",
+                courTeaid: "",
+                courDepid: "",
+                courPicurl: "",
+                courPrice: "",
+                courNocount: "",
+                courContent: "",
+                courDetails: "",
+                courPageview: "",
+                courScore: "",
+                courTarget: "",
+                courResources: "",
+                courPropaedeutics: "",
+                courIsputaway: "",
+                courCommentcount: "",
+                kejian: [],
+                kejianchildren: [],
+                gonggao: [],
+                textarea: '',
+                dialogFormVisible: false,
+                form: {
+                    name: '',
+                    region: '',
+                    date1: '',
+                    date2: '',
+                    delivery: false,
+                    type: [],
+                    resource: '',
+                    desc: ''
+                },
+                formLabelWidth: '120px'
 
 
-				}
+
+            };
+        },
+        methods: {
+            handleChange(val) {
+                console.log(val);
+            },
+            /* 获取cid  */
+            getQueryString: function(name) {
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+                var r = window.location.search.substr(1).match(reg);
+                if (r != null) {
+                    this.courId = decodeURIComponent(r[2]);
+                    //console.log(this.courId+"课程id");
+                }
+
+                return '';
+            },
+            chaxun: function() {
+
+                axios({
+                    method: 'get',
+                    url: `/api/student/curricularTaxonomy/getCoursedetails`,
+                    params: {
+                        courId: this.courId
+                        //sid: this.sid,
+                    }
+                }).then(res => {
+                    //http://localhost/ieppage/student/curricular/courses/show.html
+                    res = res.data[0];
+                    //console.log(res);
+                    //console.log(res.courContent);
+                    this.courName = res.courName;
+                    this.courContent = res.courContent;
+                    this.courDetails = res.courDetails;
+                    this.courTarget = res.courTarget;
+                    this.courResources = res.courResources;
+                    this.courPropaedeutics = res.courPropaedeutics;
+                    this.courPageview = res.courPageview;
+                    this.courOpentime = res.courOpentime;
+                    this.courClasshour = res.courClasshour;
+                    this.courPicurl = res.courPicurl;
+
+                })
+            },
+            //公告信息
+            querygonggao() {///
+                axios({
+                    method: 'get',
+                    url: `/api/student/study/queryNotice`,
+                    params: {
+                        cid: this.courId
+                        //sid: this.sid,
+                    }
+                }).then(res => {
+                    //this.kejian = res.data;
+                    this.gonggao = res.data.message
+                    console.log("公告=>" + this.gonggao);
+                })
+            },
+
+            //添加评价信息
+            addComment() {
+                axios({
+                    method: 'post',
+                    url: `/api/student/comment/addComment`,
+                    params: {
+                        cid: this.courId,
+                        sid: this.sid,
+                        content: this.textarea
+                        //sid: this.sid,
+                    }
+                }).then(res => {
+                    if (res.data.success = true) {
+                        this.open1();
+                        this.dialogFormVisible = false
+                    } else {
+                        this.open2();
+                    }
+                    //this.kejian = res.data;
+                    console.log("返回值=>" + res.data.message);
+                })
+            },
+            open1() {
+                this.$message({
+                    message: '恭喜你，评价成功',
+                    type: 'success'
+                });
+            },
+            open2() {
+                this.$message.error('评价失败');
+            }
 
 
-			})
-		</script>
 
 
-	</body>
+
+        }
+
+
+    })
+</script>
+
+
+</body>
 </html>
