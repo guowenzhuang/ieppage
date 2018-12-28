@@ -14,7 +14,8 @@ let main={
                 page:1,
                 rows:6
             },
-            total:0
+            total:0,
+            userId:''
         }
     },
     methods:{
@@ -22,7 +23,7 @@ let main={
           //查询课程
           axios({
               method:'get',
-              url:'/api/student/studentrecord',
+              url:'/api/student/studentrecord/'+this.userId,
               params:{
                   page:this.query.page,
                   rows:this.query.rows
@@ -45,6 +46,7 @@ let main={
     mounted(){
         //查询学生信息
         let id=sessionStorage.getItem("userid");
+        this.userId=id;
         axios({
             method:'get',
             url:'/api/student/stu/'+id
