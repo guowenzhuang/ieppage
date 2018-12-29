@@ -88,6 +88,9 @@ margin-bottom: 20px;
 </style>
 <!-- 卡片 -->
 <style>
+	html,body{
+		background-color: rgb(248,248,248);
+	}
 	.text {
 		font-size: 14px;
 	}
@@ -98,6 +101,26 @@ margin-bottom: 20px;
 
 	.box-card {
 		width: 400px;
+	}
+	.el-tabs__item{
+		height: 60px;
+		width: 200px;
+		background-color: rgb(255,255,255);
+		line-height: 60px;
+	}
+	.el-tabs__item:hover{
+		background-color:  rgb(85,181,41);
+		color:#ffffff;
+	}
+	.el-tabs--card > .el-tabs__header .el-tabs__item.is-active{
+		background-color:  rgb(85,181,41);
+		color:#ffffff;
+	}
+	.el-tabs--left .el-tabs__item.is-left{
+		text-align: left;
+	}
+	.el-tabs__content{
+		height: 800px;
 	}
 </style>
 <body>
@@ -146,8 +169,7 @@ margin-bottom: 20px;
 <div id="app">
 	<!-- 中间部位 -->
 
-	<el-main style="height: 600px;">
-
+	<el-main>
 		<el-header style="height: 100px;">
 			<el-row :gutter="20">
 				<el-col :span="6">
@@ -193,8 +215,8 @@ margin-bottom: 20px;
 
 		<!-- 左侧导航 -->
 		<template>
-			<el-tabs :tab-position="tabPosition1">
-				<el-tab-pane label="公告">
+			<el-tabs type="card"  tab-position="left"  style="height: 100%;width: 100%;" stretch>
+				<el-tab-pane label="公告" name="gonggao">
 
 					<el-row :gutter="20">
 						<el-col :span="20">
@@ -216,7 +238,7 @@ margin-bottom: 20px;
 					</el-row>
 
 				</el-tab-pane>
-				<el-tab-pane label="评分标准">
+				<el-tab-pane label="评分标准" name="pingfen">
 					<hr />
 					<h3>评分标准</h3>
 					<hr />
@@ -225,10 +247,8 @@ margin-bottom: 20px;
 					</h4>
 				</el-tab-pane>
 
-				<el-tab-pane label="课件">
-					<hr />
-					<h3>课件</h3>
-					<iframe src="chapter.html" width="100%" height="500px" frameborder="0" allowfullscreen></iframe>
+				<el-tab-pane name="kejian" label="课件" style="height: 100%;width: 100%;">
+					<iframe src="chapter.html" style="height: 100%;width: 100%;"  frameborder="0" ></iframe>
 				</el-tab-pane>
 
 
@@ -301,11 +321,8 @@ margin-bottom: 20px;
         },
         data() {
             return {
-                tabPosition1: 'left',
-                //tabPosition2: 'right',
                 currentDate: new Date(),
                 activeNames: ['1'],
-
                 courId: "",
                 sid: "",
                 courName: "",
