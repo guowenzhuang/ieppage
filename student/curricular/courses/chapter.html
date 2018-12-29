@@ -33,11 +33,6 @@
 <body>
 <div id="app">
 
-    <el-row type="flex" justify="center">
-        <el-col :span="2">
-            <el-button icon="el-icon-refresh" type="primary" onclick=" window.location.reload();">刷新</el-button>
-        </el-col>
-    </el-row>
     <el-row>
         <el-collapse>
             <el-collapse-item v-if="item.children!=null && item.children.length!=0" class="chapter-top" :key="item.chaId" :name="i" v-for="(item,i) in chapterData">

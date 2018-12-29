@@ -17,13 +17,8 @@
 </head>
 <body>
 <div id="app">
-    <el-row type="flex" justify="center">
-        <el-col :span="2">
-            <el-button icon="el-icon-refresh" type="primary" onclick=" window.location.reload();">刷新</el-button>
-        </el-col>
-    </el-row>
     <el-row>
-        <el-tabs v-model="labelValue">
+        <el-tabs v-model="labelValue" type="card">
             <el-tab-pane label="视频" active name="video">
                 <el-row type="flex" justify="center">
                     <el-col :span="20">
@@ -55,7 +50,23 @@
     }
 
     window.onbeforeunload = function (e) {
-
+        let active = sessionStorage.getItem("chadata");
+        let o = JSON.parse(active);
+       let wat=parseInt(app.hiy);
+        if(wat>o.watch){
+            o.watch=wat;
+        }
+        let params=new URLSearchParams();
+        params.append("id",app.sid);
+        params.append("cid",app.cid);
+        params.append("chaId",app.chaId);
+        params.append("watch",wat);
+        sessionStorage.setItem("chadata",JSON.stringify(o));
+        axios({
+            method:'post',
+            url:"/api/student/studentrecord/recordStuCha",
+            data:params
+        })
     }
 
     let main = {
