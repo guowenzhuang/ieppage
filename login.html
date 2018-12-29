@@ -211,21 +211,38 @@
                     window.location.href = callback;
                     return;
                 }
-                let url = authoritiesToUrl(roleNames[0]);
-                window.location.href = url;
-                //axios.defaults.headers.common['Authorization'] = "bearer " + res.access_token;
+                axios.defaults.headers.common['Authorization'] = "bearer " + res.access_token;
+                authoritiesToUrl(roleNames[0],res.info.id);
             });
             return false;
         }
 
         //根据权限找到url
-        function authoritiesToUrl(role) {
+        function authoritiesToUrl(role,id) {
             switch (role) {
                 case "学生":
+                    //获取学生基本信息
+                    axios({
+                        method:'get',
+                        url:'/api/student/stu/'+id
+                    }).then(res=>{
+                        res=res.data.message;
+                        if(res.photo!=null && res.photo!=''){
+                            sessionStorage.setItem("userPhoto", res.photo);
+                        }else{
+                            sessionStorage.setItem("userPhoto", "/student/curricular/img/user/portrait.jpg");
+                        }
+                        let surl="student/index.html";
+                        window.location.href = surl;
+                    })
                     return "student/index.html";
                 case "老师":
+                    let turl="teacher/index.html";
+                    window.location.href = turl;
                     return "teacher/index.html";
                 case "管理员":
+                    let aurl="admin/index.html";
+                    window.location.href = aurl;
                     return "admin/index.html";
                 default:
                     return "admin/index.html";
