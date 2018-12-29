@@ -8,172 +8,83 @@
     <script src="../../js/axios.min.js"></script>
     <script src="../static/jquery/2.2.4/jquery.min.js"></script>
     <script type="text/javascript" src="ckplayer/ckplayer.js"></script>
-    <script  src="../../js/elementui/index.js"></script>
+    <script src="../../js/elementui/index.js"></script>
     <link rel="stylesheet" href="../../js/elementui/index.css">
+    <style>
+        .chapter-top .el-collapse-item__header{
+            background-color: rgb(232,249,255);
+        }
+    </style>
 </head>
 <body>
 <div id="app">
-    <el-collapse v-model="activeName" accordion id="zhangjie">
-        <el-collapse-item v-for="c in kejian">
-            <template slot="title" >
-                {{c.chaName}}
-            </template>
-            <div v-for="s in c.children" style="text-align: left;height: 50px;line-height: 50px;">
-                <span><el-progress type="circle" :percentage="50"  width=15></el-progress></span>
-                {{s.chaName}}
-                <a @click="bofang(s.chaViurl,s.chaType,s.chaId)" style="margin-right:890px; "><img src="../img/shiping.jpg" height="18px" width="18px"></a>
 
-            </div>
-        </el-collapse-item>
+   <el-row type="flex" justify="center">
+       <el-col :span="2">
+           <el-button icon="el-icon-refresh" type="primary" onclick=" window.location.reload();">刷新</el-button>
+       </el-col>
+   </el-row>
+    <el-row>
+        <el-collapse>
+            <el-collapse-item class="chapter-top"  v-for="(item,i) in chapterData" :title="item.chaName">
 
-    </el-collapse>
-    <div>
-        <el-button icon="el-icon-refresh" type="primary" onclick=" window.location.reload();">刷新</el-button>
-
-    </div>
-<div>
-    <div id="video" style="width:600px;height:400px; display: none"></div>
-</div>
-
-
+            </el-collapse-item>
+        </el-collapse>
+    </el-row>
 </div>
 <script type="text/javascript">
-    window.onbeforeunload=function(e){
-        console.log("sss离开",e)
-        console.log("sss离开",hiy)
-        var e = window.event||e;
-        e.returnValue=("确定离开当前页面吗？"+hiy);
-        app.addStudy(hiy);
+    axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
+    window.onbeforeunload = function (e) {
+      /*  console.log("sss离开", e)
+        console.log("sss离开", app.hiy)*/
+        //app.addStudy(app.hiy);
     }
 
-    function loadHandler() {
-        player.addListener('time', timeHandler); //监听播放时间
-    }
-    var player=null;
-    let hiy=0;
-    function timeHandler(t) {
-        hiy=t;
-    }
-</script>
-<script>
-     axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
-     var app = new Vue({
+
+    var app = new Vue({
         el: "#app",
-        mounted: function() {
-            this.sid = sessionStorage.getItem("userid");
-            this.cid=sessionStorage.getItem("courId");
-            this.queryChapter();
-            console.log("公告=>" + this.cid);
-
-        },
-        data:{
-            activeName: '1',
-            kejian:[],
-            chaViurl:'',
-            chaType:'',
-            cid:'',
+        data: {
+            //章节数据
+            chapterData:[],
             sid:'',
-            chaId:'',
-            starttime:''
-        },
-        mounted: function() {
-
-            this.queryChapter();
+            cid:'',
+            //视频进度
+            hiy: 0,
+            //播放器
+            player: null,
         },
         methods: {
-            //课程章节
-            queryChapter(){
-                console.log("cid=>"+sessionStorage.getItem("courId"));
+            timeHandler(t) {
+                this.hiy = t;
+            },
+            //查询课程下所有章节
+            queryChapter() {
                 axios({
                     method: 'get',
                     url: `/api/student/study/queryChapter`,
                     params: {
-                        cid:sessionStorage.getItem("courId")
-                        //sid: this.sid,
+                        cid: this.cid
                     }
-                }).then(res =>{
-                    this.kejian=res.data;
+                }).then(res => {
+                    this.chapterData = res.data;
 
                 })
             },
-            bofang(url,type,chaId){
-                $("#zhangjie").css('display','none');
-                $("#video").css('display','block');
-                this.starttime=new Date();//点击播放按钮时获取当前时间（未完成）
-                console.log("this.starttime=>"+this.starttime);
-               var videoObject = {
-                    container: '#video',//“#”代表容器的ID，“.”或“”代表容器的class
-                    variable: 'player',//该属性必需设置，值等于下面的new chplayer()的对象
-                    flashplayer:false,//如果强制使用flashplayer则设置成true
-                    video:'http://iep-oss.oss-cn-beijing.aliyuncs.com/'+url,//视频地址
-                    loaded:'loadHandler',//监听事件
-                };
-                 player=new ckplayer(videoObject);
-                //在这里取出你的章节id
-                this.chaId=chaId;
-                var chapter=chaId;
-                console.log("chapter=>"+chapter);
-
-                //操作cookie的对象
-               /* var cookie = {
-                    set: function(name, value) {
-                        console.log("cookieTime=>"+name);
-                        var Days = 30;
-                        var exp = new Date();
-                        exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
-                        document.cookie = name + '=' + escape(value) + ';expires=' + exp.toGMTString();
-                    },
-                    get: function(name) {
-                        var arr, reg = new RegExp('(^| )' + name + '=([^;]*)(;|$)');
-                        if(arr = document.cookie.match(reg)) {
-                            return unescape(arr[2]);
-                        } else {
-                            return null;
-                        }
-                    },
-                    del: function(name) {
-                        var exp = new Date();
-                        exp.setTime(exp.getTime() - 1);
-                        var cval = getCookie(name);
-                        if(cval != null) {
-                            document.cookie = name + '=' + cval + ';expires=' + exp.toGMTString();
-                        }
-                    }
-                };
-                var videoID = 10; //视频的区分ID，每个视频分配一个唯一的ID
-                var cookieTime = cookie.get('time_' + videoID); //调用已记录的time
-                console.log("cookieTime=>"+cookieTime);
-                if(!cookieTime || cookieTime == undefined) { //如果没有记录值，则设置时间0开始播放
-
-                    cookieTime = 0;
-                }
-                if(cookieTime > 0) {
-                    alert('本视频记录的上次观看时间(秒)为：' + cookieTime);
-                }
+            bofang(url, type, chaId) {
+                this.starttime = new Date();//点击播放按钮时获取当前时间（未完成）
+                console.log("this.starttime=>" + this.starttime);
                 var videoObject = {
                     container: '#video',//“#”代表容器的ID，“.”或“”代表容器的class
                     variable: 'player',//该属性必需设置，值等于下面的new chplayer()的对象
-                    flashplayer:false,//如果强制使用flashplayer则设置成true
-                    video:'http://iep-oss.oss-cn-beijing.aliyuncs.com/'+url,//视频地址
-                    loaded:'loadHandler',//监听事件
+                    flashplayer: false,//如果强制使用flashplayer则设置成true
+                    video: url,//视频地址
+                    //loaded:'loadHandler',//监听事件
                 };
-                if(cookieTime > 0) { //如果记录时间大于0，则设置视频播放后跳转至上次记录时间
-                    videoObject['seek'] = cookieTime;
-                }
-                var player = new ckplayer(videoObject);
+                this.player = new ckplayer(videoObject);
+                this.player.addListener('time', app.timeHandler); //监听播放时间
 
-                function loadHandler() {
-                    player.addListener('time', timeHandler); //监听播放时间
-                }
-
-                function timeHandler(t) {
-                    cookie.set('time_' + videoID, t); //当前视频播放时间写入cookie
-                }*/
             },
-            loadHandler(){
-                player.addListener('time', timeHandler); //监听播放时间
-
-            },addStudy(time){
+            addStudy(time) {
                 //chaId章节Id
                 //starttime 备注:学习开始的时间
                 //watchtime 观看视频时常
@@ -182,18 +93,22 @@
                 let params = new URLSearchParams()
                 params.append('cid', courId);
                 params.append('chaid', this.chaId);
-                params.append('watchtime',time);
-                params.append('sid',sessionStorage.getItem("userid"));
+                params.append('watchtime', time);
+                params.append('sid', sessionStorage.getItem("userid"));
                 axios({
                     method: 'post',
                     url: `/api/student/study/addChapterStudyLog`,
                     data: params,
                 }).then(res => {
 
-
                 })
             },
-        }
+        },
+        mounted() {
+            this.sid = sessionStorage.getItem("userid");
+            this.cid = sessionStorage.getItem("courId");
+            this.queryChapter();
+        },
 
     })
 </script>
