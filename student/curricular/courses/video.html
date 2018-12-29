@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../../js/vue.min.js"></script>
+    <script src="../../js/axios.min.js"></script>
+    <script type="text/javascript" src="ckplayer/ckplayer.js"></script>
+    <script src="../../js/elementui/index.js"></script>
+    <link rel="stylesheet" href="../../js/elementui/index.css">
+    <style>
+
+    </style>
+</head>
+<body>
+<div id="app">
+    <el-row type="flex" justify="center">
+        <el-col :span="2">
+            <el-button icon="el-icon-refresh" type="primary" onclick=" window.location.reload();">刷新</el-button>
+        </el-col>
+    </el-row>
+    <el-row>
+        <el-tabs v-model="labelValue">
+            <el-tab-pane label="视频" active name="video">
+                <el-row type="flex" justify="center">
+                    <el-col :span="20">
+                        <div id="video"></div>
+                    </el-col>
+                </el-row>
+            </el-tab-pane>
+            <el-tab-pane label="文档" name="doc-pdf">
+                word+pdf
+            </el-tab-pane>
+            <el-tab-pane label="讨论" name="third">
+                讨论
+            </el-tab-pane>
+        </el-tabs>
+    </el-row>
+</div>
+</body>
+<script type="text/javascript">
+    axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
+    axios.defaults.headers.common['Content-Type'] = 'application/json;charset=UTF-8';
+
+    function getParam(paramName) {
+        paramValue = "", isFound = !1;
+        if (this.location.search.indexOf("?") == 0 && this.location.search.indexOf("=") > 1) {
+            arrSource = unescape(this.location.search).substring(1, this.location.search.length).split("&"), i = 0;
+            while (i < arrSource.length && !isFound) arrSource[i].indexOf("=") > 0 && arrSource[i].split("=")[0].toLowerCase() == paramName.toLowerCase() && (paramValue = arrSource[i].split("=")[1], isFound = !0), i++
+        }
+        return paramValue == "" && (paramValue = null), paramValue
+    }
+
+    window.onbeforeunload = function (e) {
+
+    }
+
+    let main = {
+        data() {
+            return {
+                sid: '',
+                cid: '',
+                chaId: '',
+                //视频进度
+                hiy: 0,
+                //播放器
+                player: null,
+                labelValue: 'video',
+                active: null
+            }
+        },
+        methods: {
+            bofang() {
+                let videoObject = {
+                    container: '#video',//“#”代表容器的ID，“.”或“”代表容器的class
+                    variable: 'player',//该属性必需设置，值等于下面的new chplayer()的对象
+                    flashplayer: false,//如果强制使用flashplayer则设置成true
+                    video: this.active.chaViurl,//视频地址
+                    seek: this.active.watch
+                };
+                this.player = new ckplayer(videoObject);
+                this.player.addListener('time', this.timeHandler); //监听播放时间
+            },
+            timeHandler(t) {
+                this.hiy = t;
+            }
+        },
+        mounted() {
+            this.sid = sessionStorage.getItem("userid");
+            this.cid = sessionStorage.getItem("courId");
+            this.chaId = getParam("chaId");
+            this.labelValue = getParam("value");
+            let active = sessionStorage.getItem("chadata");
+            this.active = JSON.parse(active);
+            console.log(active)
+            this.bofang();
+        }
+    };
+    let Component = Vue.extend(main);
+    let app = new Component().$mount('#app')
+</script>
+</html>
