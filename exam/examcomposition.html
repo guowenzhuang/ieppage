@@ -35,7 +35,7 @@
 <body>
 <div id="app">
 
-    <!--<el-button type="primary" @click="selectrubric()">选题组卷</el-button>-->
+    <el-button type="primary" @click="selectrubric()">选题组卷</el-button>
 
     <!--添加试卷的对话框-->
     <el-dialog title="添加试卷" :visible.sync="addparper" width="60%" :before-close="handleClose">
@@ -649,7 +649,7 @@
                 inputC: '',
                 inputD: '',
                 bigdialog: false,
-                addparper: true,
+                addparper: false,
 
 
                 updateform: true,
@@ -1114,7 +1114,7 @@
                     if (this.form != true) {
                         axios({
                             method: 'post',
-                            url: '/api/exam/examrubric/addexamrubricdouble',
+                            url: '/api/exam/Sectionrubric/addexamrubricdouble',
                             data: params,
 
                         }).then(res => {
@@ -1179,7 +1179,7 @@
                     if (this.duoform1 + this.duoform2 + this.duoform3 + this.duoform4 != true) {
                         axios({
                             method: 'post',
-                            url: '/api/exam/examrubric/addexamrubricdouble',
+                            url: '/api/exam/Sectionrubric/addexamrubricdouble',
                             data: params,
 
                         }).then(res => {
@@ -1232,7 +1232,7 @@
 
                 axios({
                     method: 'post',
-                    url: '/api/exam/examrubric/addexamrubricdouble',
+                    url: '/api/exam/Sectionrubric/addexamrubricdouble',
                     data: params,
 
                 }).then(res => {
@@ -1267,7 +1267,7 @@
 
                 axios({
                     method: 'post',
-                    url: '/api/exam/examrubric/addexamrubricdouble',
+                    url: '/api/exam/Sectionrubric/addexamrubricdouble',
                     data: params,
 
                 }).then(res => {
@@ -1296,7 +1296,6 @@
                 this.score = false;
 
             },
-
 
             /*新增取消按钮*/
             addquxiao() {
