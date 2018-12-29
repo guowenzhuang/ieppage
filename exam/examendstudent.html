@@ -7,6 +7,14 @@
     <link rel="stylesheet" type="text/css" href="css/index.css"/>
     <script src="js/index.js"></script>
     <script src="js/axios.js"></script>
+    <style>
+        .cccc {
+            list-style: none;
+            text-align: left;
+            margin-left: 80px;
+        }
+
+    </style>
 
 
 </head>
@@ -39,6 +47,160 @@
     </div>
 
 
+    <el-dialog title="查看学生做题的记录" :visible.sync="lookstuentparper" width="80%" :before-close="handleClose">
+
+        <div id="parperccc">
+            <font size="5">
+                考试标题:
+            </font>
+            <font size="4" color="red">
+                {{examtitle}}
+            </font>
+            <font size="4" size="5">
+                考试时长:
+            </font>
+            <font color="red">
+                {{durationccc}} 分钟
+            </font>
+
+            <font size="5">
+                开考时间:
+            </font>
+            <font size="4" color="red">
+                {{examtimeccc}}
+            </font>
+
+            <font size="5">
+                考生姓名:
+            </font>
+            <font size="4" color="red">
+                {{studnetname}}
+            </font>
+
+            <font size="5">
+                学生所得总分:
+            </font>
+            <font size="4" color="red">
+                {{examtotal}}
+            </font>
+
+
+            <br>
+            <h2>一.单择题</h2>
+            <hr>
+            <ol v-for="site in sitesss">
+            <span v-if="site.rubrictype==='单选题'">
+            <li class="cccc" style="margin-left: 20px">
+                <h2>({{site.index}})<font size="4">{{site.rubrictype}}</font> :{{site.content}} {{site.score}}分 <font
+                        color="red">正确答案:({{site.answer}})</font>  <font
+                        color="red">学生所做答案:({{site.selectanswer}})</font>
+                </h2>
+            </li>
+            <li class="cccc" v-if="site.seen">
+                <font size="4">A:{{site.answerA}}</font>
+            </li>
+            <li class="cccc" v-if="site.seen">
+                <font size="4">B:{{site.answerB}}</font>
+            </li>
+            <li class="cccc" v-if="site.seen">
+                <font size="4">C:{{site.answerC}}</font>
+            </li>
+            <li class="cccc" v-if="site.seen">
+                <font size="4">D:{{site.answerD}}</font>
+            </li>
+            <br><br>
+                </span>
+            </ol>
+
+            <h2>一.多选题 </h2>
+            <hr>
+            <ol v-for="site in sitesss">
+
+            <span v-if="site.rubrictype==='多选题'">
+
+            <li class="cccc" style="margin-left: 20px">
+                <h2>({{site.index}})<font size="4">{{site.rubrictype}}</font> :{{site.content}} {{site.score}}分 <font
+                        color="red">正确答案:({{site.answer}})</font>  <font
+                        color="red">学生所做答案:({{site.selectanswer}})</font>
+                </h2>
+            </li>
+            <li class="cccc" v-if="site.seen">
+                <font size="4">A:{{site.answerA}}</font>
+            </li>
+            <li class="cccc" v-if="site.seen">
+                <font size="4">B:{{site.answerB}}</font>
+            </li>
+            <li class="cccc" v-if="site.seen">
+                <font size="4">C:{{site.answerC}}</font>
+            </li>
+            <li class="cccc" v-if="site.seen">
+                <font size="4">D:{{site.answerD}}</font>
+            </li>
+            <br><br>
+                </span>
+            </ol>
+
+            <h2>一.填空题 </h2>
+            <hr>
+            <ol v-for="site in sitesss">
+
+            <span v-if="site.rubrictype==='填空题'">
+
+            <li class="cccc" style="margin-left: 20px">
+                <h2>({{site.index}})<font size="4">{{site.rubrictype}}</font> :{{site.content}} {{site.score}}分 <font
+                        color="red">正确答案:({{site.answer}})</font>  <font
+                        color="red">学生所做答案:({{site.selectanswer}})</font>
+                </h2>
+            </li>
+            <li class="cccc" v-if="site.seen">
+                <font size="4">A:{{site.answerA}}</font>
+            </li>
+            <li class="cccc" v-if="site.seen">
+                <font size="4">B:{{site.answerB}}</font>
+            </li>
+            <li class="cccc" v-if="site.seen">
+                <font size="4">C:{{site.answerC}}</font>
+            </li>
+            <li class="cccc" v-if="site.seen">
+                <font size="4">D:{{site.answerD}}</font>
+            </li>
+            <br><br>
+                </span>
+            </ol>
+
+
+            <h2>一.判断题 </h2>
+            <hr>
+            <ol v-for="site in sitesss">
+
+            <span v-if="site.rubrictype==='判断题'">
+
+            <li class="cccc" style="margin-left: 20px">
+                <h2>({{site.index}})<font size="4">{{site.rubrictype}}</font> :{{site.content}} {{site.score}}分 <font
+                        color="red">正确答案:({{site.answer}})</font>  <font
+                        color="red">学生所做答案:({{site.selectanswer}})</font>
+                </h2>
+            </li>
+            <li class="cccc" v-if="site.seen">
+                <font size="4">A:{{site.answerA}}</font>
+            </li>
+            <li class="cccc" v-if="site.seen">
+                <font size="4">B:{{site.answerB}}</font>
+            </li>
+            <li class="cccc" v-if="site.seen">
+                <font size="4">C:{{site.answerC}}</font>
+            </li>
+            <li class="cccc" v-if="site.seen">
+                <font size="4">D:{{site.answerD}}</font>
+            </li>
+            <br><br>
+                </span>
+            </ol>
+        </div>
+
+    </el-dialog>
+
+
 </div>
 
 </body>
@@ -50,50 +212,46 @@
     /*获取登陆人的userid*/
     var userid = sessionStorage.getItem("userid");
 
-    var courseid = sessionStorage.getItem("courseId");
+    var courseid = sessionStorage.getItem("courId");
 
 
     var mian = new Vue({
 
         el: '#app',
         mounted: function () {
-            this.querycourse();
+            this.query();
         },
         data() {
             return {
-
-                courselist: [],
-
+                examparperList: [],
+                sitesss: [],
+                studnetname: "",
+                lookstuentparper: false,
+                durationccc:"",
+                examtimeccc:"",
             }
         },
 
         methods: {
 
-            querycourse() {
-                let params = new URLSearchParams();
-                params.append("userid", userid);
-                axios.get('/api/exam/examParper/queryCourByteaId', {
-                        params: params
-                    }
-                ).then(res => {
-                    res = res.data;
-                    this.courselist = res.message;
-
-                })
-            },
-
-
             query() {
                 let params = new URLSearchParams();
-                params.append("userid", userid);
-                axios.get('/api/exam/examParper/queryCourByteaId', {
-                        params: params
-                    }
-                ).then(res => {
+                params.append("studentid", userid);
+                params.append("courseid", courseid);
+
+                axios({
+                    method: 'post',
+                    url: '/api/exam/examparper/queryexamendparperwherestudentid',
+                    data: params,
+
+                }).then(res => {
+
                     res = res.data;
-                    this.courselist = res.message;
+                    this.examparperList = res;
+
                 })
             },
+
 
             /**
              * 点击查看成绩
@@ -102,6 +260,27 @@
              */
             selectexamtotal(val) {
 
+                this.lookstuentparper = true;
+                let params = new URLSearchParams();
+
+
+                params.append("studentid", userid);
+                params.append("parperid", val.id);
+                this.durationccc=val.duration;
+                this.examtimeccc=val.examtime;
+
+                axios({
+                    method: 'post',
+                    url: '/api/exam/examparper/querylogforstudentandparperid',
+                    data: params,
+                }).then(res => {
+                    res = res.data;
+                    this.sitesss = res;
+                    this.examtotal = res[0].total;
+                    this.studnetname = res[0].sname;
+
+
+                })
 
             },
 
