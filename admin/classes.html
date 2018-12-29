@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../teacher/js/elementui/index.css">
+    <script src="../teacher/js/vue.js"></script>
+    <script src="../teacher/js/elementui/index.js"></script>
+    <script src="../teacher/js/axios.min.js"></script>
+    <style>
+        .el-main {
+            padding-top: 0;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <el-container>
+        <el-main>
+            <el-row :gutter="20" type="flex">
+                <el-col :span="2">
+                    <div>&nbsp;</div>
+                    <el-button type="primary">新增</el-button>
+                </el-col>
+                <el-col :span="2">
+                    <div>&nbsp;</div>
+                    <el-button icon="el-icon-refresh" type="primary" onclick=" window.location.reload();">刷新</el-button>
+                </el-col>
+            </el-row>
+            <el-row :gutter="20" style="margin-top: 20px;">
+
+            </el-row>
+        </el-main>
+    </el-container>
+    <div>
+        <el-dialog
+                title="add.title"
+                :visible.sync="add.show">
+
+            <span slot="footer" class="dialog-footer">
+    <el-button @click="add.show = false">取 消</el-button>
+    <el-button type="primary" @click="add.show = false">确 定</el-button>
+  </span>
+        </el-dialog>
+    </div>
+</div>
+</body>
+<script>
+    axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
+    axios.defaults.headers.common['Content-Type'] = 'application/json;charset=UTF-8';
+    const main = {
+        data() {
+            return {
+                add: {
+                    show: false,
+                    title: '',
+
+                }
+            }
+        },
+        methods: {},
+        mounted() {
+
+        }
+    };
+
+    const Component = Vue.extend(main);
+    new Component().$mount('#app')
+</script>
+</html>
