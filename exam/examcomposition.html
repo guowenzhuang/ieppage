@@ -38,13 +38,13 @@
     <el-button type="primary" @click="selectrubric()">选题组卷</el-button>
 
     <!--添加试卷的对话框-->
-    <el-dialog title="添加试卷" :visible.sync="addparper" width="60%" :before-close="handleClose">
+    <el-dialog title="添加试卷" fullscreen :visible.sync="addparper" width="60%" :before-close="handleClose">
         <el-form :inline="true" :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-form-inline">
             <el-form-item label="试卷标题:" prop="formtitle">
                 <el-input v-model="ruleForm.formtitle" style="width:280px;"></el-input>
             </el-form-item>
 
-            <el-form-item label="考试课程:" prop="coursetype">
+            <!--<el-form-item label="考试课程:" prop="coursetype">
                 <el-select v-model="ruleForm.coursetype" placeholder="请选择" @change="querycourse" size="small">
                     <el-option v-for="item in options3" :key="item.courId" :label="item.courName" :value="item.courId"
                                :disabled="item.disabled">
@@ -60,7 +60,7 @@
             </el-form-item>
             <el-form-item label="最低交卷时间(分钟):" prop="formexamshortesttime">
                 <el-input v-model.number="ruleForm.formexamshortesttime" style="width:70px;"></el-input>
-            </el-form-item>
+            </el-form-item>-->
 
             <el-form-item>
                 <el-button type="primary" @click="submitForm('ruleForm')">进入选题</el-button>
@@ -70,7 +70,7 @@
     </el-dialog>
 
     <!--添加题的对话框-->
-    <el-dialog title="添加题" :visible.sync="bigdialog" width="99%" modal="false" :before-close="handleClose">
+    <el-dialog title="添加题" fullscreen :visible.sync="bigdialog" width="99%" modal="false" :before-close="handleClose">
 
         <el-container>
             <!--布局-->
@@ -1105,6 +1105,7 @@
                 params.append("course", this.typedan);
                 params.append("parperid", this.parperid);
                 params.append("score", this.score2);//分数
+                params.append("sectionid", sessionid)
 
 
                 //判断是否选中正确答案
@@ -1170,7 +1171,7 @@
                 params.append("course", this.typeduo);
                 params.append("parperid", this.parperid);
                 params.append("score", this.score2);//分数
-
+                params.append("sectionid", sessionid)
 
                 //判断是否选中正确答案
                 if (this.duoanswerA != null && this.duoanswerB != null && this.duoanswerC != null && this.duoanswerD != null && this.duoaddrubric != null) {
@@ -1228,7 +1229,7 @@
                 params.append("course", this.typebletk);
                 params.append("parperid", this.parperid);
                 params.append("score", this.score2);//分数
-
+                params.append("sectionid", sessionid)
 
                 axios({
                     method: 'post',
@@ -1264,6 +1265,7 @@
                 params.append("course", this.typejudge);
                 params.append("parperid", this.parperid);
                 params.append("score", this.score2);//分数
+                params.append("sectionid", sessionid)
 
                 axios({
                     method: 'post',
