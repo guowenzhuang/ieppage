@@ -42,7 +42,7 @@ function ckplayerConfig() {
 			},
 			timeJump: 10,//快进快退时的秒数
 			volumeJump: 0.1,//音量调整的数量，大于0小于1的小数
-			timeScheduleAdjust: 3,//是否可调节调节栏,0不启用，1是启用，2是只能前进（向右拖动），3是只能后退，4是只能前进但能回到第一次拖动时的位置，5是看过的地方可以随意拖动
+			timeScheduleAdjust: 5,//是否可调节调节栏,0不启用，1是启用，2是只能前进（向右拖动），3是只能后退，4是只能前进但能回到第一次拖动时的位置，5是看过的地方可以随意拖动
 			previewDefaultLoad: true,//预览图片是否默认加载，优点是鼠标第一次经过进度条即可显示预览图片
 			promptSpotTime: false,//提示点文字是否在前面加上对应时间
 			buttonMode: {

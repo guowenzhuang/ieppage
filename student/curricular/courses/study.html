@@ -174,7 +174,7 @@ margin-bottom: 20px;
 			<el-row :gutter="20">
 				<el-col :span="6">
 					<div class="grid-content bg-purple">
-						<img :src="courPicurl" style="height: 100px; width: 250px;">
+						<img :src="courPicurl" style=" width: 250px;">
 					</div>
 				</el-col>
 				<el-col :span="10">
@@ -243,12 +243,13 @@ margin-bottom: 20px;
 					<h3>评分标准</h3>
 					<hr />
 					<h4>
-						本课程采用百分制计分，单元测验占30%，课程讨论占20%（在“课堂交流区”回复或发帖才计入总分），课程结束考试50%。60分及以上为合格，80分及以上为优秀。课程总评分数达到60分以上者，即可获得合格证书；课程总评分数达到80分以上者，方可获得优秀证书。
+						{{courScore}}
+						<!-- 本课程采用百分制计分，单元测验占30%，课程讨论占20%（在“课堂交流区”回复或发帖才计入总分），课程结束考试50%。60分及以上为合格，80分及以上为优秀。课程总评分数达到60分以上者，即可获得合格证书；课程总评分数达到80分以上者，方可获得优秀证书。 -->
 					</h4>
 				</el-tab-pane>
 
 				<el-tab-pane name="kejian" label="课件" style="height: 100%;width: 100%;">
-					<iframe src="chapter.html" style="height: 100%;width: 100%;"  frameborder="0" ></iframe>
+					<iframe  allowfullscreen="true" allowtransparency="true" src="chapter.html" style="height: 100%;width: 100%;"  frameborder="0" ></iframe>
 				</el-tab-pane>
 
 
@@ -286,18 +287,18 @@ margin-bottom: 20px;
 
 				</el-tab-pane>
 				<el-tab-pane label="考试">
-					<iframe src="../../../exam/StudentTest.html" width="100%" height="500px" frameborder="0">
+					<iframe src="../../../exam/StudentTest.html" width="100%" height="1000px" frameborder="0">
 
 					</iframe>
 				</el-tab-pane>
 				<el-tab-pane label="个人成绩">
 
-					<iframe src="../../../exam/examendstudent.html" width="100%" height="500px" frameborder="0">
+					<iframe src="../../../exam/examendstudent.html" width="100%" height="1000px" frameborder="0">
 				</el-tab-pane>
 
 
 				<el-tab-pane label="讨论区">
-					<iframe src="../../../bbs/Reception/course.html" width="100%" height="500px" frameborder="0"></iframe>
+					<iframe src="../../../bbs/Reception/course.html" width="100%" height="1000px" frameborder="0"></iframe>
 				</el-tab-pane>
 			</el-tabs>
 		</template>
@@ -400,6 +401,7 @@ margin-bottom: 20px;
                     this.courOpentime = res.courOpentime;
                     this.courClasshour = res.courClasshour;
                     this.courPicurl = res.courPicurl;
+										this.courScore=res.courScore;
 
                 })
             },
