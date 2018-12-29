@@ -99,7 +99,8 @@
         el:"#bt",
         mounted:function(){
             var token=sessionStorage.getItem("access_token");
-            if(token!=null){
+			var roleNames=sessionStorage.getItem("roleNames");
+            if(roleNames!=null){
                 this.isShow=false;
                 this.isCenter=true;
                 this.userPhoto=sessionStorage.getItem("userPhoto");
