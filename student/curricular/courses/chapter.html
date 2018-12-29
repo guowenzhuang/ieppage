@@ -8,12 +8,20 @@
     <script type="text/javascript" src="ckplayer/ckplayer.js"></script>
     <script src="../../js/elementui/index.js"></script>
     <link rel="stylesheet" href="../../js/elementui/index.css">
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_991711_1d114ybl9fc.css">
+    <link rel="stylesheet" href="css/icon.css">
     <style>
+        *{
+            font-size: 16px;
+        }
         .chapter-top>div>.el-collapse-item__header {
             background-color: rgb(232, 249, 255);
             height: 60px;
         }
+        .chapter-top>div>.el-collapse-item__header span{
+            font-size: 16px;
 
+        }
         .el-collapse-item__arrow, .el-icon-arrow-right {
             display: none;
         }
@@ -25,11 +33,6 @@
 <body>
 <div id="app">
 
-    <el-row type="flex" justify="center">
-        <el-col :span="2">
-            <el-button icon="el-icon-refresh" type="primary" onclick=" window.location.reload();">刷新</el-button>
-        </el-col>
-    </el-row>
     <el-row>
         <el-collapse>
             <el-collapse-item v-if="item.children!=null && item.children.length!=0" class="chapter-top" :key="item.chaId" :name="i" v-for="(item,i) in chapterData">
@@ -58,46 +61,71 @@
 </div>
 <script type="text/javascript">
     axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
-    window.onbeforeunload = function (e) {
-        /*  console.log("sss离开", e)
-          console.log("sss离开", app.hiy)*/
-        //app.addStudy(app.hiy);
-    }
     Vue.component('my-collapse', {
         props: {
             chapterData: [],
             hierarchy:1
         },
-        template: `
-        <el-collapse>
-            <el-collapse-item v-if="item.children!=null && item.children.length!=0" class="chapter-top" :key="item.chaId" :name="i" v-for="(item,i) in chapterData">
-                <template slot="title">
-                    <el-button  type="text" @click="itemClick(item)" style="color:#000000;width: 100%;">
-                        <span style="float: left;">
-                        <span v-for="i in hierarchy*2">&emsp;</span>
-                            <i :class="item.icon"></i>{{item.chaName}}
-                        </span>
-                    </el-button>
-                </template>
-                <my-collapse :chapter-data="item.children" :hierarchy="hierarchy+1"></my-collapse>
-            </el-collapse-item>
+            template: `
+            <el-collapse>
+                <el-collapse-item v-if="item.children!=null && item.children.length!=0" class="chapter-top" :key="item.chaId" :name="i" v-for="(item,i) in chapterData">
+                    <template slot="title">
+                        <el-button  type="text" @click="itemClick(item)" style="color:#000000;width: 100%;">
+                            <span style="float: left;">
+                            <span v-for="i in hierarchy*2">&emsp;</span>
+                                <i :class="item.icon"></i>{{item.chaName}}
+                            </span>
+                        </el-button>
+                    </template>
+                    <my-collapse :chapter-data="item.children" :hierarchy="hierarchy+1"></my-collapse>
+                </el-collapse-item>
 
-              <el-collapse-item v-else>
-                <template slot="title">
-                    <el-button  type="text" @click="itemClick(item)" style="color:#000000;width: 100%;">
-                        <span style="float: left;">
-                        <span v-for="i in hierarchy*2">&emsp;</span>
-                           {{item.chaName}}
-                        </span>
-                    </el-button>
-                </template>
-            </el-collapse-item>
-        </el-collapse>
-        `,
+                  <el-collapse-item v-else>
+                    <template slot="title">
+                        <div type="text"
+                         @click="playerVideo(item,'video')"
+                        style="color:#000000;
+                        width: 100%;display: flex;justify-content: space-between;">
+                        <div style="display: flex;justify-content: left;align-items: center;">
+                          <span v-for="i in hierarchy*2">&emsp;</span>
+                            &nbsp;
+                            <div v-if="item.progress==null || item.progress==0"  class="el-progress-circle" style="height: 50px; width: 50px;"><svg viewBox="0 0 100 100"><path d="M 50 50 m 0 -44 a 44 44 0 1 1 0 88 a 44 44 0 1 1 0 -88" stroke="#e5e9f2" stroke-width="12.0" fill="none" class="el-progress-circle__track"></path><path d="M 50 50 m 0 -44 a 44 44 0 1 1 0 88 a 44 44 0 1 1 0 -88" stroke-linecap="round" stroke="#20a0ff" stroke-width="0" fill="none" class="el-progress-circle__path" style="stroke-dasharray: 276.46px, 276.46px; stroke-dashoffset: 269.549px; transition: stroke-dashoffset 0.6s ease 0s, stroke 0.6s ease 0s;"></path></svg></div>
+                               <el-progress
+                               v-else
+                                :show-text="false"
+                               type="circle"
+                               :percentage="item.progress"
+                               width="50"
+                              ></el-progress>
+                               &emsp;
+                               <span>{{item.chaName}}</span>
+                                </div>
+                                <div>
+                               <div>
+                               <a href="javascript:void(0)" @click.stop="playerVideo(item,'video')" v-show="item.chaViurl!=null && item.chaViurl!=''">
+                                    <i   class="al-icon-icon-test" style="width: 20px;"></i>
+                                </a>
+                               &nbsp;
+                               <a href="javascript:void(0)" @click.stop="playerVideo(item,'doc-pdf')"  v-show="item.chaDocurl!=null && item.chaDocurl!=''">
+                                 <i  class="al-icon-docs" style="width: 20px;"></i>
+                                </a>
+                               &nbsp;
+                               <a href="javascript:void(0)" @click.stop="playerVideo(item,'doc-pdf')" v-show="item.chaPpturl!=null && item.chaPpturl!=''" >
+                                <i  class="al-icon-pdf" style="width: 20px;"></i>
+                                </a href="javascript:void(0)">
+                                </div>
+                               </div>
+                        </div>
+                    </template>
+                </el-collapse-item>
+            </el-collapse>
+            `,
         methods: {
             itemClick(item){
-                console.log(this.hierarchy)
                 app.itemClick(item);
+            },
+            playerVideo(item,value){
+                app.playerVideo(item,value);
             }
         }
     });
@@ -110,22 +138,20 @@
             chapterData: [],
             sid: '',
             cid: '',
-            //视频进度
-            hiy: 0,
-            //播放器
-            player: null,
         },
         methods: {
+            //视频播放跳转
+            playerVideo(item,value){
+                sessionStorage.setItem("chadata",JSON.stringify(item));
+                window.location.href="video.html?chaId="+item.chaId+"&value="+value;
+            },
             itemClick(item) {
                 let icon = item.icon;
-                if (icon === 'el-icon-arrow-left') {
+                if (icon === 'el-icon-arrow-up') {
                     item.icon = "el-icon-arrow-down";
                 } else {
-                    item.icon = "el-icon-arrow-left";
+                    item.icon = "el-icon-arrow-up";
                 }
-            },
-            timeHandler(t) {
-                this.hiy = t;
             },
             //查询课程下所有章节
             queryChapter() {
@@ -142,17 +168,7 @@
                 })
             },
             bofang(url, type, chaId) {
-                this.starttime = new Date();//点击播放按钮时获取当前时间（未完成）
-                console.log("this.starttime=>" + this.starttime);
-                var videoObject = {
-                    container: '#video',//“#”代表容器的ID，“.”或“”代表容器的class
-                    variable: 'player',//该属性必需设置，值等于下面的new chplayer()的对象
-                    flashplayer: false,//如果强制使用flashplayer则设置成true
-                    video: url,//视频地址
-                    //loaded:'loadHandler',//监听事件
-                };
-                this.player = new ckplayer(videoObject);
-                this.player.addListener('time', app.timeHandler); //监听播放时间
+
 
             },
             addStudy(time) {

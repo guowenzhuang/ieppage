@@ -35,7 +35,7 @@
 <body>
 <div id="app">
 
-    <!--<el-button type="primary" @click="selectrubric()">选题组卷</el-button>-->
+    <el-button type="primary" @click="selectrubric()">选题组卷</el-button>
 
     <!--添加试卷的对话框-->
     <el-dialog title="添加试卷" :visible.sync="addparper" width="60%" :before-close="handleClose">
@@ -596,6 +596,8 @@
     /*获取登陆人的userid*/
     var userid = sessionStorage.getItem("userid");
 
+    var sessionid = localStorage.getItem("chaId");
+
 
     var main = new Vue({
         el: '#app',
@@ -853,14 +855,15 @@
                 let params = new URLSearchParams();
                 params.append("title", this.ruleForm.formtitle);//考试标题
                 params.append("subject", this.ruleForm.coursetype)//考试课程id
-                params.append("examshortesttime", this.ruleForm.formexamshortesttime);//考试最短交卷时间
-                params.append("total", this.ruleForm.formtotal);//考试总分
-                params.append("duration", this.ruleForm.formduration);//考试时长
+                params.append("sectionId", sessionid);//章节测试id
+                //params.append("examshortesttime", this.ruleForm.formexamshortesttime);//考试最短交卷时间
+                //params.append("total", this.ruleForm.formtotal);//考试总分
+                //params.append("duration", this.ruleForm.formduration);//考试时长
 
 
                 axios({
                     method: 'post',
-                    url: '/api/exam/examparper/addparper',
+                    url: '/api/exam/examparper/addsesionparper',
                     data: params,
 
                 }).then(res => {
@@ -931,7 +934,7 @@
 
             },
 
-            /*获取所有考试试题方法*/
+            /*获取所有章节测试试题方法*/
             queryexam() {
                 let params = new URLSearchParams();
                 params.append("examparper", this.parperid);
@@ -941,13 +944,12 @@
                 params.append("rubric", this.examrubric);
                 params.append("type", this.typeccexam);//试题类型
 
-                /* params.append("course", this.course);*/
-                /*params.append("section", this.section);*/
+
                 params.append("coursetype", this.typecc3);
 
                 axios({
                     method: 'post',
-                    url: '/api/exam/examrubric/queryexamrubric',
+                    url: '/api/exam/Sectionrubric/querysectionrubric',
                     data: params,
 
                 }).then(res => {
@@ -980,7 +982,7 @@
 
             /*点击创建试卷()最后的创建试卷*/
             addparperanniu() {
-              /*  alert("创建试卷了");*/
+
                 let params = new URLSearchParams();
                 params.append("parperid", this.parperid);
                 axios({
@@ -1112,7 +1114,7 @@
                     if (this.form != true) {
                         axios({
                             method: 'post',
-                            url: '/api/exam/examrubric/addexamrubricdouble',
+                            url: '/api/exam/Sectionrubric/addexamrubricdouble',
                             data: params,
 
                         }).then(res => {
@@ -1177,7 +1179,7 @@
                     if (this.duoform1 + this.duoform2 + this.duoform3 + this.duoform4 != true) {
                         axios({
                             method: 'post',
-                            url: '/api/exam/examrubric/addexamrubricdouble',
+                            url: '/api/exam/Sectionrubric/addexamrubricdouble',
                             data: params,
 
                         }).then(res => {
@@ -1230,7 +1232,7 @@
 
                 axios({
                     method: 'post',
-                    url: '/api/exam/examrubric/addexamrubricdouble',
+                    url: '/api/exam/Sectionrubric/addexamrubricdouble',
                     data: params,
 
                 }).then(res => {
@@ -1265,7 +1267,7 @@
 
                 axios({
                     method: 'post',
-                    url: '/api/exam/examrubric/addexamrubricdouble',
+                    url: '/api/exam/Sectionrubric/addexamrubricdouble',
                     data: params,
 
                 }).then(res => {
@@ -1294,7 +1296,6 @@
                 this.score = false;
 
             },
-
 
             /*新增取消按钮*/
             addquxiao() {
