@@ -52,7 +52,7 @@
 					<div class="float_l margin_l30 margin_r40">
 						<a class="color_black" href="curricular/user/13/course.html" v-show="isCenter">个人中心</a>
 						<a class="btn btn-default navbar-btn sign-in" href="javascript:void(0)" @click="login()" v-show="isShow">登录</a>
-						<img :src="userPhoto" width="100px" />
+						<img :src="userPhoto" width="45px"/>
 					</div>
 				</div>
 
@@ -98,9 +98,8 @@
 			var bt = new Vue({
 				el: "#bt",
 				mounted: function() {
-					//var token=sessionStorage.getItem("access_token");
 					var roleNames = sessionStorage.getItem("roleNames");
-					if (roleNames != null && roleNames.equals("学生")) {
+					if (roleNames != null && roleNames==("学生")) {
 						this.isShow = false;
 						this.isCenter = true;
 						this.userPhoto = sessionStorage.getItem("userPhoto");
@@ -114,8 +113,14 @@
 				methods: {
 					login: function() {
 						window.location.href = "http://127.0.0.1/login.html";
+					},
+					tuichu:function(){
+						sessionStorage.clear();
+						localStorage.clear();
 					}
 				}
+				
+				
 			});
 
 
@@ -220,7 +225,7 @@
 		<!-- 讨论区 -->
 		<div class=" width_224 height172 float_l img_backg14 margin_r20 margin_l50">
 			<div class="width100 float_l padding_lr20 color_white fon_siz32 b_weight700 margin_t10">
-				<span>看这里</span>
+				<span>大家在讨论</span>
 			</div>
 			<div class="width100 float_l padding_lr20 color_white fon_siz16 margin_t30 jiantoubianhua bianshou">
 				<span>讨论区<span class="margin_l5 wobianhua">></span></span>
@@ -286,15 +291,13 @@
 							<img src="img/uiz7.jpg">
 						</div>
 						<div class="img_backg2 donghua">
-							<span class="margin_t15 float_l ">飞速上手的跨平台App开发</span>
-							<span class="float_l fon_siz12 line_hei16 color_gray margin_t5 posi_relative ">8小时带领大家步步深入学习标签的基础知识，掌握各种样式的基本用法。</span>
+							<span class="margin_t15 float_l ">课程精彩讨论</span>
+							<span class="float_l fon_siz12 line_hei16 color_gray margin_t5 posi_relative ">一起学习一起成长共同进步</span>
 						</div>
 						<div class="width100 float_l padding_lr20 height48 fon_siz12 line_hei48 z_inx_3 posi_relative backg_white">
-							<span class="float_l color_red">￥88.00</span>
-							<span class="float_r color_gray"><span>499</span>人在学</span>
+					
 						</div>
-					</div>
-
+					</div> 
 					<div class="width100 float_l padding_lr20 dadiv">
 						<div class="width100 float_l border_t padding_t10">
 							<ul class="tongli_ys chaochuyincang">
