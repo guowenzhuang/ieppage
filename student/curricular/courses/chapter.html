@@ -131,12 +131,13 @@
             queryChapter() {
                 axios({
                     method: 'get',
-                    url: `/api/student/study/queryChapter`,
+                    url: `/api/student/studentrecord/queryChapter`,
                     params: {
-                        cid: this.cid
+                        cid: this.cid,
+                        id:this.sid
                     }
                 }).then(res => {
-                    this.chapterData = res.data;
+                    this.chapterData = res.data.message;
 
                 })
             },
