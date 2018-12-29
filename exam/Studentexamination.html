@@ -373,7 +373,7 @@
     var v = parseUrl();//解析所有参数
     axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
     let userid = sessionStorage.getItem("userid");
-    var courseid = sessionStorage.getItem("courseId");
+    var courseid = sessionStorage.getItem("courId");
     new Vue({
         el: "#app",
         data: {
@@ -395,7 +395,9 @@
             radiorubricList: [{}],
             duorubricList: [{}],
             packrubricList: [{}],
-            judgerubricList: [{}]
+            judgerubricList: [{}],
+            //倒计时
+            time:null
 
 
         },
@@ -425,6 +427,9 @@
 
                         this.finalScore=res.data.remark;
                         this.centerDialogVisible = true;
+                        if(this.time!=null){
+                            window.clearInterval(this.time);
+                        }
 
 
 
@@ -434,6 +439,7 @@
                 let testid = v['name'];
                 let params = new URLSearchParams();
                 params.append("examparper", testid);
+
                 axios({
                     method: 'post',
                     url: '/api/exam/examrubric/queryexamrubricer',
@@ -469,7 +475,7 @@
                 params.append("examrubricId", site.id);
                 params.append("score", site.score);
                 params.append("selectanswerId", siteexamanswers.id);
-
+                params.append("courseid", courseid);
                 axios({
                     method: 'post',
                     url: '/api/exam/examrubric/examend',
@@ -488,6 +494,7 @@
                 params.append("score", site.score);
                 params.append("examrubricId", site.id);
                 params.append("selectanswerId", "正确");
+                params.append("courseid", courseid);
                 axios({
                     method: 'post',
                     url: '/api/exam/examrubric/examend',
@@ -506,6 +513,7 @@
                 params.append("score", site.score);
                 params.append("examrubricId", site.id);
                 params.append("selectanswerId", "错误");
+                params.append("courseid", courseid);
                 axios({
                     method: 'post',
                     url: '/api/exam/examrubric/examend',
@@ -524,6 +532,7 @@
                 params.append("score", site.score);
                 params.append("examrubricId", site.id);
                 params.append("selectanswerId", site.examanswers);
+                params.append("courseid", courseid);
                 axios({
                     method: 'post',
                     url: '/api/exam/examrubric/examend',
@@ -542,6 +551,7 @@
                 params.append("examrubricId", site.id);
                 params.append("score", site.score);
                 params.append("selectanswerId", site.checks);
+                params.append("courseid", courseid);
                 axios({
                     method: 'post',
                     url: '/api/exam/examrubric/examend',
@@ -554,29 +564,26 @@
             },
             /*倒计时*/
             StartCountDown() {
-                var mydate = new Date();
+               /* var mydate = new Date();
                 mydate.setMinutes(mydate.getMinutes() + this.limittime);
-                this.settime=mydate;
+                this.settime=mydate;*/
 
-                let time = setInterval(() => {
-                    if (this.flag == true) {
-                        clearInterval(time)
-                    }else{
-                        this.timeDown()
-                    }
+                this.time = setInterval(() => {
+                        this.timeDown();
                 }, 1000)
             },
 
             timeDown() {
-                const endTime = new Date(this.settime);
-                const nowTime = new Date();
-                let leftTime = parseInt((endTime.getTime() - nowTime.getTime()) / 1000);
+                /*const endTime = new Date(this.settime);
+                const nowTime = new Date();*/
+                let leftTime = this.limittime;
+                   // parseInt((endTime.getTime() - nowTime.getTime()) / 1000);
                 let d = parseInt(leftTime / (24 * 60 * 60));
                 let h = this.formate(parseInt(leftTime / (60 * 60) % 24));
                 let m = this.formate(parseInt(leftTime / 60 % 60));
                 let s = this.formate(parseInt(leftTime % 60));
                 if (leftTime <= 0) {
-                    this.flag = true;
+                    clearInterval(this.time)
                     this.endtest();
                /*     let params = new URLSearchParams();
                     params.append("studentId", userid);
