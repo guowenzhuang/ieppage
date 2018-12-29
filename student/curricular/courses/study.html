@@ -243,7 +243,8 @@ margin-bottom: 20px;
 					<h3>评分标准</h3>
 					<hr />
 					<h4>
-						本课程采用百分制计分，单元测验占30%，课程讨论占20%（在“课堂交流区”回复或发帖才计入总分），课程结束考试50%。60分及以上为合格，80分及以上为优秀。课程总评分数达到60分以上者，即可获得合格证书；课程总评分数达到80分以上者，方可获得优秀证书。
+						{{courScore}}
+						<!-- 本课程采用百分制计分，单元测验占30%，课程讨论占20%（在“课堂交流区”回复或发帖才计入总分），课程结束考试50%。60分及以上为合格，80分及以上为优秀。课程总评分数达到60分以上者，即可获得合格证书；课程总评分数达到80分以上者，方可获得优秀证书。 -->
 					</h4>
 				</el-tab-pane>
 
@@ -400,6 +401,7 @@ margin-bottom: 20px;
                     this.courOpentime = res.courOpentime;
                     this.courClasshour = res.courClasshour;
                     this.courPicurl = res.courPicurl;
+										this.courScore=res.courScore;
 
                 })
             },
