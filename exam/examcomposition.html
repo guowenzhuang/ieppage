@@ -41,7 +41,7 @@
     <!--element表格-->
     <div style="width: 100%;">
         <template>
-            <el-table :data="rubricList" :row-class-name="tableRowClassName" style=" width: auto">
+            <el-table :data="parperList" :row-class-name="tableRowClassName" style=" width: auto">
                 &lt;!&ndash;<el-table-column prop="title" label="章节测试标题" :show-overflow-tooltip="true">
             </el-table-column>&ndash;&gt;
                 <el-table-column prop="createtime" label="创建时间" :show-overflow-tooltip="true">
@@ -656,7 +656,7 @@
                         label: '判断题'
                     }],
                 value: '',
-                rubricList: [],
+                parperList: [],
 
 
                 ruleForm: {
@@ -856,6 +856,22 @@
             },
 
             queryparper() {
+                let params = new URLSearchParams();
+
+                params.append("course", courid);
+                params.append("section", sessionid);
+                axios({
+                    method: 'post',
+                    url: '/api/exam/sectionparper/querysectionparper',
+                    data: params,
+
+                }).then(res => {
+
+                    res = res.data;
+                    this.parperList = res;
+
+
+                })
 
 
             },
@@ -933,14 +949,19 @@
             query() {
 
                 let params = new URLSearchParams();
-
-                params.append("course", courid);
-                params.append("section", sessionid);
+                params.append("userid", userid);
+                params.append("page", this.currentPage);
+                params.append("rows", this.pagesize);
+                params.append("rubric", this.rubric);
+                params.append("type", this.typecc);//试题类型
+                /* params.append("course", this.course);*/
+                /*params.append("section", this.section);*/
+                params.append("coursetype", this.typecc3);
 
 
                 axios({
                     method: 'post',
-                    url: '/api/exam/sectionparper/queryrubricer',
+                    url: '/api/exam/rubric/queryrubricer',
                     data: params,
 
                 }).then(res => {
