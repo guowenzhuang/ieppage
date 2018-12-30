@@ -22,20 +22,100 @@
     <el-container>
         <el-main>
             <el-row :gutter="20" type="flex">
+                <el-col :span="4">
+                    <div>教师名:</div>
+                    <el-input v-model="query.name" placeholder="请输入教师姓名"></el-input>
+                </el-col>
+                <el-col :span="2">
+                    <span>&nbsp;</span>
+                    <div>
+                        <el-button type="primary" @click="search">搜索</el-button>
+                    </div>
+                </el-col>
+                <el-col :span="2">
+                    <span>&nbsp;</span>
+                    <div>
+                        <el-button type="success" @click="addTeacherShow">新增教师</el-button>
+                    </div>
+                </el-col>
                 <el-col :span="2">
                     <div>&nbsp;</div>
                     <el-button icon="el-icon-refresh" type="primary" onclick=" window.location.reload();">刷新</el-button>
                 </el-col>
             </el-row>
+
+            <!--<el-row :gutter="20" type="flex">
+                <el-col :span="2">
+                    <div>&nbsp;</div>
+                    <el-button icon="el-icon-refresh" type="primary" onclick=" window.location.reload();">刷新</el-button>
+                </el-col>
+            </el-row>-->
             <el-row :gutter="20" style="margin-top: 20px;">
               <!-- el-table 写这里-->
+                <el-table
+                        :data="teacherData" border>
+                    <el-table-column
+                            type="index"
+                            width="20">
+                    </el-table-column>
+                    <el-table-column
+                            prop="teaPhoto"
+                            label="教师头像">
+                    </el-table-column>
+                    <el-table-column
+                            prop="loginName"
+                            label="教师名">
+                    </el-table-column>
+                    <el-table-column
+                            prop="teaSex"
+                            label="教师性别">
+                    </el-table-column>
+                    <el-table-column
+                            prop="teaDescribe"
+                            label="教师描述">
+                    </el-table-column>
+                    <el-table-column
+                            prop="protectMTel"
+                            label="教师电话">
+                    </el-table-column>
+                    <el-table-column label="操作">
+                        <template slot-scope="scope">
+                            <el-button type="text" >修改</el-button>
+                            <el-button type="text" >删除</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
             </el-row>
             <el-row type="flex" justify="center">
                 <!--el-pagination 写这里-->
+               <el-pagination
+                        layout="prev, pager, next"
+                        :current-page.sync="query.page"
+                        :page-size="query.rows"
+                        @current-change="teacherQuery"
+                        :total="total">
+                </el-pagination>
             </el-row>
         </el-main>
     </el-container>
     <div>
+        <el-dialog
+                :title="add.title"
+                :visible.sync="add.show">
+            <el-form  :rules="addRules" ref="addForm" :model="add" label-position="left" label-width="50px">
+                <el-form-item prop="name" label="教师名">
+                    <el-input v-model="add.loginName" ></el-input>
+                </el-form-item>
+                <!--<el-form-item prop="name" label="">
+                    <el-input v-model="add.name" ></el-input>
+                </el-form-item>-->
+                <el-form-item>
+                    <el-button type="primary" v-if="add.title=='新增教师'" @click="addTeacher">新增</el-button>
+                    <el-button type="primary" v-else  >修改</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
+
     </div>
 </div>
 </body>
@@ -45,14 +125,68 @@
     const main = {
         data(){
             return{
-
+                teacherData:[],
+                query:{
+                    name:'',
+                    page:1,
+                    rows:10
+                },
+                total:0,
+                add:{
+                    show:false,
+                    title:'',
+                    loginName:''
+                },
+                active:{}
             }
         },
         methods:{
+            //教师查询
+            teacherQuery(){
+                axios({
+                    method:'get',
+                    url:'/api/admin/teacher/getTeacher',
+                    params:this.query
+                }).then(res=>{
+                    res=res.data;
+                    this.total=res.total;
+                    this.teacherData=res.rows;
+                })
+            },
+            //搜索
+            search(){
+                this.query.page=1;
+                this.teacherQuery();
+            },
+            //新增教师弹出框显示
+            addTeacherShow(){
+                this.add.title="新增教师";
+                this.add.show=true;
+                this.add.loginName="";
+
+            },
+            //新增院系
+            addTeacher(){
+                axios({
+                    method:'post',
+                    url:'/api/admin/teacher/addTeacher',
+                    data:this.add
+                }).then(res=>{
+                    res=res.data;
+                    if(res.success){
+                        this.$message({
+                            message: res.message,
+                            type: 'success'
+                        });
+                        this.add.show=false;
+                        this.teacherQuery();
+                    }
+                })
+            },
 
         },
         mounted(){
-
+            this.teacherQuery();
         }
     };
     const Component = Vue.extend(main);
