@@ -39,7 +39,7 @@
                     </div>
                     <div class="test_content">
                         <div class="test_content_title">
-                            <h2>最终得分为:<span style="margin-left:20px;color: red">{{tableData.duration}}分</span></h2>
+                            <h2>最终得分为:<span style="margin-left:20px;color: red">分</span></h2>
                             <el-button style="float: right" @click="rollbacktest">返回</el-button>
                         </div>
                     </div>
@@ -270,7 +270,7 @@
             //最终得分
             finalScore: "",
             centerDialogVisible: false,
-            centerDialogVisibledanxaun:true,
+            centerDialogVisibledanxaun:false,
             answerIdlist:[],
            /* /!*倒计时*!/
             keepTime: '倒计时',
@@ -325,10 +325,10 @@
             query() {
                 //let testid = v['name'];
                 let params = new URLSearchParams();
-                params.append("examparper", "3c894727d97b4dba9cb8644514538795");//章节测试id
-                params.append("course", "16");//课程id
+                params.append("examparper", "9b49ba5e082841598fe8e8a1b0bb3f0e");//章节测试id
+                params.append("course", "15");//课程id
                 params.append("studentid", userid);//学生ID
-                params.append("section", "42");//章节id
+                params.append("section", "36");//章节id
 
                 axios({
                     method: 'post',
@@ -370,8 +370,8 @@
                 params.append("examrubricId", site.id);
                 params.append("score", site.score);
                 params.append("selectanswerId",site.answerId);
-                params.append("courseid", "16");//课程id
-                params.append( "sectionid", 42);//章节id
+                params.append("courseid", "15");//课程id
+                params.append( "sectionid", 36);//章节id
 
                 axios({
                     method: 'post',
@@ -391,8 +391,8 @@
                 params.append("score", site.score);
                 params.append("examrubricId", site.id);
                 params.append("selectanswerId", site.answerId);
-                params.append("courseid", "16");
-                params.append( "sectionid", 42);//章节id
+                params.append("courseid", "15");
+                params.append( "sectionid", 36);//章节id
                 axios({
                     method: 'post',
                     url: '/api/exam/Sectionrubric/examend',
@@ -430,8 +430,8 @@
                 params.append("score", site.score);
                 params.append("examrubricId", site.id);
                 params.append("selectanswerId", site.answerId);
-                params.append("courseid", "16");
-                params.append( "sectionid", 42);//章节id
+                params.append("courseid", "15");
+                params.append( "sectionid", 36);//章节id
                 axios({
                     method: 'post',
                     url: '/api/exam/Sectionrubric/examend',
@@ -450,8 +450,8 @@
                 params.append("examrubricId", site.id);
                 params.append("score", site.score);
                 params.append("selectanswerId", site.answerId);
-                params.append("courseid", "16");
-                params.append( "sectionid", 42);//章节id
+                params.append("courseid", "15");
+                params.append( "sectionid", 36);//章节id
                 axios({
                     method: 'post',
                     url: '/api/exam/Sectionrubric/examend',
