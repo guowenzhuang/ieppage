@@ -29,7 +29,7 @@
 <body>
 <div class="main" id="app">
     <!--nr start-->
-    <div class="test_main":data="tableData" >
+    <div class="test_main" :data="tableData">
 
         <div class="nr_left">
             <div class="test">
@@ -60,9 +60,12 @@
                                 <div class="test_content_nr_main">
                                     <el-radio-group v-model="site.answerId">
                                         <ul>
-                                            <li class="option" v-for="siteexamanswers in site.examanswers" @change="radioTest(site)">
+                                            <li class="option" v-for="siteexamanswers in site.examanswers"
+                                                @change="radioTest(site)">
 
-                                                <el-radio :label="siteexamanswers.id" border>{{siteexamanswers.optiones}}.{{siteexamanswers.content}}</el-radio>
+                                                <el-radio :label="siteexamanswers.id" border>
+                                                    {{siteexamanswers.optiones}}.{{siteexamanswers.content}}
+                                                </el-radio>
                                                 <!--<input type="radio" class="radioOrCheck" :name="forId(index)"
                                                        @click="radioTest(site,siteexamanswers)"
                                                 />
@@ -80,7 +83,7 @@
                                                 :readonly="true"
                                                 autosize
                                                 v-model="ceshi"
-                                                >
+                                        >
                                         </el-input>
                                     </el-radio-group>
                                 </div>
@@ -107,7 +110,7 @@
 
                                 <div class="test_content_nr_main"><!--@mouseleave="leave() "-->
 
-                                    <el-checkbox-group v-model="site.answerId" >
+                                    <el-checkbox-group v-model="site.answerId">
 
                                         <ul>
 
@@ -117,7 +120,8 @@
                                                           :value="siteexamanswers.id" v-model="net_car"
                                                    />-->
 
-                                                <el-checkbox :label="siteexamanswers.id" border @change="duoxuanTest(site)">
+                                                <el-checkbox :label="siteexamanswers.id" border
+                                                             @change="duoxuanTest(site)">
                                                     {{siteexamanswers.optiones}}.{{siteexamanswers.content}}
                                                 </el-checkbox>
 
@@ -150,8 +154,8 @@
                                 <div class="test_content_nr_main">
                                     <el-radio-group v-model="site.answerId" @change="panduanTestdui(site)">
 
-                                        <el-radio  label="正确" border >正确</el-radio>
-                                        <el-radio  label="错误" border >错误</el-radio>
+                                        <el-radio label="正确" border>正确</el-radio>
+                                        <el-radio label="错误" border>错误</el-radio>
                                     </el-radio-group>
                                     <!-- <input type="radio" class="radioOrCheckpanduan" :name="forIdpanduan(index)"
                                             @click="panduanTestdui(site)"
@@ -246,6 +250,7 @@
             css_class: 'countdown-alt-2'
         });
     });
+
     function parseUrl() {
         var url = location.href;
         var i = url.indexOf('?');
@@ -270,19 +275,19 @@
             //最终得分
             finalScore: "",
             centerDialogVisible: false,
-            centerDialogVisibledanxaun:false,
-            answerIdlist:[],
-           /* /!*倒计时*!/
-            keepTime: '倒计时',
-            limittime: '',
-            settime: '',
-            flag: false,*/
+            centerDialogVisibledanxaun: false,
+            answerIdlist: [],
+            /* /!*倒计时*!/
+             keepTime: '倒计时',
+             limittime: '',
+             settime: '',
+             flag: false,*/
             /*倒计时*/
             tableData: [{}],
             //radionum: "",
-           // duorubricnum: '',
-           // panduantinum: '',
-           // tiankongnum: '',
+            // duorubricnum: '',
+            // panduantinum: '',
+            // tiankongnum: '',
             daoTime: "",
             radiorubricList: [{}],
             duorubricList: [{}],
@@ -300,13 +305,13 @@
 
         },
         methods: {
-            rollbacktest(){
+            rollbacktest() {
                 window.location.href = "/exam/Chaptertest.html"
             },
             /*确认考试结束*/
             kaoshijieshu() {
-                this.centerDialogVisible=false;
-               // window.location.href = "/exam/StudentTest.html?"
+                this.centerDialogVisible = false;
+                // window.location.href = "/exam/StudentTest.html?"
             },
             /*点击交卷*/
             endtest() {
@@ -318,17 +323,17 @@
                     url: '/api/exam/Sectionrubric/examination',
                     data: params,
                 }).then(res => {
-                    this.answerIdlist=res;
+                    this.answerIdlist = res;
 
                 })
             },
             query() {
                 //let testid = v['name'];
                 let params = new URLSearchParams();
-                params.append("examparper", "9b49ba5e082841598fe8e8a1b0bb3f0e");//章节测试id
-                params.append("course", "15");//课程id
+                params.append("examparper", "b8ab93e947e7483184515c265376a6a2");//章节测试id
+                params.append("course", "16");//课程id
                 params.append("studentid", userid);//学生ID
-                params.append("section", "36");//章节id
+                params.append("section", "42");//章节id
 
                 axios({
                     method: 'post',
@@ -337,28 +342,29 @@
 
                 }).then(res => {
                     this.radiorubricList = res.data.radiorubricList;
-                    this.duorubricList = res.data.duorubricList;/*map(item => {
-                        item.checks = [];
-                        return item;
-                    });*/
+                    this.duorubricList = res.data.duorubricList;
+                    /*map(item => {
+                                            item.checks = [];
+                                            return item;
+                                        });*/
                     this.packrubricList = res.data.packrubricList;
                     this.judgerubricList = res.data.judgerubricList;
                     this.tableData = res.data.parpercontent;
-                   /* this.radionum = res.data.parpercontent.radionum;
-                    this.duorubricnum = res.data.parpercontent.multiplenum;
-                    this.panduantinum = res.data.parpercontent.judgenum;
-                    this.tiankongnum = res.data.parpercontent.fillnum;*/
+                    /* this.radionum = res.data.parpercontent.radionum;
+                     this.duorubricnum = res.data.parpercontent.multiplenum;
+                     this.panduantinum = res.data.parpercontent.judgenum;
+                     this.tiankongnum = res.data.parpercontent.fillnum;*/
                     //this.limittime = res.data.downtime;
                     console.log("时间" + this.limittime);
-                   // this.StartCountDown();
-                    for(let index in this.duorubricList){
-                        if(this.duorubricList[index].answerId!=null){
-                            this.duorubricList[index].answerId=this.duorubricList[index].answerId.split(",");
-                        }else{
-                            this.duorubricList[index].answerId=[];
+                    // this.StartCountDown();
+                    for (let index in this.duorubricList) {
+                        if (this.duorubricList[index].answerId != null) {
+                            this.duorubricList[index].answerId = this.duorubricList[index].answerId.split(",");
+                        } else {
+                            this.duorubricList[index].answerId = [];
                         }
 
-                        console.log("85123+"+this.duorubricList[index].answerId);
+                        console.log("85123+" + this.duorubricList[index].answerId);
                     }
                 })
             },
@@ -369,9 +375,9 @@
                 params.append("examparperId", this.tableData.id);
                 params.append("examrubricId", site.id);
                 params.append("score", site.score);
-                params.append("selectanswerId",site.answerId);
-                params.append("courseid", "15");//课程id
-                params.append( "sectionid", 36);//章节id
+                params.append("selectanswerId", site.answerId);
+                params.append("courseid", "16");//课程id
+                params.append("sectionid", 42);//章节id
 
                 axios({
                     method: 'post',
@@ -391,8 +397,8 @@
                 params.append("score", site.score);
                 params.append("examrubricId", site.id);
                 params.append("selectanswerId", site.answerId);
-                params.append("courseid", "15");
-                params.append( "sectionid", 36);//章节id
+                params.append("courseid", "16");
+                params.append("sectionid", 42);//章节id
                 axios({
                     method: 'post',
                     url: '/api/exam/Sectionrubric/examend',
@@ -430,8 +436,8 @@
                 params.append("score", site.score);
                 params.append("examrubricId", site.id);
                 params.append("selectanswerId", site.answerId);
-                params.append("courseid", "15");
-                params.append( "sectionid", 36);//章节id
+                params.append("courseid", "16");
+                params.append("sectionid", 42);//章节id
                 axios({
                     method: 'post',
                     url: '/api/exam/Sectionrubric/examend',
@@ -450,8 +456,8 @@
                 params.append("examrubricId", site.id);
                 params.append("score", site.score);
                 params.append("selectanswerId", site.answerId);
-                params.append("courseid", "15");
-                params.append( "sectionid", 36);//章节id
+                params.append("courseid", "16");
+                params.append("sectionid", 42);//章节id
                 axios({
                     method: 'post',
                     url: '/api/exam/Sectionrubric/examend',
@@ -462,51 +468,51 @@
                     console.log(res);
                 })
             },
-           /* /!*倒计时*!/
-            StartCountDown() {
-                /!*  var mydate = new Date();
-                    mydate.setMinutes(mydate.getMinutes() + this.limittime);
-                    this.settime=this.limittime;
-    *!/
-                this.time = setInterval(() => {
-                    this.timeDown();
-                }, 1000)
-            },
+            /* /!*倒计时*!/
+             StartCountDown() {
+                 /!*  var mydate = new Date();
+                     mydate.setMinutes(mydate.getMinutes() + this.limittime);
+                     this.settime=this.limittime;
+     *!/
+                 this.time = setInterval(() => {
+                     this.timeDown();
+                 }, 1000)
+             },
 
-            timeDown() {
-                //const endTime = new Date(this.settime);
-                const nowTime = new Date();
-                let leftTime = parseInt((this.limittime - nowTime.getTime()) / 1000);
-                // let d = parseInt(leftTime / (24 * 60 * 60));
-                let h = this.formate(parseInt(leftTime / (60 * 60) % 24));
-                let m = this.formate(parseInt(leftTime / 60 % 60));
-                let s = this.formate(parseInt(leftTime % 60));
-                if (leftTime <= 0) {
-                    clearInterval(this.time)
-                    this.endtest();
-                    /!*     let params = new URLSearchParams();
-                         params.append("studentId", userid);
-                         params.append("examparperId", this.tableData.id);
-                         params.append("courseid", courseid);
-                         axios({
-                             method: 'post',
-                             url: '/api/exam/examrubric/examination',
-                             data: params,
-                         }).then(res => {
-                             this.finalScore=res.data.remark;
-                             this.centerDialogVisible = true;
-                         })*!/
-                }
-                this.keepTime = `${h}:${m}:${s}`;
-            },
-            formate(time) {
-                if (time >= 10) {
-                    return time
-                } else {
-                    return `0${time}`
-                }
-            },
-            /!*倒计时*!/*/
+             timeDown() {
+                 //const endTime = new Date(this.settime);
+                 const nowTime = new Date();
+                 let leftTime = parseInt((this.limittime - nowTime.getTime()) / 1000);
+                 // let d = parseInt(leftTime / (24 * 60 * 60));
+                 let h = this.formate(parseInt(leftTime / (60 * 60) % 24));
+                 let m = this.formate(parseInt(leftTime / 60 % 60));
+                 let s = this.formate(parseInt(leftTime % 60));
+                 if (leftTime <= 0) {
+                     clearInterval(this.time)
+                     this.endtest();
+                     /!*     let params = new URLSearchParams();
+                          params.append("studentId", userid);
+                          params.append("examparperId", this.tableData.id);
+                          params.append("courseid", courseid);
+                          axios({
+                              method: 'post',
+                              url: '/api/exam/examrubric/examination',
+                              data: params,
+                          }).then(res => {
+                              this.finalScore=res.data.remark;
+                              this.centerDialogVisible = true;
+                          })*!/
+                 }
+                 this.keepTime = `${h}:${m}:${s}`;
+             },
+             formate(time) {
+                 if (time >= 10) {
+                     return time
+                 } else {
+                     return `0${time}`
+                 }
+             },
+             /!*倒计时*!/*/
 
             forId: function (index) {
                 return "qu_0_" + index
