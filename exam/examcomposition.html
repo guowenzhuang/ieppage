@@ -632,6 +632,7 @@
         /*初始化方法放在这里面(相当于页面加载事件)*/
         mounted: function () {
             this.querycourse();
+            this.queryparper();
         },
         /*数据*/
         data() {
@@ -857,7 +858,6 @@
 
             queryparper() {
                 let params = new URLSearchParams();
-
                 params.append("course", courid);
                 params.append("section", sessionid);
                 axios({
@@ -872,7 +872,6 @@
 
 
                 })
-
 
             },
 
