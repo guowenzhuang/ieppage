@@ -146,14 +146,14 @@
 
 	<body>
 
-		<div class="container layout layout-margin-top">
+		<div class="container layout layout-margin-top" id="courseDetalis">
 
 			<ol class="breadcrumb">
-				<li><a v-on:click="jumpCourse()">讨论区</a></li>
+				<li><a @click="jumpCourse()">讨论区</a></li>
 				<li><a href="#">帖子详情</a></li>
 			</ol>
 
-			<div class="row" id="courseDetalis">
+			<div class="row" >
 				<div class="col-md-9 layout-body">
 
 					<div class="content question-detail">
