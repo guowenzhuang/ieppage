@@ -355,23 +355,22 @@
 
                         console.log("85123+"+this.duorubricList[index].answerId);
                     }
-
-
-
                 })
             },
             /*点击单选按钮*/
             radioTest(site) {
                 let params = new URLSearchParams();
                 params.append("studentId", userid);
-                params.append("examparperId", this.tableData.id);
+                params.append("examparperId", "3c894727d97b4dba9cb8644514538795");
                 params.append("examrubricId", site.id);
                 params.append("score", site.score);
                 params.append("selectanswerId",site.answerId);
-                params.append("courseid", courseid);
+                params.append("courseid", "16");//课程id
+                params.append( "sectionid", 42);//章节id
+
                 axios({
                     method: 'post',
-                    url: '/api/exam/examrubric/examend',
+                    url: '/api/exam/Sectionrubric/examend',
                     data: params,
 
                 }).then(res => {
@@ -383,14 +382,15 @@
             panduanTestdui(site) {
                 let params = new URLSearchParams();
                 params.append("studentId", userid);
-                params.append("examparperId", this.tableData.id);
+                params.append("examparperId", "3c894727d97b4dba9cb8644514538795");
                 params.append("score", site.score);
                 params.append("examrubricId", site.id);
                 params.append("selectanswerId", site.answerId);
-                params.append("courseid", courseid);
+                params.append("courseid", "16");
+                params.append( "sectionid", 42);//章节id
                 axios({
                     method: 'post',
-                    url: '/api/exam/examrubric/examend',
+                    url: '/api/exam/Sectionrubric/examend',
                     data: params,
 
                 }).then(res => {
@@ -409,7 +409,7 @@
                 params.append("courseid", courseid);
                 axios({
                     method: 'post',
-                    url: '/api/exam/examrubric/examend',
+                    url: '/api/exam/Sectionrubric/examend',
                     data: params,
 
                 }).then(res => {
@@ -421,14 +421,15 @@
             tiankongtest(site) {
                 let params = new URLSearchParams();
                 params.append("studentId", userid);
-                params.append("examparperId", this.tableData.id);
+                params.append("examparperId", "3c894727d97b4dba9cb8644514538795");
                 params.append("score", site.score);
                 params.append("examrubricId", site.id);
                 params.append("selectanswerId", site.answerId);
-                params.append("courseid", courseid);
+                params.append("courseid", "16");
+                params.append( "sectionid", 42);//章节id
                 axios({
                     method: 'post',
-                    url: '/api/exam/examrubric/examend',
+                    url: '/api/exam/Sectionrubric/examend',
                     data: params,
 
                 }).then(res => {
@@ -440,14 +441,15 @@
             duoxuanTest(site) {
                 let params = new URLSearchParams();
                 params.append("studentId", userid);
-                params.append("examparperId", this.tableData.id);
+                params.append("examparperId", "3c894727d97b4dba9cb8644514538795");
                 params.append("examrubricId", site.id);
                 params.append("score", site.score);
                 params.append("selectanswerId", site.answerId);
-                params.append("courseid", courseid);
+                params.append("courseid", "16");
+                params.append( "sectionid", 42);//章节id
                 axios({
                     method: 'post',
-                    url: '/api/exam/examrubric/examend',
+                    url: '/api/exam/Sectionrubric/examend',
                     data: params,
 
                 }).then(res => {
