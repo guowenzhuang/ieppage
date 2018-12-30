@@ -53,12 +53,12 @@
         if(wat>o.watch){
             o.watch=wat;
         }
+        sessionStorage.setItem("chadata",JSON.stringify(o));
         let params=new URLSearchParams();
         params.append("id",app.sid);
         params.append("cid",app.cid);
         params.append("chaId",app.chaId);
         params.append("watch",wat);
-        sessionStorage.setItem("chadata",JSON.stringify(o));
         axios({
             method:'post',
             url:"/api/student/studentrecord/recordStuCha",
@@ -103,7 +103,6 @@
             this.labelValue = getParam("value");
             let active = sessionStorage.getItem("chadata");
             this.active = JSON.parse(active);
-            console.log(active)
             this.bofang();
         }
     };

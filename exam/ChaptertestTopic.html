@@ -3,12 +3,11 @@
 <head>
     <meta http-equiv="content-type" content="text/html;charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>在线考试</title>
+    <title>章节测验</title>
 
     <link href="css/main.css" rel="stylesheet" type="text/css"/>
     <link href="css/iconfont.css" rel="stylesheet" type="text/css"/>
     <link href="css/test.css" rel="stylesheet" type="text/css"/>
-    <link rel="stylesheet" type="text/css" href="css/iview.css">
     <script src="js/vue.min.js"></script>
     <link rel="stylesheet" type="text/css" href="css/index.css"/>
     <script src="js/index.js"></script>
@@ -30,68 +29,52 @@
 <body>
 <div class="main" id="app">
     <!--nr start-->
-    <div class="test_main" :data="tableData">
+    <div class="test_main":data="tableData" >
 
         <div class="nr_left">
             <div class="test">
                 <form action="" method="post">
                     <div class="test_title">
-                        <p class="test_time">
-                            <b class="alt-1" v-text="keepTime"></b>
-                        </p>
-                        <font><input type="button" name="test_jiaojuan" value="交卷" @click="endtest"></font>
+                        <font><input type="button" name="test_jiaojuan" value="提交" @click="endtest"></font>
                     </div>
                     <div class="test_content">
                         <div class="test_content_title">
-                            <h2>考试题目:<span style="margin-left:30px;color: red">{{tableData.title}}</span></h2>
-                            <h2>考试时长:<span style="margin-left:20px;color: red">{{tableData.duration}}分钟</span></h2>
-                            <p style="float: right">
-                                <span>共:{{tableData.total}}</span><span>分</span>
-                            </p>
+                            <h2>最终得分为:<span style="margin-left:20px;color: red">{{tableData.duration}}分</span></h2>
+                            <el-button style="float: right" @click="rollbacktest">返回</el-button>
                         </div>
                     </div>
-
                     <div class="test_content">
                         <div class="test_content_title">
                             <h2>单选题</h2>
-                            <p>
-                                <span>共</span><i
-                                    class="content_lit">{{tableData.radionum}}</i><span>题</span>
-                            </p>
                         </div>
                     </div>
                     <div class="test_content_nr">
+
                         <ul>
 
                             <li :id="forId(index)" v-for="(site,index) in radiorubricList">
-                                 <div class="test_content_nr_tt">
+                                <div class="test_content_nr_tt">
                                     <i>{{index+1}}</i><span>({{site.score}}分)</span>
                                     <font>{{site.content}}</font>
                                 </div>
                                 <div class="test_content_nr_main">
                                     <el-radio-group v-model="site.answerId">
-                                    <ul>
-                                        <li class="option" v-for="siteexamanswers in site.examanswers" @change="radioTest(site)">
+                                        <ul>
+                                            <li class="option" v-for="siteexamanswers in site.examanswers" @change="radioTest(site)">
 
-                                               <el-radio :label="siteexamanswers.id" border>{{siteexamanswers.optiones}}.{{siteexamanswers.content}}</el-radio>
-                                            <!--<input type="radio" class="radioOrCheck" :name="forId(index)"
-                                                   @click="radioTest(site,siteexamanswers)"
-                                            />
-                                            <label>
-                                                {{siteexamanswers.optiones}}.
-                                                <p class="ue" style="display: inline;">{{siteexamanswers.content}}</p>
-                                            </label>-->
-                                           </li>
-                                   </ul>
+                                                <el-radio :label="siteexamanswers.id" border>{{siteexamanswers.optiones}}.{{siteexamanswers.content}}</el-radio>
+                                                <!--<input type="radio" class="radioOrCheck" :name="forId(index)"
+                                                       @click="radioTest(site,siteexamanswers)"
+                                                />
+                                                <label>
+                                                    {{siteexamanswers.optiones}}.
+                                                    <p class="ue" style="display: inline;">{{siteexamanswers.content}}</p>
+                                                </label>-->
+                                            </li>
+                                        </ul>
                                     </el-radio-group>
                                 </div>
-
-
-
-
                             </li>
-
-
                         </ul>
                     </div>
 
@@ -101,10 +84,6 @@
                     <div class="test_content">
                         <div class="test_content_title">
                             <h2>多选题</h2>
-                            <p>
-                                <span>共</span><i
-                                    class="content_lit">{{tableData.multiplenum}}</i><span>题</span>
-                            </p>
                         </div>
                     </div>
                     <div class="test_content_nr">
@@ -123,10 +102,10 @@
                                         <ul>
 
                                             <li class="option" v-for="siteexamanswers in site.examanswers"
-                                                >
-                                               <!--  <input type="checkbox" class="radioOrCheckduo" :name="forIdduxuan(index)"
-                                                         :value="siteexamanswers.id" v-model="net_car"
-                                                  />-->
+                                            >
+                                                <!--  <input type="checkbox" class="radioOrCheckduo" :name="forIdduxuan(index)"
+                                                          :value="siteexamanswers.id" v-model="net_car"
+                                                   />-->
 
                                                 <el-checkbox :label="siteexamanswers.id" border @change="duoxuanTest(site)">
                                                     {{siteexamanswers.optiones}}.{{siteexamanswers.content}}
@@ -148,10 +127,6 @@
                     <div class="test_content">
                         <div class="test_content_title">
                             <h2>判断题</h2>
-                            <p>
-                                <span>共</span><i
-                                    class="content_lit">{{tableData.judgenum}}</i><span>题</span>
-                            </p>
                         </div>
 
                     </div>
@@ -165,24 +140,24 @@
                                 <div class="test_content_nr_main">
                                     <el-radio-group v-model="site.answerId" @change="panduanTestdui(site)">
 
-                                            <el-radio  label="正确" border >正确</el-radio>
-                                            <el-radio  label="错误" border >错误</el-radio>
+                                        <el-radio  label="正确" border >正确</el-radio>
+                                        <el-radio  label="错误" border >错误</el-radio>
                                     </el-radio-group>
-                                           <!-- <input type="radio" class="radioOrCheckpanduan" :name="forIdpanduan(index)"
-                                                   @click="panduanTestdui(site)"
-                                            />
-                                            <label>
-                                                <p class="ue" style="display: inline;">正确</p>
-                                            </label>
-                                        </li>
-                                        <li class="option">
+                                    <!-- <input type="radio" class="radioOrCheckpanduan" :name="forIdpanduan(index)"
+                                            @click="panduanTestdui(site)"
+                                     />
+                                     <label>
+                                         <p class="ue" style="display: inline;">正确</p>
+                                     </label>
+                                 </li>
+                                 <li class="option">
 
-                                            <input type="radio" class="radioOrCheckpanduan" :name="forIdpanduan(index)"
-                                                   @click="panduanTestcuo(site)"
-                                            />
-                                            <label>
-                                                <p class="ue" style="display: inline;">错误</p>
-                                            </label>-->
+                                     <input type="radio" class="radioOrCheckpanduan" :name="forIdpanduan(index)"
+                                            @click="panduanTestcuo(site)"
+                                     />
+                                     <label>
+                                         <p class="ue" style="display: inline;">错误</p>
+                                     </label>-->
 
                                 </div>
                             </li>
@@ -194,10 +169,6 @@
                     <div class="test_content">
                         <div class="test_content_title">
                             <h2>填空题</h2>
-                            <p>
-                                <span>共</span><i
-                                    class="content_lit">{{tableData.fillnum}}</i><span>题</span>
-                            </p>
                         </div>
                     </div>
                     <div class="test_content_nr">
@@ -229,84 +200,7 @@
             </div>
 
         </div>
-        <div class="nr_right">
-            <div class="nr_rt_main">
-                <div class="rt_nr1">
-                    <div class="rt_nr1_title">
-                        <h1>
-                            </i>答题卡
-                        </h1>
-                        <p class="test_time">
-                            <b class="alt-1" id="tmesss" v-text="keepTime"></b>
-                        </p>
-                    </div>
-
-                    <div class="rt_content">
-                        <div class="rt_content_tt">
-                            <h2>单选题</h2>
-                            <p>
-                                <span>共</span><i
-                                    class="content_lit">{{tableData.radionum}}</i><span>题</span>
-                            </p>
-                        </div>
-                        <div class="rt_content_nr answerSheet">
-                            <ul>
-                                <li v-for="n in radionum"><a :href="forIdd(n-1)">{{n}}</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="rt_content">
-                        <div class="rt_content_tt">
-                            <h2>多选题</h2>
-                            <p>
-                                <span>共</span><i class="content_lit">{{tableData.multiplenum}}</i><span>题</span>
-                            </p>
-                        </div>
-                        <div class="rt_content_nr answerSheet">
-                            <ul>
-
-                                <li v-for="n in duorubricnum"><a :href="forIddduoxuan(n-1)">{{n}}</a></li>
-
-
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="rt_content">
-                        <div class="rt_content_tt">
-                            <h2>判断题</h2>
-                            <p>
-                                <span>共</span><i
-                                    class="content_lit">{{tableData.judgenum}}</i><span>题</span>
-                            </p>
-                        </div>
-                        <div class="rt_content_nr answerSheet">
-                            <ul>
-                                <li v-for="n in panduantinum"><a :href="forIdpanduanp(n-1)">{{n}}</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="rt_content">
-                        <div class="rt_content_tt">
-                            <h2>填空题</h2>
-                            <p>
-                                <span>共</span><i
-                                    class="content_lit">{{tableData.fillnum}}</i><span>题</span>
-                            </p>
-                        </div>
-                        <div class="rt_content_nr answerSheet">
-                            <ul>
-                                <li v-for="n in tiankongnum"><a :href="forIdtiankongtt(n-1)">{{n}}</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-        </div>
-    </div>
-    <!--nr end-->
+    </div><!--nr end-->
     <div class="foot"></div>
 
     <!--考试结束对话框-->
@@ -332,7 +226,6 @@
 <script>
     window.jQuery(function ($) {
         "use strict";
-
         $('time').countDown({
             with_separators: false
         });
@@ -342,21 +235,7 @@
         $('.alt-2').countDown({
             css_class: 'countdown-alt-2'
         });
-
     });
-    $(function () {
-        $('li.option label').click(function () {
-            debugger;
-            var examId = $(this).closest('.test_content_nr_main').closest('li').attr('id'); // 得到题目ID
-            var cardLi = $('a[href=#' + examId + ']'); // 根据题目ID找到对应答题卡
-            // 设置已答题
-            if (!cardLi.hasClass('hasBeenAnswer')) {
-                cardLi.addClass('hasBeenAnswer');
-            }
-
-        });
-    });
-
     function parseUrl() {
         var url = location.href;
         var i = url.indexOf('?');
@@ -381,17 +260,17 @@
             //最终得分
             finalScore: "",
             centerDialogVisible: false,
-            /*倒计时*/
+           /* /!*倒计时*!/
             keepTime: '倒计时',
             limittime: '',
             settime: '',
-            flag: false,
+            flag: false,*/
             /*倒计时*/
             tableData: [{}],
-            radionum: "",
-            duorubricnum: '',
-            panduantinum: '',
-            tiankongnum: '',
+            //radionum: "",
+           // duorubricnum: '',
+           // panduantinum: '',
+           // tiankongnum: '',
             daoTime: "",
             radiorubricList: [{}],
             duorubricList: [{}],
@@ -409,9 +288,13 @@
 
         },
         methods: {
+            rollbacktest(){
+                window.location.href = "/exam/Chaptertest.html"
+            },
             /*确认考试结束*/
             kaoshijieshu() {
-                window.location.href = "/exam/StudentTest.html?"
+                this.centerDialogVisible=false;
+               // window.location.href = "/exam/StudentTest.html?"
             },
             /*点击交卷*/
             endtest() {
@@ -435,32 +318,34 @@
                 })
             },
             query() {
-                let testid = v['name'];
+                //let testid = v['name'];
                 let params = new URLSearchParams();
-                params.append("examparper", testid);
-                params.append("studentid", userid);
+                params.append("examparper", "3c894727d97b4dba9cb8644514538795");//章节测试id
+                params.append("course", "16");//课程id
+                params.append("studentid", userid);//学生ID
+                params.append("section", "42");//章节id
 
                 axios({
                     method: 'post',
-                    url: '/api/exam/examrubric/queryexamrubricer',
+                    url: '/api/exam/Sectionrubric/querysectionrubricer',
                     data: params,
 
                 }).then(res => {
                     this.radiorubricList = res.data.radiorubricList;
-                    this.duorubricList = res.data.duorubricList.map(item => {
+                    this.duorubricList = res.data.duorubricList;/*map(item => {
                         item.checks = [];
                         return item;
-                    });
+                    });*/
                     this.packrubricList = res.data.packrubricList;
                     this.judgerubricList = res.data.judgerubricList;
-                    this.tableData = res.data.parpercontent;
-                    this.radionum = res.data.parpercontent.radionum;
+                    //this.tableData = res.data.parpercontent;
+                   /* this.radionum = res.data.parpercontent.radionum;
                     this.duorubricnum = res.data.parpercontent.multiplenum;
                     this.panduantinum = res.data.parpercontent.judgenum;
-                    this.tiankongnum = res.data.parpercontent.fillnum;
-                    this.limittime = res.data.downtime;
+                    this.tiankongnum = res.data.parpercontent.fillnum;*/
+                    //this.limittime = res.data.downtime;
                     console.log("时间" + this.limittime);
-                    this.StartCountDown();
+                   // this.StartCountDown();
                     for(let index in this.duorubricList){
                         if(this.duorubricList[index].answerId!=null){
                             this.duorubricList[index].answerId=this.duorubricList[index].answerId.split(",");
@@ -472,7 +357,7 @@
                     }
 
 
-                    
+
                 })
             },
             /*点击单选按钮*/
@@ -570,12 +455,12 @@
                     console.log(res);
                 })
             },
-            /*倒计时*/
+           /* /!*倒计时*!/
             StartCountDown() {
-                /*  var mydate = new Date();
+                /!*  var mydate = new Date();
                     mydate.setMinutes(mydate.getMinutes() + this.limittime);
                     this.settime=this.limittime;
-    */
+    *!/
                 this.time = setInterval(() => {
                     this.timeDown();
                 }, 1000)
@@ -592,7 +477,7 @@
                 if (leftTime <= 0) {
                     clearInterval(this.time)
                     this.endtest();
-                    /*     let params = new URLSearchParams();
+                    /!*     let params = new URLSearchParams();
                          params.append("studentId", userid);
                          params.append("examparperId", this.tableData.id);
                          params.append("courseid", courseid);
@@ -603,7 +488,7 @@
                          }).then(res => {
                              this.finalScore=res.data.remark;
                              this.centerDialogVisible = true;
-                         })*/
+                         })*!/
                 }
                 this.keepTime = `${h}:${m}:${s}`;
             },
@@ -614,7 +499,7 @@
                     return `0${time}`
                 }
             },
-            /*倒计时*/
+            /!*倒计时*!/*/
 
             forId: function (index) {
                 return "qu_0_" + index

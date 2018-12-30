@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../teacher/js/elementui/index.css">
+    <script src="../teacher/js/vue.js"></script>
+    <script src="../teacher/js/elementui/index.js"></script>
+    <script src="../teacher/js/axios.min.js"></script>
+    <style>
+        .el-main {
+            padding-top: 0;
+        }
+
+        .el-message-box__wrapper {
+            bottom: auto;
+            top: 80px;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <el-container>
+        <el-main>
+            <el-row :gutter="20" type="flex">
+                <el-col :span="3">
+                    <div>班级编号:</div>
+                    <el-input v-model="query.code"></el-input>
+                </el-col>
+                <el-col :span="3">
+                    <div>院系:</div>
+                    <el-select clearable  v-model="query.departmentId" placeholder="请选择院系">
+                        <el-option v-for="item in departmentData"
+                                   :key="item.departmentId"
+                                   :label="item.name"
+                                   :value="item.departmentId">
+                        </el-option>
+                    </el-select>
+                </el-col>
+                <el-col :span="2">
+                    <span>&nbsp;</span>
+                    <el-button icon="el-icon-search" type="primary" @click="search">搜索</el-button>
+                </el-col>
+                <el-col :span="2">
+                    <div>&nbsp;</div>
+                    <el-button type="primary" @click="addClassShow">新增</el-button>
+                </el-col>
+                <el-col :span="2">
+                    <div>&nbsp;</div>
+                    <el-button icon="el-icon-refresh" type="primary" onclick=" window.location.reload();">刷新</el-button>
+                </el-col>
+            </el-row>
+            <el-row :gutter="20" style="margin-top: 20px;">
+                <el-table
+                        :data="classData">
+                    <el-table-column
+                            type="index"
+                            width="50">
+                    </el-table-column>
+                    <el-table-column
+                            prop="code"
+                            label="班级编号">
+                    </el-table-column>
+                    <el-table-column
+                            prop="departName"
+                            label="所属院系">
+                    </el-table-column>
+                    <el-table-column label="修改">
+                        <template slot-scope="scope">
+                            <el-button type="text" @click="updateClassShow(scope.row)">修改</el-button>
+                            <el-button type="text" @click="deleteClass(scope.row)">删除</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                </el-table>
+            </el-row>
+            <el-row type="flex" justify="center">
+                <el-pagination
+                        layout="prev, pager, next"
+                        :current-page.sync="query.page"
+                        :page-size="query.rows"
+                        @current-change="queryClass"
+                        :total="query.total">
+                </el-pagination>
+            </el-row>
+        </el-main>
+    </el-container>
+    <div>
+        <el-dialog
+                :title="add.title"
+                :visible.sync="add.show">
+            <el-form :model="add" :rules="addRules" ref="addForm" label-width="100px" class="demo-ruleForm">
+                <el-form-item label="班级编号" prop="code">
+                    <el-input v-model="add.code"></el-input>
+                </el-form-item>
+                <el-form-item label="院系" prop="departmentDB.departmentId">
+                    <el-select v-model="add.departmentDB.departmentId" placeholder="请选择院系">
+                        <el-option v-for="item in departmentData"
+                                   :key="item.departmentId"
+                                   :label="item.name"
+                                   :value="item.departmentId"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" v-if="add.title=='修改班级'" @click="updateClass">修改</el-button>
+                    <el-button type="primary" v-else @click="addClass">新增</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
+    </div>
+</div>
+</body>
+<script>
+    axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
+    axios.defaults.headers.common['Content-Type'] = 'application/json;charset=UTF-8';
+    const main = {
+        data() {
+            return {
+                add: {
+                    show: false,
+                    title: '',
+                    code: '',
+                    departmentDB: {
+                        departmentId: ''
+                    },
+                },
+                addRules: {
+                    code: [
+                        {required: true, message: '请输入班级编号'}
+                    ],
+                    'departmentDB.departmentId': [
+                        {required: true, message: '请选择院系'}
+                    ]
+                },
+                departmentData: [],
+                query: {
+                    page: 1,
+                    rows: 10,
+                    total: 0,
+                    code: '',
+                    departmentId: ''
+                },
+                classData: [],
+                active: {}
+            }
+        },
+        methods: {
+            search(){
+                this.query.page=1;
+                this.queryClass();
+            },
+            //删除班级
+            deleteClass(row) {
+                this.$confirm('此操作将永久删除班级, 是否继续?', '提示', {
+                    cancelButtonText: '取消',
+                    confirmButtonText: '确定',
+                    type: 'warning'
+                }).then(() => {
+                    axios({
+                        method: "delete",
+                        url: '/api/admin/classes/' + row.id
+                    })
+                        .then(res => {
+                            res = res.data;
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功!'
+                            });
+                            this.queryClass();
+                        })
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            //修改班级
+            updateClass() {
+                this.$refs['addForm'].validate((valid) => {
+                    if (valid) {
+                        axios({
+                            method: 'put',
+                            url: "/api/admin/classes/" + this.active.id,
+                            data: this.add
+                        }).then(res => {
+                            res = res.data;
+                            if (res.success) {
+                                this.$message({
+                                    type: 'success',
+                                    message: res.message
+                                })
+                                this.add.show = false;
+                                this.queryClass();
+                            } else {
+                                this.$message({
+                                    type: 'error',
+                                    message: res.message
+                                })
+                            }
+                        })
+                    } else {
+                        this.$message({
+                            type: 'error',
+                            message: '请检查字段'
+                        })
+                        return false;
+                    }
+                });
+            },
+            updateClassShow(row) {
+                this.active = row;
+                this.add.code = row.code;
+                this.add.departmentDB.departmentId = row.departId;
+                this.add.title = "修改班级";
+                this.add.show = true;
+            },
+            //新增班级
+            addClass() {
+
+                this.$refs['addForm'].validate((valid) => {
+                    if (valid) {
+                        axios({
+                            method: 'post',
+                            url: "/api/admin/classes",
+                            data: this.add
+                        }).then(res => {
+                            res = res.data;
+                            if (res.success) {
+                                this.$message({
+                                    type: 'success',
+                                    message: res.message
+                                })
+                                this.add.show = false;
+                                this.queryClass();
+                            } else {
+                                this.$message({
+                                    type: 'error',
+                                    message: res.message
+                                })
+                            }
+                        })
+                    } else {
+                        this.$message({
+                            type: 'error',
+                            message: '请检查字段'
+                        })
+                        return false;
+                    }
+                });
+
+            },
+            //新增班级框显示
+            addClassShow() {
+                this.add.title = "新增班级";
+                this.add.show = true;
+            },
+            queryDepart() {
+                axios({
+                    method: 'get',
+                    url: "/api/admin/depart/get"
+                }).then(res => {
+                    this.departmentData = res.data.message;
+                })
+            },
+            queryClass() {
+                axios({
+                    method: 'get',
+                    url: "/api/admin/classes",
+                    params: this.query
+                }).then(res => {
+                    res = res.data;
+                    this.query.total = res.total;
+                    this.classData = res.rows;
+                })
+            }
+        },
+        mounted() {
+            this.queryDepart();
+            this.queryClass();
+        }
+    };
+
+    const Component = Vue.extend(main);
+    new Component().$mount('#app')
+</script>
+</html>
