@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../teacher/js/elementui/index.css">
+    <script src="../teacher/js/vue.js"></script>
+    <script src="../teacher/js/elementui/index.js"></script>
+    <script src="../teacher/js/axios.min.js"></script>
+    <style>
+        .el-main {
+            padding-top: 0;
+        }
+
+        .el-message-box__wrapper {
+            bottom: auto;
+            top: 80px;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <el-container>
+        <el-main>
+            <el-row :gutter="20" type="flex">
+                <el-col :span="3">
+                    <div>学生姓名:</div>
+                    <el-input v-model="query.name"></el-input>
+                </el-col>
+                <el-col :span="2">
+                    <div>&nbsp;</div>
+                    <el-button  type="primary" @click="addStudentShow()">新增</el-button>
+                </el-col>
+                <el-col :span="2">
+                    <span>&nbsp;</span>
+                    <el-button icon="el-icon-search" type="primary" @click="search">搜索</el-button>
+                </el-col>
+                <el-col :span="2">
+                    <div>&nbsp;</div>
+                    <el-button icon="el-icon-refresh" type="primary" onclick=" window.location.reload();">刷新</el-button>
+                </el-col>
+            </el-row>
+            <el-row :gutter="20" style="margin-top: 20px;">
+                <el-table :data="studentData">
+                    <el-table-column
+                            type="index"
+                            width="50">
+                    </el-table-column>
+                    <el-table-column
+                            prop="loginName"
+                            label="名称">
+                    </el-table-column>
+                    <el-table-column
+                            prop="protectEMail"
+                            label="邮箱">
+                    </el-table-column>
+                    <el-table-column
+                            prop="protectMTel"
+                            label="手机号">
+                    </el-table-column>
+                    <el-table-column
+                            prop="sex"
+                            label="性别">
+                        <template slot-scope="scope">
+                            <span>{{scope.row.sex==null || scope.row.sex=="" ? "无":scope.row.sex}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            prop="card"
+                            label="身份证号">
+                        <template slot-scope="scope">
+                            <span>{{scope.row.card==null || scope.row.card=="" ? "无":scope.row.card}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            prop="code"
+                            label="班级">
+                        <template slot-scope="scope">
+                            <span>{{scope.row.card==null || scope.row.card=="" ? "无":scope.row.card}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="设置">
+                        <template slot-scope="scope">
+                            <el-button type="text" @click="updateStudentShow(scope.row)">修改</el-button>
+                            <el-button type="text" @click="deleteStudent(scope.row)">删除</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </el-row>
+            <el-row type="flex" justify="center">
+                <el-pagination
+                        layout="prev, pager, next"
+                        :current-page.sync="query.page"
+                        :page-size="query.rows"
+                        @current-change="queryClass"
+                        :total="query.total">
+                </el-pagination>
+            </el-row>
+        </el-main>
+    </el-container>
+    <div>
+        <el-dialog
+                :title="add.title"
+                :visible.sync="add.show">
+            <el-form :model="add" :rules="addRules" ref="addForm" label-width="100px" class="demo-ruleForm">
+                <el-form-item prop="loginName" label="用户名称">
+                    <el-input v-model="add.loginName" :disabled="add.nameDisabled"></el-input>
+                </el-form-item>
+                <el-form-item prop="protectEMail" label="邮箱">
+                    <el-input v-model="add.protectEMail"></el-input>
+                </el-form-item>
+                <el-form-item prop="protectMTel" label="手机号">
+                    <el-input v-model="add.protectMTel"></el-input>
+                </el-form-item>
+                <el-form-item prop="sex" label="性别">
+                    <el-radio-group v-model="add.sex">
+                        <el-radio label="男">男</el-radio>
+                        <el-radio label="女">女</el-radio>
+                        <el-radio label="保密">保密</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+                <el-form-item prop="card" label="身份证号">
+                    <el-input v-model="add.card"></el-input>
+                </el-form-item>
+                <el-form-item  label="班级">
+                    <el-select v-model="add.cid" clearable  placeholder="请选择院系">
+                        <el-option v-for="item in classData"
+                                   :key="item.id"
+                                   :label="item.code"
+                                   :value="item.id">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" v-if="add.nameDisabled" @click="updateStudent">修改</el-button>
+                    <el-button type="primary" v-else @click="addStudent">新增</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
+    </div>
+</div>
+</body>
+<script>
+    axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
+    axios.defaults.headers.common['Content-Type'] = 'application/json;charset=UTF-8';
+    const main = {
+        data() {
+            return {
+                query: {
+                    name: '',
+                    page: 1,
+                    rows: 10,
+                    total: 0
+                },
+                add: {
+                    show: false,
+                    title: '',
+                    nameDisabled: false,
+                    loginName: '',
+                    protectEMail: '',
+                    protectMTel: '',
+                    sex: '',
+                    card: '',
+                    cid: ''
+                },
+                addRules: {
+                    loginName: [
+                        {required: true, message: '请输入用户名称', trigger: 'blur'},
+                    ],
+
+                    protectEMail: [
+                        {required: true, message: '请输入邮箱', trigger: 'blur'},
+                    ],
+
+                    protectMTel: [
+                        {required: true, message: '请输入手机号', trigger: 'blur'},
+                    ],
+
+                    sex: [
+                        {required: true, message: '请输入性别', trigger: 'blur'},
+                    ],
+
+                    photo: [
+                        {required: true, message: '请上传头像', trigger: 'blur'},
+                    ],
+
+                    card: [
+                        {required: true, message: '请输入身份证号', trigger: 'blur'},
+                    ],
+                    'cid': [
+                        {required: true, message: '请选择班级', trigger: 'blur'},
+                    ]
+                },
+                studentData: [],
+                active: {},
+                classData:[]
+            }
+        },
+        methods: {
+            //新增学生
+            addStudent() {
+                this.$refs['addForm'].validate((valid) => {
+                    if (valid) {
+                        axios({
+                            method: 'post',
+                            url: "/api/admin/student",
+                            data: this.add
+                        }).then(res => {
+                            res = res.data;
+                            if (res.success) {
+                                this.$message({
+                                    type: 'success',
+                                    message: res.message
+                                })
+                                this.add.show = false;
+                                this.queryStudent();
+                                this.$refs['addForm'].resetFields();
+
+                            } else {
+                                this.$message({
+                                    type: 'error',
+                                    message: res.message
+                                })
+                            }
+                        })
+                    } else {
+                        this.$message({
+                            type: 'error',
+                            message: '请检查字段'
+                        })
+                        return false;
+                    }
+                });
+            },
+            //新增学生框显示
+            addStudentShow(){
+                this.add.title="新增学生";
+                this.add.nameDisabled=false;
+                this.add.show=true;
+            },
+            //修改学生
+            updateStudent() {
+                this.$refs['addForm'].validate((valid) => {
+                    if (valid) {
+                        axios({
+                            method: 'put',
+                            url: "/api/admin/student/"+this.active.id,
+                            data: this.add
+                        }).then(res => {
+                            res = res.data;
+                            if (res.success) {
+                                this.$message({
+                                    type: 'success',
+                                    message: res.message
+                                })
+                                this.add.show = false;
+                                this.queryStudent();
+                                this.$refs['addForm'].resetFields();
+
+                            } else {
+                                this.$message({
+                                    type: 'error',
+                                    message: res.message
+                                })
+                            }
+                        })
+                    } else {
+                        this.$message({
+                            type: 'error',
+                            message: '请检查字段'
+                        })
+                        return false;
+                    }
+                });
+            },
+            updateStudentShow(row) {
+                this.active = row;
+                this.add.title="修改学生";
+                this.add.loginName=row.loginName;
+                this.add.protectEMail=row.protectEMail;
+                this.add.protectMTel=row.protectMTel;
+                this.add.sex=row.sex;
+                this.add.card=row.card;
+                this.add.cid=row.cid;
+                this.add.nameDisabled=true;
+                this.add.show=true;
+            },
+            //删除学生
+            deleteStudent(row) {
+                this.$confirm('此操作将永久删除学生, 是否继续?', '提示', {
+                    cancelButtonText: '取消',
+                    confirmButtonText: '确定',
+                    type: 'warning'
+                }).then(() => {
+                    axios({
+                        method: "delete",
+                        url: '/api/admin/student/' + row.id
+                    })
+                        .then(res => {
+                            res = res.data;
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功!'
+                            });
+                            this.queryStudent();
+                        })
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            search() {
+                this.query.page = 1;
+                this.queryStudent();
+            },
+            queryStudent() {
+                axios({
+                    method: 'get',
+                    url: "/api/admin/student",
+                    params: this.query
+                }).then(res => {
+                    res = res.data;
+                    this.studentData = res.rows;
+                    this.query.total = res.total;
+                })
+            },
+            queryClass(){
+                axios({
+                    method:'get',
+                    url:'/api/admin/classes/queryAll'
+                }).then((res=>{
+                    this.classData=res.data;
+                }))
+            }
+        },
+        mounted() {
+            this.queryStudent();
+            this.queryClass();
+        }
+    };
+    const Component = Vue.extend(main);
+    new Component().$mount('#app')
+</script>
+</html>

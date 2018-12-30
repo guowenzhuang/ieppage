@@ -29,7 +29,7 @@
 <body>
 <div class="main" id="app">
     <!--nr start-->
-    <div class="test_main":data="tableData" >
+    <div class="test_main" :data="tableData">
 
         <div class="nr_left">
             <div class="test">
@@ -39,7 +39,7 @@
                     </div>
                     <div class="test_content">
                         <div class="test_content_title">
-                            <h2>最终得分为:<span style="margin-left:20px;color: red">{{tableData.duration}}分</span></h2>
+                            <h2>最终得分为:<span style="margin-left:20px;color: red">{{finalScore}}分</span></h2>
                             <el-button style="float: right" @click="rollbacktest">返回</el-button>
                         </div>
                     </div>
@@ -60,9 +60,12 @@
                                 <div class="test_content_nr_main">
                                     <el-radio-group v-model="site.answerId">
                                         <ul>
-                                            <li class="option" v-for="siteexamanswers in site.examanswers" @change="radioTest(site)">
+                                            <li class="option" v-for="siteexamanswers in site.examanswers"
+                                                @change="radioTest(site)">
 
-                                                <el-radio :label="siteexamanswers.id" border>{{siteexamanswers.optiones}}.{{siteexamanswers.content}}</el-radio>
+                                                <el-radio :label="siteexamanswers.id" border >
+                                                    {{siteexamanswers.optiones}}.{{siteexamanswers.content}}
+                                                </el-radio>
                                                 <!--<input type="radio" class="radioOrCheck" :name="forId(index)"
                                                        @click="radioTest(site,siteexamanswers)"
                                                 />
@@ -71,8 +74,13 @@
                                                     <p class="ue" style="display: inline;">{{siteexamanswers.content}}</p>
                                                 </label>-->
                                             </li>
+
                                         </ul>
+
                                     </el-radio-group>
+                                    <span v-for="iteam in answerIdlist" v-if="iteam.id==site.id"><h2 style="color: red">正确答案为: {{iteam.answerId}}</h2>
+
+                                    </span>
                                 </div>
                             </li>
                         </ul>
@@ -97,7 +105,7 @@
 
                                 <div class="test_content_nr_main"><!--@mouseleave="leave() "-->
 
-                                    <el-checkbox-group v-model="site.answerId" >
+                                    <el-checkbox-group v-model="site.answerId">
 
                                         <ul>
 
@@ -107,7 +115,8 @@
                                                           :value="siteexamanswers.id" v-model="net_car"
                                                    />-->
 
-                                                <el-checkbox :label="siteexamanswers.id" border @change="duoxuanTest(site)">
+                                                <el-checkbox :label="siteexamanswers.id" border
+                                                             @change="duoxuanTest(site)">
                                                     {{siteexamanswers.optiones}}.{{siteexamanswers.content}}
                                                 </el-checkbox>
 
@@ -116,7 +125,9 @@
 
                                         </ul>
                                     </el-checkbox-group>
+                                    <span v-for="iteam in answerIdlist" v-if="iteam.id==site.id"><h2 style="color: red">正确答案为: {{iteam.answerId}}</h2>
 
+                                    </span>
                                 </div>
                             </li>
 
@@ -138,11 +149,14 @@
                                     <font>{{site.content}}</font>
                                 </div>
                                 <div class="test_content_nr_main">
-                                    <el-radio-group v-model="site.answerId" @change="panduanTestdui(site)">
+                                    <el-radio-group v-model="site.answerId" @change="panduanTestdui(site)" >
 
-                                        <el-radio  label="正确" border >正确</el-radio>
-                                        <el-radio  label="错误" border >错误</el-radio>
+                                        <el-radio label="正确" border >正确</el-radio>
+                                        <el-radio label="错误" border>错误</el-radio>
                                     </el-radio-group>
+                                    <span v-for="iteam in answerIdlist" v-if="iteam.id==site.id"><h2 style="color: red">正确答案为: {{iteam.answerId}}</h2>
+
+                                    </span>
                                     <!-- <input type="radio" class="radioOrCheckpanduan" :name="forIdpanduan(index)"
                                             @click="panduanTestdui(site)"
                                      />
@@ -158,6 +172,7 @@
                                      <label>
                                          <p class="ue" style="display: inline;">错误</p>
                                      </label>-->
+
 
                                 </div>
                             </li>
@@ -189,6 +204,9 @@
                                     >
                                     </el-input>
                                     每个空的答案用逗号隔开,比如:Javaweb,Javaoop,Mybatis
+                                    <span v-for="iteam in answerIdlist" v-if="iteam.id==site.id"><h2 style="color: red">正确答案为: {{iteam.answerId}}</h2>
+
+                                    </span>
                                 </div>
                             </li>
 
@@ -236,6 +254,7 @@
             css_class: 'countdown-alt-2'
         });
     });
+
     function parseUrl() {
         var url = location.href;
         var i = url.indexOf('?');
@@ -258,19 +277,22 @@
         el: "#app",
         data: {
             //最终得分
+
             finalScore: "",
             centerDialogVisible: false,
-           /* /!*倒计时*!/
-            keepTime: '倒计时',
-            limittime: '',
-            settime: '',
-            flag: false,*/
+            iszouti:true,
+            answerIdlist: [],
+            /* /!*倒计时*!/
+             keepTime: '倒计时',
+             limittime: '',
+             settime: '',
+             flag: false,*/
             /*倒计时*/
             tableData: [{}],
             //radionum: "",
-           // duorubricnum: '',
-           // panduantinum: '',
-           // tiankongnum: '',
+            // duorubricnum: '',
+            // panduantinum: '',
+            // tiankongnum: '',
             daoTime: "",
             radiorubricList: [{}],
             duorubricList: [{}],
@@ -288,39 +310,34 @@
 
         },
         methods: {
-            rollbacktest(){
+            rollbacktest() {
                 window.location.href = "/exam/Chaptertest.html"
             },
             /*确认考试结束*/
             kaoshijieshu() {
-                this.centerDialogVisible=false;
-               // window.location.href = "/exam/StudentTest.html?"
+                this.centerDialogVisible = false;
+                // window.location.href = "/exam/StudentTest.html?"
             },
             /*点击交卷*/
             endtest() {
                 let params = new URLSearchParams();
                 params.append("studentId", userid);
                 params.append("examparperId", this.tableData.id);
-                params.append("courseid", courseid);
                 axios({
                     method: 'post',
-                    url: '/api/exam/examrubric/examination',
+                    url: '/api/exam/Sectionrubric/examination',
                     data: params,
                 }).then(res => {
-
                     this.finalScore = res.data.remark;
-                    this.centerDialogVisible = true;
-                    if (this.time != null) {
-                        window.clearInterval(this.time);
-                    }
-
-
+                     this.answerIdlist=res.data.remark2;
+                    // this.centerDialogVisibledanxaun=true;
+                    this.iszouti=false;
                 })
             },
             query() {
                 //let testid = v['name'];
                 let params = new URLSearchParams();
-                params.append("examparper", "3c894727d97b4dba9cb8644514538795");//章节测试id
+                params.append("examparper", "4123a607d4d944aa934d1b4a65258696");//章节测试id
                 params.append("course", "16");//课程id
                 params.append("studentid", userid);//学生ID
                 params.append("section", "42");//章节id
@@ -332,71 +349,91 @@
 
                 }).then(res => {
                     this.radiorubricList = res.data.radiorubricList;
-                    this.duorubricList = res.data.duorubricList;/*map(item => {
-                        item.checks = [];
-                        return item;
-                    });*/
+                    this.duorubricList = res.data.duorubricList;
+                    /*map(item => {
+                                            item.checks = [];
+                                            return item;
+                                        });*/
                     this.packrubricList = res.data.packrubricList;
                     this.judgerubricList = res.data.judgerubricList;
-                    //this.tableData = res.data.parpercontent;
-                   /* this.radionum = res.data.parpercontent.radionum;
-                    this.duorubricnum = res.data.parpercontent.multiplenum;
-                    this.panduantinum = res.data.parpercontent.judgenum;
-                    this.tiankongnum = res.data.parpercontent.fillnum;*/
+                    this.tableData = res.data.parpercontent;
+                    /* this.radionum = res.data.parpercontent.radionum;
+                     this.duorubricnum = res.data.parpercontent.multiplenum;
+                     this.panduantinum = res.data.parpercontent.judgenum;
+                     this.tiankongnum = res.data.parpercontent.fillnum;*/
                     //this.limittime = res.data.downtime;
                     console.log("时间" + this.limittime);
-                   // this.StartCountDown();
-                    for(let index in this.duorubricList){
-                        if(this.duorubricList[index].answerId!=null){
-                            this.duorubricList[index].answerId=this.duorubricList[index].answerId.split(",");
-                        }else{
-                            this.duorubricList[index].answerId=[];
+                    // this.StartCountDown();
+                    for (let index in this.duorubricList) {
+                        if (this.duorubricList[index].answerId != null) {
+                            this.duorubricList[index].answerId = this.duorubricList[index].answerId.split(",");
+                        } else {
+                            this.duorubricList[index].answerId = [];
                         }
 
-                        console.log("85123+"+this.duorubricList[index].answerId);
+                        console.log("85123+" + this.duorubricList[index].answerId);
                     }
-
-
-
                 })
             },
             /*点击单选按钮*/
             radioTest(site) {
-                let params = new URLSearchParams();
-                params.append("studentId", userid);
-                params.append("examparperId", this.tableData.id);
-                params.append("examrubricId", site.id);
-                params.append("score", site.score);
-                params.append("selectanswerId",site.answerId);
-                params.append("courseid", courseid);
-                axios({
-                    method: 'post',
-                    url: '/api/exam/examrubric/examend',
-                    data: params,
+                if (this.iszouti==true){
+                    let params = new URLSearchParams();
+                    params.append("studentId", userid);
+                    params.append("examparperId", this.tableData.id);
+                    params.append("examrubricId", site.id);
+                    params.append("score", site.score);
+                    params.append("selectanswerId", site.answerId);
+                    params.append("courseid", "16");//课程id
+                    params.append("sectionid", 42);//章节id
 
-                }).then(res => {
-                    console.log(res);
+                    axios({
+                        method: 'post',
+                        url: '/api/exam/Sectionrubric/examend',
+                        data: params,
 
-                })
+                    }).then(res => {
+                        console.log(res);
+
+                    })
+                } else{
+
+                    this.$notify({
+                        title: '失败',
+                        message:"已经提交测试不能做题,请刷新试卷",
+                        type: 'warning'
+                    });
+                }
+
             },
             /*点正确按钮*/
             panduanTestdui(site) {
+                if (this.iszouti==true){
                 let params = new URLSearchParams();
                 params.append("studentId", userid);
                 params.append("examparperId", this.tableData.id);
                 params.append("score", site.score);
                 params.append("examrubricId", site.id);
                 params.append("selectanswerId", site.answerId);
-                params.append("courseid", courseid);
+                params.append("courseid", "16");
+                params.append("sectionid", 42);//章节id
                 axios({
                     method: 'post',
-                    url: '/api/exam/examrubric/examend',
+                    url: '/api/exam/Sectionrubric/examend',
                     data: params,
 
                 }).then(res => {
                     console.log(res);
 
                 })
+                } else{
+
+                    this.$notify({
+                        title: '失败',
+                        message:"已经提交测试不能做题,请刷新试卷",
+                        type: 'warning'
+                    });
+                }
             },
             /*点错误按钮*/
             panduanTestcuo(site) {
@@ -409,7 +446,7 @@
                 params.append("courseid", courseid);
                 axios({
                     method: 'post',
-                    url: '/api/exam/examrubric/examend',
+                    url: '/api/exam/Sectionrubric/examend',
                     data: params,
 
                 }).then(res => {
@@ -419,87 +456,108 @@
             },
             /*填空更改之后触发*/
             tiankongtest(site) {
+                if (this.iszouti==true){
                 let params = new URLSearchParams();
                 params.append("studentId", userid);
                 params.append("examparperId", this.tableData.id);
                 params.append("score", site.score);
                 params.append("examrubricId", site.id);
                 params.append("selectanswerId", site.answerId);
-                params.append("courseid", courseid);
+                params.append("courseid", "16");
+                params.append("sectionid", 42);//章节id
                 axios({
                     method: 'post',
-                    url: '/api/exam/examrubric/examend',
+                    url: '/api/exam/Sectionrubric/examend',
                     data: params,
 
                 }).then(res => {
 
                     console.log(res);
                 })
+            } else{
+
+                this.$notify({
+                title: '失败',
+                message:"已经提交测试不能做题,请刷新试卷",
+                type: 'warning'
+            });
+    }
             },
             /*多选题*/
             duoxuanTest(site) {
+                if (this.iszouti==true){
                 let params = new URLSearchParams();
                 params.append("studentId", userid);
                 params.append("examparperId", this.tableData.id);
                 params.append("examrubricId", site.id);
                 params.append("score", site.score);
                 params.append("selectanswerId", site.answerId);
-                params.append("courseid", courseid);
+                params.append("courseid", "16");
+                params.append("sectionid", 42);//章节id
                 axios({
                     method: 'post',
-                    url: '/api/exam/examrubric/examend',
+                    url: '/api/exam/Sectionrubric/examend',
                     data: params,
 
                 }).then(res => {
 
                     console.log(res);
                 })
-            },
-           /* /!*倒计时*!/
-            StartCountDown() {
-                /!*  var mydate = new Date();
-                    mydate.setMinutes(mydate.getMinutes() + this.limittime);
-                    this.settime=this.limittime;
-    *!/
-                this.time = setInterval(() => {
-                    this.timeDown();
-                }, 1000)
+                } else{
+
+                    this.$notify({
+                        title: '失败',
+                        message:"已经提交测试不能做题,请刷新试卷",
+                        type: 'warning'
+                    });
+                }
             },
 
-            timeDown() {
-                //const endTime = new Date(this.settime);
-                const nowTime = new Date();
-                let leftTime = parseInt((this.limittime - nowTime.getTime()) / 1000);
-                // let d = parseInt(leftTime / (24 * 60 * 60));
-                let h = this.formate(parseInt(leftTime / (60 * 60) % 24));
-                let m = this.formate(parseInt(leftTime / 60 % 60));
-                let s = this.formate(parseInt(leftTime % 60));
-                if (leftTime <= 0) {
-                    clearInterval(this.time)
-                    this.endtest();
-                    /!*     let params = new URLSearchParams();
-                         params.append("studentId", userid);
-                         params.append("examparperId", this.tableData.id);
-                         params.append("courseid", courseid);
-                         axios({
-                             method: 'post',
-                             url: '/api/exam/examrubric/examination',
-                             data: params,
-                         }).then(res => {
-                             this.finalScore=res.data.remark;
-                             this.centerDialogVisible = true;
-                         })*!/
-                }
-                this.keepTime = `${h}:${m}:${s}`;
-            },
-            formate(time) {
-                if (time >= 10) {
-                    return time
-                } else {
-                    return `0${time}`
-                }
-            },
-            /!*倒计时*!/*/
+            /* /!*倒计时*!/
+             StartCountDown() {
+                 /!*  var mydate = new Date();
+                     mydate.setMinutes(mydate.getMinutes() + this.limittime);
+                     this.settime=this.limittime;
+     *!/
+                 this.time = setInterval(() => {
+                     this.timeDown();
+                 }, 1000)
+             },
+
+             timeDown() {
+                 //const endTime = new Date(this.settime);
+                 const nowTime = new Date();
+                 let leftTime = parseInt((this.limittime - nowTime.getTime()) / 1000);
+                 // let d = parseInt(leftTime / (24 * 60 * 60));
+                 let h = this.formate(parseInt(leftTime / (60 * 60) % 24));
+                 let m = this.formate(parseInt(leftTime / 60 % 60));
+                 let s = this.formate(parseInt(leftTime % 60));
+                 if (leftTime <= 0) {
+                     clearInterval(this.time)
+                     this.endtest();
+                     /!*     let params = new URLSearchParams();
+                          params.append("studentId", userid);
+                          params.append("examparperId", this.tableData.id);
+                          params.append("courseid", courseid);
+                          axios({
+                              method: 'post',
+                              url: '/api/exam/examrubric/examination',
+                              data: params,
+                          }).then(res => {
+                              this.finalScore=res.data.remark;
+                              this.centerDialogVisible = true;
+                          })*!/
+                 }
+                 this.keepTime = `${h}:${m}:${s}`;
+             },
+             formate(time) {
+                 if (time >= 10) {
+                     return time
+                 } else {
+                     return `0${time}`
+                 }
+             },
+             /!*倒计时*!/*/
 
             forId: function (index) {
                 return "qu_0_" + index

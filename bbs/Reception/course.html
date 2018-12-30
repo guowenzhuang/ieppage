@@ -10,7 +10,7 @@
 		<link rel="stylesheet" href="../app/css/libs/videojs/5.11.7/video-js.min.css">
 		<link rel="stylesheet" href="../app/css/dest/styles.css?=2016121272249">
 
-		
+
 		<link rel="stylesheet" type="text/css" href="../css/bootstrap-theme.min.css">
 		<link rel="stylesheet" type="text/css" href="../css/muke.css">
 		<link rel="stylesheet" href="../css/index.css" />
@@ -27,27 +27,27 @@
 		<div class="tab-content" id="course">
 			<br />
 			<el-button type="primary" @click="dialogFormVisible = true">发起主题</el-button>
-			
+
 			<el-dialog title="发起主题" :visible.sync="dialogFormVisible">
 				<el-form :model="form">
 					<el-form-item label="主题板块" :label-width="formLabelWidth">
-						<el-select v-model="form.region" placeholder="请选择主题板块">
-							<el-option  v-for="type in typeList" :label="type.typeName" :value="type.typeName" :key="type.typeId"></el-option>
+						<el-select v-model="form.type" placeholder="请选择主题板块">
+							<el-option v-for="type in typeList" :label="type.typeName" :value="type.typeId" :key="type.typeId"></el-option>
 						</el-select>
 					</el-form-item>
 					<el-form-item label="主题" :label-width="formLabelWidth">
-						<el-input v-model="form.name" autocomplete="off"></el-input>
+						<el-input v-model="form.title" autocomplete="off"></el-input>
 					</el-form-item>
 					<el-form-item label="内容" :label-width="formLabelWidth">
 						<el-input type="textarea" :rows="5" placeholder="请输入内容" v-model="textarea"></el-input>
-					</el-form-item>					
+					</el-form-item>
 				</el-form>
 				<div slot="footer" class="dialog-footer">
 					<el-button @click="dialogFormVisible = false">取 消</el-button>
-					<el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+					<el-button type="primary" @click="publicPost()">发 表</el-button>
 				</div>
 			</el-dialog>
-			
+
 			<br />
 			<hr />
 			<h4>子版块</h4>
@@ -59,11 +59,11 @@
 						<div class="col-md-10">
 							<div class="col-sm-12">
 								<h4>
-									<a class="question-item-title" target="_blank">{{type.typeName}}</a>
+									<a class="question-item-title" target="_blank" v-on:click="queryPostByTypename(type.typeName)">{{type.typeName}}</a>
 								</h4>
 								<div class="question-item-summary">
 									<div class="user-username ">
-										<a class="avatar" href="#" target="_blank">{{type.typeDescribe}}</a>
+										<a class="avatar">{{type.typeDescribe}}</a>
 									</div>
 								</div>
 							</div>
@@ -74,11 +74,12 @@
 			<br />
 			<br />
 
-			<h4>全部主题</h4>
+			<h4><a @click="queryAll">全部主题</a></h4>
 			<br />
 			<el-button-group>
-				<el-button type="success" size="small" @click="btnNew" plain>最新发表</el-button>
-				<el-button type="success" size="small" @click="btnHot" plain>最高热度</el-button>
+				<el-button type="success" size="mini" @click="btnNew" plain>最新发表</el-button>
+				<el-button type="success" size="mini" @click="btnHot" plain>最高热度</el-button>
+				<el-button type="success" size="mini" plain>最多回复</el-button>
 			</el-button-group>
 			<hr />
 			<div>
@@ -87,14 +88,14 @@
 						<div class="col-md-10">
 							<div class="col-sm-12">
 								<h4>
-									<a class="question-item-title" target="_blank">{{post.postTitle}}</a>
+									<a class="question-item-title" target="_blank" v-on:click="jumpPostDetails(post)">{{post.postTitle}}</a>
 								</h4>
 								<div class="question-item-summary">
 									<div class="user-username ">
 										<!-- 用户名称 -->
-										<a class="avatar" href="#" target="_blank">用户名</a>
+										<a class="avatar" href="#" target="_blank">{{post.userName}}</a>
 									</div>
-									<span class="question-item-date">{{post.replyTime}}</span>
+									于<span class="question-item-date">{{post.replyTime}}</span>发表
 								</div>
 							</div>
 						</div>
@@ -123,32 +124,32 @@
 			el: "#course",
 
 			mounted: function() {
+				var userId=sessionStorage.getItem("userid");
 				this.queryPost();
 				this.queryType();
+				this.isHaveToken();
 			},
 			data() {
 				return {
 					typeName: "",
 					orderBy: "replyTime",
-					courseId: "1",
+					courseId: sessionStorage.getItem("courId"),
 					total: 50, //默认数据总数
 					pagesize: 10, //每页的数据条数
 					currentPage: 1, //默认开始页面
 					postList: [],
 					typeList: [],
 					dialogFormVisible: false,
+					textarea: '',
+					typename: '',
 					form: {
-						name: '',
-						region: '',
-						date1: '',
-						date2: '',
+						title: '',
+						type: '',
 						delivery: false,
-						typeList: this.typeList,
-						resource: '',
-						desc: '',
-						textarea: ''
+						typeList: this.typeList
 					},
-					formLabelWidth: '120px'
+					formLabelWidth: '120px',
+					token: sessionStorage.getItem("access_token")
 				}
 			},
 			methods: {
@@ -174,6 +175,35 @@
 					})
 
 				},
+				publicPost: function() {
+					let params = new URLSearchParams();
+					params.append("typeId", this.form.type);
+					params.append("title", this.form.title);
+					params.append("content", this.textarea);
+					params.append("userId", userId);
+					params.append("courseId", this.courseId);
+					console.log("title==>" + this.form.title + " " + this.textarea + " " + this.form.type);
+					axios({
+						method: 'post',
+						url: '/api/bbs/coursepost/insertPost',
+						data: params,
+						headers: {
+							//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
+						}
+					}).then(res => {
+						res = res.data;
+						if (res.success) {
+							this.$message({
+								message: res.message,
+								type: 'success'
+							});
+							this.dialogFormVisible = false
+							this.queryPost();
+						} else {
+							this.$message.error(res.message);
+						}
+					})
+				},
 				current_change: function(currentPage) {
 					this.currentPage = currentPage;
 					this.queryPost();
@@ -191,15 +221,65 @@
 						console.log('typeList==>' + this.typeList);
 					})
 				},
-				btnNew: function(){
+				queryPostByTypename: function(typename) {
+					this.typeName = typename;
+					this.queryPost();
+				},
+				queryAll: function() {
+					this.typeName = "";
+					this.queryPost();
+				},
+				btnNew: function() {
 					this.orderBy = "replyTime";
 					this.queryPost();
 				},
-				btnHot: function(){
-					this.orderBy="replyLikenum";
+				btnHot: function() {
+					this.orderBy = "replyLikenum";
 					this.queryPost();
 				},
-				
+				jumpPostDetails: function(post) {
+
+					let params = new URLSearchParams();
+					params.append("replyId", post.replyId);
+					axios({
+						method: 'post',
+						url: '/api/bbs/coursereply/updateBrowse',
+						data: params,
+						headers: {
+							//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
+						}
+					});
+					console.log('courpost==>' + post.replyContent);
+					sessionStorage.setItem("courPostId", post.postId);
+					window.location.href = "courseDetails.html";
+
+				},
+				isHaveToken: function() {
+					console.log(this.token)
+					if (this.token != null) {
+						
+					} else {
+						this.$confirm('您还没有登录账号, 是否登录?', '提示', {
+							confirmButtonText: '确定',
+							cancelButtonText: '取消',
+							type: 'warning'
+						}).then(() => {
+							window.location.href = "\\login.html?callback-url=http://127.0.0.1/bbs/Reception/course.html";
+							/* this.$message({
+								type: 'success',
+								message: '登录成功!'
+							}); */
+						}).catch(() => {
+							this.$message({
+								type: 'info',
+								message: '已取消登录'
+							});
+							//window.location.href = ""
+						});
+						
+					}
+				}
+
 			}
 		})
 	</script>
