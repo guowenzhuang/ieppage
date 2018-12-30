@@ -71,7 +71,17 @@
                                                     <p class="ue" style="display: inline;">{{siteexamanswers.content}}</p>
                                                 </label>-->
                                             </li>
+
                                         </ul>
+
+                                        <el-input
+                                                type="textarea"
+                                                v-if="centerDialogVisibledanxaun"
+                                                :readonly="true"
+                                                autosize
+                                                v-model="ceshi"
+                                                >
+                                        </el-input>
                                     </el-radio-group>
                                 </div>
                             </li>
@@ -260,6 +270,8 @@
             //最终得分
             finalScore: "",
             centerDialogVisible: false,
+            centerDialogVisibledanxaun:true,
+            answerIdlist:[],
            /* /!*倒计时*!/
             keepTime: '倒计时',
             limittime: '',
@@ -301,19 +313,12 @@
                 let params = new URLSearchParams();
                 params.append("studentId", userid);
                 params.append("examparperId", this.tableData.id);
-                params.append("courseid", courseid);
                 axios({
                     method: 'post',
-                    url: '/api/exam/examrubric/examination',
+                    url: '/api/exam/Sectionrubric/examination',
                     data: params,
                 }).then(res => {
-
-                    this.finalScore = res.data.remark;
-                    this.centerDialogVisible = true;
-                    if (this.time != null) {
-                        window.clearInterval(this.time);
-                    }
-
+                    this.answerIdlist=res;
 
                 })
             },
@@ -338,7 +343,7 @@
                     });*/
                     this.packrubricList = res.data.packrubricList;
                     this.judgerubricList = res.data.judgerubricList;
-                    //this.tableData = res.data.parpercontent;
+                    this.tableData = res.data.parpercontent;
                    /* this.radionum = res.data.parpercontent.radionum;
                     this.duorubricnum = res.data.parpercontent.multiplenum;
                     this.panduantinum = res.data.parpercontent.judgenum;
@@ -361,7 +366,7 @@
             radioTest(site) {
                 let params = new URLSearchParams();
                 params.append("studentId", userid);
-                params.append("examparperId", "3c894727d97b4dba9cb8644514538795");
+                params.append("examparperId", this.tableData.id);
                 params.append("examrubricId", site.id);
                 params.append("score", site.score);
                 params.append("selectanswerId",site.answerId);
@@ -382,7 +387,7 @@
             panduanTestdui(site) {
                 let params = new URLSearchParams();
                 params.append("studentId", userid);
-                params.append("examparperId", "3c894727d97b4dba9cb8644514538795");
+                params.append("examparperId", this.tableData.id);
                 params.append("score", site.score);
                 params.append("examrubricId", site.id);
                 params.append("selectanswerId", site.answerId);
@@ -421,7 +426,7 @@
             tiankongtest(site) {
                 let params = new URLSearchParams();
                 params.append("studentId", userid);
-                params.append("examparperId", "3c894727d97b4dba9cb8644514538795");
+                params.append("examparperId", this.tableData.id);
                 params.append("score", site.score);
                 params.append("examrubricId", site.id);
                 params.append("selectanswerId", site.answerId);
@@ -441,7 +446,7 @@
             duoxuanTest(site) {
                 let params = new URLSearchParams();
                 params.append("studentId", userid);
-                params.append("examparperId", "3c894727d97b4dba9cb8644514538795");
+                params.append("examparperId", this.tableData.id);
                 params.append("examrubricId", site.id);
                 params.append("score", site.score);
                 params.append("selectanswerId", site.answerId);
