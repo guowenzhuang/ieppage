@@ -52,10 +52,10 @@
 					<div class="float_l margin_l30 margin_r40">
 						<a class="color_black" href="curricular/user/13/course.html" v-show="isCenter">个人中心</a>
 						<a class="btn btn-default navbar-btn sign-in" href="javascript:void(0)" @click="login()" v-show="isShow">登录</a>
-						
-						<img :src="userPhoto" width="45px"/>			
+
+						<img :src="userPhoto" width="45px" />
 					</div>
-						
+
 				</div>
 
 			</div>
@@ -101,7 +101,7 @@
 				el: "#bt",
 				mounted: function() {
 					var roleNames = sessionStorage.getItem("roleNames");
-					if (roleNames != null && roleNames==("学生")) {
+					if (roleNames != null && roleNames == ("学生")) {
 						this.isShow = false;
 						this.isCenter = true;
 						this.userPhoto = sessionStorage.getItem("userPhoto");
@@ -116,13 +116,13 @@
 					login: function() {
 						window.location.href = "http://127.0.0.1/login.html";
 					},
-					tuichu:function(){
+					tuichu: function() {
 						sessionStorage.clear();
 						localStorage.clear();
 					}
 				}
-				
-				
+
+
 			});
 
 
@@ -233,16 +233,16 @@
 				<span>讨论区<span class="margin_l5 wobianhua">></span></span>
 			</div>
 		</div>
-		
-		<div class="width_468 float_l margin_r20 " >
-			
+
+		<div class="width_468 float_l margin_r20 ">
+
 			<div class=" width100 float_l height172 kaishimeiyou img_backg9 text-center line_hei172 ">
 				<span class="fon_siz20 color_white b_weight700"></span>
-			</div>		
-			
+			</div>
+
 		</div>
-		 
-		<div class="width_468 float_l ">	
+
+		<div class="width_468 float_l ">
 			<div class=" width100 float_l height172 kaishimeiyou img_backg9 text-center line_hei172  ">
 				<span class="fon_siz20 color_white b_weight700"></span>
 			</div>
@@ -295,14 +295,14 @@
 							<span class="float_l fon_siz12 line_hei16 color_gray margin_t5 posi_relative ">一起学习一起成长共同进步</span>
 						</div>
 						<div class="width100 float_l padding_lr20 height48 fon_siz12 line_hei48 z_inx_3 posi_relative backg_white">
-					
+
 						</div>
-					</div> 
+					</div>
 					<div class="width100 float_l padding_lr20 dadiv">
 						<div class="width100 float_l border_t padding_t10">
 							<ul class="tongli_ys chaochuyincang">
 								<li v-for="cd in computerDiscuss">
-									<a @click="intoDiscuss(cd.courseId)"><span class="diandian">.</span>{{cd.postTitle}}</a>
+									<a @click="intoDiscuss(cd.courseId,cd.postId)"><span class="diandian">.</span>{{cd.postTitle}}</a>
 								</li>
 							</ul>
 						</div>
@@ -361,21 +361,21 @@
 							<span class="float_l fon_siz12 line_hei16 color_gray margin_t5 posi_relative ">一起学习一起成长共同进步</span>
 						</div>
 						<div class="width100 float_l padding_lr20 height48 fon_siz12 line_hei48 z_inx_3 posi_relative backg_white">
-					
+
 						</div>
-					</div> 
+					</div>
 					<div class="width100 float_l padding_lr20 dadiv">
 						<div class="width100 float_l border_t padding_t10">
 							<ul class="tongli_ys chaochuyincang">
 								<li v-for="lg in languageDiscuss">
-									<a><span class="diandian">.</span>{{lg.postTitle}}</a>
+									<a @click="intoDiscuss(lg.courseId,lg.postId)"><span class="diandian">.</span>{{lg.postTitle}}</a>
 								</li>
 							</ul>
 						</div>
 					</div>
 				</div>
-				
-				
+
+
 			</div>
 		</div>
 
@@ -426,21 +426,19 @@
 							<span class="margin_t15 float_l fon_siz16">课程精彩讨论</span>
 							<span class="float_l fon_siz12 line_hei16 color_gray margin_t5 posi_relative ">一起学习一起成长共同进步</span>
 						</div>
-						<div class="width100 float_l padding_lr20 height48 fon_siz12 line_hei48 z_inx_3 posi_relative backg_white">
-					
-						</div>
-					</div> 
+
+					</div>
 					<div class="width100 float_l padding_lr20 dadiv">
 						<div class="width100 float_l border_t padding_t10">
 							<ul class="tongli_ys chaochuyincang">
 								<li v-for="nd in neoDiscuss">
-									<a><span class="diandian">.</span>{{nd.postTitle}}</a>
+									<a @click="intoDiscuss(nd.courseId,nd.postId)"><span class="diandian">.</span>{{nd.postTitle}}</a>
 								</li>
 							</ul>
 						</div>
 					</div>
-				</div>	
-				
+				</div>
+
 			</div>
 		</div>
 
@@ -454,7 +452,7 @@
 				},
 				data: {
 					computers: [],
-					computerDiscuss:[]
+					computerDiscuss: []
 				},
 				methods: {
 					queryCourseTop6: function() {
@@ -469,7 +467,7 @@
 							this.computers = res.data.message;
 						})
 					},
-					getComputerDiscuss:function(){
+					getComputerDiscuss: function() {
 						axios({
 							method: 'get',
 							url: '/api/student/home/getDiscuss',
@@ -477,34 +475,49 @@
 								names: '计算机'
 							}
 						}).then(res => {
-							console.log("计算机下的讨论："+res.data.message);
+							console.log("计算机下的讨论：" + res.data.message);
 							this.computerDiscuss = res.data.message;
 						})
 					},
-					intoDiscuss:function(id){
+					intoDiscuss: function(cid, postId) {
+						console.log("帖子id：" + postId);
+						console.log("课程id:" + cid);
+						sessionStorage.setItem("courId", cid);
+						sessionStorage.setItem("courPostId", postId);
 						var roleNames = sessionStorage.getItem("roleNames");
-						var userid=sessionStorage.getItem("userid");
-						if (roleNames != null && roleNames==("学生")) {
+						var userid = sessionStorage.getItem("userid");
+						//判断是否登录
+						if (roleNames != null && roleNames == ("学生")) {
 							axios({
 								method: 'get',
-								url: '/api/student/home/getDiscuss',
+								url: '/api/student/studentPart/query',
 								params: {
-									sid: userid,//学生id
-									cid:id   //课程id
+									sid: userid, //学生id
 								}
 							}).then(res => {
-								console.log("计算机下的讨论："+res.data.message);
+								var cidlist = res.data;
+								for (var i = 0; i < cidlist.length; i++) {
+									if (cidlist[i].cid == cid) {
+										//当前登录学生已经报名 点击的讨论的课程   进入学习页
+										console.log("课程id" + cidlist[i].cid);
+										window.location.href = "http://127.0.0.1/student/curricular/courses/study.html?courId=" + cid +
+											"&value=discussion";
+									} else {
+
+									}
+
+								}
 								this.computerDiscuss = res.data.message;
 							})
-							window.location.href="http://127.0.0.1/student/curricular/courses/study.html?courId="+id;
-						}else{
-							if(confirm("请先登录")==true){
-								window.location.href="http://127.0.0.1/login.html";
-							}						
+
+						} else {
+							if (confirm("请先登录") == true) {
+								window.location.href = "http://127.0.0.1/login.html";
+							}
 						}
-						
+
 					}
-					
+
 				}
 			});
 
@@ -515,9 +528,9 @@
 					this.getLanguageDiscuss();
 				},
 				data: {
-					languages: [],//外语课程集合
-					languageDiscuss:[]//外语课程讨论集合
-					
+					languages: [], //外语课程集合
+					languageDiscuss: [] //外语课程讨论集合
+
 				},
 				methods: {
 					queryLanguageCourse: function() {
@@ -537,7 +550,7 @@
 							});
 						})
 					},
-					getLanguageDiscuss:function(){
+					getLanguageDiscuss: function() {
 						axios({
 							method: 'get',
 							url: '/api/student/home/getDiscuss',
@@ -548,6 +561,44 @@
 							console.log(res.data.message);
 							this.languageDiscuss = res.data.message;
 						})
+					},
+					intoDiscuss: function(cid, postId) {
+						console.log("帖子id：" + postId);
+						console.log("课程id:" + cid);
+						sessionStorage.setItem("courId", cid);
+						sessionStorage.setItem("courPostId", postId);
+						var roleNames = sessionStorage.getItem("roleNames");
+						var userid = sessionStorage.getItem("userid");
+						//判断是否登录
+						if (roleNames != null && roleNames == ("学生")) {
+							axios({
+								method: 'get',
+								url: '/api/student/studentPart/query',
+								params: {
+									sid: userid, //学生id
+								}
+							}).then(res => {
+								var cidlist = res.data;
+								for (var i = 0; i < cidlist.length; i++) {
+									if (cidlist[i].cid == cid) {
+										//当前登录学生已经报名 点击的讨论的课程   进入学习页
+										console.log("课程id" + cidlist[i].cid);
+										window.location.href = "http://127.0.0.1/student/curricular/courses/study.html?courId=" + cid +
+											"&value=discussion";
+									} else {
+
+									}
+
+								}
+								this.computerDiscuss = res.data.message;
+							})
+
+						} else {
+							if (confirm("请先登录") == true) {
+								window.location.href = "http://127.0.0.1/login.html";
+							}
+						}
+
 					}
 				}
 
@@ -561,7 +612,7 @@
 				},
 				data: {
 					neos: [],
-					neoDiscuss:[]
+					neoDiscuss: []
 				},
 				methods: {
 					queryNeoCourse: function() {
@@ -577,7 +628,7 @@
 
 						})
 					},
-					getNeoDiscuss:function(){
+					getNeoDiscuss: function() {
 						axios({
 							method: 'get',
 							url: '/api/student/home/getDiscuss',
@@ -588,6 +639,44 @@
 							console.log(res.data.message);
 							this.neoDiscuss = res.data.message;
 						})
+					},
+					intoDiscuss: function(cid, postId) {
+						console.log("帖子id：" + postId);
+						console.log("课程id:" + cid);
+						sessionStorage.setItem("courId", cid);
+						sessionStorage.setItem("courPostId", postId);
+						var roleNames = sessionStorage.getItem("roleNames");
+						var userid = sessionStorage.getItem("userid");
+						//判断是否登录
+						if (roleNames != null && roleNames == ("学生")) {
+							axios({
+								method: 'get',
+								url: '/api/student/studentPart/query',
+								params: {
+									sid: userid, //学生id
+								}
+							}).then(res => {
+								var cidlist = res.data;
+								for (var i = 0; i < cidlist.length; i++) {
+									if (cidlist[i].cid == cid) {
+										//当前登录学生已经报名 点击的讨论的课程   进入学习页
+										console.log("课程id" + cidlist[i].cid);
+										window.location.href = "http://127.0.0.1/student/curricular/courses/study.html?courId=" + cid +
+											"&value=discussion";
+									} else {
+
+									}
+
+								}
+								this.computerDiscuss = res.data.message;
+							})
+
+						} else {
+							if (confirm("请先登录") == true) {
+								window.location.href = "http://127.0.0.1/login.html";
+							}
+						}
+
 					}
 				}
 			});
