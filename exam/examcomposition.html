@@ -433,13 +433,13 @@
                             <el-input v-model="score2" style="width:80%"></el-input>
                         </el-form-item>
 
-                        <font size="4">课程:</font>
-                        <el-select v-model="typedan" placeholder="请选择" @change="querycourse" size="small">
-                            <el-option v-for="item in options3" :key="item.courId" :label="item.courName"
-                                       :value="item.courId"
-                                       :disabled="item.disabled">
-                            </el-option>
-                        </el-select>
+                        <!-- <font size="4">课程:</font>
+                         <el-select v-model="typedan" placeholder="请选择" @change="querycourse" size="small">
+                             <el-option v-for="item in options3" :key="item.courId" :label="item.courName"
+                                        :value="item.courId"
+                                        :disabled="item.disabled">
+                             </el-option>
+                         </el-select>-->
 
 
                         <el-form-item>
@@ -483,13 +483,13 @@
                             <el-input v-model="score2" style="width:80%"></el-input>
                         </el-form-item>
 
-                        <font size="4">课程:</font>
+                        <!--<font size="4">课程:</font>
                         <el-select v-model="typeduo" placeholder="请选择" @change="querycourse" size="small">
                             <el-option v-for="item in options3" :key="item.courId" :label="item.courName"
                                        :value="item.courId"
                                        :disabled="item.disabled">
                             </el-option>
-                        </el-select>
+                        </el-select>-->
 
 
                         <el-form-item>
@@ -518,13 +518,13 @@
                             <el-input v-model="score2" style="width:80%"></el-input>
                         </el-form-item>
 
-                        <font size="4">课程:</font>
-                        <el-select v-model="typebletk" placeholder="请选择" @change="querycourse" size="small">
-                            <el-option v-for="item in options3" :key="item.courId" :label="item.courName"
-                                       :value="item.courId"
-                                       :disabled="item.disabled">
-                            </el-option>
-                        </el-select>
+                        <!-- <font size="4">课程:</font>
+                         <el-select v-model="typebletk" placeholder="请选择" @change="querycourse" size="small">
+                             <el-option v-for="item in options3" :key="item.courId" :label="item.courName"
+                                        :value="item.courId"
+                                        :disabled="item.disabled">
+                             </el-option>
+                         </el-select>-->
 
                         <el-form-item>
                             <el-button type="primary" @click="tkaddrudic()">立即创建</el-button>
@@ -550,13 +550,14 @@
                             <el-input v-model="score2" style="width:80%"></el-input>
                         </el-form-item>
 
-                        <font size="4">课程:</font>
+                        <!--<font size="4">课程:</font>
                         <el-select v-model="typejudge" placeholder="请选择" @change="querycourse" size="small">
                             <el-option v-for="item in options3" :key="item.courId" :label="item.courName"
                                        :value="item.courId"
                                        :disabled="item.disabled">
                             </el-option>
-                        </el-select>
+                        </el-select>-->
+
 
                         <el-form-item>
                             <el-button type="primary" @click="pdaddrudic()">立即创建</el-button>
@@ -597,6 +598,8 @@
     var userid = sessionStorage.getItem("userid");
 
     var sessionid = localStorage.getItem("chaId");
+
+    var courid = localStorage.getItem("courId");
 
 
     var main = new Vue({
@@ -854,8 +857,9 @@
 
                 let params = new URLSearchParams();
                 params.append("title", this.ruleForm.formtitle);//考试标题
-                params.append("subject", this.ruleForm.coursetype)//考试课程id
+                params.append("subject", courid)//考试课程id
                 params.append("sectionId", sessionid);//章节测试id
+
                 //params.append("examshortesttime", this.ruleForm.formexamshortesttime);//考试最短交卷时间
                 //params.append("total", this.ruleForm.formtotal);//考试总分
                 //params.append("duration", this.ruleForm.formduration);//考试时长
@@ -982,30 +986,10 @@
 
             /*点击创建试卷()最后的创建试卷*/
             addparperanniu() {
-
-                let params = new URLSearchParams();
-                params.append("parperid", this.parperid);
-                axios({
-                    method: 'post',
-                    url: '/api/exam/examrubric/createparper',
-                    data: params,
-
-                }).then(res => {
-                    /**
-                     *虽然不知道为什么但是这一句话不加的话
-                     * 下面获取到的success以及其他的属性不是想要的样子
-                     */
-                    res = res.data;
-                    if (res.success) {
-                        this.$notify({title: "成功", message: res.message, type: 'success'});
-                    } else {
-                        this.$notify.error({title: "失败", message: res.message})
-                    }
-
-
-                })
-
-
+                /**
+                 * 刷新页面
+                 * @type {boolean}
+                 */
                 this.bigdialog = false;
                 this.addparper = false;
             },
@@ -1047,26 +1031,28 @@
                 params.append("userid", userid);//用户id
                 params.append("rubrictype", this.list.rubricttype);//题干类型
                 params.append("score", this.score1);//分数
+
                 params.append("answerA", this.list.A);//答案
                 params.append("answerB", this.list.B);
                 params.append("answerC", this.list.C);
+
                 params.append("answerD", this.list.D);
-
-
                 params.append("Aid", this.list.Aid);//答案的id
                 params.append("Bid", this.list.Bid);
+
                 params.append("Cid", this.list.Cid);
                 params.append("Did", this.list.Did);
-
-
                 params.append("addrubric", this.list.content);//题干
+
                 params.append("answerid", this.list.answerId);//答案id
                 params.append("parperid", this.parperid);
+                params.append("course", courid);
+                params.append("sectionid", sessionid);
 
 
                 axios({
                     method: 'post',
-                    url: '/api/exam/examrubric/addexamrubric',
+                    url: '/api/exam/Sectionrubric/addexamrubric',
                     data: params,
 
                 }).then(res => {
@@ -1102,7 +1088,7 @@
                 params.append("answerB", this.answerB);
                 params.append("answerC", this.answerC);
                 params.append("answerD", this.answerD);
-                params.append("course", this.typedan);
+                params.append("course", courid);
                 params.append("parperid", this.parperid);
                 params.append("score", this.score2);//分数
                 params.append("sectionid", sessionid)
@@ -1168,7 +1154,7 @@
                 params.append("answerB", this.duoanswerB);
                 params.append("answerC", this.duoanswerC);
                 params.append("answerD", this.duoanswerD);
-                params.append("course", this.typeduo);
+                params.append("course", courid);
                 params.append("parperid", this.parperid);
                 params.append("score", this.score2);//分数
                 params.append("sectionid", sessionid)
@@ -1226,7 +1212,7 @@
                 params.append("userid", userid);
                 params.append("answerid", this.tkaddanswer);
                 params.append("addrubric", this.tkaddrubric);
-                params.append("course", this.typebletk);
+                params.append("course", courid);
                 params.append("parperid", this.parperid);
                 params.append("score", this.score2);//分数
                 params.append("sectionid", sessionid)
@@ -1262,7 +1248,7 @@
                 params.append("userid", userid);
                 params.append("addrubric", this.pdaddrubric);
                 params.append("answerid", this.pdvalue3);
-                params.append("course", this.typejudge);
+                params.append("course", courid);
                 params.append("parperid", this.parperid);
                 params.append("score", this.score2);//分数
                 params.append("sectionid", sessionid)
