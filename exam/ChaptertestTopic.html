@@ -39,7 +39,7 @@
                     </div>
                     <div class="test_content">
                         <div class="test_content_title">
-                            <h2>最终得分为:<span style="margin-left:20px;color: red">分</span></h2>
+                            <h2>最终得分为:<span style="margin-left:20px;color: red">{{finalScore}}分</span></h2>
                             <el-button style="float: right" @click="rollbacktest">返回</el-button>
                         </div>
                     </div>
@@ -77,15 +77,10 @@
 
                                         </ul>
 
-                                        <el-input
-                                                type="textarea"
-                                                v-if="centerDialogVisibledanxaun"
-                                                :readonly="true"
-                                                autosize
-                                                v-model="ceshi"
-                                        >
-                                        </el-input>
                                     </el-radio-group>
+                                    <span v-for="iteam in answerIdlist" v-if="iteam.id==site.id"><h2 style="color: red">正确答案为: {{iteam.answerId}}</h2>
+
+                                    </span>
                                 </div>
                             </li>
                         </ul>
@@ -130,7 +125,9 @@
 
                                         </ul>
                                     </el-checkbox-group>
+                                    <span v-for="iteam in answerIdlist" v-if="iteam.id==site.id"><h2 style="color: red">正确答案为: {{iteam.answerId}}</h2>
 
+                                    </span>
                                 </div>
                             </li>
 
@@ -157,6 +154,9 @@
                                         <el-radio label="正确" border>正确</el-radio>
                                         <el-radio label="错误" border>错误</el-radio>
                                     </el-radio-group>
+                                    <span v-for="iteam in answerIdlist" v-if="iteam.id==site.id"><h2 style="color: red">正确答案为: {{iteam.answerId}}</h2>
+
+                                    </span>
                                     <!-- <input type="radio" class="radioOrCheckpanduan" :name="forIdpanduan(index)"
                                             @click="panduanTestdui(site)"
                                      />
@@ -172,6 +172,7 @@
                                      <label>
                                          <p class="ue" style="display: inline;">错误</p>
                                      </label>-->
+
 
                                 </div>
                             </li>
@@ -203,6 +204,9 @@
                                     >
                                     </el-input>
                                     每个空的答案用逗号隔开,比如:Javaweb,Javaoop,Mybatis
+                                    <span v-for="iteam in answerIdlist" v-if="iteam.id==site.id"><h2 style="color: red">正确答案为: {{iteam.answerId}}</h2>
+
+                                    </span>
                                 </div>
                             </li>
 
@@ -275,7 +279,7 @@
             //最终得分
             finalScore: "",
             centerDialogVisible: false,
-            centerDialogVisibledanxaun: false,
+            iszouti:true,
             answerIdlist: [],
             /* /!*倒计时*!/
              keepTime: '倒计时',
@@ -323,8 +327,10 @@
                     url: '/api/exam/Sectionrubric/examination',
                     data: params,
                 }).then(res => {
-                    this.answerIdlist = res;
-
+                    this.finalScore = res.data.remark;
+                     this.answerIdlist=res.data.remark2;
+                    // this.centerDialogVisibledanxaun=true;
+                    this.iszouti=false;
                 })
             },
             query() {
@@ -370,27 +376,38 @@
             },
             /*点击单选按钮*/
             radioTest(site) {
-                let params = new URLSearchParams();
-                params.append("studentId", userid);
-                params.append("examparperId", this.tableData.id);
-                params.append("examrubricId", site.id);
-                params.append("score", site.score);
-                params.append("selectanswerId", site.answerId);
-                params.append("courseid", "16");//课程id
-                params.append("sectionid", 42);//章节id
+                if (this.iszouti==true){
+                    let params = new URLSearchParams();
+                    params.append("studentId", userid);
+                    params.append("examparperId", this.tableData.id);
+                    params.append("examrubricId", site.id);
+                    params.append("score", site.score);
+                    params.append("selectanswerId", site.answerId);
+                    params.append("courseid", "16");//课程id
+                    params.append("sectionid", 42);//章节id
 
-                axios({
-                    method: 'post',
-                    url: '/api/exam/Sectionrubric/examend',
-                    data: params,
+                    axios({
+                        method: 'post',
+                        url: '/api/exam/Sectionrubric/examend',
+                        data: params,
 
-                }).then(res => {
-                    console.log(res);
+                    }).then(res => {
+                        console.log(res);
 
-                })
+                    })
+                } else{
+
+                    this.$notify({
+                        title: '失败',
+                        message:"已经提交测试不能做题,请刷新试卷",
+                        type: 'warning'
+                    });
+                }
+
             },
             /*点正确按钮*/
             panduanTestdui(site) {
+                if (this.iszouti==true){
                 let params = new URLSearchParams();
                 params.append("studentId", userid);
                 params.append("examparperId", this.tableData.id);
@@ -408,6 +425,14 @@
                     console.log(res);
 
                 })
+                } else{
+
+                    this.$notify({
+                        title: '失败',
+                        message:"已经提交测试不能做题,请刷新试卷",
+                        type: 'warning'
+                    });
+                }
             },
             /*点错误按钮*/
             panduanTestcuo(site) {
@@ -430,6 +455,7 @@
             },
             /*填空更改之后触发*/
             tiankongtest(site) {
+                if (this.iszouti==true){
                 let params = new URLSearchParams();
                 params.append("studentId", userid);
                 params.append("examparperId", this.tableData.id);
@@ -447,9 +473,18 @@
 
                     console.log(res);
                 })
+            } else{
+
+                this.$notify({
+                title: '失败',
+                message:"已经提交测试不能做题,请刷新试卷",
+                type: 'warning'
+            });
+    }
             },
             /*多选题*/
             duoxuanTest(site) {
+                if (this.iszouti==true){
                 let params = new URLSearchParams();
                 params.append("studentId", userid);
                 params.append("examparperId", this.tableData.id);
@@ -467,7 +502,16 @@
 
                     console.log(res);
                 })
+                } else{
+
+                    this.$notify({
+                        title: '失败',
+                        message:"已经提交测试不能做题,请刷新试卷",
+                        type: 'warning'
+                    });
+                }
             },
+
             /* /!*倒计时*!/
              StartCountDown() {
                  /!*  var mydate = new Date();
