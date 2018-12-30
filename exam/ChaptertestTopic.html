@@ -63,7 +63,7 @@
                                             <li class="option" v-for="siteexamanswers in site.examanswers"
                                                 @change="radioTest(site)">
 
-                                                <el-radio :label="siteexamanswers.id" border :disabled="disabled">
+                                                <el-radio :label="siteexamanswers.id" border >
                                                     {{siteexamanswers.optiones}}.{{siteexamanswers.content}}
                                                 </el-radio>
                                                 <!--<input type="radio" class="radioOrCheck" :name="forId(index)"
@@ -115,7 +115,7 @@
                                                           :value="siteexamanswers.id" v-model="net_car"
                                                    />-->
 
-                                                <el-checkbox :label="siteexamanswers.id" border :disabled="disabled"
+                                                <el-checkbox :label="siteexamanswers.id" border
                                                              @change="duoxuanTest(site)">
                                                     {{siteexamanswers.optiones}}.{{siteexamanswers.content}}
                                                 </el-checkbox>
@@ -149,7 +149,7 @@
                                     <font>{{site.content}}</font>
                                 </div>
                                 <div class="test_content_nr_main">
-                                    <el-radio-group v-model="site.answerId" @change="panduanTestdui(site)" :disabled="disabled">
+                                    <el-radio-group v-model="site.answerId" @change="panduanTestdui(site)" >
 
                                         <el-radio label="正确" border >正确</el-radio>
                                         <el-radio label="错误" border>错误</el-radio>
@@ -282,7 +282,6 @@
             centerDialogVisible: false,
             iszouti:true,
             answerIdlist: [],
-            disabled:true,
             /* /!*倒计时*!/
              keepTime: '倒计时',
              limittime: '',
@@ -333,7 +332,6 @@
                      this.answerIdlist=res.data.remark2;
                     // this.centerDialogVisibledanxaun=true;
                     this.iszouti=false;
-                    this.disabled=false;
                 })
             },
             query() {
