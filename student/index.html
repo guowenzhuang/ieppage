@@ -52,8 +52,10 @@
 					<div class="float_l margin_l30 margin_r40">
 						<a class="color_black" href="curricular/user/13/course.html" v-show="isCenter">个人中心</a>
 						<a class="btn btn-default navbar-btn sign-in" href="javascript:void(0)" @click="login()" v-show="isShow">登录</a>
-						<img :src="userPhoto" width="45px"/>
+						
+						<img :src="userPhoto" width="45px"/>			
 					</div>
+						
 				</div>
 
 			</div>
@@ -247,8 +249,6 @@
 		</div>
 
 
-
-
 		<!-- 计算机java 工程师 -->
 		<div class="width100 float_l backg_qiangray padding_b45 margin_t20" id="computer">
 			<div class="width_1200 margin_auto">
@@ -291,7 +291,7 @@
 							<img src="img/uiz7.jpg">
 						</div>
 						<div class="img_backg2 donghua">
-							<span class="margin_t15 float_l ">课程精彩讨论</span>
+							<span class="margin_t15 float_l fon_siz16">课程精彩讨论</span>
 							<span class="float_l fon_siz12 line_hei16 color_gray margin_t5 posi_relative ">一起学习一起成长共同进步</span>
 						</div>
 						<div class="width100 float_l padding_lr20 height48 fon_siz12 line_hei48 z_inx_3 posi_relative backg_white">
@@ -301,10 +301,9 @@
 					<div class="width100 float_l padding_lr20 dadiv">
 						<div class="width100 float_l border_t padding_t10">
 							<ul class="tongli_ys chaochuyincang">
-								<li><a><span class="diandian">.</span>带你学习Ja学习Jadede模板引擎</a></li>
-								<li><a><span class="diandian">.</span>带你学习Ja学习Jadede模板引擎</a></li>
-								<li><a><span class="diandian">.</span>带你学习Ja学习Jadede模板引擎</a></li>
-								<li><a><span class="diandian">.</span>带你学习Ja学习Jadede模板引擎</a></li>
+								<li v-for="cd in computerDiscuss">
+									<a @click="intoDiscuss(cd.courseId)"><span class="diandian">.</span>{{cd.postTitle}}</a>
+								</li>
 							</ul>
 						</div>
 					</div>
@@ -358,26 +357,25 @@
 							<img src="img/uiz7.jpg">
 						</div>
 						<div class="img_backg2 donghua">
-							<span class="margin_t15 float_l ">飞速上手的跨平台App开发</span>
-							<span class="float_l fon_siz12 line_hei16 color_gray margin_t5 posi_relative ">8小时带领大家步步深入学习标签的基础知识，掌握各种样式的基本用法。</span>
+							<span class="margin_t15 float_l fon_siz16">课程精彩讨论</span>
+							<span class="float_l fon_siz12 line_hei16 color_gray margin_t5 posi_relative ">一起学习一起成长共同进步</span>
 						</div>
 						<div class="width100 float_l padding_lr20 height48 fon_siz12 line_hei48 z_inx_3 posi_relative backg_white">
-							<span class="float_l color_red">￥88.00</span>
-							<span class="float_r color_gray"><span>499</span>人在学</span>
+					
 						</div>
-					</div>
-
+					</div> 
 					<div class="width100 float_l padding_lr20 dadiv">
 						<div class="width100 float_l border_t padding_t10">
 							<ul class="tongli_ys chaochuyincang">
-								<li><a><span class="diandian">.</span>带你学习Ja学习Jadede模板引擎</a></li>
-								<li><a><span class="diandian">.</span>带你学习Ja学习Jadede模板引擎</a></li>
-								<li><a><span class="diandian">.</span>带你学习Ja学习Jadede模板引擎</a></li>
-								<li><a><span class="diandian">.</span>带你学习Ja学习Jadede模板引擎</a></li>
+								<li v-for="lg in languageDiscuss">
+									<a><span class="diandian">.</span>{{lg.postTitle}}</a>
+								</li>
 							</ul>
 						</div>
 					</div>
 				</div>
+				
+				
 			</div>
 		</div>
 
@@ -418,33 +416,31 @@
 					</div>
 				</div>
 
-				<!-- 右侧广告 -->
+				<!-- 右侧广告位-->
 				<div class="width_224 height364 float_l backg_white border_shadow">
 					<div class="width_224 height172 float_l jingguoxianshi over_pos bianshou">
 						<div class="width100 float_l img_100 z_inx_1">
 							<img src="img/uiz7.jpg">
 						</div>
 						<div class="img_backg2 donghua">
-							<span class="margin_t15 float_l ">飞速上手的跨平台App开发</span>
-							<span class="float_l fon_siz12 line_hei16 color_gray margin_t5 posi_relative ">8小时带领大家步步深入学习标签的基础知识，掌握各种样式的基本用法。</span>
+							<span class="margin_t15 float_l fon_siz16">课程精彩讨论</span>
+							<span class="float_l fon_siz12 line_hei16 color_gray margin_t5 posi_relative ">一起学习一起成长共同进步</span>
 						</div>
 						<div class="width100 float_l padding_lr20 height48 fon_siz12 line_hei48 z_inx_3 posi_relative backg_white">
-							<span class="float_l color_red">￥88.00</span>
-							<span class="float_r color_gray"><span>499</span>人在学</span>
+					
 						</div>
-					</div>
-
+					</div> 
 					<div class="width100 float_l padding_lr20 dadiv">
 						<div class="width100 float_l border_t padding_t10">
 							<ul class="tongli_ys chaochuyincang">
-								<li><a><span class="diandian">.</span>带你学习Ja学习Jadede模板引擎</a></li>
-								<li><a><span class="diandian">.</span>带你学习Ja学习Jadede模板引擎</a></li>
-								<li><a><span class="diandian">.</span>带你学习Ja学习Jadede模板引擎</a></li>
-								<li><a><span class="diandian">.</span>带你学习Ja学习Jadede模板引擎</a></li>
+								<li v-for="nd in neoDiscuss">
+									<a><span class="diandian">.</span>{{nd.postTitle}}</a>
+								</li>
 							</ul>
 						</div>
 					</div>
-				</div>
+				</div>	
+				
 			</div>
 		</div>
 
@@ -454,9 +450,11 @@
 				el: "#computer",
 				mounted: function() {
 					this.queryCourseTop6();
+					this.getComputerDiscuss();
 				},
 				data: {
-					computers: []
+					computers: [],
+					computerDiscuss:[]
 				},
 				methods: {
 					queryCourseTop6: function() {
@@ -470,17 +468,56 @@
 							console.log(res.data.message);
 							this.computers = res.data.message;
 						})
+					},
+					getComputerDiscuss:function(){
+						axios({
+							method: 'get',
+							url: '/api/student/home/getDiscuss',
+							params: {
+								names: '计算机'
+							}
+						}).then(res => {
+							console.log("计算机下的讨论："+res.data.message);
+							this.computerDiscuss = res.data.message;
+						})
+					},
+					intoDiscuss:function(id){
+						var roleNames = sessionStorage.getItem("roleNames");
+						var userid=sessionStorage.getItem("userid");
+						if (roleNames != null && roleNames==("学生")) {
+							axios({
+								method: 'get',
+								url: '/api/student/home/getDiscuss',
+								params: {
+									sid: userid,//学生id
+									cid:id   //课程id
+								}
+							}).then(res => {
+								console.log("计算机下的讨论："+res.data.message);
+								this.computerDiscuss = res.data.message;
+							})
+							window.location.href="http://127.0.0.1/student/curricular/courses/study.html?courId="+id;
+						}else{
+							if(confirm("请先登录")==true){
+								window.location.href="http://127.0.0.1/login.html";
+							}						
+						}
+						
 					}
+					
 				}
 			});
 
 			var language = new Vue({
 				el: "#language",
 				mounted: function() {
-					this.queryLanguageCourse()
+					this.queryLanguageCourse();
+					this.getLanguageDiscuss();
 				},
 				data: {
-					languages: []
+					languages: [],//外语课程集合
+					languageDiscuss:[]//外语课程讨论集合
+					
 				},
 				methods: {
 					queryLanguageCourse: function() {
@@ -499,6 +536,18 @@
 								return item;
 							});
 						})
+					},
+					getLanguageDiscuss:function(){
+						axios({
+							method: 'get',
+							url: '/api/student/home/getDiscuss',
+							params: {
+								names: '外语'
+							}
+						}).then(res => {
+							console.log(res.data.message);
+							this.languageDiscuss = res.data.message;
+						})
 					}
 				}
 
@@ -507,10 +556,12 @@
 			var neo = new Vue({
 				el: "#neo",
 				mounted: function() {
-					this.queryNeoCourse()
+					this.queryNeoCourse();
+					this.getNeoDiscuss();
 				},
 				data: {
-					neos: []
+					neos: [],
+					neoDiscuss:[]
 				},
 				methods: {
 					queryNeoCourse: function() {
@@ -525,15 +576,22 @@
 							this.neos = res.data.message;
 
 						})
+					},
+					getNeoDiscuss:function(){
+						axios({
+							method: 'get',
+							url: '/api/student/home/getDiscuss',
+							params: {
+								names: '理学'
+							}
+						}).then(res => {
+							console.log(res.data.message);
+							this.neoDiscuss = res.data.message;
+						})
 					}
 				}
 			});
 		</script>
-
-
-
-
-
 
 
 		<!-- 页脚 -->
