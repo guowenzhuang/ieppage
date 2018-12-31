@@ -9,585 +9,430 @@
 		<link rel="stylesheet" type="text/css" href="../css/index.css" />
 		<script src="../js/index.js"></script>
 		<script src="../js/axios.js"></script>
-
 	</head>
 	<body>
-
-
 		<div id="app" align="center">
-			<el-container>
-				<el-aside width="200px">
-					<el-col>
-						<el-menu default-active="2" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"
-						 background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
-							<el-submenu index="1">
-								<template slot="title">
-									<i class="el-icon-location"></i>
-									<span>贴吧管理</span>
-								</template>
-								<el-menu-item-group>
-									<el-menu-item index="1-1">帖子管理</el-menu-item>
-									<el-menu-item index="1-1"><a href="postH.html">帖子回收站</a></el-menu-item>
-									<el-menu-item index="1-2"><a href="types.html">回复管理</a></el-menu-item>
-									<el-menu-item index="1-3"><a href="Hreply.html">分类管理</a></el-menu-item>
-								</el-menu-item-group>
-							</el-submenu>
-						</el-menu>
-					</el-col>
-				</el-aside>
-				<el-main>
+			<el-row>
+				<el-col :span="24">
 					<div>
 						<!--条件查询的条件输入框-->
-						<font size="4">贴子标题:</font>
+						<font size="4">关键字搜索:</font>
 						<el-input v-model="postTitle" placeholder="请输入内容" style="width: 150px; line-height: 50px;"></el-input>
-						<font size="4">发帖人:</font>
-						<el-input v-model="userName" placeholder="请输入内容" style="width: 150px;line-height: 50px;"></el-input>
 						<font size="4">贴子类型:</font>
 						<el-select v-model="typeName" style="width: 150px;line-height: 50px;" placeholder="请选择">
-							<el-option v-for="item in options2" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled">
-							</el-option>
+							<el-option v-for="type in typeList" :key="type.typeId" :label="type.typeName" :value="type.typeId"></el-option>
 						</el-select>
 						<font size="4">排序:</font>
 						<el-select v-model="orderBy" style="width: 150px;line-height: 50px;" placeholder="请选择">
-							<el-option v-for="s in options3" :key="s.value" :label="s.label" :value="s.value" :disabled="s.disabled">
-							</el-option>
+							<el-option v-for="s in options3" :key="s.value" :label="s.label" :value="s.value" :disabled="s.disabled"></el-option>
 						</el-select>
 						<el-button type="primary" icon="el-icon-search" @click="query()" round>搜索</el-button>
-
 					</div>
-
-					<div style="width: 100%;">
-						<template>
+				</el-col>
+			</el-row>
+			<el-row>
+				<el-col :span="24">
+					<div style="width: 100%;"><template>
 							<!--element表格-->
 							<el-table :data="postList.slice((currentPage-1)*pagesize,currentPage*pagesize)" style=" width: auto">
-								<el-table-column type="index" label="序号" :show-overflow-tooltip="true">
-								</el-table-column>
-								<el-table-column prop="postTitle" label="帖子标题" :show-overflow-tooltip="true">
-								</el-table-column>
-								<el-table-column prop="userName" label="发帖人" :show-overflow-tooltip="true">
-								</el-table-column>
-								<el-table-column prop="replyTime" label="发帖时间" :show-overflow-tooltip="true">
-								</el-table-column>
-								<el-table-column prop="replyLikenum" label="点赞数" :show-overflow-tooltip="true">
-								</el-table-column>
-								<el-table-column prop="replyReportnum" label="举报数" :show-overflow-tooltip="true">
-								</el-table-column>
-
-								<el-table-column prop="operation" label="帖子操作" align="center" min-width="80">
-									<template slot-scope="scope">
+								<el-table-column type="index" label="序号" :show-overflow-tooltip="true"></el-table-column>
+								<el-table-column prop="postTitle" label="帖子标题" :show-overflow-tooltip="true"></el-table-column>
+								<el-table-column prop="userName" label="发帖人" :show-overflow-tooltip="true"></el-table-column>
+								<el-table-column prop="replyTime" label="发帖时间" :show-overflow-tooltip="true"></el-table-column>
+								<el-table-column prop="replyLikenum" label="点赞数" :show-overflow-tooltip="true"></el-table-column>
+								<el-table-column prop="replyReportnum" label="举报数" :show-overflow-tooltip="true"></el-table-column>
+								<el-table-column prop="operation" label="帖子操作" align="center" min-width="80"><template slot-scope="scope">
 										<el-button type="danger" icon="el-icon-delete" circle @click="delete(scope.row)" size="mini"></el-button>
 										<el-button type="danger" icon="el-icon-tickets" circle @click="dialog(scope.row)" size="mini"></el-button>
 										<el-button type="danger" icon="el-icon-setting" circle @click="setTYPE(scope.row)" size="mini"></el-button>
-									</template>
-								</el-table-column>
-								<el-table-column prop="operation" label="操作" align="center" min-width="80">
-									<template slot-scope="scope">
-										<el-button type="primary" round @click="replys(scope.row)" size="mini">回复
-										</el-button>
-										<el-button type="primary" round @click="" size="mini">置顶
-										</el-button>
-									</template>
-								</el-table-column>
-								<el-table-column prop="operation" label="操作" align="center" min-width="80">
-									<template slot-scope="scope">
-										<el-button type="primary" round @click="hahah(scope.row)" size="mini">举报详情
-										</el-button>
-
-									</template>
-								</el-table-column>
+									</template></el-table-column>
+								<el-table-column prop="operation" label="操作" align="center" min-width="80"><template slot-scope="scope">
+										<el-button type="primary" round @click="replys(scope.row)" size="mini">回复</el-button>
+										<el-button type="primary" round @click="" size="mini">置顶</el-button>
+									</template></el-table-column>
+								<el-table-column prop="operation" label="操作" align="center" min-width="80"><template slot-scope="scope">
+										<el-button type="primary" round @click="hahah(scope.row)" size="mini">举报详情</el-button>
+									</template></el-table-column>
 							</el-table>
-						</template>
-					</div>
-
+						</template></div>
 					<el-dialog title="设置类型" :visible.sync="dialogVisible3">
 						<!-- <el-input v-model="postId" placeholder="Id" style="width: 50px; line-height: 10px;"></el-input> -->
 						<el-container>
-							<el-aside>
-								<span>YES贴子类型</span>
+							<el-aside><span>YES贴子类型</span>
 								<el-table :data="typelistyes">
 									<el-table-column property="typeId" label="编号" width="80"></el-table-column>
 									<el-table-column property="typeName" label="类型名称" width="150"></el-table-column>
-									<el-table-column prop="operation" label="操作" align="center" min-width="50">
-										<template slot-scope="scope">
+									<el-table-column prop="operation" label="操作" align="center" min-width="50"><template slot-scope="scope">
 											<el-button type="info" icon="el-icon-d-arrow-right" circle @click="deleteTYPE(scope.row)" size="mini"></el-button>
 											</el-button>
-										</template>
-									</el-table-column>
+										</template></el-table-column>
 								</el-table>
 							</el-aside>
-
-
-							<el-main>
-								<span>NO贴子类型</span>
+							<el-main><span>NO贴子类型</span>
 								<el-table :data="typelistno">
 									<el-table-column property="typeId" label="编号" width="80"></el-table-column>
 									<el-table-column property="typeName" label="类型名称" width="150"></el-table-column>
-									<el-table-column prop="operation" label="操作" align="center" min-width="50">
-										<template slot-scope="scope">
+									<el-table-column prop="operation" label="操作" align="center" min-width="50"><template slot-scope="scope">
 											<el-button type="info" icon="el-icon-d-arrow-left" circle @click="insertTYPE(scope.row)" size="mini"></el-button>
-
 											</el-button>
-										</template>
-									</el-table-column>
+										</template></el-table-column>
 								</el-table>
 							</el-main>
 						</el-container>
 					</el-dialog>
-
 					<el-dialog :visible.sync="dialogVisible2" width="30%" :before-close="handleClose">
-						<el-input v-model="reportId" placeholder="Id" style="width: 50px; line-height: 10px;"></el-input>
-						<span>确定删除吗？</span>
-						<span slot="footer" class="dialog-footer">
+						<el-input v-model="reportId" placeholder="Id" style="width: 50px; line-height: 10px;"></el-input><span>确定删除吗？</span><span
+						 slot="footer" class="dialog-footer">
 							<el-button @click="dialogVisible2 = false">取 消</el-button>
 							<el-button type="primary" @click="deleteport()">确 定</el-button>
 						</span>
 					</el-dialog>
 					<el-dialog title="帖子内容详情" :visible.sync="dialogVisible" width="60%" :before-close="handleClose">
-						<el-input type="textarea" :rows="10" placeholder="请输入内容" v-model="textarea"></el-input>
-						<span slot="footer" class="dialog-footer">
+						<el-input type="textarea" :rows="10" placeholder="请输入内容" v-model="textarea"></el-input><span slot="footer" class="dialog-footer">
 							<el-button @click="dialogVisible = false">取 消</el-button>
 						</span>
 					</el-dialog>
-
 					<el-dialog title="举报详情" :visible.sync="dialogTableVisible">
-						<!-- <el-input v-model="replyId" placeholder="Id" style="width: 50px; line-height: 10px;"></el-input>
- -->
+						<!-- <el-input v-model="replyId" placeholder="Id" style="width: 50px; line-height: 10px;"></el-input>-->
 						<el-table :data="reportlist">
 							<el-table-column property="userId" label="举报人ID" width="100"></el-table-column>
 							<el-table-column property="reportReason" label="举报内容" width="250"></el-table-column>
-							<el-table-column prop="operation" label="举报操作" align="center" min-width="80">
-								<template slot-scope="scope">
+							<el-table-column prop="operation" label="举报操作" align="center" min-width="80"><template slot-scope="scope">
 									<el-button type="danger" icon="el-icon-delete" circle @click="deleteReport(scope.row)" size="mini"></el-button>
 									</el-button>
-								</template>
-							</el-table-column>
+								</template></el-table-column>
 						</el-table>
 					</el-dialog>
 					<el-dialog title="帖子ID回复列" :visible.sync="dialogTableVisible2">
-						<!-- <el-input v-model="replyId" placeholder="Id" style="width: 50px; line-height: 10px;"></el-input>
-         -->
+						<!-- <el-input v-model="replyId" placeholder="Id" style="width: 50px; line-height: 10px;"></el-input>-->
 						<el-table :data="replyList">
-							<el-table-column type="index" label="序号" :show-overflow-tooltip="true">
-							</el-table-column>
+							<el-table-column type="index" label="序号" :show-overflow-tooltip="true"></el-table-column>
 							<el-table-column property="replyContent" label="回复内容" width="250"></el-table-column>
 							<el-table-column property="replyTime" label="回复时间" width="100"></el-table-column>
-							<el-table-column prop="operation" label="回复操作" align="center" min-width="80">
-								<template slot-scope="scope">
+							<el-table-column prop="operation" label="回复操作" align="center" min-width="80"><template slot-scope="scope">
 									<el-button type="danger" icon="el-icon-delete" circle @click="deletereply(scope.row)" size="mini"></el-button>
 									</el-button>
-									<el-button type="danger" round @click="hahahss(scope.row)" size="mini">回复举报
-									</el-button>
-								</template>
-							</el-table-column>
+									<el-button type="danger" round @click="hahahss(scope.row)" size="mini">回复举报</el-button>
+								</template></el-table-column>
 						</el-table>
 					</el-dialog>
 					<el-dialog :visible.sync="dialogVisible2" width="30%" :before-close="handleClose">
-						<!-- 	<el-input v-model="reportId" placeholder="Id" style="width: 50px; line-height: 10px;"></el-input> -->
-						<span>确定删除吗？</span>
-						<span slot="footer" class="dialog-footer">
+						<!-- 	<el-input v-model="reportId" placeholder="Id" style="width: 50px; line-height: 10px;"></el-input> --><span>确定删除吗？</span><span
+						 slot="footer" class="dialog-footer">
 							<el-button @click="dialogVisible2 = false">取 消</el-button>
 							<el-button type="primary" @click="deleteport()">确 定</el-button>
-						</span>
-					</el-dialog>
+						</span></el-dialog>
 					<el-dialog :visible.sync="dialogVisible4" width="30%" :before-close="handleClose">
-						<!-- 	<el-input v-model="reportId" placeholder="Id" style="width: 50px; line-height: 10px;"></el-input> -->
-						<span>确定删除吗？</span>
-						<span slot="footer" class="dialog-footer">
+						<!-- 	<el-input v-model="reportId" placeholder="Id" style="width: 50px; line-height: 10px;"></el-input> --><span>确定删除吗？</span><span
+						 slot="footer" class="dialog-footer">
 							<el-button @click="dialogVisible4 = false">取 消</el-button>
 							<el-button type="primary" @click="deletepost()">确 定</el-button>
-						</span>
-					</el-dialog>
-
+						</span></el-dialog>
 					<el-pagination class="fy" layout="prev, pager, next" @current-change="current_change" :total="total" :page-size="pagesize"
-					 background>
-					</el-pagination>
-				</el-main>
-			</el-container>
-
+					 background></el-pagination>
+				</el-col>
+			</el-row>
 		</div>
 	</body>
-
 	<script>
-
-
 		var Main = new Vue({
-        el: '#app',
-
-        /*初始化方法放在这里面(相当于页面加载事件)*/
-        mounted: function () {
-            
-            this.query();
-        },
-
-        
-        /*数据*/
-        data() {
-            return {
-                options2: [ /* 帖子类型 */
-                    {
-                        value: '精选',
-                        label: '精选'
-                    }, {
-                        value: '置顶',
-                        label: '置顶'
-                    }],
-
-                user: {},
-                options3: [ /* 帖子排序 */
-                    {
-                        value: 'replyTime',
-                        label: '回复时间'
-                    }, {
-                        value: 'replyLikenum',
-                        label: '点赞数'
-                    }, {
-                        value: 'replyReportnum',
-                        label: '举报数'
-                    }],
-
-                dialogVisible1: false,
-
-             textarea: '',
-             replyId: "",
-             postId:"",
-             postTitle: "",
-             userName: "",
-             isStick: "",
-             isSelect: "",
-             typeName:"",
-						 typeId: "",
-             replyTime: "",
-             replyContent: "",
-             replyLikenum: "",
-             replyReportnum: "",
-             orderBy:"",
-             reportId:"",
-             
-             reportReason: "",
-             dialogVisible: false,
-             dialogVisible2: false,
-						 dialogVisible3: false,
-						 dialogVisible4: false,
-             dialogTableVisible:false,
-						 dialogTableVisible2:false,
-             total: 50,//默认数据总数
-             pagesize: 10,//每页的数据条数
-             currentPage: 1,//默认开始页面
-						 postList:[],
-             replyList: [],
-             reportlist: [],
-						 typelistyes:[],
-						 typelistno: []
-            };
-        },
-        /*方法函数写在这里面*/
-        methods: {
-
-            addrudic() {
-                alert("dsaf")
-
-
-            },
-						
-						dialog(val){
-							
-							this.dialogVisible=true;
-							this.textarea=val.replyContent;
-							
-							
-						},
-
-
-            query() {
-
-                let params = new URLSearchParams();
-                params.append("postTitle", this.postTitle);
-                params.append("userName", this.userName);
-								params.append("typeName", this.typeName);
-                params.append("orderBy", this.orderBy);
-								params.append("page",this.currentPage);
-								params.append("rows",this.pagesize);
-                axios({
-                    method: 'post',
-                    url: '/api/bbs/post/getAllPost',
-                    data: params,
-                    headers: {
-                        //"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
-                    }
-                }).then(res => {
-                    res = res.data;
-                    this.postList = res.rows;
-                    this.total = res.total;
-										console.log('postList==>'+this.postList);
-                })
-
-            },
-						
-						hahah(row){												 
-								this.dialogTableVisible=true;
-								this.replyId=row.replyId;
-								let params = new URLSearchParams();
-								params.append("replyId",this.replyId);
-								axios({
-											method: 'post',
-											url: '/api/bbs/report/getreport',
-											data: params,
-											headers: {
-													//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
-											}
-								}).then(res => {
-											res = res.data;
-											this.reportlist = res.rows;
-											console.log('reportlist==>'+this.reportlist);
-								})
-						},
-					  hahahss(row){
-								this.dialogTableVisible=true;
-								this.replyId=row.replyId;
-								let params = new URLSearchParams();
-								params.append("replyId",this.replyId);
-								axios({
-										method: 'post',
-										url: '/api/bbs/report/getreport',
-										data: params,
-										headers: {
-												//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
-										}
-								}).then(res => {
-										res = res.data;
-										this.reportlist = res.rows;
-										console.log('reportlist==>'+this.reportlist);
-								})
-						},
-						replys(row){
-								this.dialogTableVisible2=true;
-								this.postId=row.postId;
-									let params = new URLSearchParams();
-									params.append("postId",this.postId);
-								axios({
-										method: 'post',
-										url: '/api/bbs/reply/getReplyList',
-										data: params,
-										headers: {
-												//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
-										}
-								}).then(res => {
-										res = res.data;
-										this.replyList = res.rows;												
-										console.log('replyList==>'+this.replyList);
-								})																
-							}	,																		
-													setTYPE(row){
-														this.dialogVisible3=true;
-													this.postId=row.postId;
-													this.typeId=row.typeId;
-													this.typeno();
-													this.typeyes();
-													},
-
-													deleteTYPE(row){
-														let params = new URLSearchParams();
-														params.append("postId",this.postId);
-														params.append("typeId",row.typeId);
-																				axios({
-																														method: 'post',
-																														url: '/api/bbs/type/rePostType',
-																														data: params,
-																														headers: {
-																																//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
-																														}
-																												}).then(res => {
-																													res=res.data
-																							if (res.success) {
-																									
-																									alert(res.message)
-																									this.typeyes();
-																									this.typeno();	
-																							} else {
-																									alert(res.message)
-																							}
-																							
-													
-																					})
-																					},
-													insertTYPE(row){
-														let params = new URLSearchParams();
-														params.append("postId",this.postId);
-														params.append("typeId",row.typeId);
-																				axios({
-																														method: 'post',
-																														url: '/api/bbs/type/addPostType',
-																														data: params,
-																														headers: {
-																																//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
-																														}
-																												}).then(res => {
-																													res=res.data
-																							if (res.success) {
-																									
-																									alert(res.message)
-																									this.typeyes();
-																									this.typeno();	
-																							} else {
-																									alert(res.message)
-																							}
-																							
-													
-																					})
-																					},
-										
-													typeno(){	
-														
-															let params = new URLSearchParams();
-															params.append("postId",this.postId);
-														axios({
-																								method: 'post',
-																								url: '/api/bbs/type/queryNoType',
-																								data: params,
-																								headers: {
-																										//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
-																								}
-																						}).then(res => {
-																								res = res.data;
-																		this.typelistno = res;
-																		
-																							console.log('typelistno==>'+this.typelistno);
-																						})
-													},				
-														typeyes(){	
-															
-																let params = new URLSearchParams();
-																params.append("postId",this.postId);
-															axios({
-																									method: 'post',
-																									url: '/api/bbs/type/queryType',
-																									data: params,
-																									headers: {
-																											//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
-																									}
-																							}).then(res => {
-																									res = res.data;
-																			this.typelistyes = res;
-																			
-																								console.log('typelistyes==>'+this.typelistyes);
-																							})
-														},			
-														
-												deleteReport(row){
-													
-													this.dialogVisible2=true;
-													this.reportId=row.reportId;
-													},
-													
-													
-													deleteport(){
-													let params = new URLSearchParams();
-													params.append("reportId",this.reportId);
-													axios({
-																							method: 'post',
-																							url: '/api/bbs/report/deleteport',
-																							data: params,
-																							headers: {
-																									//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
-																							}
-																					}).then(res => {
-																						res=res.data
-																if (res.success) {
-																		
-																		alert(res.message)
-																		this.dialogVisible2=false;
-																		
-																		  
-																} else {
-																		alert(res.message)
-																}
-																
-						
-														})
-												},
-												reports(){
-													let params = new URLSearchParams();
-													params.append("replyId",this.replyId);
-												axios({
-																						method: 'post',
-																						url: '/api/bbs/report/getreport',
-																						data: 'params',
-																						headers: {
-																								//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
-																						}
-																				}).then(res => {
-																						res = res.data;
-																this.reportlist = res.rows;
-																
-																					console.log('reportlist==>'+this.reportlist);
-																				})
-												
-																		}, 
-						delete(row){
-							this.dialogVisible4=true;
-							this.replyId=row.replyId;
-							},
-							deletereply(){
-							let params = new URLSearchParams();
-						 params.append("replyId", val.replyId)
-							                axios({
-							                    method: 'post',
-							                    url: '/api/bbs/post/deletePost',
-							                    data:
-							                    params,
-							
-							                    headers: {
-							                        //"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUwNTc3MCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjllMjI1MDUyLTViNDQtNGI0MS05ZTRkLTk4NmNhMTJjZWZkZCIsImNsaWVudF9pZCI6ImllcCJ9.qxP1BynI41fIAAgXxeS-hYVIxdbiIpcjy3GQXrhPEh8"
-							                    }
-							                }).then(res => {
-							                    if (res.success) {
-							                        this.reload();
-							                        alert(res.message)
-							                    } else {
-							                        alert(res.message)
-							                    }
-							                })
-						},
-
-            /*对话框关闭与否触发的方法*/
-            handleClose(done) {
-                this.$confirm('确认关闭？')
-                    .then(_ => {
-                        done();
-                    })
-                    .catch(_ => {
-                    });
-            },
-
-            handleSizeChange(val) {
-                this.pagesize = val;
-                console.log(this.pagesize)  //每页下拉显示数据
-            },
-
-            handleCurrentChange() {
-                this.currentPage = currentPage;
-                console.log(this.currentPage)  //点击第几页
-            },
-
-            created: function () {
-                this.total = this.tableData.length;
-            },
-            current_change: function (currentPage) {
-                this.currentPage = currentPage;
-								this.query();
-            },
-						handleOpen(key, keyPath) {
-							console.log(key, keyPath);
-						},
-						handleClose(key, keyPath) {
-							console.log(key, keyPath);
+			el: '#app',
+			mounted: function () {
+				this.query();
+				this.queryType();
+			},
+			data() {
+				return {
+					options3: [{
+						value: 'replyTime',
+						label: '回复时间',
+					}, {
+						value: 'replyLikenum',
+						label: '点赞数',
+					}, {
+						value: 'replyReportnum',
+						label: '举报数',
+					}],
+					dialogVisible1: false,
+					textarea: '',
+					replyId: "",
+					postId:"",
+					postTitle: "",
+					userName: "",
+					isStick: "",
+					isSelect: "",
+					typeName:"",
+					typeId: "",
+					replyTime: "",
+					replyContent: "",
+					replyLikenum: "",
+					replyReportnum: "",
+					orderBy:"",
+					reportId:"",
+					reportReason: "",
+					dialogVisible: false,
+					dialogVisible2: false,
+					dialogVisible3: false,
+					dialogVisible4: false,
+					dialogTableVisible:false,
+					dialogTableVisible2:false,
+					total: 50,
+					pagesize: 10,
+					currentPage: 1,
+					typeList:[],
+					postList:[],
+					replyList: [],
+					reportlist: [],
+					typelistyes:[],
+					typelistno: [],
+				};
+			},
+			methods: {
+				dialog(val){
+					this.dialogVisible=true;
+					this.textarea=val.replyContent;
+				},
+				query() {
+					let params = new URLSearchParams();
+					params.append("postTitle", this.postTitle);
+					params.append("typeName", this.typeName);
+					params.append("orderBy", this.orderBy);
+					params.append("page",this.currentPage);
+					params.append("rows",this.pagesize);
+					axios({
+						method: 'post',
+						url: '/api/bbs/post/getAllPost',
+						data: params,
+						headers: {},
+					}).then(res => {
+						res = res.data;
+						this.postList = res.rows;
+						this.total = res.total;
+						console.log('postList==>'+this.postList);
+					})
+				},
+				queryType() {
+					axios({
+						method: 'post',
+						url: '/api/bbs/type/getAllType',
+						headers: {},
+					}).then(res => {
+						res = res.data;
+						this.typeList = res;
+						console.log('typeList==>' + this.typeList);
+					})
+				},
+				hahah(row){
+					this.dialogTableVisible=true;
+					this.replyId=row.replyId;
+					let params = new URLSearchParams();
+					params.append("replyId",this.replyId);
+					axios({
+						method: 'post',
+						url: '/api/bbs/report/getreport',
+						data: params,
+						headers: {},
+					}).then(res => {
+						res = res.data;
+						this.reportlist = res.rows;
+						console.log('reportlist==>'+this.reportlist);
+					})
+				},
+				hahahss(row){
+					this.dialogTableVisible=true;
+					this.replyId=row.replyId;
+					let params = new URLSearchParams();
+					params.append("replyId",this.replyId);
+					axios({
+						method: 'post',
+						url: '/api/bbs/report/getreport',
+						data: params,
+						headers: {},
+					}).then(res => {
+						res = res.data;
+						this.reportlist = res.rows;
+						console.log('reportlist==>'+this.reportlist);
+					})
+				},
+				replys(row){
+					this.dialogTableVisible2=true;
+					this.postId=row.postId;
+					let params = new URLSearchParams();
+					params.append("postId",this.postId);
+					axios({
+						method: 'post',
+						url: '/api/bbs/reply/getReplyList',
+						data: params,
+						headers: {},
+					}).then(res => {
+						res = res.data;
+						this.replyList = res.rows;
+						console.log('replyList==>'+this.replyList);
+					})
+				},
+				setTYPE(row){
+					this.dialogVisible3=true;
+					this.postId=row.postId;
+					this.typeId=row.typeId;
+					this.typeno();
+					this.typeyes();
+				},
+				deleteTYPE(row){
+					let params = new URLSearchParams();
+					params.append("postId",this.postId);
+					params.append("typeId",row.typeId);
+					axios({
+						method: 'post',
+						url: '/api/bbs/type/rePostType',
+						data: params,headers: {},
+					}).then(res => {
+						res=res.data;
+						if (res.success) {
+							this.typeyes();
+							this.typeno();
+						} else {
+							alert(res.message)
 						}
-        }
-
-    });
-
-</script>
-
+					})
+				},
+				insertTYPE(row){
+					let params = new URLSearchParams();
+					params.append("postId",this.postId);
+					params.append("typeId",row.typeId);
+					axios({
+						method: 'post',
+						url: '/api/bbs/type/addPostType',
+						data: params,
+						headers: {},
+					}).then(res => {
+						res=res.data;
+						if (res.success) {
+							alert(res.message)
+							this.typeyes();
+							this.typeno();
+						} else {
+							alert(res.message)
+						}
+					})
+				},
+				typeno(){
+					let params = new URLSearchParams();
+					params.append("postId",this.postId);
+					axios({
+						method: 'post',
+						url: '/api/bbs/type/queryNoType',
+						data: params,
+						headers: {},
+					}).then(res => {
+						res = res.data;
+						this.typelistno = res;
+						console.log('typelistno==>'+this.typelistno);
+					})
+				},
+				typeyes(){
+					let params = new URLSearchParams();
+					params.append("postId",this.postId);
+					axios({
+						method: 'post',
+						url: '/api/bbs/type/queryType',
+						data: params,
+						headers: {},
+					}).then(res => {
+						res = res.data;
+						this.typelistyes = res;
+						console.log('typelistyes==>'+this.typelistyes);
+					})
+				},
+				WdeleteReport(row){
+					this.dialogVisible2=true;
+					this.reportId=row.reportId;
+				},
+				deleteport(){
+					let params = new URLSearchParams();
+					params.append("reportId",this.reportId);
+					axios({
+						method: 'post',
+						url: '/api/bbs/report/deleteport',
+						data: params,
+						headers: {},
+					}).then(res => {
+						res=res.data;
+						if (res.success) {
+							alert(res.message)
+							this.dialogVisible2=false;
+						} else {
+							alert(res.message)
+						}
+					})
+				},
+				reports(){
+					let params = new URLSearchParams();
+					params.append("replyId",this.replyId);
+					axios({
+						method: 'post',
+						url: '/api/bbs/report/getreport',
+						data: 'params',
+						headers: {},
+					}).then(res => {
+						res = res.data;
+						this.reportlist = res.rows;
+						console.log('reportlist==>'+this.reportlist);
+					})
+				},
+				delete(row){
+					this.dialogVisible4=true;
+					this.replyId=row.replyId;
+				},
+				deletereply(){
+					let params = new URLSearchParams();
+					params.append("replyId", val.replyId);
+					axios({
+						method: 'post',
+						url: '/api/bbs/post/deletePost',
+						data:params,
+						headers: {},
+					}).then(res => {
+						if (res.success) {
+							this.reload();
+							alert(res.message)
+						} else {
+							alert(res.message)
+						}
+					})
+				},
+				handleClose(done) {
+					this.$confirm('确认关闭？').then(_ => {
+						done();
+					}).catch(_ => {
+						
+					});
+				},
+				handleSizeChange(val) {
+					this.pagesize = val;
+					console.log(this.pagesize)
+				},
+				handleCurrentChange() {
+					this.currentPage = currentPage;
+					console.log(this.currentPage)
+				},
+				created: function () {
+					this.total = this.tableData.length;
+				},
+				current_change: function (currentPage) {
+					this.currentPage = currentPage;
+					this.query();
+				},
+				handleOpen(key, keyPath) {
+					console.log(key, keyPath);
+				},
+				handleClose(key, keyPath) {
+					console.log(key, keyPath);
+				}
+			},
+		});
+	</script>
+	
+	
 	<style type="text/css">
 		.el-aside {
 			background-color: #D3DCE6;

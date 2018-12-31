@@ -79,7 +79,7 @@
 			<el-button-group>
 				<el-button type="success" size="mini" @click="btnNew" plain>最新发表</el-button>
 				<el-button type="success" size="mini" @click="btnHot" plain>最高热度</el-button>
-				<el-button type="success" size="mini" plain>最多回复</el-button>
+				<el-button type="success" size="mini" @click="btnReply" plain>最多回复</el-button>
 			</el-button-group>
 			<hr />
 			<div>
@@ -125,10 +125,11 @@
 			el: "#course",
 
 			mounted: function() {
+				this.token=sessionStorage.getItem("access_token")
 				var userId=sessionStorage.getItem("userid");
 				this.queryPost();
 				this.queryType();
-				this.isHaveToken();
+				/* this.isHaveToken(); */
 			},
 			data() {
 				return {
@@ -150,7 +151,8 @@
 						typeList: this.typeList
 					},
 					formLabelWidth: '120px',
-					token: sessionStorage.getItem("access_token")
+					token:''
+					
 				}
 			},
 			methods: {
@@ -236,6 +238,10 @@
 				},
 				btnHot: function() {
 					this.orderBy = "replyLikenum";
+					this.queryPost();
+				},
+				btnReply: function(){
+					this.orderBy = "replyNum";
 					this.queryPost();
 				},
 				jumpPostDetails: function(post) {

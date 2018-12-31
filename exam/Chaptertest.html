@@ -17,25 +17,31 @@
         <span v-for="(chapter,index) in ChaptertestList" v-if="chapter.sectionId==site.chaId" >
         <span  @click="testlog(chapter.id)">
 
-         <el-collapse-item  :name="chapter.id">
+         <el-collapse-item>
             <template slot="title" >
-                <h3 >{{chapter.title}}</h3><el-button type="success" style="margin-left: 1000px" size="medium" @click="testzhangjie()">前往测验</el-button>
+                <h3 >{{chapter.title}}</h3><el-button type="success" style="margin-left: 1000px" size="medium" @click="testzhangjie(chapter.id)">前往测验</el-button>
             </template>
                 <el-table
                         :data="tableData"
                         style="width: 800px">
                     <el-table-column
-                            prop="date"
                             label="上一次提交时间"
                           >
+                         <template slot-scope="scope">
+                <span style="margin-left: 10px">{{ scope.row.endtime }}</span>
+                    </template>
                     </el-table-column>
                     <el-table-column
-                            prop="name"
                             label="测验次数">
+                         <template slot-scope="scope">
+                <span style="margin-left: 10px">{{ scope.row.examnum }}</span>
+                    </template>
                     </el-table-column>
                     <el-table-column
-                            prop="address"
                             label="测验最高分">
+                            <template slot-scope="scope">
+                <span style="margin-left: 10px">{{ scope.row.maxtotal }}</span>
+                    </template>
                     </el-table-column>
                 </el-table>
 
@@ -51,11 +57,8 @@
         new Vue({
             el:"#app",
             data:{
-                tableData: [{
-                    date: '2016-05-02',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄'
-                }],
+                tableData: [
+                ],
                 Curriculumcollectionlist:[],//课程章节集合
                 ChaptertestList:[]//章节测试集合
 
@@ -65,8 +68,8 @@
 
             },
             methods:{
-                testzhangjie(){
-                    window.location.href = "/exam/ChaptertestTopic.html";
+                testzhangjie(chapter){
+                    window.location.href = "/exam/ChaptertestTopic.html?chapterId="+chapter;
                 },
                 quary() {
                     let params = new URLSearchParams();
@@ -84,15 +87,14 @@
                 testlog(chapter){
                    // alert(chapter);
                    let params = new URLSearchParams();
-                   params.append("studentId", userid);
+                   params.append("studentid", userid);
                     params.append("parperid", chapter);
                     axios({
                         method: 'post',
                         url: '/api/exam/sectionparper/selecttotalandnumandmaxtotal',
                         data: params,
                     }).then(res => {
-                       // this.Curriculumcollectionlist = res.data.sectionlist.message;
-                       // this.ChaptertestList=res.data.parperlist;
+                        this.tableData=res.data;
                     })
                 }
 

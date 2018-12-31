@@ -335,12 +335,12 @@
                 })
             },
             query() {
-                //let testid = v['name'];
+                let chapterId = v['chapterId'];
                 let params = new URLSearchParams();
-                params.append("examparper", "4123a607d4d944aa934d1b4a65258696");//章节测试id
-                params.append("course", "16");//课程id
+                params.append("examparper", chapterId);//章节测试id
+                /*params.append("course", "16");//课程id
                 params.append("studentid", userid);//学生ID
-                params.append("section", "42");//章节id
+                params.append("section", "42");//章节id*/
 
                 axios({
                     method: 'post',
@@ -384,8 +384,8 @@
                     params.append("examrubricId", site.id);
                     params.append("score", site.score);
                     params.append("selectanswerId", site.answerId);
-                    params.append("courseid", "16");//课程id
-                    params.append("sectionid", 42);//章节id
+                    params.append("courseid", this.tableData.courseId);//课程id
+                    params.append("sectionid", this.tableData.sectionId);//章节id
 
                     axios({
                         method: 'post',
@@ -415,8 +415,8 @@
                 params.append("score", site.score);
                 params.append("examrubricId", site.id);
                 params.append("selectanswerId", site.answerId);
-                params.append("courseid", "16");
-                params.append("sectionid", 42);//章节id
+                    params.append("courseid", this.tableData.courseId);//课程id
+                    params.append("sectionid", this.tableData.sectionId);//章节id
                 axios({
                     method: 'post',
                     url: '/api/exam/Sectionrubric/examend',
@@ -463,8 +463,8 @@
                 params.append("score", site.score);
                 params.append("examrubricId", site.id);
                 params.append("selectanswerId", site.answerId);
-                params.append("courseid", "16");
-                params.append("sectionid", 42);//章节id
+                    params.append("courseid", this.tableData.courseId);//课程id
+                    params.append("sectionid", this.tableData.sectionId);//章节id
                 axios({
                     method: 'post',
                     url: '/api/exam/Sectionrubric/examend',
@@ -492,8 +492,8 @@
                 params.append("examrubricId", site.id);
                 params.append("score", site.score);
                 params.append("selectanswerId", site.answerId);
-                params.append("courseid", "16");
-                params.append("sectionid", 42);//章节id
+                    params.append("courseid", this.tableData.courseId);//课程id
+                    params.append("sectionid", this.tableData.sectionId);//章节id
                 axios({
                     method: 'post',
                     url: '/api/exam/Sectionrubric/examend',
