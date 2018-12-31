@@ -12,64 +12,95 @@
 <body>
 <div id="app">
 
+    <el-collapse v-for="(site,index) in Curriculumcollectionlist" >
+        <h3>{{site.chaName}}：</h3>
+        <span v-for="(chapter,index) in ChaptertestList" v-if="chapter.sectionId==site.chaId" >
+        <span  @click="testlog(chapter.id)">
 
-    <el-collapse accordion>
-        <h3>第一周：maven配置：</h3>
-        <el-collapse-item>
-
-            <template slot="title">
-                <h3>第一周：maven配置测验</h3><el-button type="success" style="margin-left: 1000px" size="medium" @click="testzhangjie()">前往测验</el-button>
+         <el-collapse-item>
+            <template slot="title" >
+                <h3 >{{chapter.title}}</h3><el-button type="success" style="margin-left: 1000px" size="medium" @click="testzhangjie(chapter.id)">前往测验</el-button>
             </template>
-            <template>
                 <el-table
                         :data="tableData"
                         style="width: 800px">
                     <el-table-column
-                            prop="name"
                             label="上一次提交时间"
-                            width="180">
+                          >
+                         <template slot-scope="scope">
+                <span style="margin-left: 10px">{{ scope.row.endtime }}</span>
+                    </template>
                     </el-table-column>
                     <el-table-column
-                            prop="address"
                             label="测验次数">
+                         <template slot-scope="scope">
+                <span style="margin-left: 10px">{{ scope.row.examnum }}</span>
+                    </template>
                     </el-table-column>
                     <el-table-column
-                            prop="address"
                             label="测验最高分">
+                            <template slot-scope="scope">
+                <span style="margin-left: 10px">{{ scope.row.maxtotal }}</span>
+                    </template>
                     </el-table-column>
                 </el-table>
-            </template>
+
         </el-collapse-item>
+            </span>
+      </span>
     </el-collapse>
+
+</div>
     <script>
+        axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
+        let userid = sessionStorage.getItem("userid");
         new Vue({
             el:"#app",
             data:{
-                tableData: [{
-                    date: '2016-05-02',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄'
-                }, {
-                    date: '2016-05-04',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1517 弄'
-                }, {
-                    date: '2016-05-01',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1519 弄'
-                }, {
-                    date: '2016-05-03',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1516 弄'
-                }]
+                tableData: [
+                ],
+                Curriculumcollectionlist:[],//课程章节集合
+                ChaptertestList:[]//章节测试集合
+
+            },
+            mounted: function () {
+                this.quary();
+
             },
             methods:{
-                testzhangjie(){
-                    window.location.href = "/exam/ChaptertestTopic.html";
+                testzhangjie(chapter){
+                    window.location.href = "/exam/ChaptertestTopic.html?chapterId="+chapter;
+                },
+                quary() {
+                    let params = new URLSearchParams();
+                    //params.append("studentId", userid);
+                    params.append("courseid", "16");
+                    axios({
+                        method: 'post',
+                        url: '/api/exam/sectionparper/selectsectionparperrubricer',
+                        data: params,
+                    }).then(res => {
+                        this.Curriculumcollectionlist = res.data.sectionlist.message;
+                        this.ChaptertestList=res.data.parperlist;
+                    })
+                },
+                testlog(chapter){
+                   // alert(chapter);
+                   let params = new URLSearchParams();
+                   params.append("studentid", userid);
+                    params.append("parperid", chapter);
+                    axios({
+                        method: 'post',
+                        url: '/api/exam/sectionparper/selecttotalandnumandmaxtotal',
+                        data: params,
+                    }).then(res => {
+                        this.tableData=res.data;
+                    })
                 }
+
             }
         })
     </script>
-</div>
+
 </body>
 </html>
