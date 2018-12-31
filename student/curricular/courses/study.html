@@ -215,7 +215,7 @@ margin-bottom: 20px;
 
 		<!-- 左侧导航 -->
 		<template>
-			<el-tabs type="card"  tab-position="left"  style="height: 100%;width: 100%;" stretch>
+			<el-tabs type="card" v-model="labelValue"  tab-position="left"  style="height: 100%;width: 100%;" stretch>
 				<el-tab-pane label="公告" name="gonggao">
 
 					<el-row :gutter="20">
@@ -297,8 +297,8 @@ margin-bottom: 20px;
 				</el-tab-pane>
 
 
-				<el-tab-pane label="讨论区">
-					<iframe src="../../../bbs/Reception/course.html" width="100%" height="1000px" frameborder="0"></iframe>
+				<el-tab-pane label="讨论区" name="discussion">
+					<iframe :src="discussUrl" width="100%" height="1000px" frameborder="0"></iframe>
 				</el-tab-pane>
 			</el-tabs>
 		</template>
@@ -311,17 +311,30 @@ margin-bottom: 20px;
 <script>
     /*自动在请求中添加请求头*/
     axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
-
+    function getParam(paramName) {
+    		paramValue = "", isFound = !1;
+    		if (this.location.search.indexOf("?") == 0 && this.location.search.indexOf("=") > 1) {
+    				arrSource = unescape(this.location.search).substring(1, this.location.search.length).split("&"), i = 0;
+    				while (i < arrSource.length && !isFound) arrSource[i].indexOf("=") > 0 && arrSource[i].split("=")[0].toLowerCase() == paramName.toLowerCase() && (paramValue = arrSource[i].split("=")[1], isFound = !0), i++
+    		}
+    		return paramValue == "" && (paramValue = null), paramValue
+    }
+		
     var app = new Vue({
         el: "#app",
         mounted: function() {
-            this.sid = sessionStorage.getItem("userid");
-            this.getQueryString("courId");
+				  	var postId=sessionStorage.getItem("courPostId");
+            this.sid = sessionStorage.getItem("userid");				
+            this.courId=getParam("courId");	
+						this.labelValue=getParam("value");
+						this.checkPostId(postId);
             this.chaxun();
             this.querygonggao();
         },
         data() {
             return {
+							  discussUrl:'',
+							  labelValue:'',
                 currentDate: new Date(),
                 activeNames: ['1'],
                 courId: "",
@@ -357,25 +370,20 @@ margin-bottom: 20px;
                     desc: ''
                 },
                 formLabelWidth: '120px'
-
-
-
             };
         },
         methods: {
+					  //验证讨论是否为空,从而决定讨论页的展示
+						checkPostId:function(postId){
+							  if(postId!=null){
+									 this.discussUrl="http://127.0.0.1/bbs/Reception/courseDetails.html";
+								}else{
+									 this.discussUrl="http://127.0.0.1/bbs/Reception/course.html";
+								}
+						},
+					  
             handleChange(val) {
                 console.log(val);
-            },
-            /* 获取cid  */
-            getQueryString: function(name) {
-                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-                var r = window.location.search.substr(1).match(reg);
-                if (r != null) {
-                    this.courId = decodeURIComponent(r[2]);
-                    //console.log(this.courId+"课程id");
-                }
-
-                return '';
             },
             chaxun: function() {
 
@@ -389,8 +397,6 @@ margin-bottom: 20px;
                 }).then(res => {
                     //http://localhost/ieppage/student/curricular/courses/show.html
                     res = res.data[0];
-                    //console.log(res);
-                    //console.log(res.courContent);
                     this.courName = res.courName;
                     this.courContent = res.courContent;
                     this.courDetails = res.courDetails;

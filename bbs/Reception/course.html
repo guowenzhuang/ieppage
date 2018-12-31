@@ -85,7 +85,7 @@
 			<div>
 				<ul v-for="post in postList" class="row question-items" :data="postList.slice((currentPage-1)*pagesize,currentPage*pagesize)">
 					<li class="question-item">
-						<div class="col-md-10">
+						<div class="col-md-8">
 							<div class="col-sm-12">
 								<h4>
 									<a class="question-item-title" target="_blank" v-on:click="jumpPostDetails(post)">{{post.postTitle}}</a>
@@ -99,14 +99,15 @@
 								</div>
 							</div>
 						</div>
-						<div class="col-md-2 question-item-rank">
+						<div class="col-md-4 question-item-rank">
 							<div class="question-item-answered">
-								<div>{{post.replyLikenum}}</div>
-								<div>点赞</div>
+								<div>点赞:{{post.replyLikenum}}</div>
 							</div>
 							<div class="question-item-views">
-								<div>{{post.replyBrowse}}</div>
-								<div>浏览数</div>
+								<div>回复:{{post.replyNum}}</div>
+							</div>
+							<div class="question-item-views">
+								<div>浏览:{{post.replyBrowse}}</div>
 							</div>
 						</div>
 					</li>
