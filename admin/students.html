@@ -113,7 +113,11 @@
                     <el-input v-model="add.protectMTel"></el-input>
                 </el-form-item>
                 <el-form-item prop="sex" label="性别">
-                    <el-input v-model="add.sex"></el-input>
+                    <el-radio-group v-model="add.sex">
+                        <el-radio label="男">男</el-radio>
+                        <el-radio label="女">女</el-radio>
+                        <el-radio label="保密">保密</el-radio>
+                    </el-radio-group>
                 </el-form-item>
                 <el-form-item prop="card" label="身份证号">
                     <el-input v-model="add.card"></el-input>
@@ -156,7 +160,6 @@
                     protectEMail: '',
                     protectMTel: '',
                     sex: '',
-                    photo: '',
                     card: '',
                     cid: ''
                 },
@@ -211,6 +214,8 @@
                                 })
                                 this.add.show = false;
                                 this.queryStudent();
+                                this.$refs['addForm'].resetFields();
+
                             } else {
                                 this.$message({
                                     type: 'error',
@@ -235,13 +240,77 @@
             },
             //修改学生
             updateStudent() {
+                this.$refs['addForm'].validate((valid) => {
+                    if (valid) {
+                        axios({
+                            method: 'put',
+                            url: "/api/admin/student/"+this.active.id,
+                            data: this.add
+                        }).then(res => {
+                            res = res.data;
+                            if (res.success) {
+                                this.$message({
+                                    type: 'success',
+                                    message: res.message
+                                })
+                                this.add.show = false;
+                                this.queryStudent();
+                                this.$refs['addForm'].resetFields();
 
+                            } else {
+                                this.$message({
+                                    type: 'error',
+                                    message: res.message
+                                })
+                            }
+                        })
+                    } else {
+                        this.$message({
+                            type: 'error',
+                            message: '请检查字段'
+                        })
+                        return false;
+                    }
+                });
             },
             updateStudentShow(row) {
                 this.active = row;
+                this.add.title="修改学生";
+                this.add.loginName=row.loginName;
+                this.add.protectEMail=row.protectEMail;
+                this.add.protectMTel=row.protectMTel;
+                this.add.sex=row.sex;
+                this.add.card=row.card;
+                this.add.cid=row.cid;
+                this.add.nameDisabled=true;
+                this.add.show=true;
             },
+            //删除学生
             deleteStudent(row) {
+                this.$confirm('此操作将永久删除学生, 是否继续?', '提示', {
+                    cancelButtonText: '取消',
+                    confirmButtonText: '确定',
+                    type: 'warning'
+                }).then(() => {
+                    axios({
+                        method: "delete",
+                        url: '/api/admin/student/' + row.id
+                    })
+                        .then(res => {
+                            res = res.data;
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功!'
+                            });
+                            this.queryStudent();
+                        })
 
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
             },
             search() {
                 this.query.page = 1;

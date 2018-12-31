@@ -44,7 +44,7 @@
                 </el-col>
             </el-row>
             <el-row :gutter="20">
-                <el-col :span="9">
+                <el-col :span="8">
                     <span>创建时间:</span>
                     <el-date-picker
                             v-model="query.createTime"
@@ -54,13 +54,36 @@
                             end-placeholder="结束日期">
                     </el-date-picker>
                 </el-col>
-                <el-col :span="7">
+                <el-col :span="3">
                     <span>排序:</span>
                     <div>
                         <el-select v-model="query.order" placeholder="请选择" clearable>
                             <el-option value="CreateTime" label="创建时间"></el-option>
                             <el-option value="LastLoginTime" label="最后登录时间"></el-option>
                         </el-select>
+                    </div>
+                </el-col>
+                <el-col :span="3">
+                    <span>&nbsp;</span>
+                    <div>
+                        <el-button type="success" @click="templateShow">下载模板</el-button>
+                    </div>
+                </el-col>
+                <el-col :span="2">
+                    <span>&nbsp;</span>
+                    <div>
+                        <el-button type="success" @click="exports">导出</el-button>
+                    </div>
+                </el-col>
+                <el-col :span="3">
+                    <span>&nbsp;</span>
+                    <div>
+                        <el-upload class="avatar-uploader" action="/api/admin/user/import"
+                                   :show-file-list="false"
+                                   :on-success="handSuccess"
+                                   :headers="authHead">
+                            <el-button type="primary">导入用户</el-button>
+                        </el-upload>
                     </div>
                 </el-col>
                 <el-col :span="3">
@@ -139,7 +162,8 @@
                                 <el-button type="text" @click="deleteUser(scope.row.id)">删除</el-button>
                             </div>
                             <div>
-                                <el-button type="text" @click="updateUserField('password','',scope.row.id)">重置密码</el-button>
+                                <el-button type="text" @click="updateUserField('password','',scope.row.id)">重置密码
+                                </el-button>
                             </div>
                         </template>
                     </el-table-column>
@@ -169,7 +193,7 @@
         <el-dialog
                 :title="add.title"
                 :visible.sync="add.show">
-            <el-form  :rules="addRules" ref="addForm" :model="add" label-position="left" label-width="80px">
+            <el-form :rules="addRules" ref="addForm" :model="add" label-position="left" label-width="80px">
                 <el-form-item prop="loginName" label="用户名称">
                     <el-input v-model="add.loginName" :disabled="add.nameDisabled"></el-input>
                 </el-form-item>
@@ -181,11 +205,22 @@
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" v-if="add.nameDisabled" @click="updateUser">修改</el-button>
-                    <el-button type="primary" v-else @click="addUser" >新增</el-button>
+                    <el-button type="primary" v-else @click="addUser">新增</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
+        <el-dialog
+                title="下载模板"
+                :visible.sync="template.show">
+            <el-checkbox-group v-model="template.checkList">
+                <el-checkbox v-for="(item,i) in template.data" :key="i" :label="item.name" :disabled="item.noNull">
 
+                </el-checkbox>
+            </el-checkbox-group>
+            <div slot="footer">
+                <el-button type="success" size="large" long @click="downTemplate">下载</el-button>
+            </div>
+        </el-dialog>
     </div>
 </div>
 </body>
@@ -196,27 +231,32 @@
     let main = {
         data() {
             return {
-                addRules:{
+                template: {
+                    show: false,
+                    checkList: [],
+                    data: []
+                },
+                addRules: {
                     loginName: [
-                        { required: true, message: '请输入用户名称', trigger: 'blur' },
+                        {required: true, message: '请输入用户名称', trigger: 'blur'},
                     ],
 
                     protectEMail: [
-                        { required: true, message: '请输入邮箱', trigger: 'blur' },
+                        {required: true, message: '请输入邮箱', trigger: 'blur'},
                     ],
 
                     protectMTel: [
-                        { required: true, message: '请输入手机号', trigger: 'blur' },
+                        {required: true, message: '请输入手机号', trigger: 'blur'},
                     ],
 
                 },
                 add: {
-                    nameDisabled:true,
-                    title:'',
+                    nameDisabled: true,
+                    title: '',
                     show: false,
-                    loginName:'',
-                    protectEMail:'',
-                    protectMTel:'',
+                    loginName: '',
+                    protectEMail: '',
+                    protectMTel: '',
                 },
                 //用户设置角色
                 role: {
@@ -242,28 +282,117 @@
                 },
                 //用户数据
                 userData: [],
-                total: 0
+                total: 0,
+                //上传文件附加额外请求头参数
+                authHead: {
+                    Authorization: "bearer " + sessionStorage.getItem("access_token")
+                }
             }
         },
         computed: {},
         methods: {
+            handSuccess(res) {
+                if (res.success) {
+                    this.$message({
+                        type: 'success',
+                        message: '导入用户成功'
+                    })
+                } else {
+                    let m = JSON.parse(res.message);
+                    this.$message({
+                        type: 'error',
+                        message: "导入用户:" + m.loginName + " 致使失败 请检查重新导入"
+                    })
+                }
+
+            },
+            downTemplate() {
+                axios({
+                    method: 'get',
+                    url: '/api/admin/user/expertTemplate',
+                    responseType: 'blob',
+                    params: {
+                        names: this.template.checkList.join(",")
+                    }
+                }).then((res) => {
+                    var blob = new Blob([res.data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'})
+                    var url = window.URL.createObjectURL(blob);
+                    var aLink = document.createElement("a");
+                    aLink.style.display = "none";
+                    aLink.href = url;
+                    aLink.setAttribute("download", "用户导入模板.xlsx");
+                    document.body.appendChild(aLink);
+                    aLink.click();
+                    document.body.removeChild(aLink); //下载完成移除元素
+                    window.URL.revokeObjectURL(url); //释放掉blob对象
+                })
+
+            },
+            templateShow() {
+                axios({
+                    method: 'get',
+                    url: '/api/admin/user/getTemplate'
+                }).then((res) => {
+                    this.template.data = res.data;
+                    this.template.checkList = res.data.filter(row => {
+                        return row.noNull
+                    })
+
+                    this.template.checkList = this.template.checkList.map(row => {
+                        return row.name;
+                    });
+
+                    this.template.show = true;
+                })
+            },
+            //导出
+            exports() {
+                axios({
+                    method: 'get',
+                    url: '/api/admin/user/exports',
+                    responseType: 'blob',
+                    params: {
+                        userName: this.query.userName,
+                        beginCreateTime: this.date_string(this.query.createTime[0]),
+                        endCreateTime: this.date_string(this.query.createTime[1]),
+                        isLockout: this.query.isLockout,
+                        order: this.query.order,
+                        protectEMail: this.query.protectEMail,
+                        protectMTel: this.query.protectMTel,
+                        page: this.query.page,
+                        rows: this.query.rows,
+                    }
+                }).then(res => {
+                    var blob = new Blob([res.data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'})
+                    var url = window.URL.createObjectURL(blob);
+                    var aLink = document.createElement("a");
+                    aLink.style.display = "none";
+                    aLink.href = url;
+                    aLink.setAttribute("download", "用户.xlsx");
+                    document.body.appendChild(aLink);
+                    aLink.click();
+                    document.body.removeChild(aLink); //下载完成移除元素
+                    window.URL.revokeObjectURL(url); //释放掉blob对象
+
+                })
+            },
             //修改用户
-            updateUser(){
+            updateUser() {
                 this.$refs['addForm'].validate((valid) => {
                     if (valid) {
                         axios({
-                            method:'put',
-                            url:'/api/admin/user',
-                            data:{
-                                loginName:this.add.loginName,
-                                protectEMail:this.add.protectEMail,
-                                protectMTel:this.add.protectMTel
+                            method: 'put',
+                            url: '/api/admin/user',
+                            data: {
+                                loginName: this.add.loginName,
+                                protectEMail: this.add.protectEMail,
+                                protectMTel: this.add.protectMTel
                             },
-                        }).then(res=>{
-                            res=res.data;
-                            if(res.success){
+                        }).then(res => {
+                            res = res.data;
+                            if (res.success) {
                                 this.queryUser();
-                                this.add.show=false;
+                                this.add.show = false;
                                 this.$refs['addForm'].resetFields();
                             }
                         })
@@ -278,27 +407,27 @@
                 });
             },
             //修改用户框显示
-            updateUserShow(row){
-                this.add.loginName=row.loginName;
-                this.add.protectEMail=row.protectEMail;
-                this.add.protectMTel=row.protectMTel;
-                this.add.nameDisabled=true;
-                this.add.title="修改用户";
-                this.add.show=true;
+            updateUserShow(row) {
+                this.add.loginName = row.loginName;
+                this.add.protectEMail = row.protectEMail;
+                this.add.protectMTel = row.protectMTel;
+                this.add.nameDisabled = true;
+                this.add.title = "修改用户";
+                this.add.show = true;
             },
             //删除用户
-            deleteUser(id){
+            deleteUser(id) {
                 this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
                     cancelButtonText: '取消',
                     confirmButtonText: '确定',
                     type: 'warning'
                 }).then(() => {
                     axios({
-                        method:"delete",
-                        url:'/api/admin/user/'+id
+                        method: "delete",
+                        url: '/api/admin/user/' + id
                     })
-                        .then(res=>{
-                            res=res.data;
+                        .then(res => {
+                            res = res.data;
                             this.$message({
                                 type: 'success',
                                 message: '删除成功!'
@@ -314,25 +443,25 @@
                 });
             },
             //新增用户
-            addUser(){
+            addUser() {
                 this.$refs['addForm'].validate((valid) => {
                     if (valid) {
-                       axios({
-                           method:'post',
-                           url:'/api/admin/user',
-                           data:{
-                               loginName:this.add.loginName,
-                               protectEMail:this.add.protectEMail,
-                               protectMTel:this.add.protectMTel
-                           },
-                       }).then(res=>{
-                           res=res.data;
-                            if(res.success){
+                        axios({
+                            method: 'post',
+                            url: '/api/admin/user',
+                            data: {
+                                loginName: this.add.loginName,
+                                protectEMail: this.add.protectEMail,
+                                protectMTel: this.add.protectMTel
+                            },
+                        }).then(res => {
+                            res = res.data;
+                            if (res.success) {
                                 this.queryUser();
-                                this.add.show=false;
+                                this.add.show = false;
                                 this.$refs['addForm'].resetFields();
                             }
-                       })
+                        })
                     } else {
                         this.$message({
                             showClose: true,
@@ -344,13 +473,13 @@
                 });
             },
             //新增用户框显示
-            addUserShow(){
-                this.add.loginName="";
-                this.add.protectEMail="";
-                this.add.protectMTel="";
-                this.add.nameDisabled=false;
-                this.add.title="新增用户";
-                this.add.show=true;
+            addUserShow() {
+                this.add.loginName = "";
+                this.add.protectEMail = "";
+                this.add.protectMTel = "";
+                this.add.nameDisabled = false;
+                this.add.title = "新增用户";
+                this.add.show = true;
             },
             //给用户设置角色
             userSetRole(value, direction, keys) {

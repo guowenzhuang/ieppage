@@ -22,20 +22,127 @@
     <el-container>
         <el-main>
             <el-row :gutter="20" type="flex">
+                <el-col :span="4">
+                    <div>教师名:</div>
+                    <el-input v-model="query.name" placeholder="请输入教师姓名"></el-input>
+                </el-col>
+                <el-col :span="2">
+                    <span>&nbsp;</span>
+                    <div>
+                        <el-button type="primary" @click="search">搜索</el-button>
+                    </div>
+                </el-col>
+                <el-col :span="2">
+                    <span>&nbsp;</span>
+                    <div>
+                        <el-button type="success" @click="addTeacherShow">新增教师</el-button>
+                    </div>
+                </el-col>
                 <el-col :span="2">
                     <div>&nbsp;</div>
                     <el-button icon="el-icon-refresh" type="primary" onclick=" window.location.reload();">刷新</el-button>
                 </el-col>
             </el-row>
+
+
             <el-row :gutter="20" style="margin-top: 20px;">
               <!-- el-table 写这里-->
+                <el-table
+                        :data="teacherData" border>
+                    <el-table-column
+                            type="index"
+                            width="20">
+                    </el-table-column>
+                    <!--<el-table-column
+                            prop="teaPhoto"
+                            label="教师头像">
+                    </el-table-column>-->
+                    <el-table-column
+                            prop="loginName"
+                            label="教师名">
+                    </el-table-column>
+                    <el-table-column
+                            prop="teaSex"
+                            label="性别">
+                        <template slot-scope="scope">
+                            <span>{{scope.row.teaSex==null || scope.row.teaSex=="" ? "无":scope.row.teaSex}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            prop="protectEMail"
+                            label="邮箱">
+                    </el-table-column>
+                    <el-table-column
+                            prop="protectMTel"
+                            label="手机号">
+                    </el-table-column>
+                    <el-table-column
+                            prop="teaDescribe"
+                            label="教师描述">
+                    </el-table-column>
+                    <el-table-column label="操作">
+                        <template slot-scope="scope">
+                            <el-button type="text" @click="updateTeacherShow(scope.row)">修改</el-button>
+                            <el-button type="text" @click="deleteTeacher(scope.row)">删除</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
             </el-row>
             <el-row type="flex" justify="center">
                 <!--el-pagination 写这里-->
+               <el-pagination
+                        layout="prev, pager, next"
+                        :current-page.sync="query.page"
+                        :page-size="query.rows"
+                        @current-change="teacherQuery"
+                        :total="query.total">
+                </el-pagination>
             </el-row>
         </el-main>
     </el-container>
     <div>
+        <el-dialog
+                :title="add.title"
+                :visible.sync="add.show">
+            <el-form  :rules="addRules" ref="addForm" :model="add" label-width="100px" class="demo-ruleForm">
+                <el-form-item prop="loginName" label="姓名">
+                    <el-input v-model="add.loginName" :disabled="add.nameDisabled"></el-input>
+                </el-form-item>
+                <el-form-item prop="protectEMail" label="邮箱">
+                    <el-input v-model="add.protectEMail"></el-input>
+                </el-form-item>
+                <el-form-item prop="protectMTel" label="手机">
+                    <el-input v-model="add.protectMTel"></el-input>
+                </el-form-item>
+                <el-form-item prop="teaSex" label="性别">
+                    <el-radio-group v-model="add.teaSex">
+                    <el-radio label="男">男</el-radio>
+                    <el-radio label="女">女</el-radio>
+                    <el-radio label="保密">保密</el-radio>
+                </el-radio-group>
+                </el-form-item>
+                <el-form-item prop="teaNumber" label="工号">
+                    <el-input v-model="add.teaNumber"></el-input>
+                </el-form-item>
+                <el-form-item prop="teaDescribe" label="描述">
+                    <el-input v-model="add.teaDescribe"></el-input>
+                </el-form-item>
+                <el-form-item  label=院系">
+                    <el-select v-model="add.teaDepartmentid" clearable  placeholder="请选择院系">
+                        <el-option v-for="item in DepData"
+                                   :key="item.departmentId"
+                                   :label="item.name"
+                                   :value="item.departmentId">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" v-if="add.title=='新增教师'" @click="addTeacher">新增</el-button>
+                    <el-button type="primary" v-else  @click="updateTeacher">修改</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
+
     </div>
 </div>
 </body>
@@ -45,14 +152,204 @@
     const main = {
         data(){
             return{
+                teacherData:[],
+                query:{
+                    name:'',
+                    page:1,
+                    rows:10
+                },
+                total:0,
+                add:{
+                    show:false,
+                    title:'',
+                    loginName:'',
+                    protectEMail: '',
+                    protectMTel: '',
+                    teaSex: '',
+                    teaNumber:'',
+                    teaDescribe:'',
+                    teaDepartmentid: '',
+                },
+                addRules: {
+                    loginName: [
+                        {required: true, message: '请输入用户名称', trigger: 'blur'},
+                    ],
 
+                    protectEMail: [
+                        {required: true, message: '请输入邮箱', trigger: 'blur'},
+                    ],
+
+                    protectMTel: [
+                        {required: true, message: '请输入手机号', trigger: 'blur'},
+                    ],
+
+                    teaSex: [
+                        {required: true, message: '请输入性别', trigger: 'blur'},
+                    ],
+                    teaNumber: [
+                        {required: true, message: '请输入工号', trigger: 'blur'},
+                    ],
+                    teaDescribe: [
+                        {required: true, message: '请输入描述信息', trigger: 'blur'},
+                    ],
+                    'teaDepartmentid': [
+                        {required: true, message: '请选择院系', trigger: 'blur'},
+                    ]
+
+
+
+                },
+                DepData:[],
+                active:{}
             }
         },
         methods:{
+            //教师查询
+            teacherQuery(){
+                axios({
+                    method:'get',
+                    url:'/api/admin/teacher/teacherQuery',
+                    params:this.query
+                }).then(res=>{
+                    res=res.data;
+                    this.query.total=res.total;
+                    this.teacherData=res.rows;
+                })
+            },
+            //搜索
+            search(){
+                this.query.page=1;
+                this.teacherQuery();
+            },
+            //新增教师弹出框显示
+            addTeacherShow(){
+                this.add.title="新增教师";
+                this.add.show=true;
+                this.add.loginName="";
+
+            },
+            //新增院系
+            addTeacher(){
+                this.$refs['addForm'].validate((valid) => {
+                    if(valid){
+                        axios({
+                            method:'post',
+                            url:'/api/admin/teacher/addTeacher',
+                            data:this.add
+                        }).then(res=>{
+                            res=res.data;
+                            if(res.success){
+                                this.$message({
+                                    message: res.message,
+                                    type: 'success'
+                                })
+                                this.add.show=false;
+                                this.teacherQuery();
+                            }else {
+                                this.$message({
+                                    type: 'error',
+                                    message: res.message
+                                })
+                            }
+                        })
+                    }else{
+                        this.$message({
+                            type: 'error',
+                            message: '请检查字段'
+                        })
+                        return false;
+                    }
+                });
+            },
+            updateTeacherShow(row) {
+                this.active = row;
+                this.add.title="修改教师";
+                this.add.loginName=row.loginName;
+                this.add.protectEMail=row.protectEMail;
+                this.add.protectMTel=row.protectMTel;
+                this.add.teaSex=row.teaSex;
+                this.add.teaNumber=row.teaNumber;
+                this.add.teaDescribe=row.teaDescribe;
+                this.add.teaDepartmentid=row.teaDepartmentid;
+                this.add.nameDisabled=true;
+                this.add.show=true;
+            },
+            //修改教师
+            updateTeacher() {
+                this.$refs['addForm'].validate((valid) => {
+                    if (valid) {
+                        axios({
+                            method: 'put',
+                            url: "/api/admin/teacher/"+this.active.id,
+                            data: this.add
+                        }).then(res => {
+                            res = res.data;
+                            if (res.success) {
+                                this.$message({
+                                    type: 'success',
+                                    message: res.message
+                                })
+                                this.add.show = false;
+                                this.teacherQuery();
+                                this.$refs['addForm'].resetFields();
+
+                            } else {
+                                this.$message({
+                                    type: 'error',
+                                    message: res.message
+                                })
+                            }
+                        })
+                    } else {
+                        this.$message({
+                            type: 'error',
+                            message: '请检查字段'
+                        })
+                        return false;
+                    }
+                });
+            },
+            deleteTeacher(row){
+                this.$confirm('此操作将永久删除此教师, 是否继续?', '提示', {
+                    cancelButtonText: '取消',
+                    confirmButtonText: '确定',
+                    type: 'warning'
+                }).then(() => {
+                    axios({
+                        method: "delete",
+                        url: '/api/admin/teacher/' + row.id
+                    })
+                        .then(res => {
+                            res = res.data;
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功!'
+                            });
+                            this.teacherQuery();
+                        })
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            queryDep(){
+                axios({
+                    method:'get',
+                    url:'/api/admin/depart/get'
+                }).then((res=>{
+                    console.log("数据1"+res.data.message)
+                    this.DepData=res.data.message;
+                    console.log("数据2"+this.DepData)
+                }))
+            }
 
         },
         mounted(){
-
+            this.teacherQuery();
+            this.queryDep();
         }
     };
     const Component = Vue.extend(main);
