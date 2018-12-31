@@ -49,9 +49,9 @@
 
                 <el-table-column prop="operation" label="操作" align="center" min-width="100">
                     <template slot-scope="scope">
-                        <el-button type="primary" round @click="checkDetail(scope.row)" size="mini">查看试卷
+                        <el-button type="primary" round @click="selectsectionparper(scope.row)" size="mini">查看试卷
                         </el-button>
-                        <el-button type="danger" round @click="deleterubric(scope.row)" size="mini">删除试卷
+                        <el-button type="danger" round @click="removesectionparper(scope.row)" size="mini">删除试卷
                         </el-button>
                     </template>
                 </el-table-column>
@@ -59,6 +59,138 @@
 
         </template>
     </div>
+
+    <!--查看章节测试试卷-->
+    <el-dialog title="查看试卷" :visible.sync="lookparper" width="80%" :before-close="handleClose">
+
+        <div id="parper">
+            <font size="5">
+                章节测试试卷标题:
+            </font>
+            <font size="4" color="red">
+            <span v-for="item in courselist" v-if="courIdccc==item.courId">
+                    {{item.courName}}
+                </span>
+            </font>
+
+            <font size="5">
+                试卷总分:
+            </font>
+            <font size="4" color="red">
+                {{examtimeccc}}
+            </font>
+
+
+            <br>
+            <h2>一.单择题 </h2>
+            <hr>
+            <ol v-for="site in sites">
+            <span v-if="site.rubrictype==='单选题'">
+            <li class="cccc" style="margin-left: 20px">
+                <h2>({{site.index}})<font size="4">{{site.rubrictype}}</font> :{{site.content}} {{site.score}}分 <font
+                        color="red">正确答案:({{site.answer}})</font>
+                </h2>
+            </li>
+            <li class="cccc" v-if="site.seen">
+                <font size="4">A:{{site.answerA}}</font>
+            </li>
+            <li class="cccc" v-if="site.seen">
+                <font size="4">B:{{site.answerB}}</font>
+            </li>
+            <li class="cccc" v-if="site.seen">
+                <font size="4">C:{{site.answerC}}</font>
+            </li>
+            <li class="cccc" v-if="site.seen">
+                <font size="4">D:{{site.answerD}}</font>
+            </li>
+            <br><br>
+                </span>
+            </ol>
+
+            <h2>一.多选题 </h2>
+            <hr>
+            <ol v-for="site in sites">
+
+            <span v-if="site.rubrictype==='多选题'">
+
+            <li class="cccc" style="margin-left: 20px">
+                <h2>({{site.index}})<font size="4">{{site.rubrictype}}</font> :{{site.content}} {{site.score}}分 <font
+                        color="red">正确答案:({{site.answer}})</font>
+                </h2>
+            </li>
+            <li class="cccc" v-if="site.seen">
+                <font size="4">A:{{site.answerA}}</font>
+            </li>
+            <li class="cccc" v-if="site.seen">
+                <font size="4">B:{{site.answerB}}</font>
+            </li>
+            <li class="cccc" v-if="site.seen">
+                <font size="4">C:{{site.answerC}}</font>
+            </li>
+            <li class="cccc" v-if="site.seen">
+                <font size="4">D:{{site.answerD}}</font>
+            </li>
+            <br><br>
+                </span>
+            </ol>
+
+            <h2>一.填空题 </h2>
+            <hr>
+            <ol v-for="site in sites">
+
+            <span v-if="site.rubrictype==='填空题'">
+
+            <li class="cccc" style="margin-left: 20px">
+                <h2>({{site.index}})<font size="4">{{site.rubrictype}}</font> :{{site.content}} {{site.score}}分 <font
+                        color="red">正确答案:({{site.answer}})</font>
+                </h2>
+            </li>
+            <li class="cccc" v-if="site.seen">
+                <font size="4">A:{{site.answerA}}</font>
+            </li>
+            <li class="cccc" v-if="site.seen">
+                <font size="4">B:{{site.answerB}}</font>
+            </li>
+            <li class="cccc" v-if="site.seen">
+                <font size="4">C:{{site.answerC}}</font>
+            </li>
+            <li class="cccc" v-if="site.seen">
+                <font size="4">D:{{site.answerD}}</font>
+            </li>
+            <br><br>
+                </span>
+            </ol>
+
+
+            <h2>一.判断题 </h2>
+            <hr>
+            <ol v-for="site in sites">
+
+            <span v-if="site.rubrictype==='判断题'">
+
+            <li class="cccc" style="margin-left: 20px">
+                <h2>({{site.index}})<font size="4">{{site.rubrictype}}</font> :{{site.content}} {{site.score}}分 <font
+                        color="red">正确答案:({{site.answer}})</font>
+                </h2>
+            </li>
+            <li class="cccc" v-if="site.seen">
+                <font size="4">A:{{site.answerA}}</font>
+            </li>
+            <li class="cccc" v-if="site.seen">
+                <font size="4">B:{{site.answerB}}</font>
+            </li>
+            <li class="cccc" v-if="site.seen">
+                <font size="4">C:{{site.answerC}}</font>
+            </li>
+            <li class="cccc" v-if="site.seen">
+                <font size="4">D:{{site.answerD}}</font>
+            </li>
+            <br><br>
+                </span>
+            </ol>
+        </div>
+
+    </el-dialog>
 
 
     <!--添加试卷的对话框-->
@@ -658,6 +790,8 @@
                     }],
                 value: '',
                 parperList: [],
+                lookparper: false,
+                sites: [],
 
 
                 ruleForm: {
@@ -855,7 +989,7 @@
 
 
             },
-
+            /*根据课程id章节id查询所有的章节试卷*/
             queryparper() {
                 let params = new URLSearchParams();
                 params.append("course", courid);
@@ -869,7 +1003,30 @@
 
                     res = res.data;
                     this.parperList = res;
+                })
 
+            },
+
+            /*根据根据课程id,章节idd 测试试卷id 删除章节测试试卷*/
+            removesectionparper(val) {
+                let params = new URLSearchParams();
+                params.append("course", courid);
+                params.append("section", sessionid);
+                params.append("parperid", val.id);
+
+                axios({
+                    method: 'post',
+                    url: '/api/exam/sectionparper/deletsectionforcourseidandsectionidparperid',
+                    data: params,
+
+                }).then(res => {
+                    res = res.data;
+                    if (res.success) {
+                        this.$notify({title: "成功", message: res.message, type: 'success'});
+                        this.queryparper();
+                    } else {
+                        this.$notify.error({title: "失败", message: res.message})
+                    }
 
                 })
 
@@ -878,6 +1035,28 @@
             /*添加试卷*/
             selectrubric() {
                 this.addparper = true;
+            },
+            /*查看章节测试试卷*/
+            selectsectionparper(val) {
+                this.lookparper = true;
+
+                let params = new URLSearchParams();
+
+                params.append("parperid", val.id);
+
+                axios({
+                    method: 'post',
+                    url: '/api/exam/sectionparper/selectsectionparperrubric',
+                    data: params,
+
+                }).then(res => {
+                    res = res.data;
+                    this.sites = res;
+
+
+                })
+
+
             },
 
             /*根据userid查询所拥有的课程*/
@@ -1038,6 +1217,7 @@
                  */
                 this.bigdialog = false;
                 this.addparper = false;
+                this.queryparper();
             },
 
             /*点击卷子中的题上的移除按钮*/
