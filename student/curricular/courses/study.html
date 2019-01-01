@@ -256,34 +256,11 @@ margin-bottom: 20px;
 
 
 				<el-tab-pane label="测验与作业">
-					<hr />
-					<h3>测验与作业</h3>
-					<hr />
-					<h4>1.音乐意义</h4>
-					<hr />
-					<el-collapse v-model="activeNames" @change="handleChange">
-						<el-collapse-item>
-							<template slot="title">
-								<hr />
-								<h4>单元测试 &nbsp;&nbsp;&nbsp;截止时间： {{ currentDate }}</h4>
-								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-								<el-button type="success">前往测试</el-button>
-							</template>
-
-							<div>
-								<hr />
-								<h6>单元测验共5题，全部为单选题，每题答对得2分。</h6>
-								<h5>截止时间&nbsp;&nbsp;&nbsp;{{ currentDate }}</h5>
-								<h6>请务必在截止时间之前提交，截止时间后的提交不再计分</h6>
-								<hr />
-								<h5>有效分数&nbsp;&nbsp;&nbsp;0.00/10.00</h5>
-								<h6>你的每一次测验系统都将为你计分，并提取最高得分作为你的有效分数</h6>
-								<hr />
-								<h5>有效提交次数&nbsp;&nbsp;&nbsp;0/5</h5>
-
-							</div>
-						</el-collapse-item>
-					</el-collapse>
+					<iframe src="../../../exam/Chaptertest.html" width="100%" height="1000px" frameborder="0">
+					
+					</iframe>
+						
+				</el-collapse>
 
 				</el-tab-pane>
 				<el-tab-pane label="考试">
@@ -298,7 +275,7 @@ margin-bottom: 20px;
 
 
 				<el-tab-pane label="讨论区" name="discussion">
-					<iframe :src="discussUrl" width="100%" height="1000px" frameborder="0"></iframe>
+					<iframe :src="discussUrl" width="100%" height="1500px" frameborder="0"></iframe>
 				</el-tab-pane>
 			</el-tabs>
 		</template>

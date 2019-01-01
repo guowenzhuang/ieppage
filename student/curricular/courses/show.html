@@ -588,16 +588,13 @@
 							this.courId = decodeURIComponent(r[2]);
 							console.log("token=> bearer " + sessionStorage.getItem("access_token"));
 							sessionStorage.setItem("courId", this.courId);
+							console.log("存到sessionStorage里的数据:"+sessionStorage.getItem("courId"));
 						}
-
 						return '';
 					},
 					add1: function() {
 						if (sessionStorage.getItem("access_token") != null) {
-
-
 							if (this.baoming == "立即参加") {
-
 								axios({
 									method: 'post',
 									url: `/api/student/studentPart/add`,
