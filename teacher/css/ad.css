@@ -14,3 +14,6 @@
     bottom: auto;
     top: 80px;
 }
+.el-input__inner{
+    width: 300px;
+}
