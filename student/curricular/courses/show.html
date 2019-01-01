@@ -68,7 +68,7 @@
 						<img src="../../img/uiz6.png">
 					</div>
 					<div class="float_l margin_l30 margin_r40">
-						<a class="color_black" href="curricular/user/13/course.html" v-show="isCenter">个人中心</a>
+						<a class="color_black" href="../user/13/course.html" v-show="isCenter">个人中心</a>
 						<a class="btn btn-default navbar-btn sign-in" href="javascript:void(0)" @click="login()" v-show="isShow">登录</a>
 						<img :src="userPhoto" width="45px" />
 					</div>
@@ -76,48 +76,7 @@
 
 			</div>
 		</div>
-		<script>
-			var bt = new Vue({
-				el: "#bt",
-				mounted: function() {
-					import menu from 'menu';
-					var courId=getQueryString("courId");
-					chaxun();
-					var roleNames = sessionStorage.getItem("roleNames");
-					if (roleNames != null && roleNames == ("学生")) {
-						this.isShow = false;
-						this.isCenter = true;
-						this.userPhoto = sessionStorage.getItem("userPhoto");
-					}
-				},
-				data: {
-					isShow: true,
-					isCenter: false,
-					userPhoto: ''
-				},
-				methods: {
-					login: function() {
-						window.location.href ="\\login.html?callback-url=http://127.0.0.1/student/curricular/courses/show.html?courId="+courId;
-					},
-					tuichu: function() {
-						sessionStorage.clear();
-						localStorage.clear();
-					},
-					getQueryString(name) {
-						var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-						var r = window.location.search.substr(1).match(reg);
-						if (r != null) {
-							this.courDepid = decodeURIComponent(r[2]);
-							this.queryKeichengContent(this.courDepid)
-						} else {
-							this.queryKeichengContent();
-						}
-						return '';
-					}
-				}
-			});
-		</script>
-		
+	
 
 
 		<div id="details" class="container layout layout-margin-top">
@@ -740,6 +699,33 @@
 				}
 
 			});
+			
+			var bt = new Vue({
+				el: "#bt",
+				mounted: function() {	
+					var roleNames = sessionStorage.getItem("roleNames");
+					if (roleNames != null && roleNames == ("学生")) {
+						this.isShow = false;
+						this.isCenter = true;
+						this.userPhoto = sessionStorage.getItem("userPhoto");
+					}
+				},
+				data: {
+					isShow: true,
+					isCenter: false,
+					userPhoto: ''
+				},
+				methods: {
+					login: function() {
+						window.location.href ="\\login.html?callback-url=http://127.0.0.1/student/curricular/courses/show.html";
+					},
+					tuichu: function() {
+						sessionStorage.clear();
+						localStorage.clear();
+					}
+				}
+			});	
+				
 		</script>
 
 
