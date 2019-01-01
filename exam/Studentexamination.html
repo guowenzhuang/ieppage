@@ -375,7 +375,7 @@
     axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
     let userid = sessionStorage.getItem("userid");
     var courseid = sessionStorage.getItem("courId");
-    new Vue({
+   var app= new Vue({
         el: "#app",
         data: {
             //最终得分
@@ -413,26 +413,31 @@
             kaoshijieshu() {
                 window.location.href = "/exam/StudentTest.html?"
             },
-            /*点击交卷*/
+
+
+
+
+            /*交卷前睡一秒*/
             endtest() {
-                let params = new URLSearchParams();
-                params.append("studentId", userid);
-                params.append("examparperId", this.tableData.id);
-                params.append("courseid", courseid);
-                axios({
-                    method: 'post',
-                    url: '/api/exam/examrubric/examination',
-                    data: params,
-                }).then(res => {
+                setTimeout(function(){
+                    let params = new URLSearchParams();
+                    params.append("studentId", userid);
+                    params.append("examparperId", app.tableData.id);
+                    params.append("courseid", courseid);
+                    axios({
+                        method: 'post',
+                        url: '/api/exam/examrubric/examination',
+                        data: params,
+                    }).then(res => {
 
-                    this.finalScore = res.data.remark;
-                    this.centerDialogVisible = true;
-                    if (this.time != null) {
-                        window.clearInterval(this.time);
-                    }
+                        app.finalScore = res.data.remark;
+                        app.centerDialogVisible = true;
+                        if (app.time != null) {
+                            window.clearInterval(app.time);
+                        }
 
+                    })}, 5000);
 
-                })
             },
             query() {
                 let testid = v['name'];
