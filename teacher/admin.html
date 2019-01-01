@@ -9,11 +9,7 @@
     <script src="js/axios.min.js"></script>
     <link rel="stylesheet" href="css/ad.css">
     <style>
-        .el-dialog__body {
-            width: 700px;
-            height: 1000px;
 
-        }
     </style>
 </head>
 <body>
@@ -181,7 +177,7 @@
                            <el-button type="danger" round size="mini"  icon="el-icon-delete" @click="deleteModule(scope.row.chaId)"></el-button>
 
                             <el-button v-if="scope.row.children==null || scope.row.children.size==0" type="primary" round size="mini"  icon="el-icon-edit" @click="updateModuleShow(scope.row)"></el-button>
-                            <el-button @click="zhTest(scope.row)">添加章节测试</el-button>
+                            <el-button round size="mini"  @click="zhTest(scope.row)">添加章节测试</el-button>
                         </template>
                     </el-table-column>
                     </el-table>
