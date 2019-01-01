@@ -19,6 +19,10 @@
             border: saddlebrown 2px solid;
         }
 
+        .el-dialog, .is-fullscreen .el-dialog__body {
+            height: 100%;
+        }
+
         .el-main {
             background-color: #E9EEF3;
             color: #333;
@@ -68,16 +72,14 @@
                 章节测试试卷标题:
             </font>
             <font size="4" color="red">
-            <span v-for="item in courselist" v-if="courIdccc==item.courId">
-                    {{item.courName}}
-                </span>
+                {{sectionparpertitle}}
             </font>
 
             <font size="5">
                 试卷总分:
             </font>
             <font size="4" color="red">
-                {{examtimeccc}}
+                {{sectionparpertotal}}
             </font>
 
 
@@ -792,6 +794,8 @@
                 parperList: [],
                 lookparper: false,
                 sites: [],
+                sectionparpertitle: "",
+                sectionparpertotal: "",
 
 
                 ruleForm: {
@@ -1039,7 +1043,11 @@
             /*查看章节测试试卷*/
             selectsectionparper(val) {
                 this.lookparper = true;
-
+                /**
+                 * 试卷信息
+                 */
+                this.sectionparpertitle = val.title;
+                this.sectionparpertotal = val.total;
                 let params = new URLSearchParams();
 
                 params.append("parperid", val.id);
