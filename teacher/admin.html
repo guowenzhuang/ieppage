@@ -10,8 +10,8 @@
     <link rel="stylesheet" href="css/ad.css">
     <style>
         .el-dialog__body {
-            width: 700px;
-            height: 1000px;
+
+            height: 3000px;
 
         }
     </style>
@@ -70,7 +70,7 @@
                             <!-- <el-button type="text" @click="updateModuleShow(scope.row)">课次信息</el-button>-->
                             <el-button type="danger" round size="mini" icon="el-icon-delete"
                                        @click="deleteModule(scope.row.chaId)"></el-button>
-                            <el-button @click="zhTest(scope.row)">添加章节测试</el-button>
+                            <el-button @click="zhTest(scope.row)">章节测试</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -138,10 +138,9 @@
         </el-form>
     </el-dialog>
     <el-dialog :visible.sync="chadia.show" fullscreen>
-        <iframe src="/exam/examcomposition.html" style="height: 100%;width: 1000px;" frameborder="0"></iframe>
+        <iframe src="/exam/examcomposition.html" style="height: 100%;width: 100%;" frameborder="0"></iframe>
         <div slot="footer" class="dialog-footer">
-            <el-button @click="chadia.show = false">取 消</el-button>
-            <el-button type="primary" @click="chadia.show = false">确 定</el-button>
+
         </div>
     </el-dialog>
 </div>
@@ -175,7 +174,6 @@
                            <el-button type="danger" round size="mini"  icon="el-icon-delete" @click="deleteModule(scope.row.chaId)"></el-button>
 
                             <el-button v-if="scope.row.children==null || scope.row.children.size==0" type="primary" round size="mini"  icon="el-icon-edit" @click="updateModuleShow(scope.row)"></el-button>
-                            <el-button @click="zhTest(scope.row)">添加章节测试</el-button>
                         </template>
                     </el-table-column>
                     </el-table>
@@ -189,9 +187,6 @@
             },
             addChapterShow(row) {
                 v.addChapterShow(row);
-            },
-            zhTest(row) {
-                v.zhTest(row);
             }
         }
     });

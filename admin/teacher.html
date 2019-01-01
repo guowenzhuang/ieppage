@@ -57,7 +57,7 @@
                                    :show-file-list="false"
                                    :on-success="handSuccess"
                                    :headers="authHead">
-                            <el-button type="primary">导入学生</el-button>
+                            <el-button type="primary">导入老师</el-button>
                         </el-upload>
                     </div>
                 </el-col>
@@ -76,10 +76,6 @@
                             type="index"
                             width="50">
                     </el-table-column>
-                    <!--<el-table-column
-                            prop="teaPhoto"
-                            label="教师头像">
-                    </el-table-column>-->
                     <el-table-column
                             prop="loginName"
                             label="教师名">
@@ -98,6 +94,10 @@
                     <el-table-column
                             prop="protectMTel"
                             label="手机号">
+                    </el-table-column>
+                    <el-table-column
+                            prop="depName"
+                            label="所属院系">
                     </el-table-column>
                     <el-table-column
                             prop="teaDescribe"
@@ -150,7 +150,7 @@
                 <el-form-item prop="teaDescribe" label="描述">
                     <el-input v-model="add.teaDescribe"></el-input>
                 </el-form-item>
-                <el-form-item  label=院系">
+                <el-form-item  label="院系">
                     <el-select v-model="add.teaDepartmentid" clearable  placeholder="请选择院系">
                         <el-option v-for="item in DepData"
                                    :key="item.departmentId"

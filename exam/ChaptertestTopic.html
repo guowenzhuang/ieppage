@@ -273,7 +273,7 @@
     axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
     let userid = sessionStorage.getItem("userid");
     var courseid = sessionStorage.getItem("courId");
-    new Vue({
+  var app=  new Vue({
         el: "#app",
         data: {
             //最终得分
@@ -320,20 +320,34 @@
             },
             /*点击交卷*/
             endtest() {
-                let params = new URLSearchParams();
-                params.append("studentId", userid);
-                params.append("examparperId", this.tableData.id);
-                axios({
-                    method: 'post',
-                    url: '/api/exam/Sectionrubric/examination',
-                    data: params,
-                }).then(res => {
-                    this.finalScore = res.data.remark;
-                     this.answerIdlist=res.data.remark2;
-                    // this.centerDialogVisibledanxaun=true;
-                    this.iszouti=false;
+                this.$confirm('是否提交测试?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.secondStep();
                 })
             },
+             /*交卷前睡一秒*/
+            secondStep() {
+                setTimeout(function(){
+                    console.log("倒计时")
+                    let params = new URLSearchParams();
+                    params.append("studentId", userid);
+                    params.append("examparperId",app.tableData.id);
+                    axios({
+                        method: 'post',
+                        url: '/api/exam/Sectionrubric/examination',
+                        data: params,
+                    }).then(res => {
+                        app.finalScore = res.data.remark;
+                        app.answerIdlist=res.data.remark2;
+                        // this.centerDialogVisibledanxaun=true;
+                        app.iszouti=false;
+                    })}, 1500);
+
+            },
+
             query() {
                 let chapterId = v['chapterId'];
                 let params = new URLSearchParams();
