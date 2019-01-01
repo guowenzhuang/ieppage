@@ -11,12 +11,10 @@
 </head>
 <body>
 <div id="app">
-
-    <el-collapse v-for="(site,index) in Curriculumcollectionlist" >
-        <h3>{{site.chaName}}：</h3>
-        <span v-for="(chapter,index) in ChaptertestList" v-if="chapter.sectionId==site.chaId" >
-        <span  @click="testlog(chapter.id)">
-
+<span v-for="(site,index) in Curriculumcollectionlist">
+    <h3>{{site.chaName}}：</h3>
+    <el-collapse v-model="activeName" accordion>
+        <span v-for="(chapter,index) in ChaptertestList" v-if="chapter.sectionId==site.chaId"   @click="testlog(chapter.id)">
          <el-collapse-item>
             <template slot="title" >
                 <h3 >{{chapter.title}}</h3><el-button type="success" style="margin-left: 1000px" size="medium" @click="testzhangjie(chapter.id)">前往测验</el-button>
@@ -46,22 +44,22 @@
                 </el-table>
 
         </el-collapse-item>
-            </span>
-      </span>
+        </span>
     </el-collapse>
-
+</span>
 </div>
     <script>
         axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
         let userid = sessionStorage.getItem("userid");
+        var courseid = sessionStorage.getItem("courId");
         new Vue({
             el:"#app",
             data:{
                 tableData: [
                 ],
                 Curriculumcollectionlist:[],//课程章节集合
-                ChaptertestList:[]//章节测试集合
-
+                ChaptertestList:[],//章节测试集合
+                activeName:'1'
             },
             mounted: function () {
                 this.quary();
@@ -74,7 +72,7 @@
                 quary() {
                     let params = new URLSearchParams();
                     //params.append("studentId", userid);
-                    params.append("courseid", "16");
+                    params.append("courseid", "15");
                     axios({
                         method: 'post',
                         url: '/api/exam/sectionparper/selectsectionparperrubricer',
