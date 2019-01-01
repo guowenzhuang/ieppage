@@ -217,11 +217,11 @@
                                     </div>
                                     <div style="text-align: center;">
                                         <el-tag type="success">
-                                            已学: {{item.chaIndex-1}}/{{item.countChaSum}} 总共
+                                            已学: {{item.chaIndex+1}}/{{item.countChaSum}} 总共
                                         </el-tag>
                                     </div>
                                     <div style="padding: 15px;">
-                                        <el-progress :show-text="false" :stroke-width="10" :percentage="((item.chaIndex-1)/item.countChaSum)*100"></el-progress>
+                                        <el-progress :show-text="false" :stroke-width="10" :percentage="((item.chaIndex+1)/item.countChaSum)*100"></el-progress>
                                         <br>
                                         <el-tag type="warning">
                                             报名时间:{{item.starttime}}

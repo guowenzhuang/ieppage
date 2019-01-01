@@ -35,7 +35,30 @@
                 <el-col :span="2">
                     <span>&nbsp;</span>
                     <div>
-                        <el-button type="success" @click="addTeacherShow">新增教师</el-button>
+                        <el-button type="primary" @click="addTeacherShow">新增</el-button>
+                    </div>
+                </el-col>
+                <el-col :span="3">
+                    <span>&nbsp;</span>
+                    <div>
+                        <el-button type="success" @click="templateShow">下载模板</el-button>
+                    </div>
+                </el-col>
+                <el-col :span="2">
+                    <span>&nbsp;</span>
+                    <div>
+                        <el-button type="success" @click="exports">导出</el-button>
+                    </div>
+                </el-col>
+                <el-col :span="3">
+                    <span>&nbsp;</span>
+                    <div>
+                        <el-upload class="avatar-uploader" action="/api/admin/teacher/import"
+                                   :show-file-list="false"
+                                   :on-success="handSuccess"
+                                   :headers="authHead">
+                            <el-button type="primary">导入老师</el-button>
+                        </el-upload>
                     </div>
                 </el-col>
                 <el-col :span="2">
@@ -51,12 +74,8 @@
                         :data="teacherData" border>
                     <el-table-column
                             type="index"
-                            width="20">
+                            width="50">
                     </el-table-column>
-                    <!--<el-table-column
-                            prop="teaPhoto"
-                            label="教师头像">
-                    </el-table-column>-->
                     <el-table-column
                             prop="loginName"
                             label="教师名">
@@ -65,7 +84,7 @@
                             prop="teaSex"
                             label="性别">
                         <template slot-scope="scope">
-                            <span>{{scope.row.teaSex==null || scope.row.teaSex=="" ? "无":scope.row.teaSex}}</span>
+                            <span>{{scope.row.teaSex==null || scope.row.teaSex=="" ? "保密":scope.row.teaSex}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column
@@ -75,6 +94,10 @@
                     <el-table-column
                             prop="protectMTel"
                             label="手机号">
+                    </el-table-column>
+                    <el-table-column
+                            prop="depName"
+                            label="所属院系">
                     </el-table-column>
                     <el-table-column
                             prop="teaDescribe"
@@ -127,7 +150,7 @@
                 <el-form-item prop="teaDescribe" label="描述">
                     <el-input v-model="add.teaDescribe"></el-input>
                 </el-form-item>
-                <el-form-item  label=院系">
+                <el-form-item  label="院系">
                     <el-select v-model="add.teaDepartmentid" clearable  placeholder="请选择院系">
                         <el-option v-for="item in DepData"
                                    :key="item.departmentId"
@@ -143,6 +166,19 @@
             </el-form>
         </el-dialog>
 
+        <el-dialog
+                title="下载模板"
+                :visible.sync="template.show">
+            <el-checkbox-group v-model="template.checkList">
+                <el-checkbox v-for="(item,i) in template.data" :key="i" :label="item.name" :disabled="item.noNull">
+
+                </el-checkbox>
+            </el-checkbox-group>
+            <div slot="footer">
+                <el-button type="success" size="large" long @click="downTemplate">下载</el-button>
+            </div>
+        </el-dialog>
+
     </div>
 </div>
 </body>
@@ -152,6 +188,11 @@
     const main = {
         data(){
             return{
+                template: {
+                    show: false,
+                    checkList: [],
+                    data: []
+                },
                 teacherData:[],
                 query:{
                     name:'',
@@ -200,10 +241,89 @@
 
                 },
                 DepData:[],
-                active:{}
+                active:{},
+                //上传文件附加额外请求头参数
+                authHead: {
+                    Authorization: "bearer " + sessionStorage.getItem("access_token")
+                }
             }
         },
         methods:{
+            handSuccess(res) {
+                if (res.success) {
+                    this.$message({
+                        type: 'success',
+                        message: '导入教师成功'
+                    })
+                } else {
+                    let m = JSON.parse(res.message);
+                    this.$message({
+                        type: 'error',
+                        message: "导入教师:" + m.loginName + " 致使失败 请检查重新导入"
+                    })
+                }
+
+            },
+            downTemplate() {
+                axios({
+                    method: 'get',
+                    url: '/api/admin/teacher/expertTemplate',
+                    responseType: 'blob',
+                    params: {
+                        names: this.template.checkList.join(",")
+                    }
+                }).then((res) => {
+                    var blob = new Blob([res.data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'})
+                    var url = window.URL.createObjectURL(blob);
+                    var aLink = document.createElement("a");
+                    aLink.style.display = "none";
+                    aLink.href = url;
+                    aLink.setAttribute("download", "教师导入模板.xlsx");
+                    document.body.appendChild(aLink);
+                    aLink.click();
+                    document.body.removeChild(aLink); //下载完成移除元素
+                    window.URL.revokeObjectURL(url); //释放掉blob对象
+                })
+
+            },
+            templateShow() {
+                axios({
+                    method: 'get',
+                    url: '/api/admin/teacher/getTemplate'
+                }).then((res) => {
+                    this.template.data = res.data;
+                    this.template.checkList = res.data.filter(row => {
+                        return row.noNull
+                    })
+
+                    this.template.checkList = this.template.checkList.map(row => {
+                        return row.name;
+                    });
+
+                    this.template.show = true;
+                })
+            },
+            //导出
+            exports() {
+                axios({
+                    method: 'get',
+                    url: '/api/admin/teacher/exports',
+                    responseType: 'blob',
+                    params: this.query
+                }).then(res => {
+                    var blob = new Blob([res.data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'})
+                    var url = window.URL.createObjectURL(blob);
+                    var aLink = document.createElement("a");
+                    aLink.style.display = "none";
+                    aLink.href = url;
+                    aLink.setAttribute("download", "教师.xlsx");
+                    document.body.appendChild(aLink);
+                    aLink.click();
+                    document.body.removeChild(aLink); //下载完成移除元素
+                    window.URL.revokeObjectURL(url); //释放掉blob对象
+
+                })
+            },
             //教师查询
             teacherQuery(){
                 axios({
@@ -340,9 +460,7 @@
                     method:'get',
                     url:'/api/admin/depart/get'
                 }).then((res=>{
-                    console.log("数据1"+res.data.message)
                     this.DepData=res.data.message;
-                    console.log("数据2"+this.DepData)
                 }))
             }
 
