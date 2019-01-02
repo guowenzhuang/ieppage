@@ -9,7 +9,10 @@
     <script src="js/axios.min.js"></script>
     <link rel="stylesheet" href="css/ad.css">
     <style>
-
+        .el-dialog__body {
+            width: 100%;
+            height: 3000px;
+        }
     </style>
 </head>
 <body>
@@ -140,10 +143,9 @@
         </el-form>
     </el-dialog>
     <el-dialog :visible.sync="chadia.show" fullscreen>
-        <iframe src="/exam/examcomposition.html" style="height: 100%;width: 1000px;" frameborder="0"></iframe>
+        <iframe src="/exam/examcomposition.html" style="height: 100%;width: 100%;" frameborder="0"></iframe>
         <div slot="footer" class="dialog-footer">
-            <el-button @click="chadia.show = false">取 消</el-button>
-            <el-button type="primary" @click="chadia.show = false">确 定</el-button>
+
         </div>
     </el-dialog>
 </div>
