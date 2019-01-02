@@ -27,21 +27,24 @@
 
 </head>
 <body>
-<div class="main" id="app">
+<div  id="app" class="panel-body" style="height: 800px; overflow:scroll">
     <!--nr start-->
-    <div class="test_main" :data="tableData">
+    <div class="test_main" :data="tableData" style="border: 1px  #000000; width: 90%; margin: 0 auto;">
 
         <div class="nr_left">
             <div class="test">
                 <form action="" method="post">
-                    <div class="test_title">
-                        <font><input type="button" name="test_jiaojuan" value="提交" @click="endtest"></font>
-                    </div>
+
                     <div class="test_content">
                         <div class="test_content_title">
                             <h2>最终得分为:<span style="margin-left:20px;color: red">{{finalScore}}分</span></h2>
-                            <el-button style="float: right" @click="rollbacktest">返回</el-button>
+                            <el-button  style="float: right" @click="rollbacktest">返回</el-button>
+                            <el-button  type="primary" style="float: right;margin-right: 20px" @click="endtest">提交</el-button>
+
                         </div>
+                       <!-- <div class="test_title">
+                            <font><input type="button" name="test_jiaojuan" value="提交" @click="endtest"></font>
+                        </div>-->
                     </div>
                     <div class="test_content">
                         <div class="test_content_title">
@@ -349,12 +352,14 @@
             },
 
             query() {
-                let chapterId = v['chapterId'];
-                let params = new URLSearchParams();
-                params.append("examparper", chapterId);//章节测试id
-                /*params.append("course", "16");//课程id
-                params.append("studentid", userid);//学生ID
-                params.append("section", "42");//章节id*/
+                 let chapterId = v['chapterId'];
+                let section = v['section'];
+
+                 let params = new URLSearchParams();
+                 params.append("examparper", chapterId);//章节测试id
+                 params.append("course", courseid);//课程id
+                 params.append("studentid", userid);//学生ID
+                 params.append("section", section);//章节id
 
                 axios({
                     method: 'post',
