@@ -110,7 +110,7 @@
 
                     }).then(res => {
                         if (res.data.success) {
-                           window.location.href = "/exam/Studentexamination.html?name="+row.id;
+                           window.open ( "/exam/Studentexamination.html?name="+row.id);
                         } else {
                             this.$notify({
                                 title: '失败',

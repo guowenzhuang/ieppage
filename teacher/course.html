@@ -234,7 +234,7 @@
                 this.addCourseDialog.courId=row.courId;
                 this.addCourseDialog.courName=row.courName;
                 this.addCourseDialog.courPrice=row.courPrice;
-                this.addCourseDialog.courPicurl='';
+                this.addCourseDialog.courPicurl=row.courPicurl;
                 this.addCourseDialog.courContent=row.courContent;
                 this.addCourseDialog.show = true
                 this.addCourseDialog.nameDisabled=true;
@@ -304,7 +304,7 @@
                     center: true
                 }).then(() => {
                     axios({
-                        method: 'post',
+                        method: 'delete',
                         url: '/api/teacher/course/deleteCourseById',
                         params: {
                             courId: row.courId
@@ -313,14 +313,13 @@
                             "Authorization": "bearer " + sessionStorage.getItem("access_token")
                         }
                     })
-
                     this.$message({
                         type: 'success',
                         message: '删除成功!',
 
                     });
-                   location.reload()
                     this.queryCourse()
+                    location.reload()
                 }).catch(() => {
                     this.$message({
                         type: 'info',

@@ -8,34 +8,69 @@
     <link rel="stylesheet" type="text/css" href="css/index.css"/>
     <script src="js/index.js"></script>
     <script src="js/axios.js"></script>
+    <style>
+        .el-collapse-item__header {
+            background: rgb(232, 249, 255);
+        }
+
+        .el-icon-arrow-right {
+            width: 0;
+            height: 0;
+            visibility: hidden;
+        }
+        .el-collapse-item__header{
+            line-height:20px;
+        }
+        .el-table__header th, .el-table__header tr {
+
+            background-color: #17B3A3;
+
+            color: black;
+
+        }
+
+    </style>
 </head>
 <body>
 <div id="app">
-<span v-for="(site,index) in Curriculumcollectionlist">
+   <!-- <el-button icon="el-icon-refresh" type="primary" onclick=" window.location.reload();">刷新</el-button>-->
+    <span v-for="(site,index) in Curriculumcollectionlist">
     <h3>{{site.chaName}}：</h3>
-    <el-collapse v-model="activeName" accordion>
-        <span v-for="(chapter,index) in ChaptertestList" v-if="chapter.sectionId==site.chaId"   @click="testlog(chapter.id)">
+    <el-collapse accordion v-model="activeName" v-for="(chapter,index) in ChaptertestList"
+                 v-if="chapter.sectionId==site.chaId" @change="testlog(chapter.id)">
          <el-collapse-item>
-            <template slot="title" >
-                <h3 >{{chapter.title}}</h3><el-button type="success" style="margin-left: 1000px" size="medium" @click="testzhangjie(chapter.id)">前往测验</el-button>
+            <template slot="title">
+                <div style="display: flex;width: 100%;justify-content: space-between;">
+                <h3 style="margin-left: 50px">
+                    <i class="el-icon-arrow-left"></i>
+                    {{chapter.title}}
+                </h3>
+                <el-button type="success" size="medium" style="margin: 15px;" @click="testzhangjie(chapter)">前往测验</el-button>
+                </div>
             </template>
                 <el-table
                         :data="tableData"
-                        style="width: 800px">
+                        style="width: 800px;margin-left: 200px; margin-top: 20px"
+                        border
+
+                        :row-class-name="tableRowClassName">
                     <el-table-column
+                            align="center"
                             label="上一次提交时间"
-                          >
+                    >
                          <template slot-scope="scope">
                 <span style="margin-left: 10px">{{ scope.row.endtime }}</span>
                     </template>
                     </el-table-column>
                     <el-table-column
+                            align="center"
                             label="测验次数">
                          <template slot-scope="scope">
                 <span style="margin-left: 10px">{{ scope.row.examnum }}</span>
                     </template>
                     </el-table-column>
                     <el-table-column
+                            align="center"
                             label="测验最高分">
                             <template slot-scope="scope">
                 <span style="margin-left: 10px">{{ scope.row.maxtotal }}</span>
@@ -44,61 +79,64 @@
                 </el-table>
 
         </el-collapse-item>
-        </span>
     </el-collapse>
 </span>
 </div>
-    <script>
-        axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
-        let userid = sessionStorage.getItem("userid");
-        var courseid = sessionStorage.getItem("courId");
-        new Vue({
-            el:"#app",
-            data:{
-                tableData: [
-                ],
-                Curriculumcollectionlist:[],//课程章节集合
-                ChaptertestList:[],//章节测试集合
-                activeName:'1'
-            },
-            mounted: function () {
-                this.quary();
+<script>
 
-            },
-            methods:{
-                testzhangjie(chapter){
-                    window.location.href = "/exam/ChaptertestTopic.html?chapterId="+chapter;
-                },
-                quary() {
-                    let params = new URLSearchParams();
-                    //params.append("studentId", userid);
-                    params.append("courseid", "15");
-                    axios({
-                        method: 'post',
-                        url: '/api/exam/sectionparper/selectsectionparperrubricer',
-                        data: params,
-                    }).then(res => {
-                        this.Curriculumcollectionlist = res.data.sectionlist.message;
-                        this.ChaptertestList=res.data.parperlist;
-                    })
-                },
-                testlog(chapter){
-                   // alert(chapter);
-                   let params = new URLSearchParams();
-                   params.append("studentid", userid);
-                    params.append("parperid", chapter);
-                    axios({
-                        method: 'post',
-                        url: '/api/exam/sectionparper/selecttotalandnumandmaxtotal',
-                        data: params,
-                    }).then(res => {
-                        this.tableData=res.data;
-                    })
-                }
+    var elements = document.getElementsByClassName('el-collapse-item__arrow');
+    for (var i = elements.length - 1; i >= 0; i--) {
+        elements[i].parentNode.removeChild(elements[i]);
+    }
+    axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
+    let userid = sessionStorage.getItem("userid");
+    var courseid = sessionStorage.getItem("courId");
+    new Vue({
+        el: "#app",
+        data: {
+            tableData: [],
+            Curriculumcollectionlist: [],//课程章节集合
+            ChaptertestList: [],//章节测试集合
+            activeName: '1'
+        },
+        mounted: function () {
+            this.quary();
 
+        },
+        methods: {
+            testzhangjie(chapter) {
+                window.location.href = "/exam/ChaptertestTopic.html?chapterId="+chapter.id+"&section="+chapter.sectionId;
+            },
+            quary() {
+                let params = new URLSearchParams();
+                //params.append("studentId", userid);
+                params.append("courseid", courseid);
+                axios({
+                    method: 'post',
+                    url: '/api/exam/sectionparper/selectsectionparperrubricer',
+                    data: params,
+                }).then(res => {
+                    this.Curriculumcollectionlist = res.data.sectionlist.message;
+                    this.ChaptertestList = res.data.parperlist;
+                })
+            },
+            testlog(chapter) {
+                // alert(chapter);
+                let params = new URLSearchParams();
+                params.append("studentid", userid);
+                params.append("parperid", chapter);
+                axios({
+                    method: 'post',
+                    url: '/api/exam/sectionparper/selecttotalandnumandmaxtotal',
+                    data: params,
+                }).then(res => {
+                    this.tableData = res.data;
+                })
             }
-        })
-    </script>
+
+        }
+    })
+</script>
 
 </body>
 </html>

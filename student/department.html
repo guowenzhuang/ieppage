@@ -16,6 +16,7 @@
     <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap-theme.min.css">
     <link rel="stylesheet" type="text/css" href="css/muke.css">
     <link rel="stylesheet" type="text/css" href="css/departcss.css">
+		<script src="js/vue.min.js"></script>
 
     <script src="js/jquery.js"></script>
     <style>
@@ -108,7 +109,7 @@
 <body>
 <div id="app">
     <!-- 顶部 -->
-    <div class="width100 float_l" style="margin-top: -70px;">
+    <div class="width100 float_l" style="margin-top: -70px;" id="bt">
         <div class="width100 float_l height80 line_hei80">
 
             <!-- 顶部左边 -->
@@ -119,8 +120,8 @@
                 <div class="float_l">
                     <ul class="ul_li fon_siz16">
                         <li><a class="color_black" href="/student/curricular/courses/index.html">课程</a></li>
-                        <li><a class="color_black" href="">院系</a></li>
-                        <li><a class="color_black" href="">名师专栏</a></li>
+                        <li><a class="color_black" href="department.html">院系</a></li>
+                        <li><a class="color_black" href="curricular/paths/index.html">名师专栏</a></li>
                     </ul>
                 </div>
             </div>
@@ -138,10 +139,10 @@
                     <img src="img/uiz6.png">
                 </div>
                 <div class="float_l margin_l30 margin_r40">
-                    <a class="btn btn-default navbar-btn sign-in" data-sign="signin" href="#sign-modal"
-                       data-toggle="modal">登录</a>
-                    <a class="btn btn-default navbar-btn sign-up" data-sign="signup" href="#sign-modal"
-                       data-toggle="modal">注册</a>
+                   <a class="color_black" href="/student/curricular/user/13/course.html" v-show="isCenter">个人中心</a>
+                   <a class="btn btn-default navbar-btn sign-in" href="javascript:void(0)" @click="login()" v-show="isShow">登录</a>
+                   
+                   <img :src="userPhoto" width="45px" />
                 </div>
             </div>
 
@@ -193,6 +194,33 @@
 </div>
 </body>
 <script>
+	  var bt = new Vue({
+	  	el: "#bt",
+	  	mounted: function() {
+	  		var roleNames = sessionStorage.getItem("roleNames");
+	  		if (roleNames != null && roleNames == ("学生")) {
+	  			this.isShow = false;
+	  			this.isCenter = true;
+	  			this.userPhoto = sessionStorage.getItem("userPhoto");
+	  		}
+	  	},
+	  	data: {
+	  		isShow: true,
+	  		isCenter: false,
+	  		userPhoto: ''
+	  	},
+	  	methods: {
+	  		login: function() {
+	  			window.location.href = "http://127.0.0.1/login.html?callback-url=http://127.0.0.1/student/department.html";
+	  		},
+	  		tuichu: function() {
+	  			sessionStorage.clear();
+	  			localStorage.clear();
+	  		}
+	  	}
+	  });
+	 
+	
     let depAll = $("#departAll");
     $.ajax({
         method: 'GET',

@@ -10,28 +10,14 @@
     <link rel="stylesheet" href="css/ad.css">
     <style>
         .el-dialog__body {
-            width: 700px;
-            height: 1000px;
-
+            width: 100%;
+            height: 3000px;
         }
     </style>
 </head>
 <body>
 <div id="app">
 
-    <template>
-
-        <el-breadcrumb separator="/">
-
-            <!-- <el-breadcrumb-item><a href="ei.html">基本信息</a></el-breadcrumb-item>-->
-            <!--<el-breadcrumb-item><a href="video.html">视频课</a></el-breadcrumb-item>
-
-            <el-breadcrumb-item><a href="management.html">学员管理</a></el-breadcrumb-item>-->
-            <el-breadcrumb-item><a href="materials.html">课程资料</a></el-breadcrumb-item>
-
-        </el-breadcrumb>
-
-    </template>
     <el-container>
         <el-main>
             <el-row :gutter="20" type="flex">
@@ -67,10 +53,10 @@
                             <!-- <el-button type="primary" icon="el-icon-edit"></el-button>-->
                             <el-button type="info" round size="mini" icon="el-icon-plus"
                                        @click="addChapterShow(scope.row)"></el-button>
-                            <!-- <el-button type="text" @click="updateModuleShow(scope.row)">课次信息</el-button>-->
                             <el-button type="danger" round size="mini" icon="el-icon-delete"
                                        @click="deleteModule(scope.row.chaId)"></el-button>
-                            <el-button @click="zhTest(scope.row)">添加章节测试</el-button>
+                            <el-button type="primary" round size="mini"  icon="el-icon-edit" @click="update2Show(scope.row)"></el-button>
+                            <el-button round size="mini"   @click="zhTest(scope.row)">添加章节测试</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -93,6 +79,25 @@
             </el-form-item>
         </el-form>
     </el-dialog>
+
+    <el-dialog
+
+            width="40%"
+            :title="update2.title"
+            :visible.sync="update2.show">
+        <el-form ref="addForm" label-position="left" :model="update2" label-width="80px">
+
+            <el-form-item prop="chaName" label="章节名称">
+                <el-input size="50px" placeholder="请输入章节名称" v-model="update2.chaName"></el-input>
+            </el-form-item>
+
+            <el-form-item>
+                <el-button type="primary" @click="saveName">新增</el-button>
+            </el-form-item>
+        </el-form>
+    </el-dialog>
+
+
     <el-dialog
             width="40%"
             :title="update.title"
@@ -138,10 +143,9 @@
         </el-form>
     </el-dialog>
     <el-dialog :visible.sync="chadia.show" fullscreen>
-        <iframe src="/exam/examcomposition.html" style="height: 100%;width: 1000px;" frameborder="0"></iframe>
+        <iframe src="/exam/examcomposition.html" style="height: 100%;width: 100%;" frameborder="0"></iframe>
         <div slot="footer" class="dialog-footer">
-            <el-button @click="chadia.show = false">取 消</el-button>
-            <el-button type="primary" @click="chadia.show = false">确 定</el-button>
+
         </div>
     </el-dialog>
 </div>
@@ -175,7 +179,7 @@
                            <el-button type="danger" round size="mini"  icon="el-icon-delete" @click="deleteModule(scope.row.chaId)"></el-button>
 
                             <el-button v-if="scope.row.children==null || scope.row.children.size==0" type="primary" round size="mini"  icon="el-icon-edit" @click="updateModuleShow(scope.row)"></el-button>
-                            <el-button @click="zhTest(scope.row)">添加章节测试</el-button>
+                            <el-button round size="mini"  @click="zhTest(scope.row)">添加章节测试</el-button>
                         </template>
                     </el-table-column>
                     </el-table>
@@ -242,6 +246,13 @@
                     chaPpturl: '',
                     chaDocurl: ''
                 },
+                update2:{
+                    title: '',
+                    chaId: '',
+                    courId: '',
+                    chaName: '',
+                    show: false,
+                }
 
             };
         },
@@ -430,30 +441,7 @@
             },
 
 
-            /* tj() {
-                 let formData = new FormData();
-                 let file = document.getElementById("file").files[0];
-                 console.log(file);
-                 formData.append('file', file);
-                 formData.append('path', "/test/a.jpg");
-                 axios({
-                     method: 'post',
-                     url: '/api/oss/upload',
-                     data: formData,
-                     headers: {
-                         'Content-Type': 'multipart/form-data',
-                     }
-                 }).then(res => {
-                     res = res.data;
-                     axios({
-                         method: 'get',
-                         url: '/api/oss/getUrl',
-                         params: {
-                             path: 'test/a.jpg'
-                         }
-                     })
-                 })
-             },*/
+
 
             handleClick() {
 
@@ -496,8 +484,38 @@
                         message: '已取消删除'
                     });
                 })
-
-
+            },
+            saveName() {
+                var courId = localStorage.getItem("courId")
+                let params = new URLSearchParams()
+                params.append('chaCourid', courId)
+                params.append('chaId', this.update2.chaId)
+                params.append('chaName', this.update2.chaName)
+                this.$refs['addForm'].validate((valid) => {
+                    axios({
+                        method: 'post',
+                        url: '/api/teacher/chapter/updateChapters',
+                        data: params,
+                    })
+                        .then((res) => {
+                            this.$message({
+                                type: 'success',
+                                message: '修改成功!',
+                            });
+                            this.update2.show = false
+                            this.queryMenu()
+                        }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '修改失败'
+                        });
+                    })
+                })
+            },
+            update2Show(row){
+                this.update2.show = true
+                this.update2.chaId = row.chaId;
+                this.update2.chaName = row.chaName;
             },
             //修改视频
             saveVideo() {
