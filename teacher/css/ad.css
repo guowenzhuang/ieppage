@@ -14,3 +14,14 @@
     bottom: auto;
     top: 80px;
 }
+.el-input__inner{
+    width: 300px;
+}
+.el-tabs__nav-scroll{
+    width: 300px;
+}
+.el-dialog__body {
+    width: 500px;
+    height: 1000px;
+
+}

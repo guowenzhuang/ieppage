@@ -38,7 +38,7 @@
 
 	<body>
 		<!-- 顶部 -->
-		<div class="width100 float_l" style="margin-top: -70px;">
+		<div class="width100 float_l" style="margin-top: -70px;" id="bt">
 			<div class="width100 float_l height80 line_hei80">
 
 				<!-- 顶部左边 -->
@@ -49,7 +49,7 @@
 					<div class="float_l">
 						<ul class="ul_li fon_siz16">
 							<li><a class="color_black" href="../courses/index.html">课程</a></li>
-							<li><a class="color_black" href="">院系</a></li>
+							<li><a class="color_black" href="../../department.html">院系</a></li>
 							<li><a class="color_black" href="../paths/index.html">名师专栏</a></li>
 						</ul>
 					</div>
@@ -68,35 +68,30 @@
 						<img src="../../img/uiz6.png">
 					</div>
 					<div class="float_l margin_l30 margin_r40">
-						<a class="btn btn-default navbar-btn sign-in" data-sign="signin" href="#sign-modal" data-toggle="modal">登录</a>
-						<a class="btn btn-default navbar-btn sign-up" data-sign="signup" href="#sign-modal" data-toggle="modal">注册</a>
+						<a class="color_black" href="../user/13/course.html" v-show="isCenter">个人中心</a>
+						<a class="btn btn-default navbar-btn sign-in" href="javascript:void(0)" @click="login()" v-show="isShow">登录</a>
+						<img :src="userPhoto" width="45px" />
 					</div>
 				</div>
 
 			</div>
 		</div>
-
-
+	
 
 
 		<div id="details" class="container layout layout-margin-top">
 
 			<ol class="breadcrumb">
 				<li><a href="/courses/">全部课程</a></li>
-
 				<li>
-
 					<a href="/courses/?tag=Linux">Linux</a>
-
 				</li>
-
 				<li class="active">
 					<a href="/courses/1">
 						{{courName}}
 					</a>
 				</li>
 			</ol>
-
 
 			<div class="row">
 				<div class="col-md-9 layout-body">
@@ -138,15 +133,6 @@
 						</div>
 
 					</div>
-
-
-
-
-
-
-
-
-
 
 					<div class="content course-infobox">
 						<div class="clearfix course-infobox-header">
@@ -190,9 +176,6 @@
 						</div>
 
 					</div>
-
-
-
 
 
 					<div class="content">
@@ -356,18 +339,11 @@
 						</div>
 					</div>
 
-
-
-
 					<div class="side-image">
 						<a href="/vip" target="_blank">
 							<img src="../img/banner-vip.png">
 						</a>
 					</div>
-
-
-
-
 
 					<div class="sidebox adv-course">
 						<div class="sidebox-header">
@@ -390,12 +366,6 @@
 				</div>
 			</div>
 		</div>
-
-
-
-
-
-
 
 
 
@@ -443,7 +413,6 @@
 		</div>
 
 
-
 		<div class="modal fade" id="paid-modal" tabindex="-1" role="dialog">
 			<div class="modal-dialog modal-sm" role="document">
 				<div class="modal-content">
@@ -463,13 +432,6 @@
 				</div>
 			</div>
 		</div>
-
-
-
-
-
-
-
 
 
 		<div id="base-data" data-flash="false" data-is-login=false data-is-jwt=true data-socket-url="wss://comet.xxxxxx.com"
@@ -737,6 +699,33 @@
 				}
 
 			});
+			
+			var bt = new Vue({
+				el: "#bt",
+				mounted: function() {	
+					var roleNames = sessionStorage.getItem("roleNames");
+					if (roleNames != null && roleNames == ("学生")) {
+						this.isShow = false;
+						this.isCenter = true;
+						this.userPhoto = sessionStorage.getItem("userPhoto");
+					}
+				},
+				data: {
+					isShow: true,
+					isCenter: false,
+					userPhoto: ''
+				},
+				methods: {
+					login: function() {
+						window.location.href ="\\login.html?callback-url=http://127.0.0.1/student/curricular/courses/show.html";
+					},
+					tuichu: function() {
+						sessionStorage.clear();
+						localStorage.clear();
+					}
+				}
+			});	
+				
 		</script>
 
 
