@@ -46,11 +46,10 @@
                 <my-collapse :chapter-data="item.children" :hierarchy="1"></my-collapse>
             </el-collapse-item>
 
-            <el-collapse-item v-else>
+            <el-collapse-item v-else class="chapter-top">
                 <template slot="title">
                     <el-button  type="text" @click="itemClick(item)" style="color:#000000;width: 100%;">
                         <span style="float: left;">
-                        <span v-for="i in hierarchy*2">&emsp;</span>
                            {{item.chaName}}
                         </span>
                     </el-button>
