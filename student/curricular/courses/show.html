@@ -32,26 +32,25 @@
 		<!--<script src="../../js/index.js"></script>-->
 		<script src="../../js/axios.min.js"></script>
 
-		<script src="../../js/elementui/index.js"></script>
+		<script  src="../../js/elementui/index.js"></script>
 		<link rel="stylesheet" href="../../js/elementui/index.css">
 	</head>
 
 	<body>
 		<!-- 顶部 -->
-		<div class="width100 float_l height490 img_backg1" id="bt">
+		<div class="width100 float_l" style="margin-top: -70px;" id="bt">
 			<div class="width100 float_l height80 line_hei80">
 
 				<!-- 顶部左边 -->
 				<div class="float_l">
 					<div class="float_l margin_l20">
-						<img src="img/uiz1.png">
+						<a href="../../index.html"> <img src="../../img/uiz1.png"></a>
 					</div>
 					<div class="float_l">
 						<ul class="ul_li fon_siz16">
-							<li><a class="color_black" href="curricular/courses/index.html">课程</a></li>
+							<li><a class="color_black" href="../courses/index.html">课程</a></li>
 							<li><a class="color_black" href="../../department.html">院系</a></li>
 							<li><a class="color_black" href="../paths/index.html">名师专栏</a></li>
-
 						</ul>
 					</div>
 				</div>
@@ -60,74 +59,39 @@
 				<div class="float_r">
 					<div class="float_l top_input">
 						<input class="posi_relative" type="text" name="" id="" placeholder="请输入想搜索的内容...">
-						<img class="img_sousuo bianshou" src="img/uiz4.png">
+						<img class="img_sousuo bianshou" src="../../img/uiz4.png">
 					</div>
 					<div class="float_l margin_l20">
-						<img src="img/uiz5.png">
+						<img src="../../img/uiz5.png">
 					</div>
 					<div class="float_l margin_l35">
-						<img src="img/uiz6.png">
+						<img src="../../img/uiz6.png">
 					</div>
 					<div class="float_l margin_l30 margin_r40">
 						<a class="color_black" href="../user/13/course.html" v-show="isCenter">个人中心</a>
 						<a class="btn btn-default navbar-btn sign-in" href="javascript:void(0)" @click="login()" v-show="isShow">登录</a>
-
 						<img :src="userPhoto" width="45px" />
 					</div>
-
 				</div>
 
 			</div>
 		</div>
-		<script>
-			var bt = new Vue({
-						el: "#bt",
-						mounted: function() {
-							var roleNames = sessionStorage.getItem("roleNames");
-							if (roleNames != null && roleNames == ("学生")) {
-								this.isShow = false;
-								this.isCenter = true;
-								this.userPhoto = sessionStorage.getItem("userPhoto");
-							}
-						},
-						data: {
-							isShow: true,
-							isCenter: false,
-							userPhoto: ''
-						},
-						methods: {
-							login: function() {
-								window.location.href = "http://127.0.0.1/login.html";
-							},
-							tuichu: function() {
-								sessionStorage.clear();
-								localStorage.clear();
-							}
-						}
-			});
-	</script>
-
-
+	
 
 
 		<div id="details" class="container layout layout-margin-top">
 
 			<ol class="breadcrumb">
 				<li><a href="/courses/">全部课程</a></li>
-
 				<li>
-
 					<a href="/courses/?tag=Linux">Linux</a>
-
 				</li>
-
 				<li class="active">
 					<a href="/courses/1">
 						{{courName}}
 					</a>
 				</li>
 			</ol>
-
 
 			<div class="row">
 				<div class="col-md-9 layout-body">
@@ -295,7 +259,7 @@
 														<div class="question-item-summary">
 															<div class="user-username ">
 																<a class="avatar" href="../user/13/study.html" target="_blank">
-																	<samp v-text="c.sid"></samp>
+																	<samp v-text="c.userName"></samp>
 																</a>
 																<!-- 	<span class="user-level">L14</span> -->
 															</div>
@@ -396,9 +360,14 @@
 						</div>
 					</div>
 
+
+
+
 				</div>
 			</div>
 		</div>
+
+
 
 		<div class="modal fade" id="charge-course-modal" tabindex="-1" role="dialog" aria-hidden="true">
 			<div class="modal-dialog">
@@ -442,6 +411,7 @@
 				</div>
 			</div>
 		</div>
+
 
 		<div class="modal fade" id="paid-modal" tabindex="-1" role="dialog">
 			<div class="modal-dialog modal-sm" role="document">
@@ -537,8 +507,9 @@
 
 					this.sid = sessionStorage.getItem("userid");
 					this.getQueryString("courId");
-					this.chaxun()
-					this.people()
+					this.chaxun();
+					this.people();
+					this.yonghu();
 				},
 				data: {
 					//urlPre: "http://127.0.0.1:8060",
@@ -580,7 +551,7 @@
 							this.courId = decodeURIComponent(r[2]);
 							console.log("token=> bearer " + sessionStorage.getItem("access_token"));
 							sessionStorage.setItem("courId", this.courId);
-							console.log("存到sessionStorage里的数据:" + sessionStorage.getItem("courId"));
+							console.log("存到sessionStorage里的数据:"+sessionStorage.getItem("courId"));
 						}
 						return '';
 					},
@@ -701,7 +672,8 @@
 							//http://localhost/ieppage/student/curricular/courses/show.html
 							res = res.data;
 							this.contents = res.rows;
-							this.total = res.total;
+							this.total=res.total;
+							
 							//console.log("评论" + res.rows);
 							//console.log("条数" + res.total);
 						})
@@ -710,6 +682,20 @@
 						this.currentPage = currentPage;
 						this.pinglun();
 					},
+					/* yonghu:function(){
+						axios({
+							method: 'get',
+							url: `/api/student/studentPart/queryUser`,
+							params: {
+								id: this.sid,							
+							}
+						}).then(res => {
+							//http://localhost/ieppage/student/curricular/courses/show.html
+							//res = res.data;
+							//this.contents = res.rows;
+							console.log("用户信息" + res.data.message);
+						})
+					}, */
 					dainzan: function(praise, mid) {
 
 						axios({
@@ -729,6 +715,33 @@
 				}
 
 			});
+			
+			var bt = new Vue({
+				el: "#bt",
+				mounted: function() {	
+					var roleNames = sessionStorage.getItem("roleNames");
+					if (roleNames != null && roleNames == ("学生")) {
+						this.isShow = false;
+						this.isCenter = true;
+						this.userPhoto = sessionStorage.getItem("userPhoto");
+					}
+				},
+				data: {
+					isShow: true,
+					isCenter: false,
+					userPhoto: ''
+				},
+				methods: {
+					login: function() {
+						window.location.href ="\\login.html?callback-url=http://127.0.0.1/student/curricular/courses/show.html";
+					},
+					tuichu: function() {
+						sessionStorage.clear();
+						localStorage.clear();
+					}
+				}
+			});	
+				
 		</script>
 
 

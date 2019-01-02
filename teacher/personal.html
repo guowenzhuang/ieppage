@@ -65,8 +65,9 @@
 </head>
 <body>
 <div id="app">
+    <el-button  type="success" @click="changePassword">修改密码</el-button>
     <el-button icon="el-icon-refresh" type="primary" onclick=" window.location.reload();">刷新</el-button>
-    <el-row :gutter="50">
+    <el-row :gutter="50" style="margin-top: 15px;">
         <el-col :span="16">
             <el-card class="box-card">
                 <div>
@@ -147,8 +148,7 @@
         <el-col :span="8">
             <el-card class="box-card">
                 <div class="authdiv" style="display: flex;justify-content: center;">
-                    <img class="authoto" :src="active.teaPhoto" onerror="this.src='img/teaphoto.jpg'"
-                         :alt="active.loginName">
+                    <img class="authoto" :src="active.teaPhoto" onerror="this.src='img/teaphoto.jpg'" :alt="active.loginName" />
                 </div>
                 <div style="display: flex;justify-content: center;margin-top: 10px;">
                     <span style="font-size: 30px;">{{active.loginName}}</span>
@@ -161,6 +161,27 @@
             </el-card>
         </el-col>
     </el-row>
+    <div>
+        <el-dialog
+                title="修改密码"
+                :visible.sync="upPsd.show">
+            <el-form :model="upPsd" status-icon :rules="upPsdRule" ref="upPsdForm" label-width="100px" class="demo-ruleForm">
+                <el-form-item label="原密码" prop="oldPass">
+                    <el-input type="password" v-model="upPsd.oldPass" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="新密码" prop="pass">
+                    <el-input type="password" v-model="upPsd.pass" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="确认密码" prop="checkPass">
+                    <el-input type="password" v-model="upPsd.checkPass" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="submitPass">提交</el-button>
+                    <el-button @click="resetForm">重置</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
+    </div>
 </div>
 </body>
 <script>
@@ -169,6 +190,27 @@
 
     let Main = {
         data() {
+
+            var validatePass = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('请输入密码'));
+                } else {
+                    if (this.upPsd.checkPass !== '') {
+                        this.$refs.upPsdForm.validateField('checkPass');
+                    }
+                    callback();
+                }
+            };
+            var validatePass2 = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('请再次输入密码'));
+                } else if (value !== this.upPsd.pass) {
+                    callback(new Error('两次输入密码不一致!'));
+                } else {
+                    callback();
+                }
+            };
+
             return {
                 userId: '',
                 active: {},
@@ -180,10 +222,73 @@
                 //上传文件附加额外请求头参数
                 authHead:{
                     Authorization:"bearer " + sessionStorage.getItem("access_token")
+                },
+                upPsd:{
+                    show:false,
+                    pass:'',
+                    checkPass:'',
+                    oldPass:''
+                },
+                upPsdRule:{
+                    pass: [
+                        { required: true, message: '请输入新密码', trigger: 'blur' },
+                        { validator: validatePass, trigger: 'blur' }
+                    ],
+                    checkPass: [
+                        { required: true, message: '请再次输入密码', trigger: 'blur' },
+                        { validator: validatePass2, trigger: 'blur' }
+                    ],
+                    oldPass:[
+                        { required: true, message: '请输入原密码', trigger: 'blur' }
+                    ]
                 }
             }
         },
         methods: {
+            //提交密码
+            submitPass(){
+                this.$refs['upPsdForm'].validate((valid) => {
+                    if (valid) {
+                        let params=new URLSearchParams();
+                        params.append("oldPass",this.upPsd.oldPass);
+                        params.append("password",this.upPsd.pass);
+                        axios({
+                            method:'put',
+                            url:'/api/admin/user/updatePassword/'+this.userId,
+                            data:params
+                        }).then(res=>{
+                            res=res.data;
+                            if(res.success){
+                                this.$message({
+                                    type:'success',
+                                    message:res.message
+                                })
+                                this.upPsd.show=false;
+                                top.location.href = "/login.html"
+                            }else{
+                                this.$message({
+                                    type:'error',
+                                    message:res.message
+                                })
+                            }
+                        })
+                    } else {
+                        this.$message({
+                            type:'error',
+                            message:'请检查字段'
+                        })
+                        return false;
+                    }
+                });
+            },
+            //重置密码
+            resetForm(){
+                this.$refs['upPsdForm'].resetFields();
+            },
+            //修改密码
+            changePassword(){
+                this.upPsd.show=true;
+            },
             updateTea(){
                 axios({
                     method:'put',
@@ -223,7 +328,11 @@
                         id: this.userId
                     }
                 }).then(res => {
-                    this.active = res.data.message[0];
+                    let o=res.data.message[0];
+                    if(o.teaPhoto==null || o.teaPhoto==""){
+                        o.teaPhoto='img/teaphoto.jpg'
+                    }
+                    this.active=o;
                 })
             },
             //查询所有院系

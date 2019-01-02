@@ -20,7 +20,7 @@
 						<el-input v-model="postTitle" placeholder="请输入内容" style="width: 150px; line-height: 50px;"></el-input>
 						<font size="4">贴子类型:</font>
 						<el-select v-model="typeName" style="width: 150px;line-height: 50px;" placeholder="请选择">
-							<el-option v-for="type in typeList" :key="type.typeId" :label="type.typeName" :value="type.typeId"></el-option>
+							<el-option v-for="type in typeList" :key="type.typeId" :label="type.typeName" :value="type.typeName"></el-option>
 						</el-select>
 						<font size="4">排序:</font>
 						<el-select v-model="orderBy" style="width: 150px;line-height: 50px;" placeholder="请选择">
@@ -41,24 +41,44 @@
 								<el-table-column prop="replyTime" label="发帖时间" :show-overflow-tooltip="true"></el-table-column>
 								<el-table-column prop="replyLikenum" label="点赞数" :show-overflow-tooltip="true"></el-table-column>
 								<el-table-column prop="replyReportnum" label="举报数" :show-overflow-tooltip="true"></el-table-column>
-								<el-table-column prop="operation" label="帖子操作" align="center" min-width="80"><template slot-scope="scope">
-										<el-button type="danger" icon="el-icon-delete" circle @click="delete(scope.row)" size="mini"></el-button>
+								<el-table-column prop="replyReportnum" label="是否删除" :show-overflow-tooltip="true">
+									<template slot-scope="scope">
+										<span v-if="scope.row.isDelete">是</span>
+										<span v-else>否</span>
+									</template>
+								</el-table-column>
+								<el-table-column prop="operation" label="操作" align="center" min-width="80">
+									<template slot-scope="scope">
+										<!-- <el-button type="danger" icon="el-icon-delete" circle @click="delete(scope.row)" size="mini"></el-button> -->
 										<el-button type="danger" icon="el-icon-tickets" circle @click="dialog(scope.row)" size="mini"></el-button>
 										<el-button type="danger" icon="el-icon-setting" circle @click="setTYPE(scope.row)" size="mini"></el-button>
-									</template></el-table-column>
-								<el-table-column prop="operation" label="操作" align="center" min-width="80"><template slot-scope="scope">
-										<el-button type="primary" round @click="replys(scope.row)" size="mini">回复</el-button>
-										<el-button type="primary" round @click="" size="mini">置顶</el-button>
-									</template></el-table-column>
-								<el-table-column prop="operation" label="操作" align="center" min-width="80"><template slot-scope="scope">
+									</template>
+								</el-table-column>
+								<el-table-column prop="operation" label="操作" align="center" min-width="80">
+									<template slot-scope="scope">
+										<el-button type="primary" v-if="scope.row.postIsstick" round @click="cancelStick(scope.row)" size="mini">取消置顶</el-button>
+										<el-button type="primary" v-else round @click="stickPost(scope.row)" size="mini">置 顶</el-button>
+										<br />
+										<br />
+										<el-button type="success" round v-if="scope.row.isDelete" @click="restore(scope.row)" size="mini">还 原</el-button>
+										<el-button type="danger" round v-else @click="deleteReply(scope.row)" size="mini">删 除</el-button>
+									</template>
+								</el-table-column>
+								<el-table-column prop="operation" label="操作" align="center" min-width="80">
+									<template slot-scope="scope">
+										<el-button type="primary" round @click="replys(scope.row)" size="mini">查看回复</el-button>
+										<br />
+										<br />
 										<el-button type="primary" round @click="hahah(scope.row)" size="mini">举报详情</el-button>
-									</template></el-table-column>
+									</template>
+								</el-table-column>
 							</el-table>
 						</template></div>
 					<el-dialog title="设置类型" :visible.sync="dialogVisible3">
 						<!-- <el-input v-model="postId" placeholder="Id" style="width: 50px; line-height: 10px;"></el-input> -->
 						<el-container>
-							<el-aside><span>YES贴子类型</span>
+							<el-aside>
+								<span>已拥有类型</span>
 								<el-table :data="typelistyes">
 									<el-table-column property="typeId" label="编号" width="80"></el-table-column>
 									<el-table-column property="typeName" label="类型名称" width="150"></el-table-column>
@@ -68,7 +88,8 @@
 										</template></el-table-column>
 								</el-table>
 							</el-aside>
-							<el-main><span>NO贴子类型</span>
+							<el-main>
+								<span>未拥有类型</span>
 								<el-table :data="typelistno">
 									<el-table-column property="typeId" label="编号" width="80"></el-table-column>
 									<el-table-column property="typeName" label="类型名称" width="150"></el-table-column>
@@ -154,6 +175,7 @@
 						label: '举报数',
 					}],
 					dialogVisible1: false,
+					postIsstick: '',
 					textarea: '',
 					replyId: "",
 					postId:"",
@@ -199,6 +221,7 @@
 					params.append("orderBy", this.orderBy);
 					params.append("page",this.currentPage);
 					params.append("rows",this.pagesize);
+					console.log("typeName==>"+this.typeName);
 					axios({
 						method: 'post',
 						url: '/api/bbs/post/getAllPost',
@@ -209,6 +232,7 @@
 						this.postList = res.rows;
 						this.total = res.total;
 						console.log('postList==>'+this.postList);
+						console.log('postIsstick==>'+this.postIsstick);
 					})
 				},
 				queryType() {
@@ -379,16 +403,54 @@
 						console.log('reportlist==>'+this.reportlist);
 					})
 				},
-				delete(row){
-					this.dialogVisible4=true;
-					this.replyId=row.replyId;
+				deleteReply(row){
+					let params = new URLSearchParams();
+					params.append("replyId", row.replyId);
+					axios({
+						method: 'post',
+						url: '/api/bbs/reply/upReplyIsDel',
+						data:params,
+						headers: {},
+					}).then(res => {
+						res=res.data;
+						if (res.success) {
+							this.$message({
+								message: res.message,
+								type: 'success'
+							});
+							this.query();
+						} else {
+							this.$message.error(res.message);
+						}
+					})
 				},
-				deletereply(){
+				restore(row){
+					let params = new URLSearchParams();
+					params.append("replyId", row.replyId);
+					axios({
+						method: 'post',
+						url: '/api/bbs/reply/restoreReply',
+						data:params,
+						headers: {},
+					}).then(res => {
+						res=res.data;
+						if (res.success) {
+							this.$message({
+								message: res.message,
+								type: 'success'
+							});
+							this.query();
+						} else {
+							this.$message.error(res.message);
+						}
+					})
+				},
+				/* deletereply(){
 					let params = new URLSearchParams();
 					params.append("replyId", val.replyId);
 					axios({
 						method: 'post',
-						url: '/api/bbs/post/deletePost',
+						url: '/api/bbs/reply/upReplyIsDel',
 						data:params,
 						headers: {},
 					}).then(res => {
@@ -397,6 +459,48 @@
 							alert(res.message)
 						} else {
 							alert(res.message)
+						}
+					})
+				}, */
+				stickPost(row){
+					let params = new URLSearchParams();
+					params.append("postId",row.postId);
+					axios({
+						method: 'post',
+						url: '/api/bbs/post/stickPost',
+						data: params,
+						headers: {},
+					}).then(res => {
+						res = res.data;
+						if(res.success){
+							this.$message({
+								message: res.message,
+								type: 'success'
+							});
+							this.query();
+						}else{
+							this.$message.error(res.message);
+						}
+					})
+				},
+				cancelStick(row){
+					let params = new URLSearchParams();
+					params.append("postId",row.postId);
+					axios({
+						method: 'post',
+						url: '/api/bbs/post/cancelStick',
+						data: params,
+						headers: {},
+					}).then(res => {
+						res = res.data;
+						if(res.success){
+							this.$message({
+								message: res.message,
+								type: 'success'
+							});
+							this.query();
+						}else{
+							this.$message.error(res.message);
 						}
 					})
 				},
@@ -431,8 +535,8 @@
 			},
 		});
 	</script>
-	
-	
+
+
 	<style type="text/css">
 		.el-aside {
 			background-color: #D3DCE6;
