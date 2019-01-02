@@ -52,8 +52,10 @@
                         :data="tableData"
                         style="width: 800px;margin-left: 200px; margin-top: 20px"
                         border
+
                         :row-class-name="tableRowClassName">
                     <el-table-column
+                            align="center"
                             label="上一次提交时间"
                     >
                          <template slot-scope="scope">
@@ -61,12 +63,14 @@
                     </template>
                     </el-table-column>
                     <el-table-column
+                            align="center"
                             label="测验次数">
                          <template slot-scope="scope">
                 <span style="margin-left: 10px">{{ scope.row.examnum }}</span>
                     </template>
                     </el-table-column>
                     <el-table-column
+                            align="center"
                             label="测验最高分">
                             <template slot-scope="scope">
                 <span style="margin-left: 10px">{{ scope.row.maxtotal }}</span>
