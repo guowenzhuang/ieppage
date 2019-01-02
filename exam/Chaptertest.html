@@ -45,7 +45,7 @@
                     <i class="el-icon-arrow-left"></i>
                     {{chapter.title}}
                 </h3>
-                <el-button type="success" size="medium" style="margin: 15px;" @click="testzhangjie(chapter.id)">前往测验</el-button>
+                <el-button type="success" size="medium" style="margin: 15px;" @click="testzhangjie(chapter)">前往测验</el-button>
                 </div>
             </template>
                 <el-table
@@ -105,7 +105,7 @@
         },
         methods: {
             testzhangjie(chapter) {
-                window.location.href = "/exam/ChaptertestTopic.html?chapterId=" + chapter;
+                window.location.href = "/exam/ChaptertestTopic.html?chapterId="+chapter.id+"&section="+chapter.sectionId;
             },
             quary() {
                 let params = new URLSearchParams();

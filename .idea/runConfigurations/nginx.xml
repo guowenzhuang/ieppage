@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="nginx" type="nginx.configuration.type" factoryName="nginx server" editBeforeRun="true" singleton="true">
-    <option name="serverDescriptorId" value="nginx.descriptor.1545006940492" />
+    <option name="serverDescriptorId" value="nginx.descriptor.1544489990651" />
     <option name="showHttpLog" value="true" />
     <option name="showErrorLog" value="true" />
     <option name="httpLogPath" value="$PROJECT_DIR$/../../logs/access.log" />
