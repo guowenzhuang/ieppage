@@ -135,6 +135,7 @@
                     disabled:false,
                     nameDisabled:true,
 
+
                 },
 
                 //表格数据（分页）
@@ -214,9 +215,7 @@
                         method: 'post',
                         url: '/api/teacher/course/updateCourseAll',
                         data: params,
-                        headers: {
-                            "Authorization": "bearer " + sessionStorage.getItem("access_token")
-                        }
+
                     })
                         .then(() => {
                             this.$message({
@@ -313,11 +312,10 @@
                         method: 'delete',
                         url: '/api/teacher/course/deleteCourseById',
                         params: {
-                            courId: row.courId
+                            courId: row.courId,
+
                         },
-                        headers: {
-                            "Authorization": "bearer " + sessionStorage.getItem("access_token")
-                        }
+
                     })
                        .then(res => {
                             res = res.data;
@@ -333,6 +331,7 @@
                                 });
                             }
                         })
+
                     this.queryCourse()
                     location.reload()
                 }).catch(() => {
