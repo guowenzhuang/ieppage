@@ -190,6 +190,7 @@
                     "Authorization": "Basic aWVwOmllcHNlY3JldA=="
                 }
             }).then(res => {
+
                 res = res.data;
                 //token
                 sessionStorage.setItem("access_token", res.access_token);
@@ -202,6 +203,7 @@
 
                 let roleNames = res.info.roleNames;
                 sessionStorage.setItem("roleNames", roleNames);
+
                 //用户名
                 sessionStorage.setItem("username", res.info.name);
                 sessionStorage.setItem("userid", res.info.id);
@@ -245,6 +247,8 @@
                     window.location.href = aurl;
                     return "admin/index.html";
                 default:
+                    let qurl="admin/index.html";
+                    window.location.href = qurl;
                     return "admin/index.html";
             }
         }

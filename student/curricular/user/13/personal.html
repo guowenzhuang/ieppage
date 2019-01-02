@@ -5,109 +5,35 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 
-		<link rel="shortcut icon" href="favicon.ico">
-		<link rel="stylesheet" href="../../static/font-awesome//4.7.0/css/font-awesome.min.css">
-		<link rel="stylesheet" href="../../static/highlight.js/9.8.0/monokai-sublime.min.css">
-		<link rel="stylesheet" href="../../app/css/libs/bootstrap/3.3.7/css/bootstrap.min.css">
-		<link rel="stylesheet" href="../../app/css/libs/katex/0.6.0/katex.min.css">
-		<link rel="stylesheet" href="../../app/css/libs/videojs/5.11.7/video-js.min.css">
-		<link rel="stylesheet" href="../../app/css/dest/styles.css?=2016121272249">
-		
-		<link rel="stylesheet" type="text/css" href="../../../bootstrap/css/bootstrap-theme.min.css">
-		<link rel="stylesheet" type="text/css" href="../../../css/muke.css">
+		<script type="text/javascript" src="../../../js/jquery.js"></script>
+		<link rel="stylesheet" href="../../../bootstrap/css/bootstrap.css">
+		<link rel="stylesheet" href="../../../css/muke.css">
+		<link rel="stylesheet" href="../../../css/index.css">
+		<link rel="stylesheet" href="../../../js/elementui/index.css">
+		<script type="text/javascript" src="../../../js/jquery.SuperSlide.2.1.1.js"></script>
+		<script type="text/javascript" src="../../../js/vue.min.js"></script>
+		<script type="text/javascript" src="../../../js/elementui/index.js"></script>
+		<script type="text/javascript" src="../../../js/axios.min.js"></script>
 
-		<style>
 
-			/* modal 模态框*/
-    #invite-user .modal-body {
-      overflow: hidden;
-    }
-		#invite-user .modal-body .form-label {
-			margin-bottom: 16px;
-			font-size:14px;
-		}
-		#invite-user .modal-body .form-invite {
-			width: 80%;
-			padding: 6px 12px;
-			background-color: #eeeeee;
-			border: 1px solid #cccccc;
-			border-radius: 5px;
-			float: left;
-			margin-right: 10px;
-		}
-		#invite-user .modal-body .msg-modal-style {
-			background-color: #7dd383;
-			margin-top: 10px;
-			padding: 6px 0;
-			text-align: center;
-			width: 100%;
-		}
-		#invite-user .modal-body .modal-flash {
-			position: absolute;
-			top: 53px;
-			right: 74px;
-			z-index: 999;
-		}
-		/* end modal */
-
-        .en-footer {
-            padding: 30px;
-            text-align: center;
-            font-size: 14px;
-        }
-    </style>
-
-		<style>
-		a:hover,
-    a:focus {
-        text-decoration: none;
-    }
-    span.label {
-        display: inline-block;
-        margin: 10px 3px 16px 3px;
-        padding: 6px 16px;
-        border: none;
-        font-size: 14px;
-        font-weight: 100;
-    }
-    span.label-default {
-        color: #999;
-        background: none;
-    }
-    span.label-success {
-        color: #0c9;
-        background: #E7F8F2;
-    }
-    .userinfo-banner [data-toggle="tooltip"] {
-        display: inline-block;
-        border-bottom: dashed 1px #999;;
-        color: #999 !important;
-    }
-	.certificate-item {
-		padding-top: 10px;
-	}
-	.certificate-item a {
-		color: #444;
-	}
-</style>
 	</head>
+	<body class="backg_huibai">
+	<!-- 顶部 -->
+	<div id="app">
 
-	<body>
-
-<!-- 顶部 -->
-		<div class="width100 float_l" style="margin-top: -70px;">
+		<div class="width100 float_l height490 img_backg1" id="bt">
 			<div class="width100 float_l height80 line_hei80">
-
 				<!-- 顶部左边 -->
 				<div class="float_l">
 					<div class="float_l margin_l20">
-						<a href="#"><img src="../../../img/uiz1.png"></a>
+						<a href="index.html"> <img src="../../../img/uiz1.png"/></a>
+
 					</div>
 					<div class="float_l">
 						<ul class="ul_li fon_siz16">
-							<li><a class="color_black" href="../courses/index.html">课程</a></li>
-							<li><a class="color_black" href="">院系</a></li>
-							<li><a class="color_black" href="">名师专栏</a></li>
+							<li><a class="color_black" href="curricular/courses/index.html">课程</a></li>
+							<li><a class="color_black" href="department.html">院系</a></li>
+							<li><a class="color_black" href="curricular/paths/index.html">名师专栏</a></li>
 						</ul>
 					</div>
 				</div>
@@ -116,8 +42,9 @@
 				<div class="float_r">
 					<div class="float_l top_input">
 						<input class="posi_relative" type="text" name="" id="" placeholder="请输入想搜索的内容...">
-						<img class="img_sousuo bianshou" src="../../../img/uiz4.png">
+						<img src="../../../img/uiz4.png" height="16" width="18"/>
 					</div>
+
 					<div class="float_l margin_l20">
 						<img src="../../../img/uiz5.png">
 					</div>
@@ -125,88 +52,22 @@
 						<img src="../../../img/uiz6.png">
 					</div>
 					<div class="float_l margin_l30 margin_r40">
-						<a class="btn btn-default navbar-btn sign-in" data-sign="signin" href="#sign-modal" data-toggle="modal">登录</a>
-						<a class="btn btn-default navbar-btn sign-up" data-sign="signup" href="#sign-modal" data-toggle="modal">注册</a>
+						<a class="color_black" href="curricular/user/13/course.html" v-show="isCenter">个人中心</a>&nbsp;&nbsp;
+						<a class="btn btn-default navbar-btn sign-in" href="javascript:void(0)" @click="login()" v-show="isShow">登录</a>
+						<el-dropdown>
+							<div class="color_black" v-show="isCenter">
+								<img :src="userPhoto" width="45px" >
+								<i class="el-icon-arrow-down el-icon&#45;&#45;right"></i>
+							</div>
+							<el-dropdown-menu slot="dropdown">
+								<el-dropdown-item @click.native="shezhi()">设置</el-dropdown-item>
+								<el-dropdown-item @click.native="tuichu()">退出</el-dropdown-item>
+							</el-dropdown-menu>
+						</el-dropdown>
 					</div>
+
 				</div>
 
-			</div>
-		</div>
-
-
-
-		<div class="userinfo-banner layout-no-margin-top">
-			<div class="container layout">
-				<div class="row">
-					<div class="col-md-9 clearfix">
-						<div class="pull-left userinfo-banner-avatar">
-							<div class="user-avatar ">
-								<a class="avatar" href="/user/13" target="_blank">
-									<img src="https://dn-simplecloud.xxxxxx.com/gravatarc51ce410c124a10e0db5e4b97fc2af39.png?v=1439957390221&amp;imageView2/1/w/200/h/200">
-								</a>
-								<a class="member-icon" href="/vip" target="_blank">
-									<img src="../../img/vip-icon.png">
-								</a>
-							</div>
-						</div>
-						<div class="pull-left userinfo-banner-details">
-							<div class="userinfo-banner-meta">
-								<div class="user-username ">
-									<a class="username" href="/user/13" target="_blank">用户名</a>
-								</div>
-							</div>
-							<div class="userinfo-banner-status">
-								<span>学生</span>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-3 userinfo-banner-labinfo">
-						<div class="userinfo-banner-level">
-							<div class="userinfo-current-level"><span>195</span> 楼</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		
-		
-		<div class="container layout">
-			<div class="row">
-				<div class="col-md-9 layout-body">
-					<div class="content">
-						
-						
-						
-					</div>
-				</div>
-				
-				
-				<div class="col-md-3 layout-side">
-					<a class="side-sda apply-git" href="#" target="_blank">
-						<img src="../../img/my-git.png">
-						<span>代码库</span>
-					</a>
-					
-					<div class="sidebox user-visitors">
-						<div class="sidebox-header">
-							<h4 class="sidebox-title">最近来访</h4>
-						</div>
-						<div class="sidebox-body">
-							<div class="col-dm-12">
-								<a class="row" href="/user/345538">
-									<div class="col-xs-2">
-										<img src="#">
-									</div>
-									<div class="col-xs-10">
-										<div>PKU_Hao</div>
-										<div>1小时前</div>
-									</div>
-								</a>
-							</div>
-						</div>
-					</div>
-				</div>
-				
 			</div>
 		</div>
 
@@ -233,6 +94,40 @@
 				</div>
 			</div>
 		</div>
+
+	</div>
+     <script>
+         var vue = new Vue({
+             el: "#app",
+             mounted: function() {
+                 var roleNames = sessionStorage.getItem("roleNames");
+                 if (roleNames != null && roleNames == ("学生")) {
+                     console.log("roleNames"+roleNames);
+                     this.isShow = false;
+                     this.isCenter = true;
+                     this.userPhoto = sessionStorage.getItem("userPhoto");
+                 }
+             },
+             data: {
+                 isShow: true,
+                 isCenter: false,
+                 userPhoto: ''
+             },
+             methods: {
+                 login: function() {
+                     window.location.href = "http://127.0.0.1/login.html";
+                 },
+                 tuichu: function() {
+                     sessionStorage.clear();
+                     localStorage.clear();
+                     window.location.href = "http://127.0.0.1/login.html";
+                 },
+                 shezhi:function(){
+                     window.location.href = "http://localhost/student/curricular/user/13/personal.html";
+                 }
+             }
+         });
+	 </script>
 
 	</body>
 </html>
