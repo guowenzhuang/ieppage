@@ -411,14 +411,20 @@
         methods: {
             /*确认考试结束*/
             kaoshijieshu() {
-                window.location.href = "/exam/StudentTest.html?"
+                window.close();
             },
-
-
-
-
-            /*交卷前睡一秒*/
+            /*点击交卷*/
             endtest() {
+                this.$confirm('确定交卷吗?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.secondSteptest();
+                })
+            },
+            /*交卷前睡一秒*/
+            secondSteptest() {
                 setTimeout(function(){
                     let params = new URLSearchParams();
                     params.append("studentId", userid);
@@ -429,14 +435,23 @@
                         url: '/api/exam/examrubric/examination',
                         data: params,
                     }).then(res => {
+                         app.finalScore = res.data.remark;
+                          if(res.data.success){
+                              app.centerDialogVisible = true;
+                              if (app.time != null) {
+                                  window.clearInterval(app.time);
+                              }
+                          }else{
+                              app.$notify({
+                                  title: '失败',
+                                  message: res.data.message,
+                                  type: 'warning'
+                              });
+                          }
 
-                        app.finalScore = res.data.remark;
-                        app.centerDialogVisible = true;
-                        if (app.time != null) {
-                            window.clearInterval(app.time);
-                        }
 
-                    })}, 5000);
+
+                    })}, 1000);
 
             },
             query() {
