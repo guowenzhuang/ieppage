@@ -60,8 +60,8 @@
 										<el-button type="primary" v-else round @click="stickPost(scope.row)" size="mini">置 顶</el-button>
 										<br />
 										<br />
-										<el-button type="primary" round v-if="scope.row.isDelete" @click="restore(scope.row)" size="mini">还 原</el-button>
-										<el-button type="primary" round v-else @click="deleteReply(scope.row)" size="mini">删 除</el-button>
+										<el-button type="success" round v-if="scope.row.isDelete" @click="restore(scope.row)" size="mini">还 原</el-button>
+										<el-button type="danger" round v-else @click="deleteReply(scope.row)" size="mini">删 除</el-button>
 									</template>
 								</el-table-column>
 								<el-table-column prop="operation" label="操作" align="center" min-width="80">
@@ -412,6 +412,7 @@
 						data:params,
 						headers: {},
 					}).then(res => {
+						res=res.data;
 						if (res.success) {
 							this.$message({
 								message: res.message,
@@ -432,6 +433,7 @@
 						data:params,
 						headers: {},
 					}).then(res => {
+						res=res.data;
 						if (res.success) {
 							this.$message({
 								message: res.message,
