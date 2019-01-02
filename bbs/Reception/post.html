@@ -408,6 +408,31 @@
 						sessionStorage.setItem("postUsername", post.userName);
 						window.location.href="postDetails.html";
 
+					},
+					isHaveToken: function() {
+						console.log(this.token)
+						if (this.token != null) {
+							
+						} else {
+							this.$confirm('您还没有登录账号, 是否登录?', '提示', {
+								confirmButtonText: '确定',
+								cancelButtonText: '取消',
+								type: 'warning'
+							}).then(() => {
+								window.location.href = "\\login.html?callback-url=http://127.0.0.1/bbs/Reception/course.html";
+								/* this.$message({
+									type: 'success',
+									message: '登录成功!'
+								}); */
+							}).catch(() => {
+								this.$message({
+									type: 'info',
+									message: '已取消登录'
+								});
+								//window.location.href = ""
+							});
+							
+						}
 					}
 				}
 
