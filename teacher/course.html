@@ -29,7 +29,7 @@
     <el-table :data="tableData" style="width: 100%" >
         <el-table-column
                 type="index"
-                width="50">
+                width="40">
         </el-table-column>
         <el-table-column prop="courPicurl" label="课程图片">
             <template slot-scope="scope">
@@ -58,6 +58,9 @@
                 <el-button size="mini"
                            type="danger"
                            @click="handleDelete(scope.$index, scope.row)">删除
+                </el-button>
+                <el-button size="mini"
+                           @click="hanfgg(scope.$index, scope.row)">公告
                 </el-button>
             </template>
         </el-table-column>
@@ -145,6 +148,9 @@
         },
 
         methods: {
+            hanfgg(){
+                window.location.href="notice.html?"
+            },
             Picurltj() {
                 let file = document.getElementById("Picurlfile").files[0];
                 if (file == null) {
@@ -313,11 +319,20 @@
                             "Authorization": "bearer " + sessionStorage.getItem("access_token")
                         }
                     })
-                    this.$message({
-                        type: 'success',
-                        message: '删除成功!',
-
-                    });
+                       .then(res => {
+                            res = res.data;
+                            if (res.success) {
+                                this.$message({
+                                    type: 'success',
+                                    message: '删除成功!',
+                                });
+                            } else {
+                                this.$message({
+                                    type: 'error',
+                                    message: '删除失败!有子级不能删除',
+                                });
+                            }
+                        })
                     this.queryCourse()
                     location.reload()
                 }).catch(() => {
