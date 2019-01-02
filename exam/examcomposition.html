@@ -1219,13 +1219,32 @@
 
             /*点击创建试卷()最后的创建试卷*/
             addparperanniu() {
-                /**
-                 * 刷新页面
-                 * @type {boolean}
-                 */
-                this.bigdialog = false;
-                this.addparper = false;
-                this.queryparper();
+
+
+                let params = new URLSearchParams();
+                params.append("parperid", this.parperid);//用户id
+
+                axios({
+                    method: 'post',
+                    url: '/api/exam/sectionparper/endsectionparper',
+                    data: params,
+
+                }).then(res => {
+                    res = res.data;
+                    if (res.success) {
+
+                        this.$notify({title: "成功", message: res.message, type: 'success'});
+                        this.bigdialog = false;
+                        this.addparper = false;
+                        this.queryparper();
+
+
+                    } else {
+                        this.$notify.error({title: "失败", message: res.message})
+                    }
+
+
+                })
             },
 
             /*点击卷子中的题上的移除按钮*/
