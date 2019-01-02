@@ -8,9 +8,11 @@
 		<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css">
 		<link rel="stylesheet" type="text/css" href="css/muke.css">
 		<link rel="stylesheet" type="text/css" href="css/index.css" />
-		<script type="text/javascript" src="js/jquery.SuperSlide.2.1.1.js"></script>
+		<link rel="stylesheet" type="text/css" href="js/elementui/index.css" />
+		<script  type="text/javascript" src="js/jquery.SuperSlide.2.1.1.js"></script>
 		<script src="js/vue.min.js"></script>
-		<script src="js/index.js"></script>
+		<script src="js/elementui/index.js"></script>
+		<!--<script src="js/index.js"></script>-->
 		<script src="js/axios.min.js"></script>
 	</head>
 
@@ -50,7 +52,15 @@
 						<img src="img/uiz6.png">
 					</div>
 					<div class="float_l margin_l30 margin_r40">
-						<a class="color_black" href="curricular/user/13/course.html" v-show="isCenter">个人中心</a>
+						<el-dropdown>
+						<a class="color_black" href="curricular/user/13/course.html" v-show="isCenter">个人中心
+							<i class="el-icon-arrow-down el-icon--right"></i></a>
+							<el-dropdown-menu slot="dropdown">
+								<el-dropdown-item @click.native="shezhi()">设置</el-dropdown-item>
+								<el-dropdown-item>退出</el-dropdown-item>
+							</el-dropdown-menu>
+						</el-dropdown>
+
 						<a class="btn btn-default navbar-btn sign-in" href="javascript:void(0)" @click="login()" v-show="isShow">登录</a>
 
 						<img :src="userPhoto" width="45px" />
@@ -119,6 +129,9 @@
 					tuichu: function() {
 						sessionStorage.clear();
 						localStorage.clear();
+					},
+                    shezhi:function(){
+                        window.location.href = "http://localhost/student/curricular/user/13/personal.html";
 					}
 				}
 
