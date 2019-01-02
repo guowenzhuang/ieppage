@@ -106,16 +106,18 @@
 				el: "#bt",
 				mounted: function() {
 					var roleNames = sessionStorage.getItem("roleNames");
+					console.log(roleNames);
 					if (roleNames != null && roleNames == ("学生")) {
 						this.isShow = false;
 						this.isCenter = true;
 						this.userPhoto = sessionStorage.getItem("userPhoto");
 					}
+					
 				},
 				data: {
 					isShow: true,
 					isCenter: false,
-					userPhoto: ''
+					userPhoto: '',
 				},
 				methods: {
 					login: function() {
@@ -127,7 +129,8 @@
                         window.location.href = "http://127.0.0.1/login.html";
 					},
                     shezhi:function(){
-                        window.location.href = "http://localhost/student/curricular/user/13/personal.html";
+						//sessionStorage.setItem("roleNames",this.roleNames)
+                        window.location.href = "/student/curricular/user/13/personal.html";
 					}
 				}
 			});

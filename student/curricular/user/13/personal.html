@@ -32,7 +32,7 @@
 					<div class="float_l">
 						<ul class="ul_li fon_siz16">
 							<li><a class="color_black" href="curricular/courses/index.html">课程</a></li>
-							<li><a class="color_black" href="department.html">院系</a></li>
+							<li><a class="color_black" href="../../../department.html">院系</a></li>
 							<li><a class="color_black" href="curricular/paths/index.html">名师专栏</a></li>
 						</ul>
 					</div>
@@ -100,13 +100,17 @@
          var vue = new Vue({
              el: "#app",
              mounted: function() {
+							 
                  var roleNames = sessionStorage.getItem("roleNames");
+								 console.log("测试"+roleNames);
                  if (roleNames != null && roleNames == ("学生")) {
                      console.log("roleNames"+roleNames);
                      this.isShow = false;
                      this.isCenter = true;
                      this.userPhoto = sessionStorage.getItem("userPhoto");
-                 }
+                 }else{
+									 console.log("学生未登录");
+								 }
              },
              data: {
                  isShow: true,
