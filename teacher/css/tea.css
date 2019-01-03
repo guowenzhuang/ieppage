@@ -34,9 +34,12 @@
 .cell{
     width: 400px;
 }
+.el-tabs{
+    width:100%;
+}
 /*内容大小*/
 .el-tabs__content{
-    width: 1450px;
+   width:100%;
 }
 /*搜索输入框的大小*/
 .el-input{
