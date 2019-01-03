@@ -14,12 +14,12 @@
             background-color: #D3DCE6;
             color: #333;
             text-align: center;
-            line-height: 200px;
+            line-height: 20px;
             height: auto;
             border: saddlebrown 2px solid;
         }
 
-        .el-dialog,.is-fullscreen .el-dialog__body{
+        .el-dialog, .is-fullscreen .el-dialog__body {
             height: 100%;
         }
 
@@ -233,32 +233,33 @@
         <el-container>
             <!--布局-->
             <el-aside width="50%">
-
+                </p>
                 <font size="6">教师题库</font>
+                </p> </p></p> </p>
 
-
-                <div style="height: 350px">
+                <div style="height: 100px">
                     <!--多条件查询-->
                     <div align="center">
 
                         <!--<span>题干:</span>-->
                         <font size="4">题干:</font>
-                        <el-input v-model="rubric" placeholder="请输入内容" style="width: 150px;" size="small"></el-input>
+                        <el-input v-model="rubric" placeholder="请输入内容" style="width: 100px;" size="small"></el-input>
 
 
                         <!--<span size="2">试题的类型:</span>-->
                         <font size="4">试题的类型:</font>
-                        <el-select v-model="typecc" placeholder="请选择" size="small">
+                        <el-select v-model="typecc" placeholder="请选择" style="width: 100px;" size="small">
                             <el-option v-for="item in options2" :key="item.value" :label="item.label"
                                        :value="item.value"
                                        :disabled="item.disabled">
                             </el-option>
                         </el-select>
 
-                        <br>
+
                         <!--<span size="2">课程:</span>-->
                         <font size="4">课程:</font>
-                        <el-select v-model="typecc3" placeholder="请选择" @change="querycourse" size="small">
+                        <el-select v-model="typecc3" placeholder="请选择" style="width: 100px;" @change="querycourse"
+                                   size="small">
                             <el-option v-for="item in options3" :key="item.courId" :label="item.courName"
                                        :value="item.courId"
                                        :disabled="item.disabled">
@@ -270,6 +271,13 @@
                                    round>
                             搜索
                         </el-button>
+
+                        </p> </p></p> </p>
+                        是否设置默认分值:
+                        <el-switch v-model="inittype" active-value="true" inactive-value="false"></el-switch>
+                        <el-input v-model="initnum" style="width: 100px;" placeholder="请输入内容"></el-input>
+
+
                     </div>
                 </div>
 
@@ -463,11 +471,11 @@
 
 
             <el-aside width="50%">
-
+                </p>
                 <font size="6">当前试卷中的题</font>
+                </p> </p></p> </p>
 
-
-                <div style="height: 350px">
+                <div style="height: 100px">
                     <!--多条件-->
                     <div align="center">
 
@@ -476,12 +484,12 @@
                             新增试题
                         </el-button>
                         <font size="4">题干:</font>
-                        <el-input v-model="examrubric" placeholder="请输入内容" style="width: 150px;"
+                        <el-input v-model="examrubric" placeholder="请输入内容" style="width: 100px;" style="width: 150px;"
                                   size="small"></el-input>
 
-                        <br>
+
                         <font size="4">试题的类型:</font>
-                        <el-select v-model="typeccexam" placeholder="请选择" size="small">
+                        <el-select v-model="typeccexam" placeholder="请选择" style="width: 100px;" size="small">
                             <el-option v-for="item in options2" :key="item.value" :label="item.label"
                                        :value="item.value"
                                        :disabled="item.disabled">
@@ -796,6 +804,8 @@
                 sites: [],
                 sectionparpertitle: "",
                 sectionparpertotal: "",
+                inittype: "",
+                initnum: 0,
 
 
                 ruleForm: {
@@ -1212,9 +1222,61 @@
 
             /*随机组卷点击添加试题的时候触发*/
             addparperrubric(val) {
-                this.score = true;
-                this.list = val;
+                if (this.inittype == "false") {
+                    this.score = true;
+                } else {
+                    {
+                        let params = new URLSearchParams();
+                        params.append("userid", userid);//用户id
+                        params.append("rubrictype", val.rubricttype);//题干类型
+                        params.append("score", this.initnum);//分数
 
+                        params.append("answerA", val.A);//答案
+                        params.append("answerB", val.B);
+                        params.append("answerC", val.C);
+
+                        params.append("answerD", val.D);
+                        params.append("Aid", val.Aid);//答案的id
+                        params.append("Bid", val.Bid);
+
+                        params.append("Cid", val.Cid);
+                        params.append("Did", val.Did);
+                        params.append("addrubric", val.content);//题干
+
+                        params.append("answerid", val.answerId);//答案id
+                        params.append("parperid", this.parperid);
+                        params.append("course", courid);
+                        params.append("sectionid", sessionid);
+
+
+                        axios({
+                            method: 'post',
+                            url: '/api/exam/Sectionrubric/addexamrubric',
+                            data: params,
+
+                        }).then(res => {
+                            res = res.data;
+                            if (res.success) {
+
+                                this.$notify({title: "成功", message: res.message, type: 'success'});
+                                /*新建成功之后刷新试卷拥有的题干表table*/
+
+                                this.score = false;
+                                this.score1 = "";
+                                this.queryexam();
+
+                            } else {
+                                this.$notify.error({title: "失败", message: res.message})
+                            }
+
+
+                        })
+
+
+                    }
+                }
+
+                this.list = val;
             },
 
             /*点击创建试卷()最后的创建试卷*/
