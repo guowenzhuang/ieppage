@@ -419,6 +419,32 @@
              */
             deleteCour(cid){
                 //TODO 开始真正的删除课程
+
+                    axios({
+                        method: 'delete',
+                        url: '/api/teacher/course/deleteCourseById',
+                        params: {
+                            courId: cid,
+
+                        },
+
+                    })
+                        .then(res => {
+                            res = res.data;
+                            if (res.success) {
+                                this.$message({
+                                    type: 'success',
+                                    message: '删除成功!',
+                                });
+                            }
+                        })
+                   .catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                })
+
             },
             //点击删除
             handleDelete(index, row) {
