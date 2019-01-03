@@ -29,19 +29,21 @@
     <el-table :data="tableData" style="width: 100%" >
         <el-table-column
                 type="index"
-                width="50">
+                width="40">
         </el-table-column>
-        <el-table-column prop="courPicurl" label="课程图片">
+        <el-table-column prop="courPicurl" label="课程图片" width="160">
             <template slot-scope="scope">
                 <div class="photo">
              <img style="width:100px" :src="scope.row.courPicurl">
                 </div>
             </template>
         </el-table-column>
-        <el-table-column prop="courPrice" label="课程价格">
+        <el-table-column prop="courPrice" label="课程价格" width="100">
         </el-table-column>
 
-        <el-table-column show-overflow-tooltip prop="courName" label="课程名称">
+        <el-table-column show-overflow-tooltip prop="courName" label="课程名称"  width="100">
+        </el-table-column>
+        <el-table-column show-overflow-tooltip prop="courMark" label="学分"  width="100">
         </el-table-column>
         <el-table-column prop="courContent"
                          show-overflow-tooltip label="课程描述">
@@ -59,6 +61,9 @@
                            type="danger"
                            @click="handleDelete(scope.$index, scope.row)">删除
                 </el-button>
+                <el-button size="mini"
+                           @click="hanfgg(scope.$index, scope.row)">公告
+                </el-button>
             </template>
         </el-table-column>
     </el-table>
@@ -73,7 +78,10 @@
                 <el-input placeholder="请输入课程名称" v-model="addCourseDialog.courName" :disabled="addCourseDialog.nameDisabled" ></el-input>
             </el-form-item>
             <el-form-item prop="courPrice" label="课程价格">
-                <el-input placeholder="请输入课程价格" v-model="addCourseDialog.courPrice" ></el-input>
+                <el-input placeholder="请输入学分" v-model="addCourseDialog.courPrice" ></el-input>
+            </el-form-item>
+            <el-form-item prop="courMark" label="学分">
+                <el-input placeholder="请输入课程价格" v-model="addCourseDialog.courMark" ></el-input>
             </el-form-item>
             <el-form-item prop="courContent" label="课程内容">
                 <el-input placeholder="请输入课程价格" v-model="addCourseDialog.courContent" ></el-input>
@@ -131,6 +139,7 @@
                     courPicurl:'',
                     disabled:false,
                     nameDisabled:true,
+                    courMark:'',
 
                 },
 
@@ -145,6 +154,9 @@
         },
 
         methods: {
+            hanfgg(){
+                window.location.href="notice.html?"
+            },
             Picurltj() {
                 let file = document.getElementById("Picurlfile").files[0];
                 if (file == null) {
@@ -201,6 +213,7 @@
                 params.append('courId', this.addCourseDialog.courId)
                 params.append('courName', this.addCourseDialog.courName)
                 params.append('courPrice', this.addCourseDialog.courPrice)
+                params.append('courMark', this.addCourseDialog.courMark)
                 params.append('courPicurl', this.addCourseDialog.courPicurl)
                 params.append('courContent', this.addCourseDialog.courContent)
                 this.$refs['addForm'].validate((valid) => {
@@ -208,9 +221,7 @@
                         method: 'post',
                         url: '/api/teacher/course/updateCourseAll',
                         data: params,
-                        headers: {
-                            "Authorization": "bearer " + sessionStorage.getItem("access_token")
-                        }
+
                     })
                         .then(() => {
                             this.$message({
@@ -236,6 +247,7 @@
                 this.addCourseDialog.courPrice=row.courPrice;
                 this.addCourseDialog.courPicurl=row.courPicurl;
                 this.addCourseDialog.courContent=row.courContent;
+                this.addCourseDialog.courMark=row.courMark;
                 this.addCourseDialog.show = true
                 this.addCourseDialog.nameDisabled=true;
 
@@ -247,6 +259,7 @@
                 params.append('courId', this.addCourseDialog.courId)
                 params.append('courName', this.addCourseDialog.courName)
                 params.append('courPrice', this.addCourseDialog.courPrice)
+                params.append('courMark', this.addCourseDialog.courMark)
                 params.append('courPicurl', this.addCourseDialog.courPicurl)
                 params.append('courContent', this.addCourseDialog.courContent)
                 params.append('courTeaid', teaid)
@@ -287,39 +300,162 @@
                 this.addCourseDialog.courName="";
                 this.addCourseDialog.courPrice="";
                 this.addCourseDialog.courTeaid="";
+                this.addCourseDialog.courMark="";
                 this.addCourseDialog.courPicurl="";
                 this.addCourseDialog.courContent="";
                 this.addCourseDialog.nameDisabled=false;
                 this.addCourseDialog.title="新增章节";
                 this.addCourseDialog.show=true;
             },
+            //判断是否有章节
+            judgeChapter(cid){
+                axios({
+                    method:'get',
+                    url:'/api/teacher/chapter/judgeChapter',
+                    params:{
+                        cid:cid
+                    }
+                }).then(res=>{
+                    res=res.data;
+                    if(res.success){
+                        this.judgeNotice(cid);
+                    }else{
+                        this.$message({
+                            type:'error',
+                            message:res.message
+                        })
+                    }
+                })
+            },
+            //判断是否有公告
+            judgeNotice(cid){
+                //TODO 根据课程id判断是否有公告  如果有  不能删除  如果没有继续下一步
+                this.judgeRecommend(cid);
+            },
+            //判断是否有推荐
+            judgeRecommend(cid){
+                axios({
+                    method:'get',
+                    url:'/api/admin/recommend/isRecommend',
+                    params:{
+                        cid:cid
+                    }
+                }).then(res=>{
+                    res=res.data;
+                    if(res.success){
+                        this.judgeExam(cid);
+                    }else{
+                        this.$message({
+                            type:'error',
+                            message:res.message
+                        })
+                    }
+                })
+            },
+            //判断考试中的 题库/测验/考试
+            judgeExam(cid){
+                axios({
+                    method:'get',
+                    url:'/api/exam/InterfaceController/query',
+                    params:{
+                        coureId:cid
+                    }
+                }).then(res=>{
+                    res=res.data;
+                    if(res.success){
+                        this.judgeStudent(cid);
+                    }else{
+                        this.$message({
+                            type:'error',
+                            message:res.message
+                        })
+                    }
+                })
+            },
+            //判断学生中的 报名/评价/学习记录
+            judgeStudent(cid){
+                axios({
+                    method:'get',
+                    url:'/api/student/judge/getRecordByCid',
+                    params:{
+                        cid:cid
+                    }
+                }).then(res=>{
+                    res=res.data;
+                    if(res.success){
+                        this.judgeBbs(cid);
+                    }else{
+                        this.$message({
+                            type:'error',
+                            message:res.message
+                        })
+                    }
+                })
+            },
+            //判断论坛中的 讨论是否有数据
+            judgeBbs(cid){
+                axios({
+                    method:'get',
+                    url:'/api/bbs/coursereply/getCoursePostNum',
+                    params:{
+                        courseId:cid
+                    }
+                }).then(res=>{
+                    res=res.data;
+                    if(res.success){
+                        //可以删除课程了
+                        this.deleteCour(cid);
+                    }else{
+                        this.$message({
+                            type:'error',
+                            message:res.message
+                        })
+                    }
+                })
+            },
+            /**
+             * 删除课程
+             * @param cid 课程id
+             */
+            deleteCour(cid){
+                //TODO 开始真正的删除课程
 
+                    axios({
+                        method: 'delete',
+                        url: '/api/teacher/course/deleteCourseById',
+                        params: {
+                            courId: cid,
+
+                        },
+
+                    })
+                        .then(res => {
+                            res = res.data;
+                            if (res.success) {
+                                this.$message({
+                                    type: 'success',
+                                    message: '删除成功!',
+                                });
+                            }
+                        })
+                   .catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                })
+
+            },
             //点击删除
             handleDelete(index, row) {
 
-                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                this.$confirm('此操作将永久删除该课程, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning',
                     center: true
                 }).then(() => {
-                    axios({
-                        method: 'delete',
-                        url: '/api/teacher/course/deleteCourseById',
-                        params: {
-                            courId: row.courId
-                        },
-                        headers: {
-                            "Authorization": "bearer " + sessionStorage.getItem("access_token")
-                        }
-                    })
-                    this.$message({
-                        type: 'success',
-                        message: '删除成功!',
-
-                    });
-                    this.queryCourse()
-                    location.reload()
+                    this.judgeChapter(row.courId);
                 }).catch(() => {
                     this.$message({
                         type: 'info',

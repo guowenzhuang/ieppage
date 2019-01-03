@@ -2676,6 +2676,11 @@ function ckplayerConfig() {
 					}
 				}
 				if (newX > this.timeSliderLeftTemp * refer) {
+                    app.$notify({
+                        title: '提示',
+                        message: '视频不能快进',
+                        position: 'bottom-right'
+                    });
 					return false;
 				}
 				break;
