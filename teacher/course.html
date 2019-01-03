@@ -29,19 +29,19 @@
     <el-table :data="tableData" style="width: 100%" >
         <el-table-column
                 type="index"
-                width="50">
+                width="40">
         </el-table-column>
-        <el-table-column prop="courPicurl" label="课程图片">
+        <el-table-column prop="courPicurl" label="课程图片" width="160">
             <template slot-scope="scope">
                 <div class="photo">
              <img style="width:100px" :src="scope.row.courPicurl">
                 </div>
             </template>
         </el-table-column>
-        <el-table-column prop="courPrice" label="课程价格">
+        <el-table-column prop="courPrice" label="课程价格" width="100">
         </el-table-column>
 
-        <el-table-column show-overflow-tooltip prop="courName" label="课程名称">
+        <el-table-column show-overflow-tooltip prop="courName" label="课程名称"  width="100">
         </el-table-column>
         <el-table-column prop="courContent"
                          show-overflow-tooltip label="课程描述">
@@ -58,6 +58,9 @@
                 <el-button size="mini"
                            type="danger"
                            @click="handleDelete(scope.$index, scope.row)">删除
+                </el-button>
+                <el-button size="mini"
+                           @click="hanfgg(scope.$index, scope.row)">公告
                 </el-button>
             </template>
         </el-table-column>
@@ -132,6 +135,7 @@
                     disabled:false,
                     nameDisabled:true,
 
+
                 },
 
                 //表格数据（分页）
@@ -145,6 +149,9 @@
         },
 
         methods: {
+            hanfgg(){
+                window.location.href="notice.html?"
+            },
             Picurltj() {
                 let file = document.getElementById("Picurlfile").files[0];
                 if (file == null) {
@@ -208,9 +215,7 @@
                         method: 'post',
                         url: '/api/teacher/course/updateCourseAll',
                         data: params,
-                        headers: {
-                            "Authorization": "bearer " + sessionStorage.getItem("access_token")
-                        }
+
                     })
                         .then(() => {
                             this.$message({
@@ -293,33 +298,28 @@
                 this.addCourseDialog.title="新增章节";
                 this.addCourseDialog.show=true;
             },
+            //判断是否有章节
+            judgeChapter(){
+                axios({
+                    method:'get',
+                    url:'/api/teacher/chapter/judgeChapter',
+                    params:{
+                        cid:
+                    }
+                })
+            },
 
             //点击删除
             handleDelete(index, row) {
 
-                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                this.$confirm('此操作将永久删除该, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning',
                     center: true
                 }).then(() => {
-                    axios({
-                        method: 'delete',
-                        url: '/api/teacher/course/deleteCourseById',
-                        params: {
-                            courId: row.courId
-                        },
-                        headers: {
-                            "Authorization": "bearer " + sessionStorage.getItem("access_token")
-                        }
-                    })
-                    this.$message({
-                        type: 'success',
-                        message: '删除成功!',
-
-                    });
-                    this.queryCourse()
-                    location.reload()
+                    console.log();
+                    this.judgeChapter();
                 }).catch(() => {
                     this.$message({
                         type: 'info',

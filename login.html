@@ -190,6 +190,7 @@
                     "Authorization": "Basic aWVwOmllcHNlY3JldA=="
                 }
             }).then(res => {
+
                 res = res.data;
                 //token
                 sessionStorage.setItem("access_token", res.access_token);
@@ -202,23 +203,20 @@
 
                 let roleNames = res.info.roleNames;
                 sessionStorage.setItem("roleNames", roleNames);
+
                 //用户名
                 sessionStorage.setItem("username", res.info.name);
                 sessionStorage.setItem("userid", res.info.id);
 
                 let callback = getParam("callback-url");
-                if (callback != null && callback!='') {
-                    window.location.href = callback;
-                    return;
-                }
                 axios.defaults.headers.common['Authorization'] = "bearer " + res.access_token;
-                authoritiesToUrl(roleNames[0],res.info.id);
+                authoritiesToUrl(roleNames[0],res.info.id,callback);
             });
             return false;
         }
 
         //根据权限找到url
-        function authoritiesToUrl(role,id) {
+        function authoritiesToUrl(role,id,callback) {
             switch (role) {
                 case "学生":
                     //获取学生基本信息
@@ -232,19 +230,37 @@
                         }else{
                             sessionStorage.setItem("userPhoto", "/student/curricular/img/user/portrait.jpg");
                         }
+                        if (callback != null && callback!='') {
+                            window.location.href = callback;
+                            return;
+                        }
                         let surl="student/index.html";
                         window.location.href = surl;
                     })
                     return "student/index.html";
                 case "老师":
+                    if (callback != null && callback!='') {
+                        window.location.href = callback;
+                        return;
+                    }
                     let turl="teacher/index.html";
                     window.location.href = turl;
                     return "teacher/index.html";
                 case "管理员":
+                    if (callback != null && callback!='') {
+                        window.location.href = callback;
+                        return;
+                    }
                     let aurl="admin/index.html";
                     window.location.href = aurl;
                     return "admin/index.html";
                 default:
+                    if (callback != null && callback!='') {
+                        window.location.href = callback;
+                        return;
+                    }
+                    let qurl="admin/index.html";
+                    window.location.href = qurl;
                     return "admin/index.html";
             }
         }

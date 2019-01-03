@@ -259,7 +259,7 @@
 														<div class="question-item-summary">
 															<div class="user-username ">
 																<a class="avatar" href="../user/13/study.html" target="_blank">
-																	<samp v-text="c.sid"></samp>
+																	<samp v-text="c.userName"></samp>
 																</a>
 																<!-- 	<span class="user-level">L14</span> -->
 															</div>
@@ -507,8 +507,9 @@
 
 					this.sid = sessionStorage.getItem("userid");
 					this.getQueryString("courId");
-					this.chaxun()
-					this.people()
+					this.chaxun();
+					this.people();
+					this.yonghu();
 				},
 				data: {
 					//urlPre: "http://127.0.0.1:8060",
@@ -672,6 +673,7 @@
 							res = res.data;
 							this.contents = res.rows;
 							this.total=res.total;
+							
 							//console.log("评论" + res.rows);
 							//console.log("条数" + res.total);
 						})
@@ -680,6 +682,20 @@
 						this.currentPage = currentPage;
 						this.pinglun();
 					},
+					/* yonghu:function(){
+						axios({
+							method: 'get',
+							url: `/api/student/studentPart/queryUser`,
+							params: {
+								id: this.sid,							
+							}
+						}).then(res => {
+							//http://localhost/ieppage/student/curricular/courses/show.html
+							//res = res.data;
+							//this.contents = res.rows;
+							console.log("用户信息" + res.data.message);
+						})
+					}, */
 					dainzan: function(praise, mid) {
 
 						axios({
