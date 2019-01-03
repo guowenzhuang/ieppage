@@ -42,9 +42,7 @@
    width:100%;
 }
 /*搜索输入框的大小*/
-.el-input{
-    width: 300px;
-}
+
 .el-message-box__wrapper{
     height:800px;
 }
