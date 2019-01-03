@@ -512,9 +512,10 @@
 										window.location.href = "http://127.0.0.1/student/curricular/courses/study.html?courId=" + cid +
 											"&value=discussion";
 									} else {
+									
                                         if (confirm("请先报名该课程，再进入讨论!") == true) {
                                         	window.location.href = "http://127.0.0.1/student/curricular/courses/show.html?courId="+cid;
-                                        }
+                                        } 
 									}
 
 								}
@@ -522,9 +523,15 @@
 							})
 
 						} else {
+							/* Ewin.confirm({ message: "请先登录!" }).on(function (e) {
+								if(e){
+									window.location.href = "http://127.0.0.1/login.html";
+								}
+							}); */
+							 
 							if (confirm("请先登录") == true) {
 								window.location.href = "http://127.0.0.1/login.html";
-							}
+							} 
 						}
 					}
 					
