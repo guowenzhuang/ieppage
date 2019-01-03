@@ -14,7 +14,7 @@
 <div id="app">
 
     <div>
-        <el-input  v-model="cour_name" placeholder="请输入内容"></el-input>
+        <el-input  v-model="cour_name" placeholder="请输入内容" style="width:300px;"></el-input>
         <el-button type="success" @click="search">搜索</el-button>
         <el-button
                 type="primary"
@@ -78,13 +78,13 @@
                 <el-input placeholder="请输入课程名称" v-model="addCourseDialog.courName" :disabled="addCourseDialog.nameDisabled" ></el-input>
             </el-form-item>
             <el-form-item prop="courPrice" label="课程价格">
-                <el-input placeholder="请输入学分" v-model="addCourseDialog.courPrice" ></el-input>
+                <el-input-number v-model="addCourseDialog.courPrice"  :min="0" ></el-input-number>
             </el-form-item>
             <el-form-item prop="courMark" label="学分">
-                <el-input placeholder="请输入课程价格" v-model="addCourseDialog.courMark" ></el-input>
+                <el-input-number  v-model="addCourseDialog.courMark" :min="0" :max="100" ></el-input-number>
             </el-form-item>
             <el-form-item prop="courContent" label="课程内容">
-                <el-input placeholder="请输入课程价格" v-model="addCourseDialog.courContent" ></el-input>
+                <el-input placeholder="请输入课程内容" type="textarea" v-model="addCourseDialog.courContent" ></el-input>
             </el-form-item>
             <el-form-item>
                 <el-input type="file" id="Picurlfile"></el-input>
@@ -418,7 +418,7 @@
              * @param cid 课程id
              */
             deleteCour(cid){
-                //TODO 开始真正的删除课程
+                // 开始真正的删除课程
 
                     axios({
                         method: 'delete',
@@ -436,7 +436,9 @@
                                     type: 'success',
                                     message: '删除成功!',
                                 });
+                                this.queryCourse()
                             }
+
                         })
                    .catch(() => {
                     this.$message({
