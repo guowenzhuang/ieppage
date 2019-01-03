@@ -9,6 +9,7 @@
 		<link rel="stylesheet" href="../../../bootstrap/css/bootstrap.css">
 		<link rel="stylesheet" href="../../../css/muke.css">
 		<link rel="stylesheet" href="../../../css/index.css">
+		<link rel="stylesheet" href="../../../css/personal.css">
 		<link rel="stylesheet" href="../../../js/elementui/index.css">
 		<script type="text/javascript" src="../../../js/jquery.SuperSlide.2.1.1.js"></script>
 		<script type="text/javascript" src="../../../js/vue.min.js"></script>
@@ -17,6 +18,7 @@
 
 
 	</head>
+
 	<body class="backg_huibai">
 	<!-- 顶部 -->
 	<div id="app">
@@ -35,6 +37,7 @@
 							<li><a class="color_black" href="../../../department.html">院系</a></li>
 							<li><a class="color_black" href="curricular/paths/index.html">名师专栏</a></li>
 						</ul>
+
 					</div>
 				</div>
 
@@ -70,6 +73,76 @@
 
 			</div>
 		</div>
+		<!--中间-->
+		<!-- 轮播图 -->
+		<div class="width100 float_l margin_t-405 margin_b40">
+			<div class="width_1200 margin_auto">
+				<el-tabs type="border-card">
+					<el-tab-pane style="width: 500px;height: 600px">
+						<span slot="label"><i class="el-icon-date"></i>个人信息</span>
+						<el-button icon="el-icon-refresh" type="primary" onclick=" window.location.reload();">刷新</el-button>
+
+						<el-form ref="form" :model="form" label-width="80px">
+							<el-form-item label="头像" >
+								<el-upload class="avatar-uploader"
+										action="/api/oss/upload"
+										list-type="picture-card"
+									    data="personalData"
+										:on-success="AvatarSuccess"
+										:headers="authHead"
+										:before-upload="beforeAvatarUpload">
+									<i class="el-icon-plus"></i>
+								</el-upload>
+								<el-dialog :visible.sync="dialogVisible">
+									<img width="100%" :src="dialogImageUrl" alt="">
+								</el-dialog>
+							</el-form-item>
+							<el-form-item label="用户名">
+								<el-input disabled size="large" v-model="form.loginName"></el-input>
+							</el-form-item>
+							<el-form-item label="性别">
+								<el-radio-group v-model="form.sex">
+									<el-radio label="男" value="男"></el-radio>
+									<el-radio label="女" value="女"></el-radio>
+									<el-radio label="保密" value="保密"></el-radio>
+								</el-radio-group>
+							</el-form-item>
+							<el-form-item label="邮箱">
+								<el-input type="text" v-model="form.protectEMail"></el-input>
+							</el-form-item>
+							<el-form-item label="电话">
+								<el-input type="text" v-model="form.protectMTel"></el-input>
+							</el-form-item>
+							<el-form-item label="身份证">
+								<el-input type="text" v-model="form.card"></el-input>
+							</el-form-item>
+							<el-form-item>
+								<el-button type="primary" @click="updateStu">保存</el-button>
+							</el-form-item>
+
+						</el-form>
+					</el-tab-pane>
+					<el-tab-pane label="修改密码">
+						<el-form :model="upPsd" status-icon :rules="upPsdRule"  ref="upPsdForm" label-width="100px" class="demo-ruleForm">
+						<el-form-item label="旧密码" prop="oldPass">
+							<el-input type="password" v-model="upPsd.oldPass" autocomplete="off"></el-input>
+						</el-form-item>
+						<el-form-item label="新密码" prop="newPass">
+							<el-input type="password" v-model="upPsd.pass" autocomplete="off"></el-input>
+						</el-form-item>
+						<el-form-item label="确认密码" prop="checkPass">
+							<el-input type="password" v-model="upPsd.checkPass" autocomplete="off"></el-input>
+						</el-form-item>
+						<el-form-item>
+							<el-button type="primary" @click="submitPass" >提交</el-button>
+							<el-button @click="resetForm" >重置</el-button>
+						</el-form-item>
+					</el-form>
+					</el-tab-pane>
+				</el-tabs>
+
+			</div>
+		</div>
 
 		<!-- 页脚 -->
 		<div class="width100 float_l padding_t30 height193">
@@ -97,27 +170,165 @@
 
 	</div>
      <script>
-         var vue = new Vue({
-             el: "#app",
-             mounted: function() {
-							 
-                 var roleNames = sessionStorage.getItem("roleNames");
-								 console.log("测试"+roleNames);
-                 if (roleNames != null && roleNames == ("学生")) {
-                     console.log("roleNames"+roleNames);
-                     this.isShow = false;
-                     this.isCenter = true;
-                     this.userPhoto = sessionStorage.getItem("userPhoto");
-                 }else{
-									 console.log("学生未登录");
-								 }
-             },
-             data: {
-                 isShow: true,
-                 isCenter: false,
-                 userPhoto: ''
-             },
+         axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
+         axios.defaults.headers.common['Content-Type'] = 'application/json;charset=UTF-8';
+
+         var Main = {
+             data() {
+                 var validatePass = (rule, value, callback) => {
+                     if (value === '') {
+                         callback(new Error('请输入密码'));
+                     } else {
+                         if (this.upPsd.checkPass !== '') {
+                             this.$refs.upPsdForm.validateField('checkPass');
+                         }
+                         callback();
+                     }
+                 };
+                 var validatePass2 = (rule, value, callback) => {
+                     if (value === '') {
+                         callback(new Error('请再次输入密码'));
+                     } else if (value !== this.upPsd.pass) {
+                         callback(new Error('两次输入密码不一致!'));
+                     } else {
+                         callback();
+                     }
+                 };
+                 return {
+                     //上传文件附加额外参数
+                     personalData:{
+                         path:''
+                     },
+                     //上传文件附加额外请求头参数
+                     authHead:{
+                         Authorization:"bearer " + sessionStorage.getItem("access_token")
+                     },
+                     upPsdRule:{
+                         pass: [
+                             { required: true, message: '请输入新密码', trigger: 'blur' },
+                             { validator: validatePass, trigger: 'blur' }
+                         ],
+                         checkPass: [
+                             { required: true, message: '请再次输入密码', trigger: 'blur' },
+                             { validator: validatePass2, trigger: 'blur' }
+                         ],
+                         oldPass:[
+                             { required: true, message: '请输入原密码', trigger: 'blur' }
+                         ]
+                     },
+                     userId: '',
+                     form: {},
+                     dialogImageUrl: '',
+                     dialogVisible: false,
+                     isShow: true,
+                     isCenter: false,
+                     userPhoto: '',
+                     upPsd:{
+                         show:false,
+                         pass:'',
+                         checkPass:'',
+                         oldPass:''
+                     },
+
+				 }
+
+			 },
              methods: {
+
+                 updateStu(){
+                     axios({
+                         method:'put',
+                         url:'/api/student/stu/updateStudent',
+                         data:this.form
+                     }).then(res=>{
+                         res=res.data;
+                         this.$message({
+                             type:"success",
+                             message:'修改成功',
+                         })
+
+                     })
+                 },
+
+                 //查询学生
+                 queryStudent() {
+                     axios({
+                         method: 'get',
+                         url: '/api/student/stu/QueryStudentByid',
+                         params: {
+                             sid: this.userId
+                         }
+                     }).then(res => {
+                         let o=res.data.message[0];
+                         if(o.photo==null || o.photo==""){
+                             o.photo='img/teaphoto.jpg'
+                         }
+                         this.form=o;
+                     })
+                 },
+
+                 submitPass(){
+                     this.$refs['upPsdForm'].validate((valid) => {
+                         if (valid) {
+                             let params=new URLSearchParams();
+                             params.append("oldPass",this.upPsd.oldPass);
+                             params.append("password",this.upPsd.pass);
+                             axios({
+                                 method:'put',
+                                 url:'/api/admin/user/updatePassword/'+this.userId,
+                                 data:params
+                             }).then(res=>{
+                                 res=res.data;
+                                 if(res.success){
+                                     this.$message({
+                                         type:'success',
+                                         message:res.message
+                                     })
+                                     this.upPsd.show=false;
+                                     top.location.href = "/login.html"
+                                 }else{
+                                     this.$message({
+                                         type:'error',
+                                         message:res.message
+                                     })
+                                 }
+                             })
+                         } else {
+                             this.$message({
+                                 type:'error',
+                                 message:'请检查字段'
+                             })
+                             return false;
+                         }
+                     });
+                 },
+                 //重置密码
+                 resetForm(){
+                     this.$refs['upPsdForm'].resetFields();
+                 },
+                 //修改密码
+                 changePassword(){
+                     this.upPsd.show=true;
+                 },
+                 AvatarSuccess(response){
+                     this.active.userPhoto=response.message.path;
+                 },
+                 beforeAvatarUpload(file) {
+                     const isJPG = file.type === 'image/jpeg';
+                     const isLt2M = file.size / 1024 / 1024 < 2;
+
+                     if (!isJPG) {
+                         this.$message.error('上传头像图片只能是 JPG 格式!');
+                     }
+                     if (!isLt2M) {
+                         this.$message.error('上传头像图片大小不能超过 2MB!');
+                     }
+                     this.personalData.path="teaHead/"+file.uid+file.name;
+                     return isJPG && isLt2M;
+                 },
+                 onSubmit() {
+                     console.log('submit!');
+                 },
                  login: function() {
                      window.location.href = "http://127.0.0.1/login.html";
                  },
@@ -128,9 +339,28 @@
                  },
                  shezhi:function(){
                      window.location.href = "http://localhost/student/curricular/user/13/personal.html";
+                 },
+			 },
+             mounted() {
+                 this.userId = sessionStorage.getItem("userid");
+                 var roleNames = sessionStorage.getItem("roleNames");
+                 console.log("测试"+roleNames);
+                 if (roleNames != null && roleNames == ("学生")) {
+                     console.log("roleNames"+roleNames);
+                     this.isShow = false;
+                     this.isCenter = true;
+                     this.userPhoto = sessionStorage.getItem("userPhoto");
+                     this.userid = sessionStorage.getItem("userid");
+                 }else{
+                     console.log("学生未登录");
                  }
+               this.queryStudent();
              }
-         });
+
+		 }
+         var Component = Vue.extend(Main)
+         new Component().$mount('#app')
+
 	 </script>
 
 	</body>
