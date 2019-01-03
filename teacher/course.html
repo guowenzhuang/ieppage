@@ -300,7 +300,13 @@
             },
             //判断是否有章节
             judgeChapter(){
-
+                axios({
+                    method:'get',
+                    url:'/api/teacher/chapter/judgeChapter',
+                    params:{
+                        cid:
+                    }
+                })
             },
 
             //点击删除
@@ -312,6 +318,7 @@
                     type: 'warning',
                     center: true
                 }).then(() => {
+                    console.log();
                     this.judgeChapter();
                 }).catch(() => {
                     this.$message({
