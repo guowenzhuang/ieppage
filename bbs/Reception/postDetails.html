@@ -67,6 +67,7 @@
             font-size: 14px;
         }
     </style>
+
 		<script type="text/javascript">
 			layui.use('layedit', function() {
 				var layedit = layui.layedit,
@@ -202,6 +203,7 @@
 						<div class="question-headline">
 							<span class="question-title"> {{postTitle}}</span>
 							<span class="question-figure">{{postBrowse}} 查看</span>
+							<span class="question-figure">{{replynum}} 回复</span>
 						</div>
 						<div class="question-author">
 							<div class="user-avatar ">
@@ -345,37 +347,45 @@
 		</div>
 
 		<script type="text/javascript">
+			if (sessionStorage.getItem("access_token") != null) {
+				axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
+			}
+
 			var postDetails = new Vue({
 				el: '#postDetails',
 
 				mounted: function() {
+					this.token = sessionStorage.getItem("access_token");
+					this.getPostDetails();
 					this.queryReply();
 					this.userIsPost();
 
 				},
 				data() {
 					return {
-
 						isLike: "",
 						postLike: "",
 						postReport: '',
-						postUsername: sessionStorage.getItem("postUsername"),
-						postContent: sessionStorage.getItem("postContent"),
-						postBrowse: sessionStorage.getItem("postBrowse"),
-						postTime: sessionStorage.getItem("postTime"),
-						userId: sessionStorage.getItem("userId"),
-						replyId: sessionStorage.getItem("replyId"),
-						postTitle: sessionStorage.getItem("postTitle"),
+						replynum: '',
+						postUsername: '',
+						postContent: '',
+						postBrowse: '',
+						postTime: '',
+						userId: '',
+						replyId: '',
+						postTitle: '',
 						username: sessionStorage.getItem("username"),
-						replyList: []
+						postId: sessionStorage.getItem("postId"),
+						replyList: [],
+						token: ''
 
 					}
 				},
 				methods: {
 					queryReply: function() {
 						let params = new URLSearchParams();
-						params.append("postId", sessionStorage.getItem("postId"));
-						params.append("userId", sessionStorage.getItem("userId"))
+						params.append("postId", this.postId);
+						params.append("loginUserId", sessionStorage.getItem("userid"))
 						axios({
 							method: 'post',
 							url: '/api/bbs/reply/getReplyByPostId',
@@ -389,10 +399,32 @@
 							console.log('replyList==>' + this.replyList);
 						})
 					},
+					getPostDetails: function() {
+						let params = new URLSearchParams();
+						params.append("postId", this.postId);
+						axios({
+							method: 'post',
+							url: '/api/bbs/post/getPostDetailsByPostId',
+							data: params,
+							headers: {
+								//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
+							}
+						}).then(res => {
+							res = res.data;
+							this.postTitle = res.postTitle;
+							this.postContent = res.replyContent;
+							this.postTime = res.replyTime;
+							this.postUsername = res.userName;
+							this.postBrowse = res.replyBrowse;
+							this.replyId = res.replyId;
+							this.replynum = res.replyNum;
+							this.replyLikenum = res.replyLikenum;
+						})
+					},
 					/* 用户是否举报或点赞该贴 */
 					userIsPost: function() {
 						let params = new URLSearchParams();
-						params.append("replyId", sessionStorage.getItem("replyId"));
+						params.append("replyId", this.replyId);
 						params.append("userId", sessionStorage.getItem("userid"));
 						axios({
 							method: 'post',
@@ -446,7 +478,7 @@
 							console.log("replyId====>" + replyId);
 							let params = new URLSearchParams();
 							params.append("replyContent", value);
-							params.append("postId", sessionStorage.getItem("postId"));
+							params.append("postId", this.postId);
 							params.append("pId", replyId);
 							params.append("userId", sessionStorage.getItem("userid"));
 							axios({
@@ -518,8 +550,12 @@
 
 					},
 					userLikePost: function() {
+						if (this.token == null) {
+							this.isHaveToken();
+						}
+
 						let params = new URLSearchParams();
-						params.append("replyId", sessionStorage.getItem("replyId"));
+						params.append("replyId", this.replyId );
 						params.append("userId", sessionStorage.getItem("userid"));
 						params.append("isLike", this.postLike);
 						axios({
@@ -583,6 +619,27 @@
 								message: '取消输入'
 							});
 						});
+					},
+					isHaveToken: function() {
+						console.log(this.token);
+						this.$confirm('您还没有登录账号, 是否登录?', '提示', {
+							confirmButtonText: '确定',
+							cancelButtonText: '取消',
+							type: 'warning'
+						}).then(() => {
+							window.location.href = "\\login.html?callback-url=http://127.0.0.1/bbs/Reception/post.html";
+							/* this.$message({
+								type: 'success',
+								message: '登录成功!'
+							}); */
+						}).catch(() => {
+							this.$message({
+								type: 'info',
+								message: '已取消登录'
+							});
+							//window.location.href = ""
+						});
+
 					}
 
 				}
