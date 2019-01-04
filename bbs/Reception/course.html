@@ -125,7 +125,7 @@
 			el: "#course",
 
 			mounted: function() {
-				this.token=sessionStorage.getItem("access_token")
+				this.token=sessionStorage.getItem("access_token");
 				var userId= sessionStorage.getItem("userid");
 				this.queryPost();
 				this.queryType();
@@ -135,7 +135,7 @@
 				return {
 					typeName: "",
 					orderBy: "replyTime",
-					courseId: sessionStorage.getItem("courId"),
+					courseId: 1/* sessionStorage.getItem("courId") */,
 					total: 50, //默认数据总数
 					pagesize: 10, //每页的数据条数
 					currentPage: 1, //默认开始页面
