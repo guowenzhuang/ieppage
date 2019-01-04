@@ -22,6 +22,9 @@
     <el-container>
         <el-main>
             <el-row :gutter="20" type="flex">
+                <el-col :span="2">
+                    <el-button round @click="ret"> < </el-button>
+                </el-col>
                 <el-col :span="4">
                     <span>公告题目:</span>
                     <el-input v-model="query.noTitle" placeholder="请输入公告标题"></el-input>
@@ -142,11 +145,14 @@
             }
         },
         methods:{
+            ret(){
+                window.location.href="course.html";
+            },
             //新增公告
             addno(){
                 axios({
                     method:'post',
-                    url:'/api/teacher/NOtice/insertNotice',
+                    url:'/api/teacher/notice/insertNotice',
                     params:{
                         noCourid:courid,
                         noTitle:this.add.noTitle,
@@ -171,7 +177,7 @@
             updateNotice(){
                 axios({
                     method:'put',
-                    url:'/api/teacher/NOtice/updateNotice',
+                    url:'/api/teacher/notice/updateNotice',
                     data:this.add
                 }).then(res=>{
                     res=res.data;
@@ -195,7 +201,7 @@
                 }).then(() => {
                     axios({
                         method:"delete",
-                        url:'/api/teacher/NOtice/deleteNoticeBynoId',
+                        url:'/api/teacher/notice/deleteNoticeBynoId',
                         params: {
                             noId: row.noId
                         },
@@ -246,7 +252,7 @@
             noticeQuery(){
                 axios({
                     method:'get',
-                    url:'/api/teacher/NOtice/query',
+                    url:'/api/teacher/notice/query',
                     params:{
                         noCourid:courid,
                         noTitle:this.query.noTitle,
