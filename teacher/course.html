@@ -300,41 +300,157 @@
                 this.addCourseDialog.show=true;
             },
 
+            //判断是否有章节
+            judgeChapter(cid){
+                axios({
+                    method:'get',
+                    url:'/api/teacher/chapter/judgeChapter',
+                    params:{
+                        cid:cid
+                    }
+                }).then(res=>{
+                    res=res.data;
+                    if(res.success){
+                        this.judgeNotice(cid);
+                    }else{
+                        this.$message({
+                            type:'error',
+                            message:res.message
+                        })
+                    }
+                })
+            },
+            //判断是否有公告
+            judgeNotice(cid){
+                //TODO 根据课程id判断是否有公告  如果有  不能删除  如果没有继续下一步
+                this.judgeRecommend(cid);
+            },
+            //判断是否有推荐
+            judgeRecommend(cid){
+                axios({
+                    method:'get',
+                    url:'/api/admin/recommend/isRecommend',
+                    params:{
+                        cid:cid
+                    }
+                }).then(res=>{
+                    res=res.data;
+                    if(res.success){
+                        this.judgeExam(cid);
+                    }else{
+                        this.$message({
+                            type:'error',
+                            message:res.message
+                        })
+                    }
+                })
+            },
+            //判断考试中的 题库/测验/考试
+            judgeExam(cid){
+                axios({
+                    method:'get',
+                    url:'/api/exam/InterfaceController/query',
+                    params:{
+                        coureId:cid
+                    }
+                }).then(res=>{
+                    res=res.data;
+                    if(res.success){
+                        this.judgeStudent(cid);
+                    }else{
+                        this.$message({
+                            type:'error',
+                            message:res.message
+                        })
+                    }
+                })
+            },
+            //判断学生中的 报名/评价/学习记录
+            judgeStudent(cid){
+                axios({
+                    method:'get',
+                    url:'/api/student/judge/getRecordByCid',
+                    params:{
+                        cid:cid
+                    }
+                }).then(res=>{
+                    res=res.data;
+                    if(res.success){
+                        this.judgeBbs(cid);
+                    }else{
+                        this.$message({
+                            type:'error',
+                            message:res.message
+                        })
+                    }
+                })
+            },
+            //判断论坛中的 讨论是否有数据
+            judgeBbs(cid){
+                axios({
+                    method:'get',
+                    url:'/api/bbs/coursereply/getCoursePostNum',
+                    params:{
+                        courseId:cid
+                    }
+                }).then(res=>{
+                    res=res.data;
+                    if(res.success){
+                        //可以删除课程了
+                        this.deleteCour(cid);
+                    }else{
+                        this.$message({
+                            type:'error',
+                            message:res.message
+                        })
+                    }
+                })
+            },
+            /**
+             * 删除课程
+             * @param cid 课程id
+             */
+            deleteCour(cid){
+                // 开始真正的删除课程
+
+                axios({
+                    method: 'delete',
+                    url: '/api/teacher/course/deleteCourseById',
+                    params: {
+                        courId: cid,
+
+                    },
+
+                })
+                    .then(res => {
+                        res = res.data;
+                        if (res.success) {
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功!',
+                            });
+                            this.queryCourse()
+                        }
+
+                    })
+                    .catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    })
+
+            },
             //点击删除
             handleDelete(index, row) {
 
-                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                this.$confirm('此操作将永久删除该课程, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning',
                     center: true
                 }).then(() => {
-                    axios({
-                        method: 'delete',
-                        url: '/api/teacher/course/deleteCourseById',
-                        params: {
-                            courId: row.courId
-                        },
-                        headers: {
-                            "Authorization": "bearer " + sessionStorage.getItem("access_token")
-                        }
-                    })
-                       .then(res => {
-                            res = res.data;
-                            if (res.success) {
-                                this.$message({
-                                    type: 'success',
-                                    message: '删除成功!',
-                                });
-                            } else {
-                                this.$message({
-                                    type: 'error',
-                                    message: '删除失败!有子级不能删除',
-                                });
-                            }
-                        })
-                    this.queryCourse()
-                    location.reload()
+                    this.judgeChapter(row.courId);
                 }).catch(() => {
                     this.$message({
                         type: 'info',
@@ -346,6 +462,7 @@
 
 
             },
+
 
 
             pageChange(page) {
