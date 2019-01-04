@@ -89,7 +89,7 @@
 										   drag
 										   :show-file-list="false"
 										list-type="picture-card"
-									    data="personalData"
+									    :data="personalData"
 										:on-success="AvatarSuccess"
 										:headers="authHead"
 										:before-upload="beforeAvatarUpload">
@@ -318,7 +318,6 @@
                     console.log("aa"+  this.active.teaPhoto)
                    },
                  beforeAvatarUpload(file) {
-                     console.log(file)
                      const isJPG = file.type === 'image/jpeg';
                      const isLt2M = file.size / 1024 / 1024 < 2;
 
