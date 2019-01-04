@@ -25,10 +25,13 @@
 <div id="app">
     <el-container>
         <el-header>
-            <el-row type="flex" justify="center">
+            <el-row type="flex" justify="space-between">
                 <el-col :span="3">{{username}} 你好</el-col>
                 <el-col :span="3">
-                    <el-button  type="success" @click="collectPermission">更新全部权限</el-button>
+                    <el-button v-if="isGL"  type="success" @click="collectPermission">更新全部权限</el-button>
+                </el-col>
+                <el-col :span="3" >
+                    <el-button type="warning" @click="exit">安全退出</el-button>
                 </el-col>
             </el-row>
 
@@ -72,10 +75,17 @@
                     children: 'children',
                     label: 'name'
                 },
-                username:''
+                username:'',
+                isGL:false
             }
         },
         methods: {
+            //退出
+            exit(){
+                sessionStorage.clear();
+                localStorage.clear();
+                window.location.href="/login.html"
+            },
             //收集权限
             collectPermission(){
                 axios({
@@ -130,6 +140,11 @@
 
         },
         mounted() {
+            //isGL
+            let roleName=sessionStorage.getItem("roleNames");
+            if(roleName=="管理员"){
+                this.isGL=true;
+            }
             this.username=sessionStorage.getItem("username");
             //初始化菜单
             this.queryMenu();
