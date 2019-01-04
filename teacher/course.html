@@ -76,10 +76,13 @@
                 <el-input placeholder="请输入课程名称" v-model="addCourseDialog.courName" :disabled="addCourseDialog.nameDisabled" ></el-input>
             </el-form-item>
             <el-form-item prop="courPrice" label="课程价格">
-                <el-input placeholder="请输入课程价格" v-model="addCourseDialog.courPrice" ></el-input>
+                <el-input-number v-model="addCourseDialog.courPrice"  :min="0" ></el-input-number>
+            </el-form-item>
+            <el-form-item prop="courMark" label="学分">
+                <el-input-number  v-model="addCourseDialog.courMark" :min="0" :max="100" ></el-input-number>
             </el-form-item>
             <el-form-item prop="courContent" label="课程内容">
-                <el-input placeholder="请输入课程价格" v-model="addCourseDialog.courContent" ></el-input>
+                <el-input placeholder="请输入课程内容" type="textarea" v-model="addCourseDialog.courContent" ></el-input>
             </el-form-item>
             <el-form-item>
                 <el-input type="file" id="Picurlfile"></el-input>
