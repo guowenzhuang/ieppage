@@ -86,6 +86,8 @@
 							<el-form-item label="头像" >
 								<el-upload class="avatar-uploader"
 										action="/api/oss/upload"
+										   drag
+										   :show-file-list="false"
 										list-type="picture-card"
 									    data="personalData"
 										:on-success="AvatarSuccess"
@@ -195,6 +197,7 @@
                      }
                  };
                  return {
+                     active: {},
                      //上传文件附加额外参数
                      personalData:{
                          path:''
@@ -311,9 +314,11 @@
                      this.upPsd.show=true;
                  },
                  AvatarSuccess(response){
-                     this.active.userPhoto=response.message.path;
-                 },
+                     this.active.teaPhoto=response.message.path;
+                    console.log("aa"+  this.active.teaPhoto)
+                   },
                  beforeAvatarUpload(file) {
+                     console.log(file)
                      const isJPG = file.type === 'image/jpeg';
                      const isLt2M = file.size / 1024 / 1024 < 2;
 
@@ -324,6 +329,8 @@
                          this.$message.error('上传头像图片大小不能超过 2MB!');
                      }
                      this.personalData.path="teaHead/"+file.uid+file.name;
+
+
                      return isJPG && isLt2M;
                  },
                  onSubmit() {
