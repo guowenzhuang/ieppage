@@ -60,7 +60,7 @@
                            @click="handleDelete(scope.$index, scope.row)">删除
                 </el-button>
                 <el-button size="mini"
-                           @click="hanfgg(scope.$index, scope.row)">公告
+                           @click="hanfgg(scope.row)">公告
                 </el-button>
             </template>
         </el-table-column>
@@ -148,8 +148,10 @@
         },
 
         methods: {
-            hanfgg(){
-                window.location.href="notice.html?"
+            hanfgg(row){
+                var courId=row.courId;
+                localStorage.setItem("courId",courId);
+                window.location.href="notice.html?courId="+courId;
             },
             Picurltj() {
                 let file = document.getElementById("Picurlfile").files[0];
