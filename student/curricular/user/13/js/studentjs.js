@@ -15,10 +15,24 @@ let main={
                 rows:6
             },
             total:0,
-            userId:''
+            userId:'',
+            isShow: true,
+            isCenter: false,
+            userPhoto: '',
         }
     },
     methods:{
+        tuichu: function() {
+            sessionStorage.clear();
+            localStorage.clear();
+            window.location.href = "http://127.0.0.1/login.html";
+        },
+        shezhi:function(){
+            window.location.href = "/student/curricular/user/13/personal.html";
+        },
+        login: function() {
+            window.location.href = "http://127.0.0.1/login.html";
+        },
       queryKc(){
           //查询课程
           axios({
@@ -44,6 +58,16 @@ let main={
       }
     },
     mounted(){
+
+        var roleNames = sessionStorage.getItem("roleNames");
+        console.log(roleNames);
+        if (roleNames != null && roleNames == ("学生")) {
+            this.isShow = false;
+            this.isCenter = true;
+            this.userPhoto = sessionStorage.getItem("userPhoto");
+        }
+
+
         //查询学生信息
         let id=sessionStorage.getItem("userid");
         this.userId=id;
