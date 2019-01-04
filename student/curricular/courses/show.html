@@ -565,7 +565,7 @@
 						return '';
 					},
 					add1: function() {
-						if (sessionStorage.getItem("access_token") != null) {
+						if (sessionStorage.getItem("access_token") != null && sessionStorage.getItem("access_token") !="") {
 							if (this.baoming == "立即参加") {
 								axios({
 									method: 'post',
@@ -706,7 +706,7 @@
 						})
 					}, */
 					dainzan: function(praise, mid) {
-
+                        if (sessionStorage.getItem("access_token") != null && sessionStorage.getItem("access_token")!="") {
 						axios({
 							method: 'put',
 							url: `/api/student/comment/updateComment`,
@@ -719,6 +719,10 @@
 							console.log(res);
 							this.pinglun();
 						});
+                        }else{
+                            window.location.href =
+                                "\\login.html?callback-url=http://127.0.0.1/student/curricular/courses/show.html?courId=" + this.courId;
+						}
 						console.log("1111");
 					}
 				}
