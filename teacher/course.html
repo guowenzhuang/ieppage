@@ -31,17 +31,19 @@
                 type="index"
                 width="40">
         </el-table-column>
-        <el-table-column prop="courPicurl" label="课程图片">
+        <el-table-column prop="courPicurl" label="课程图片" width="160">
             <template slot-scope="scope">
                 <div class="photo">
-             <img style="width:100px" :src="scope.row.courPicurl">
+                    <img style="width:100px" :src="scope.row.courPicurl">
                 </div>
             </template>
         </el-table-column>
-        <el-table-column prop="courPrice" label="课程价格">
+        <el-table-column prop="courPrice" label="课程价格" width="100">
         </el-table-column>
 
-        <el-table-column show-overflow-tooltip prop="courName" label="课程名称">
+        <el-table-column show-overflow-tooltip prop="courName" label="课程名称"  width="100">
+        </el-table-column>
+        <el-table-column show-overflow-tooltip prop="courMark" label="学分"  width="100">
         </el-table-column>
         <el-table-column prop="courContent"
                          show-overflow-tooltip label="课程描述">
@@ -137,7 +139,7 @@
                     courPicurl:'',
                     disabled:false,
                     nameDisabled:true,
-
+                    courMark:'',
                 },
 
                 //表格数据（分页）
@@ -202,7 +204,7 @@
                 localStorage.setItem("courId",courId);
                 window.location.href="admin.html?courId="+courId
 
-             },
+            },
             handleSelectionChange(val) {
                 this.selectUserData = val
             },
@@ -212,6 +214,7 @@
                 params.append('courId', this.addCourseDialog.courId)
                 params.append('courName', this.addCourseDialog.courName)
                 params.append('courPrice', this.addCourseDialog.courPrice)
+                params.append('courMark', this.addCourseDialog.courMark)
                 params.append('courPicurl', this.addCourseDialog.courPicurl)
                 params.append('courContent', this.addCourseDialog.courContent)
                 this.$refs['addForm'].validate((valid) => {
@@ -254,7 +257,7 @@
             //新增
             addUser(){
                 let teaid=sessionStorage.getItem("userid");
-               let params = new URLSearchParams()
+                let params = new URLSearchParams()
                 params.append('courId', this.addCourseDialog.courId)
                 params.append('courName', this.addCourseDialog.courName)
                 params.append('courPrice', this.addCourseDialog.courPrice)
