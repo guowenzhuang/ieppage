@@ -436,9 +436,9 @@
                         url: '/api/exam/examrubric/examination',
                         data: params,
                     }).then(res => {
-                         app.finalScore = res.data.remark.total	;
-                        app.acceptablevalue = res.data.remark.isqualified;
                           if(res.data.success){
+                              app.finalScore = res.data.remark.total;
+                              app.acceptablevalue = res.data.remark.isqualified;
                               app.centerDialogVisible = true;
                               if (app.time != null) {
                                   window.clearInterval(app.time);
