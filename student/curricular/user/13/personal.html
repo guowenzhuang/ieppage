@@ -59,7 +59,7 @@
 						<a class="btn btn-default navbar-btn sign-in" href="javascript:void(0)" @click="login()" v-show="isShow">登录</a>
 						<el-dropdown>
 							<div class="color_black" v-show="isCenter">
-								<img :src="userPhoto" width="45px" >
+								<img :src="form.photo" width="45px">
 								<i class="el-icon-arrow-down el-icon&#45;&#45;right"></i>
 							</div>
 							<el-dropdown-menu slot="dropdown">
@@ -86,8 +86,8 @@
 							<el-form-item label="头像" >
 								<el-upload class="avatar-uploader"
 										action="/api/oss/upload"
-										   drag
-										   :show-file-list="false"
+
+										 :show-file-list="false"
 										list-type="picture-card"
 									    :data="personalData"
 										:on-success="AvatarSuccess"
@@ -96,7 +96,7 @@
 									<i class="el-icon-plus"></i>
 								</el-upload>
 								<el-dialog :visible.sync="dialogVisible">
-									<img width="100%" :src="dialogImageUrl" alt="">
+									<img width="100%" :src="dialogImageUrl" >
 								</el-dialog>
 							</el-form-item>
 							<el-form-item label="用户名">
@@ -225,7 +225,7 @@
                      dialogVisible: false,
                      isShow: true,
                      isCenter: false,
-                     userPhoto: '',
+                     photo: '',
                      upPsd:{
                          show:false,
                          pass:'',
@@ -263,8 +263,9 @@
                          }
                      }).then(res => {
                          let o=res.data.message[0];
+                         alert("as"+o.photo)
                          if(o.photo==null || o.photo==""){
-                             o.photo='img/teaphoto.jpg'
+                             o.photo='img/photo.jpg'
                          }
                          this.form=o;
                      })
@@ -314,8 +315,8 @@
                      this.upPsd.show=true;
                  },
                  AvatarSuccess(response){
-                     this.active.teaPhoto=response.message.path;
-                    console.log("aa"+  this.active.teaPhoto)
+                     this.form.photo=response.message.path;
+                     this.dialogImageUrl = this.form.photo;
                    },
                  beforeAvatarUpload(file) {
                      const isJPG = file.type === 'image/jpeg';
@@ -327,7 +328,7 @@
                      if (!isLt2M) {
                          this.$message.error('上传头像图片大小不能超过 2MB!');
                      }
-                     this.personalData.path="teaHead/"+file.uid+file.name;
+                     this.personalData.path="stuHead/"+file.uid+file.name;
 
 
                      return isJPG && isLt2M;
@@ -355,7 +356,7 @@
                      console.log("roleNames"+roleNames);
                      this.isShow = false;
                      this.isCenter = true;
-                     this.userPhoto = sessionStorage.getItem("userPhoto");
+                     this.photo = sessionStorage.getItem("userPhoto");
                      this.userid = sessionStorage.getItem("userid");
                  }else{
                      console.log("学生未登录");
