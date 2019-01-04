@@ -7,6 +7,8 @@
     <script src="../teacher/js/vue.js"></script>
     <script src="../teacher/js/elementui/index.js"></script>
     <script src="../teacher/js/axios.min.js"></script>
+    <script src="/student/js/jquery.js"></script>
+    <script src="js/judgePermission.js"></script>
     <style>
         .el-main {
             padding-top: 0;
@@ -72,12 +74,12 @@
                 <el-col :span="2">
                     <span>&nbsp;</span>
                     <div>
-                        <el-button type="success" @click="exports">导出</el-button>
+                        <el-button permissionValue="user:exports" type="success" @click="exports">导出</el-button>
                     </div>
                 </el-col>
                 <el-col :span="3">
                     <span>&nbsp;</span>
-                    <div>
+                    <div permissionValue="user:import">
                         <el-upload class="avatar-uploader" action="/api/admin/user/import"
                                    :show-file-list="false"
                                    :on-success="handSuccess"
@@ -88,7 +90,7 @@
                 </el-col>
                 <el-col :span="3">
                     <span>&nbsp;</span>
-                    <div>
+                    <div permissionValue="user:add">
                         <el-button type="success" @click="addUserShow">新增用户</el-button>
                     </div>
                 </el-col>
@@ -97,7 +99,7 @@
                     <el-button icon="el-icon-refresh" type="primary" onclick=" window.location.reload();">刷新</el-button>
                 </el-col>
             </el-row>
-            <el-row style="margin-top: 20px;">
+            <el-row style="margin-top: 20px;" permissionValue="user:query">
                 <el-table :data="userData" border>
                     <el-table-column
                             type="selection"
@@ -130,6 +132,7 @@
                         <template slot-scope="scope">
                             <div>
                                 <el-switch
+                                        permissionValue="user:updateUserField"
                                         v-model="scope.row.isLockout"
                                         active-value="是"
                                         inactive-value="否"
@@ -150,18 +153,18 @@
                     </el-table-column>
                     <el-table-column label="设置">
                         <template slot-scope="scope">
-                            <el-button type="text" @click="showRole(scope.row)">设置角色</el-button>
+                            <el-button type="text" permissionValue="user:setRole" @click="showRole(scope.row)">设置角色</el-button>
                         </template>
                     </el-table-column>
                     <el-table-column label="操作">
                         <template slot-scope="scope">
                             <div>
-                                <el-button type="text" @click="updateUserShow(scope.row)">修改</el-button>
+                                <el-button permissionValue="user:update" type="text" @click="updateUserShow(scope.row)">修改</el-button>
                             </div>
                             <div>
-                                <el-button type="text" @click="deleteUser(scope.row.id)">删除</el-button>
+                                <el-button permissionValue="user:delete" type="text" @click="deleteUser(scope.row.id)">删除</el-button>
                             </div>
-                            <div>
+                            <div permissionValue="user:updateUserField">
                                 <el-button type="text" @click="updateUserField('password','',scope.row.id)">重置密码
                                 </el-button>
                             </div>
@@ -568,6 +571,9 @@
                     res = res.data;
                     this.total = res.total;
                     this.userData = res.rows;
+                   window.setTimeout(()=>{
+                       permissionshow();
+                   },1)
                 })
             },
             //日期封装

@@ -16,7 +16,7 @@
 		<link rel="stylesheet" href="../app/css/libs/katex/0.6.0/katex.min.css">
 		<link rel="stylesheet" href="../app/css/libs/videojs/5.11.7/video-js.min.css">
 		<link rel="stylesheet" href="../app/css/dest/styles.css?=2016121272249">
-		
+
 		<link rel="stylesheet" type="text/css" href="../css/bootstrap-theme.min.css">
 		<link rel="stylesheet" type="text/css" href="../css/muke.css">
 		<link rel="stylesheet" type="text/css" href="../layui/css/layui.css" />
@@ -76,7 +76,7 @@
 				var active = {
 					content: function() {
 						postContent = layedit.getContent(index);
-						alert(layedit.getContent(index)); //获取编辑器内容
+						//alert(layedit.getContent(index)); //获取编辑器内容
 					},
 					text: function() {
 						alert(layedit.getText(index)); //获取编辑器纯文本内容
@@ -86,20 +86,31 @@
 					}
 				};
 
+				var token = sessionStorage.getItem("access_token");
+				if (token == null) {
+					layer.confirm('您还没有登录，是否登录？', {
+						icon: 3,
+						title: '提示',
+					}, function(index) {
+						window.location.href = "\\login.html?callback-url=http://127.0.0.1/bbs/Reception/post.html";
+					}, function(index) {
+						window.location.href = "post.html";
+					});
+				}
+
 				$("#btn_public").on('click', function() {
 					var type = $(this).data('type');
 					active[type] ? active[type].call(this) : '';
-					
-					var postTitle=$("#postTitle").val();
-					alert(postContent+" "+postTitle);
-					
+
+					var postTitle = $("#postTitle").val();
+
 					if (postContent == "" || postTitle == "") {
 						layer.msg("请完善帖子信息", {
 							icon: 7,
 							time: 1000,
 						});
 					} else {
-						
+
 						$.ajax({
 							url: '/api/bbs/post/insertPost',
 							type: 'post',
@@ -122,7 +133,7 @@
 										icon: 6, //成功的表情 
 										time: 1000, //1秒关闭（如果不配置，默认是3秒） 
 									}, function() {
-										window.location.href="post.html";
+										window.location.href = "post.html";
 									});
 
 								} else {
@@ -148,44 +159,44 @@
 
 
 		<!-- 顶部 -->
-				<div class="width100 float_l" style="margin-top: -70px;">
-					<div class="width100 float_l height80 line_hei80">
-		
-						<!-- 顶部左边 -->
-						<div class="float_l">
-							<div class="float_l margin_l20">
-								<a href="#"><img src="../img/uiz1.png"></a>
-							</div>
-							<div class="float_l">
-								<ul class="ul_li fon_siz16">
-									<li><a class="color_black" href="../courses/index.html">课程</a></li>
-									<li><a class="color_black" href="">院系</a></li>
-									<li><a class="color_black" href="">名师专栏</a></li>
-		
-								</ul>
-							</div>
-						</div>
-		
-						<!-- 顶部右边 -->
-						<div class="float_r">
-							<div class="float_l top_input">
-								<input class="posi_relative" type="text" name="" id="" placeholder="请输入想搜索的内容...">
-								<img class="img_sousuo bianshou" src="../img/uiz4.png">
-							</div>
-							<div class="float_l margin_l20">
-								<img src="../img/uiz5.png">
-							</div>
-							<div class="float_l margin_l35">
-								<img src="../img/uiz6.png">
-							</div>
-							<div class="float_l margin_l30 margin_r40">
-								<a class="btn btn-default navbar-btn sign-in" data-sign="signin" href="#sign-modal" data-toggle="modal">登录</a>
-								<a class="btn btn-default navbar-btn sign-up" data-sign="signup" href="#sign-modal" data-toggle="modal">注册</a>
-							</div>
-						</div>
-		
+		<div class="width100 float_l" style="margin-top: -70px;">
+			<div class="width100 float_l height80 line_hei80">
+
+				<!-- 顶部左边 -->
+				<div class="float_l">
+					<div class="float_l margin_l20">
+						<a href="#"><img src="../img/uiz1.png"></a>
+					</div>
+					<div class="float_l">
+						<ul class="ul_li fon_siz16">
+							<li><a class="color_black" href="../courses/index.html">课程</a></li>
+							<li><a class="color_black" href="">院系</a></li>
+							<li><a class="color_black" href="">名师专栏</a></li>
+
+						</ul>
 					</div>
 				</div>
+
+				<!-- 顶部右边 -->
+				<div class="float_r">
+					<div class="float_l top_input">
+						<input class="posi_relative" type="text" name="" id="" placeholder="请输入想搜索的内容...">
+						<img class="img_sousuo bianshou" src="../img/uiz4.png">
+					</div>
+					<div class="float_l margin_l20">
+						<img src="../img/uiz5.png">
+					</div>
+					<div class="float_l margin_l35">
+						<img src="../img/uiz6.png">
+					</div>
+					<div class="float_l margin_l30 margin_r40">
+						<a class="btn btn-default navbar-btn sign-in" data-sign="signin" href="#sign-modal" data-toggle="modal">登录</a>
+						<a class="btn btn-default navbar-btn sign-up" data-sign="signup" href="#sign-modal" data-toggle="modal">注册</a>
+					</div>
+				</div>
+
+			</div>
+		</div>
 
 
 
