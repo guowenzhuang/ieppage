@@ -234,7 +234,9 @@
 			})
 		</script>
 		<!-- 讨论区 -->
-		<div class=" width_224 height172 float_l img_backg14 margin_r20 margin_l50">
+		<div class="width100 float_l margin_b40"  style="display: flex;justify-content: center;">
+			
+		<div class=" width_224 height172 float_l img_backg14 margin_r20 ">
 			<div class="width100 float_l padding_lr20 color_white fon_siz32 b_weight700 margin_t10">
 				<span>大家在讨论</span>
 			</div>
@@ -248,7 +250,6 @@
 			<div class=" width100 float_l height172 kaishimeiyou img_backg9 text-center line_hei172 ">
 				<span class="fon_siz20 color_white b_weight700"></span>
 			</div>
-
 		</div>
 
 		<div class="width_468 float_l ">
@@ -256,6 +257,8 @@
 				<span class="fon_siz20 color_white b_weight700"></span>
 			</div>
 		</div>
+		
+       </div>
 
 
 		<!-- 计算机java 工程师 -->
@@ -300,7 +303,7 @@
 							<img src="img/uiz7.jpg">
 						</div>
 						<div class="img_backg2 donghua">
-							<span class="margin_t15 float_l fon_siz16">课程精彩讨论</span>
+							<span class="margin_t15 float_l fon_siz16">计算机课程精彩讨论</span>
 							<span class="float_l fon_siz12 line_hei16 color_gray margin_t5 posi_relative ">一起学习一起成长共同进步</span>
 						</div>
 						<div class="width100 float_l padding_lr20 height48 fon_siz12 line_hei48 z_inx_3 posi_relative backg_white">
@@ -317,7 +320,6 @@
 						</div>
 					</div>
 				</div>
-
 
 			</div>
 		</div>
@@ -366,7 +368,7 @@
 							<img src="img/uiz7.jpg">
 						</div>
 						<div class="img_backg2 donghua">
-							<span class="margin_t15 float_l fon_siz16">课程精彩讨论</span>
+							<span class="margin_t15 float_l fon_siz16">外语课程精彩讨论</span>
 							<span class="float_l fon_siz12 line_hei16 color_gray margin_t5 posi_relative ">一起学习一起成长共同进步</span>
 						</div>
 						<div class="width100 float_l padding_lr20 height48 fon_siz12 line_hei48 z_inx_3 posi_relative backg_white">
@@ -432,7 +434,7 @@
 							<img src="img/uiz7.jpg">
 						</div>
 						<div class="img_backg2 donghua">
-							<span class="margin_t15 float_l fon_siz16">课程精彩讨论</span>
+							<span class="margin_t15 float_l fon_siz16">理学课程精彩讨论</span>
 							<span class="float_l fon_siz12 line_hei16 color_gray margin_t5 posi_relative ">一起学习一起成长共同进步</span>
 						</div>
 
@@ -512,9 +514,10 @@
 										window.location.href = "http://127.0.0.1/student/curricular/courses/study.html?courId=" + cid +
 											"&value=discussion";
 									} else {
+									
                                         if (confirm("请先报名该课程，再进入讨论!") == true) {
                                         	window.location.href = "http://127.0.0.1/student/curricular/courses/show.html?courId="+cid;
-                                        }
+                                        } 
 									}
 
 								}
@@ -522,9 +525,15 @@
 							})
 
 						} else {
+							/* Ewin.confirm({ message: "请先登录!" }).on(function (e) {
+								if(e){
+									window.location.href = "http://127.0.0.1/login.html";
+								}
+							}); */
+							 
 							if (confirm("请先登录") == true) {
 								window.location.href = "http://127.0.0.1/login.html";
-							}
+							} 
 						}
 					}
 					

@@ -133,7 +133,7 @@
 						<div class="tab-content">
 							<div id="postList">
 
-								<ul v-for="post in posts" class="row question-items" :data="posts.slice((currentPage-1)*pagesize,currentPage*pagesize)">
+								<ul v-loading="loading" v-for="post in posts" class="row question-items" :data="posts.slice((currentPage-1)*pagesize,currentPage*pagesize)">
 									<li class="question-item">
 										<div class="col-md-10">
 											<div class="col-sm-2 question-item-author">
@@ -148,8 +148,12 @@
 												<h4>
 													<span v-if="post.postIsstick"><img src="../img/topQuestion.png"></span>
 
-													<a class="question-item-title"  v-on:click="jumpPostDetails(post)" target="_blank">
-														{{post.postTitle}}</a>
+													<a class="question-item-title" v-if="post.isDelete"  v-on:click="jumpPostDetails(post)" target="_blank">
+														该贴已被删除，暂时不能查看
+													</a>
+													<a class="question-item-title" v-else  v-on:click="jumpPostDetails(post)" target="_blank">
+														{{post.postTitle}}
+													</a>
 												</h4>
 												<div class="question-item-summary">
 													<div class="user-username ">
@@ -168,7 +172,11 @@
 											</div>
 											<div class="question-item-views">
 												<div>{{post.replyBrowse}}</div>
-												<div>浏览数</div>
+												<div>浏览</div>
+											</div>
+											<div class="question-item-answered">
+												<div>{{post.replyNum}}</div>
+												<div>回复</div>
 											</div>
 										</div>
 									</li>
@@ -208,18 +216,6 @@
 									<p class="vip-remain">做实验，学编程</p>
 
 								</div>
-							</div>
-
-							<div class="row userinfo-data">
-
-								<hr>
-								<div class="btn-group-lr">
-									<a href="#sign-modal" type="button" class="btn btn-success col-md-5 col-xs-6 login-btn" data-toggle="modal"
-									 data-sign="signin">登录</a>
-									<a href="#sign-modal" type="button" class="btn btn-success col-md-5 col-xs-6 col-md-offset-1 register-btn"
-									 data-toggle="modal" data-sign="signup">注册</a>
-								</div>
-
 							</div>
 
 							<div class="userinfo-footer row">
@@ -305,24 +301,32 @@
 
 		<!-- vue -->
 		<script type="text/javascript">
+			
+			if(sessionStorage.getItem("access_token")!=null){
+				axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
+			}
+			
 			var postPage = new Vue({
 				el: '#postPage',
 
 				mounted: function() {
+					this.token=sessionStorage.getItem("access_token");
+					console.log("token==>"+this.token);
 					this.queryPost();
 					this.queryType();
 				},
 			
 				data() {
 					return {
-						
+						loading: true,
 						typeName: "",
 						orderBy: "replyTime",
 						total: 50, //默认数据总数
 						pagesize: 10, //每页的数据条数
 						currentPage: 1, //默认开始页面
 						posts: [],
-						typeList: []
+						typeList: [],
+						token: ''
 					}
 
 				},
@@ -346,6 +350,7 @@
 							this.posts = res.rows;
 							this.total = res.total;
 							console.log('posts==>' + this.posts);
+							this.loading=false;
 						})
 
 					},
@@ -386,7 +391,6 @@
 						this.queryPost();
 					},
 					jumpPostDetails: function(post) {
-						
 						let params = new URLSearchParams();
 						params.append("replyId",post.replyId);
 						axios({
@@ -397,42 +401,9 @@
 								//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
 							}
 						});
-						console.log('post==>' + post.replyContent);
-						sessionStorage.setItem("postContent", post.replyContent);
-						sessionStorage.setItem("postTime", post.replyTime);
-						sessionStorage.setItem("userId", post.userId);
-						sessionStorage.setItem("replyId", post.replyId);
-						sessionStorage.setItem("postTitle", post.postTitle);
 						sessionStorage.setItem("postId", post.postId);
-						sessionStorage.setItem("postBrowse", post.replyBrowse);
-						sessionStorage.setItem("postUsername", post.userName);
 						window.location.href="postDetails.html";
 
-					},
-					isHaveToken: function() {
-						console.log(this.token)
-						if (this.token != null) {
-							
-						} else {
-							this.$confirm('您还没有登录账号, 是否登录?', '提示', {
-								confirmButtonText: '确定',
-								cancelButtonText: '取消',
-								type: 'warning'
-							}).then(() => {
-								window.location.href = "\\login.html?callback-url=http://127.0.0.1/bbs/Reception/course.html";
-								/* this.$message({
-									type: 'success',
-									message: '登录成功!'
-								}); */
-							}).catch(() => {
-								this.$message({
-									type: 'info',
-									message: '已取消登录'
-								});
-								//window.location.href = ""
-							});
-							
-						}
 					}
 				}
 

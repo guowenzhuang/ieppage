@@ -318,7 +318,7 @@
             :close-on-press-escape="false"
             :close-on-click-modal="false"
             center>
-        <span>考试已结束,最终得分为:<h2 style="color: red">{{finalScore}}</h2></span>
+        <span>考试已结束,最终得分为:<h2 style="color: red">{{finalScore}}</h2><br><h2 style="color: red">{{acceptablevalue}}</h2></span>
         <span slot="footer" class="dialog-footer">
     <el-button type="primary" @click="kaoshijieshu">确 定</el-button>
   </span>
@@ -380,6 +380,7 @@
         data: {
             //最终得分
             finalScore: "",
+            acceptablevalue:"",//合格不合格
             centerDialogVisible: false,
             /*倒计时*/
             keepTime: '倒计时',
@@ -435,8 +436,9 @@
                         url: '/api/exam/examrubric/examination',
                         data: params,
                     }).then(res => {
-                         app.finalScore = res.data.remark;
                           if(res.data.success){
+                              app.finalScore = res.data.remark.total;
+                              app.acceptablevalue = res.data.remark.isqualified;
                               app.centerDialogVisible = true;
                               if (app.time != null) {
                                   window.clearInterval(app.time);

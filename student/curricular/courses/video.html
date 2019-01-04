@@ -17,11 +17,13 @@
 </head>
 <body>
 <div id="app">
+
     <el-row>
         <el-tabs v-model="labelValue" type="card">
             <el-tab-pane label="视频" active name="video">
                 <el-row type="flex" justify="center">
                     <el-col :span="20">
+                        <el-button icon="el-icon-refresh" type="primary" onclick=" window.location.reload();">刷新</el-button>
                         <div id="video"></div>
                     </el-col>
                 </el-row>

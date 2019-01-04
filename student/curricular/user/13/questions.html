@@ -116,13 +116,13 @@
             <!-- 顶部左边 -->
             <div class="float_l">
                 <div class="float_l margin_l20">
-                    <a href="#"><img src="../../../img/uiz1.png"></a>
+                    <a href="/student/index.html"><img src="../../../img/uiz1.png"></a>
                 </div>
                 <div class="float_l">
                     <ul class="ul_li fon_siz16">
                         <li><a class="color_black" href="/student/curricular/courses/index.html">课程</a></li>
-                        <li><a class="color_black" href="">院系</a></li>
-                        <li><a class="color_black" href="">名师专栏</a></li>
+                        <li><a class="color_black" href="/student/department.html">院系</a></li>
+                        <li><a class="color_black" href="/student/curricular/paths/index.html">名师专栏</a></li>
                     </ul>
                 </div>
             </div>
@@ -140,11 +140,18 @@
                     <img src="../../../img/uiz6.png">
                 </div>
                 <div class="float_l margin_l30 margin_r40">
-                    <a class="btn btn-default navbar-btn sign-in" data-sign="signin" href="#sign-modal"
-                       data-toggle="modal">登录</a>
-                    <a class="btn btn-default navbar-btn sign-up" data-sign="signup" href="#sign-modal"
-                       data-toggle="modal">注册</a>
-                </div>
+                    <a class="color_black" href="curricular/user/13/course.html" v-show="isCenter">个人中心</a>&nbsp;&nbsp;
+                    <a class="btn btn-default navbar-btn sign-in" href="javascript:void(0)" @click="login()" v-show="isShow">登录</a>
+                    <el-dropdown>
+                        <div class="color_black" v-show="isCenter">
+                            <img :src="userPhoto" width="45px" >
+                            <i class="el-icon-arrow-down el-icon&#45;&#45;right"></i>
+                        </div>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item @click.native="shezhi()">设置</el-dropdown-item>
+                            <el-dropdown-item @click.native="tuichu()">退出</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>                </div>
             </div>
 
         </div>
@@ -176,12 +183,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 userinfo-banner-labinfo">
-                    <div class="userinfo-banner-level">
-                        <img src="../../img/lou-level.png">
-                        <div class="userinfo-current-level"><span>195</span> 楼</div>
-                    </div>
-                </div>
+
             </div>
         </div>
     </div>
