@@ -135,15 +135,12 @@
 						window.location.href = "/student/curricular/user/13/personal.html";
 					},
 					search:function(){
-						  axios({
-								 method:'get',
-								 url:'/api/student/home/homeSearch',
-								 params:{
-									 value:this.query,
-								 }
-							}).then(res => {
-								 
-							});					
+						 if(this.query==""){
+							 alert("请输入有效值!");
+							 return ;
+						 }
+						 sessionStorage.setItem("search_name",this.query);
+						 window.location.href="/student/search.html"					
 					}
 					
 				}
