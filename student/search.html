@@ -213,7 +213,6 @@
         },
         mounted() {
             let name=sessionStorage.getItem("search_name");
-            name="课程";
             this.query.name=name;
             this.searchCourse();
             var roleNames = sessionStorage.getItem("roleNames");
