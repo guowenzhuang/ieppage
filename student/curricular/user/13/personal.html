@@ -102,6 +102,9 @@
 							<el-form-item label="用户名">
 								<el-input disabled size="large" v-model="form.loginName"></el-input>
 							</el-form-item>
+                            <el-form-item label="学分">
+                                <el-input disabled size="large" v-model="form.credits"></el-input>
+                            </el-form-item>
 							<el-form-item label="性别">
 								<el-radio-group v-model="form.sex">
 									<el-radio label="男" value="男"></el-radio>
@@ -357,6 +360,7 @@
                      this.isShow = false;
                      this.isCenter = true;
                      this.photo = sessionStorage.getItem("userPhoto");
+                     var photo = sessionStorage.setItem("userPhoto",this.photo);
                      this.userid = sessionStorage.getItem("userid");
                  }else{
                      console.log("学生未登录");
