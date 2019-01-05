@@ -363,7 +363,7 @@
 							<h4 class="sidebox-title">最热课程</h4>
 						</div>
 						<div class="sidebox-body course-content side-list-body" >
-							<a href="/paths/python" v-for="r in recommended"><img style="width:25px;height:25px" :src="r.courPicurl"> {{r.courName}}</a>
+							<a :href="'show.html?courId='+r.courId" v-for="r in recommended"><img style="width:25px;height:25px" :src="r.courPicurl"> {{r.courName}}</a>
 							<!--<a href="/paths/bigdata"><img style="width:25px;height:25px" src="../img/1471513926288.png"> 大数据工程师</a>
 							<a href="/paths/cpp"><img style="width:25px;height:25px" src="../img/1471513793360.png"> C++ 研发工程师</a>
 							<a href="/paths/security"><img style="width:25px;height:25px" src="../img/1471513867033.png"> 信息安全工程师</a>
