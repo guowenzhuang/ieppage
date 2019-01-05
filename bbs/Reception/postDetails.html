@@ -326,13 +326,64 @@
 				<div class="col-md-3 layout-side">
 
 					<a class="btn side-btn" href="publicPost.html" data-toggle="modal" data-target="#askquestion">我要发帖</a>
-					<div class="side-image">
-						<a href="#" target="_blank">
-							<!-- 用户头像 -->
-							<img src="#">
-							<!-- 用户昵称 -->
-							<a href="#">{{username}}</a>
-						</a>
+					
+					<div class="panel panel-default panel-userinfo">
+						<div class="panel-body body-userinfo">
+							<div class="media userinfo-header">
+								<div class="media-left">
+									<div class="user-avatar">
+					
+										<a class="avatar" href="#sign-modal" data-toggle="modal" data-sign="signin">
+											<img class="circle" src="../img/logo-grey.png">
+										</a>
+					
+									</div>
+								</div>
+								<div class="media-body">
+					
+									<span class="media-heading username">欢迎来到智慧教育平台</span>
+									<p class="vip-remain">做实验，学编程</p>
+					
+								</div>
+							</div>
+					
+							<div class="userinfo-footer row">
+								<div class="col-md-6 col-xs-6 pos-left">
+					
+									<a href="#sign-modal" data-toggle="modal" data-sign="signin"><span class="glyphicon glyphicon-bookmark"></span>
+										加入私有课</a>
+					
+								</div>
+								<div class="col-md-6 col-xs-6 pos-right">
+									<a href="/contribute" target="_blank"><span class="glyphicon glyphicon-send"></span> 我要投稿</a>
+								</div>
+					
+								<div id="join-private-course" class="modal fade words-ctrl" tabindex="-1" role="dialog">
+									<div class="modal-dialog" role="document">
+										<div class="modal-content">
+											<div class="modal-header">
+												<h4 class="modal-title">加入私有课</h4>
+											</div>
+											<div class="modal-body">
+												<div style="margin:15px 0; font:16px;">输入教师提供的私有课程码可以加入教师的私有课程。</div>
+												<form id="private-course-form" method="POST" action="/courses/join">
+													<div class="form-group">
+														<label for="code">邀请码</label>
+														<input class="form-control" id="code" name="code" type="text" value="">
+														<input name="_csrf_token" type=hidden value="1483789088##bbf83c51243ab12daa94911c8865a65bdc66c4d8">
+													</div>
+												</form>
+					
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+												<button type="button" class="btn btn-primary" onclick="document.getElementById('private-course-form').submit();">确定</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
 					</div>
 					<div class="sidebox side-list related-question">
 						<div class="sidebox-header">
@@ -645,8 +696,6 @@
 				}
 			})
 		</script>
-
-
 
 
 		<!-- 页脚 -->

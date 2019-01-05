@@ -156,6 +156,10 @@
 		</div>
 	</body>
 	<script>
+		if(sessionStorage.getItem("access_token")!=null){
+			axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
+		}
+		
 		var Main = new Vue({
 			el: '#app',
 			mounted: function () {

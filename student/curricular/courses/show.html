@@ -249,14 +249,14 @@
 							</div>
 							<div role="tabpanel" class="tab-pane course-comment" id="comments">
 								<div v-for="c in contents" class="tab-content" :data="contents.slice((currentPage-1)*pagesize,currentPage*pagesize)">
-									<div role="tabpanel" class="tab-pane active">
+									<div role="tabpanel">
 										<ul class="row question-items">
 											<li class="question-item">
 												<div class="col-md-10">
 													<div class="col-sm-2 question-item-author">
 														<div class="user-avatar ">
 															<a class="avatar" href="../user/13/study.html" target="_blank">
-																<img src="../img/002.jpg">
+																<img :src="c.photo">
 															</a>
 														</div>
 													</div>
@@ -279,15 +279,24 @@
 														</div>
 													</div>
 												</div>
+
 												<div class="col-md-2 question-item-rank">
-													<div class="question-item-answered">
-														<div @click="dainzan(c.praise,c.mid)">
-															<a>👍</a>
+													<div v-if="c.isLike==true" style="color: #00b877">
+														<div @click="dainzan(c.praise,c.mid)" style="cursor:pointer">
+														<span class="glyphicon glyphicon-thumbs-up"></span>&nbsp;&nbsp;<span v-text="c.praise"></span>
 														</div>
-														<div><span v-text="c.praise"></span></div>
+														<!--<div><span v-text="c.praise"></span></div>-->
+													</div>
+													<div v-else>
+														<div @click="dainzan(c.praise,c.mid)" style="cursor:pointer">
+															<span class="glyphicon glyphicon-thumbs-up"></span>&nbsp;&nbsp;<span v-text="c.praise"></span>
+														</div>
+														<!--<div></span></div>-->
 													</div>
 
 												</div>
+
+
 											</li>
 										</ul>
 									</div>
@@ -518,7 +527,6 @@
 					this.getQueryString("courId");
 					this.chaxun();
 					this.people();
-					this.yonghu();
 				},
 				data: {
 					//urlPre: "http://127.0.0.1:8060",
@@ -591,11 +599,22 @@
 								window.location.href = "study.html?courId=" + this.courId;
 							}
 						} else {
-							window.location.href =
-								"\\login.html?callback-url=http://127.0.0.1/student/curricular/courses/show.html?courId=" + this.courId;
+                            this.open();
+
 						}
 
-					},
+					}, open() {
+
+                        this.$confirm('尊敬的用户,请先登录', '温情提示', {
+                            confirmButtonText: '登录',
+                            cancelButtonText: '取消',
+                            type: 'warning',
+                            center: true
+                        }).then(() => {
+                            window.location.href =
+                                "\\login.html?callback-url=http://127.0.0.1/student/curricular/courses/show.html?courId=" + this.courId;
+                        })
+                    },
 					chaxun: function() {
 
 						axios({
@@ -673,36 +692,20 @@
 							params: {
 								cid: this.courId,
 								page: this.currentPage,
-								size: this.pagesize
+								size: this.pagesize,
+								sid:this.sid
 							}
 						}).then(res => {
-							//http://localhost/ieppage/student/curricular/courses/show.html
 							res = res.data;
 							this.contents = res.rows;
 							this.total=res.total;
-							
-							//console.log("评论" + res.rows);
-							//console.log("条数" + res.total);
+
 						})
 					},
 					again: function(currentPage) {
 						this.currentPage = currentPage;
 						this.pinglun();
 					},
-					/* yonghu:function(){
-						axios({
-							method: 'get',
-							url: `/api/student/studentPart/queryUser`,
-							params: {
-								id: this.sid,							
-							}
-						}).then(res => {
-							//http://localhost/ieppage/student/curricular/courses/show.html
-							//res = res.data;
-							//this.contents = res.rows;
-							console.log("用户信息" + res.data.message);
-						})
-					}, */
 					dainzan: function(praise, mid) {
                         if (sessionStorage.getItem("access_token") != null && sessionStorage.getItem("access_token")!="") {
 						axios({
@@ -718,8 +721,7 @@
 							this.pinglun();
 						});
                         }else{
-                            window.location.href =
-                                "\\login.html?callback-url=http://127.0.0.1/student/curricular/courses/show.html?courId=" + this.courId;
+                            this.open();
 						}
 						console.log("1111");
 					}
