@@ -165,7 +165,8 @@
 			<div class="row">
 				<div class="col-md-9 layout-body">
 					<div class="content">
-						<div class="row course-cates">
+					<!--	<div class="row course-cates">
+
 							<div class="col-md-1 course-cates-title">类别：</div>
 							<div class="col-md-11 course-cates-content">
 								<a class="active" href="/courses/?course_type=all&amp;tag=all">全部</a>
@@ -176,9 +177,10 @@
 									<a class="" href="/courses/?course_type=all&amp;tag=all&amp;fee=member">会员</a>
 								</div>
 							</div>
-						</div>
+						</div>-->
+
 						<div class="row course-cates">
-							<div class="col-md-1 course-cates-title">标签：</div>
+							<div class="col-md-1 course-cates-title">类别：</div>
 							<div class="col-md-11 course-cates-content">
 								<a class="active" href="javascript:void(0)" @click="queryKeichengContent()">全部</a>
 								<a v-for="site in sites" class="" @click="queryKeichengContent(site.departmentId)" href="javascript:void(0)"
