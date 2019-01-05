@@ -86,7 +86,18 @@
             <el-form-item prop="courContent" label="课程内容">
                 <el-input placeholder="请输入课程内容" type="textarea" v-model="addCourseDialog.courContent" ></el-input>
             </el-form-item>
-            <el-form-item>
+            <el-form-item  label="开课日期">
+                <el-date-picker
+                        v-model="addCourseDialog.courOpentime"
+                        type="date"
+                        placeholder="选择日期">
+                </el-date-picker>~<el-date-picker
+                    v-model="addCourseDialog.courClosetime"
+                    type="date"
+                    placeholder="选择日期">
+            </el-date-picker>
+            </el-form-item>
+            <el-form-item label="图片">
                 <el-input type="file" id="Picurlfile"></el-input>
                 <el-button @click="Picurltj()">提交</el-button>
             </el-form-item>
@@ -136,6 +147,8 @@
                     //课程的价格
                     courPrice:'',
                     courContent:'',
+                    courOpentime:'',
+                    courClosetime:'',
                     courPicurl:'',
                     disabled:false,
                     nameDisabled:true,
@@ -217,6 +230,8 @@
                 params.append('courMark', this.addCourseDialog.courMark)
                 params.append('courPicurl', this.addCourseDialog.courPicurl)
                 params.append('courContent', this.addCourseDialog.courContent)
+                params.append('courOpentime', this.addCourseDialog.courOpentime)
+                params.append('courClosetime', this.addCourseDialog.courClosetime)
                 this.$refs['addForm'].validate((valid) => {
                     axios({
                         method: 'post',
@@ -263,6 +278,8 @@
                 params.append('courPrice', this.addCourseDialog.courPrice)
                 params.append('courPicurl', this.addCourseDialog.courPicurl)
                 params.append('courContent', this.addCourseDialog.courContent)
+                params.append('courOpentime', this.addCourseDialog.courOpentime)
+                params.append('courClosetime', this.addCourseDialog.courClosetime)
                 params.append('courTeaid', teaid)
 
                 this.$refs['addForm'].validate((valid) => {
@@ -303,6 +320,8 @@
                 this.addCourseDialog.courTeaid="";
                 this.addCourseDialog.courPicurl="";
                 this.addCourseDialog.courContent="";
+                this.addCourseDialog.courOpentime="";
+                this.addCourseDialog.courClosetime="";
                 this.addCourseDialog.nameDisabled=false;
                 this.addCourseDialog.title="新增章节";
                 this.addCourseDialog.show=true;
