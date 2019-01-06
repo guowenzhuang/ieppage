@@ -89,11 +89,11 @@
             <el-form-item  label="开课日期">
                 <el-date-picker
                         v-model="addCourseDialog.courOpentime"
-                        type="date"
+                        type="datetime"
                         placeholder="选择日期">
                 </el-date-picker>~<el-date-picker
                     v-model="addCourseDialog.courClosetime"
-                    type="date"
+                    type="datetime"
                     placeholder="选择日期">
             </el-date-picker>
             </el-form-item>
@@ -265,6 +265,8 @@
                 this.addCourseDialog.courPrice=row.courPrice;
                 this.addCourseDialog.courPicurl=row.courPicurl;
                 this.addCourseDialog.courContent=row.courContent;
+                this.addCourseDialog.courOpentime=row.courOpentime;
+                this.addCourseDialog.courClosetime=row.courClosetime;
                 this.addCourseDialog.show = true
                 this.addCourseDialog.nameDisabled=true;
 

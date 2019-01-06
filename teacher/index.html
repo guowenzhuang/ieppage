@@ -19,7 +19,14 @@
 <div id="app">
     <el-container>
         <el-header>
-            {{username}} 你好
+        <el-row type="flex" justify="space-between">
+            <el-col :span="3">
+                {{username}} 你好
+            </el-col>
+            <el-col :span="3">
+                <el-button type="warning" @click="exit">安全退出</el-button>
+            </el-col>
+        </el-row>
         </el-header>
         <el-container>
 
@@ -67,6 +74,12 @@
             }
         },
         methods: {
+            //退出
+            exit(){
+                sessionStorage.clear();
+                localStorage.clear();
+                window.location.href="/login.html"
+            },
             removeTab(name){
                 this.tabs=this.tabs.filter(row=>{
                     return row.id!=name;
