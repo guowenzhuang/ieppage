@@ -118,13 +118,11 @@
 					url: '/api/student/home/queryShuffling',
 
 				}).then(res => {
-			
-					
+				
 					for (var i = 0; i < res.data.length; i++) {
 						var course=res.data[i];
 						console.log(course);				
-						$("#lb").append("<li><a href='curricular/courses/show.html'><img src='"+course.courPicurl+"'></a></li>");
-			
+						$("#lb").append("<li><a href='/student/curricular/courses/show.html?courId="+course.courId+"'><img src='"+course.courPicurl+"'></a></li>");			
 					}
 					jQuery(".focusBox").slide({
 						mainCell: ".pic",
@@ -693,7 +691,13 @@
 							}
 						}).then(res => {
 							console.log(res.data.message);
-							this.neos = res.data.message;
+							//this.neos = res.data.message;
+							this.neos = res.data.message.map(item => {
+								if (item.courPicurl == null || item.courPicurl == "") {
+									item.courPicurl = "img/timg.jpg"
+								}
+								return item;
+							});
 
 						})
 					},
@@ -706,12 +710,7 @@
 							}
 						}).then(res => {
 							console.log(res.data.message);
-							this.neoDiscuss = res.data.message.map(item => {
-								if (item.courPicurl == null || item.courPicurl == "") {
-									item.courPicurl = "img/timg.jpg"
-								}
-								return item;
-							});
+							this.neoDiscuss = res.data.message;
 						})
 					},
 					intoDiscuss: function(cid, postId) {
@@ -738,7 +737,18 @@
 										window.location.href = "http://127.0.0.1/student/curricular/courses/study.html?courId=" + cid +
 											"&value=discussion";
 									} else {
-
+                                        this.$confirm('请报名该课程,报名参与讨论！', '温馨提示', {
+                                        	confirmButtonText: '确定',
+                                        	cancelButtonText: '取消',
+                                        	type: 'warning'
+                                        }).then(() => {
+                                        	window.location.href = "http://127.0.0.1/student/curricular/courses/show.html?courId="+cid;
+                                        }).catch(() => {
+                                        	this.$message({
+                                        		type: 'info',
+                                        		message: '已取消'
+                                        	});
+                                        });
 									}
 
 								}
