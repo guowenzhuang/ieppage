@@ -107,6 +107,10 @@
 								userId: sessionStorage.getItem("userid"),
 								pId: 0
 							},
+							headers:{
+								'Authorization': 'bearer '+sessionStorage.getItem("access_token")
+								
+							},
 							beforeSend: function(request) {
 								// 禁用按钮防止重复提交
 								$("#commit").attr({
@@ -225,17 +229,22 @@
 								<!-- 回复 -->
 								<span class="btn btn-weiboshare">
 									<template>
-										<el-button size="small" type="success" plain>回复</el-button>
+										<el-button size="mini" type="success" plain>回复</el-button>
 									</template>
 								</span>
 
 								<!-- 举报 -->
 								<span class="btn  btn-weiboshare" v-if="postReport">
-									<el-button type="warning" size="small" disabled>举报</el-button>
+									<el-button type="warning" size="mini" disabled>举报</el-button>
 								</span>
 								<span class="btn  btn-weiboshare" v-else>
-									<el-button type="warning" size="small" @click="userReportPost()">举报</el-button>
+									<el-button type="warning" size="mini" @click="userReportPost()">举报</el-button>
 								</span>
+								<!-- 删除 -->
+								<span class="btn  btn-weiboshare" v-if="isMy">
+									<i class="layui-icon layui-icon-delete" v-on:click="" style="font-size: 20px; color: #CC0033;"></i>
+								</span>
+								
 								<!-- 点赞 -->
 								<span class="btn  btn-weiboshare" v-if="postLike">
 									<i class="layui-icon layui-icon-praise" v-on:click="userLikePost()" style="font-size: 20px; color: #CC0033;"></i>
@@ -258,9 +267,12 @@
 											<!--  回复人头像 -->
 											<img src="#">
 										</a>
-									</div>
+									</div>									
 								</div>
 								<div class="answer-detail">
+									<div class="question-headline">
+										<span class="question-figure">{{reply.replyLikenum}} 点赞</span>
+									</div>
 									<span class="comment-reply">
 										<div class="user-username ">
 											<a class="username" href="#" target="_blank">{{reply.replyUsername}}</a>
@@ -276,7 +288,10 @@
 
 									</span>
 
-									<div class="answer-content markdown-body">
+									<div class="answer-content markdown-body" v-if="reply.isDelete">
+										<p>该回复已被删除，不能查看</p>
+									</div>
+									<div class="answer-content markdown-body" v-else>
 										<p>{{reply.replyContent}}</p>
 									</div>
 									<div>
@@ -286,16 +301,21 @@
 										<!-- 回复 -->
 										<span class="btn btn-weiboshare">
 											<template>
-												<el-button size="small" type="success" plain @click="replyUser(reply.replyId)">回复</el-button>
+												<el-button size="mini" type="success" plain @click="replyUser(reply.replyId)">回复</el-button>
 											</template>
 										</span>
 
 										<!-- 举报 -->
 										<span class="btn  btn-weiboshare" v-if="reply.isReport">
-											<el-button type="warning" size="small" disabled>举报</el-button>
+											<el-button type="warning" size="mini" disabled>举报</el-button>
 										</span>
 										<span class="btn  btn-weiboshare" v-else>
-											<el-button type="warning" size="small" @click="reportReply(reply)">举报</el-button>
+											<el-button type="warning" size="mini" @click="reportReply(reply)">举报</el-button>
+										</span>
+										
+										<!-- 删除 -->
+										<span class="btn  btn-weiboshare" v-if="reply.isMy">
+											<i class="layui-icon layui-icon-delete" v-on:click="deleteReply(reply)" style="font-size: 20px; color: #CC0033;"></i>
 										</span>
 
 										<!-- 点赞 -->
@@ -326,13 +346,64 @@
 				<div class="col-md-3 layout-side">
 
 					<a class="btn side-btn" href="publicPost.html" data-toggle="modal" data-target="#askquestion">我要发帖</a>
-					<div class="side-image">
-						<a href="#" target="_blank">
-							<!-- 用户头像 -->
-							<img src="#">
-							<!-- 用户昵称 -->
-							<a href="#">{{username}}</a>
-						</a>
+					
+					<div class="panel panel-default panel-userinfo">
+						<div class="panel-body body-userinfo">
+							<div class="media userinfo-header">
+								<div class="media-left">
+									<div class="user-avatar">
+					
+										<a class="avatar" href="#sign-modal" data-toggle="modal" data-sign="signin">
+											<img class="circle" src="../img/logo-grey.png">
+										</a>
+					
+									</div>
+								</div>
+								<div class="media-body">
+					
+									<span class="media-heading username">欢迎来到智慧教育平台</span>
+									<p class="vip-remain">做实验，学编程</p>
+					
+								</div>
+							</div>
+					
+							<div class="userinfo-footer row">
+								<div class="col-md-6 col-xs-6 pos-left">
+					
+									<a href="#sign-modal" data-toggle="modal" data-sign="signin"><span class="glyphicon glyphicon-bookmark"></span>
+										加入私有课</a>
+					
+								</div>
+								<div class="col-md-6 col-xs-6 pos-right">
+									<a href="/contribute" target="_blank"><span class="glyphicon glyphicon-send"></span> 我要投稿</a>
+								</div>
+					
+								<div id="join-private-course" class="modal fade words-ctrl" tabindex="-1" role="dialog">
+									<div class="modal-dialog" role="document">
+										<div class="modal-content">
+											<div class="modal-header">
+												<h4 class="modal-title">加入私有课</h4>
+											</div>
+											<div class="modal-body">
+												<div style="margin:15px 0; font:16px;">输入教师提供的私有课程码可以加入教师的私有课程。</div>
+												<form id="private-course-form" method="POST" action="/courses/join">
+													<div class="form-group">
+														<label for="code">邀请码</label>
+														<input class="form-control" id="code" name="code" type="text" value="">
+														<input name="_csrf_token" type=hidden value="1483789088##bbf83c51243ab12daa94911c8865a65bdc66c4d8">
+													</div>
+												</form>
+					
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+												<button type="button" class="btn btn-primary" onclick="document.getElementById('private-course-form').submit();">确定</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
 					</div>
 					<div class="sidebox side-list related-question">
 						<div class="sidebox-header">
@@ -371,7 +442,8 @@
 						postContent: '',
 						postBrowse: '',
 						postTime: '',
-						userId: '',
+						isMy: '',
+						userId: sessionStorage.getItem("userid"),
 						replyId: '',
 						postTitle: '',
 						username: sessionStorage.getItem("username"),
@@ -385,7 +457,7 @@
 					queryReply: function() {
 						let params = new URLSearchParams();
 						params.append("postId", this.postId);
-						params.append("loginUserId", sessionStorage.getItem("userid"))
+						params.append("loginUserId", this.userId);
 						axios({
 							method: 'post',
 							url: '/api/bbs/reply/getReplyByPostId',
@@ -402,6 +474,7 @@
 					getPostDetails: function() {
 						let params = new URLSearchParams();
 						params.append("postId", this.postId);
+						params.append("userId", this.userId);
 						axios({
 							method: 'post',
 							url: '/api/bbs/post/getPostDetailsByPostId',
@@ -419,13 +492,37 @@
 							this.replyId = res.replyId;
 							this.replynum = res.replyNum;
 							this.replyLikenum = res.replyLikenum;
+							this.isMy=res.isMy;
+						})
+					},
+					deleteReply: function(reply){
+						let params = new URLSearchParams();
+						params.append("replyId", reply.replyId);
+						axios({
+							method: 'post',
+							url: '/api/bbs/reply/upReplyIsDel',
+							data: params,
+							headers: {
+								//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
+							}
+						}).then(res => {
+							res = res.data;
+							if (res.success) {
+								this.$message({
+									message: res.message,
+									type: 'success'
+								});
+								this.queryReply();
+							} else {
+								this.$message.error(res.message);
+							}
 						})
 					},
 					/* 用户是否举报或点赞该贴 */
 					userIsPost: function() {
 						let params = new URLSearchParams();
 						params.append("replyId", this.replyId);
-						params.append("userId", sessionStorage.getItem("userid"));
+						params.append("userId", this.userId);
 						axios({
 							method: 'post',
 							url: '/api/bbs/post/userIsPost',
@@ -442,7 +539,7 @@
 					replyLike: function(reply) {
 						let params = new URLSearchParams();
 						params.append("replyId", reply.replyId);
-						params.append("userId", sessionStorage.getItem("userid"));
+						params.append("userId", this.userId);
 						params.append("isLike", reply.isLike);
 						axios({
 							method: 'post',
@@ -480,7 +577,7 @@
 							params.append("replyContent", value);
 							params.append("postId", this.postId);
 							params.append("pId", replyId);
-							params.append("userId", sessionStorage.getItem("userid"));
+							params.append("userId", this.userId);
 							axios({
 								method: 'post',
 								url: '/api/bbs/reply/insertReply',
@@ -518,7 +615,7 @@
 						}) => {
 							let params = new URLSearchParams();
 							params.append("replyId", reply.replyId);
-							params.append("userId", sessionStorage.getItem("userid"));
+							params.append("userId", this.userId);
 							params.append("reportReason", value);
 							axios({
 								method: 'post',
@@ -556,7 +653,7 @@
 
 						let params = new URLSearchParams();
 						params.append("replyId", this.replyId );
-						params.append("userId", sessionStorage.getItem("userid"));
+						params.append("userId", this.userId);
 						params.append("isLike", this.postLike);
 						axios({
 							method: 'post',
@@ -589,8 +686,8 @@
 							value
 						}) => {
 							let params = new URLSearchParams();
-							params.append("replyId", sessionStorage.getItem("replyId"));
-							params.append("userId", sessionStorage.getItem("userid"));
+							params.append("replyId", this.replyId);
+							params.append("userId", this.userId);
 							params.append("reportReason", value);
 							axios({
 								method: 'post',
@@ -645,8 +742,6 @@
 				}
 			})
 		</script>
-
-
 
 
 		<!-- 页脚 -->

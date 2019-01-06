@@ -31,17 +31,19 @@
                 type="index"
                 width="40">
         </el-table-column>
-        <el-table-column prop="courPicurl" label="课程图片">
+        <el-table-column prop="courPicurl" label="课程图片" width="160">
             <template slot-scope="scope">
                 <div class="photo">
-             <img style="width:100px" :src="scope.row.courPicurl">
+                    <img style="width:100px" :src="scope.row.courPicurl">
                 </div>
             </template>
         </el-table-column>
-        <el-table-column prop="courPrice" label="课程价格">
+        <el-table-column prop="courPrice" label="课程价格" width="100">
         </el-table-column>
 
-        <el-table-column show-overflow-tooltip prop="courName" label="课程名称">
+        <el-table-column show-overflow-tooltip prop="courName" label="课程名称"  width="100">
+        </el-table-column>
+        <el-table-column show-overflow-tooltip prop="courMark" label="学分"  width="100">
         </el-table-column>
         <el-table-column prop="courContent"
                          show-overflow-tooltip label="课程描述">
@@ -60,7 +62,7 @@
                            @click="handleDelete(scope.$index, scope.row)">删除
                 </el-button>
                 <el-button size="mini"
-                           @click="hanfgg(scope.$index, scope.row)">公告
+                           @click="hanfgg(scope.row)">公告
                 </el-button>
             </template>
         </el-table-column>
@@ -76,12 +78,26 @@
                 <el-input placeholder="请输入课程名称" v-model="addCourseDialog.courName" :disabled="addCourseDialog.nameDisabled" ></el-input>
             </el-form-item>
             <el-form-item prop="courPrice" label="课程价格">
-                <el-input placeholder="请输入课程价格" v-model="addCourseDialog.courPrice" ></el-input>
+                <el-input-number v-model="addCourseDialog.courPrice"  :min="0" ></el-input-number>
+            </el-form-item>
+            <el-form-item prop="courMark" label="学分">
+                <el-input-number  v-model="addCourseDialog.courMark" :min="0" :max="100" ></el-input-number>
             </el-form-item>
             <el-form-item prop="courContent" label="课程内容">
-                <el-input placeholder="请输入课程价格" v-model="addCourseDialog.courContent" ></el-input>
+                <el-input placeholder="请输入课程内容" type="textarea" v-model="addCourseDialog.courContent" ></el-input>
             </el-form-item>
-            <el-form-item>
+            <el-form-item  label="开课日期">
+                <el-date-picker
+                        v-model="addCourseDialog.courOpentime"
+                        type="date"
+                        placeholder="选择日期">
+                </el-date-picker>~<el-date-picker
+                    v-model="addCourseDialog.courClosetime"
+                    type="date"
+                    placeholder="选择日期">
+            </el-date-picker>
+            </el-form-item>
+            <el-form-item label="图片">
                 <el-input type="file" id="Picurlfile"></el-input>
                 <el-button @click="Picurltj()">提交</el-button>
             </el-form-item>
@@ -131,10 +147,12 @@
                     //课程的价格
                     courPrice:'',
                     courContent:'',
+                    courOpentime:'',
+                    courClosetime:'',
                     courPicurl:'',
                     disabled:false,
                     nameDisabled:true,
-
+                    courMark:'',
                 },
 
                 //表格数据（分页）
@@ -148,8 +166,10 @@
         },
 
         methods: {
-            hanfgg(){
-                window.location.href="notice.html?"
+            hanfgg(row){
+                var courId=row.courId;
+                localStorage.setItem("courId",courId);
+                window.location.href="notice.html?courId="+courId;
             },
             Picurltj() {
                 let file = document.getElementById("Picurlfile").files[0];
@@ -197,7 +217,7 @@
                 localStorage.setItem("courId",courId);
                 window.location.href="admin.html?courId="+courId
 
-             },
+            },
             handleSelectionChange(val) {
                 this.selectUserData = val
             },
@@ -207,8 +227,11 @@
                 params.append('courId', this.addCourseDialog.courId)
                 params.append('courName', this.addCourseDialog.courName)
                 params.append('courPrice', this.addCourseDialog.courPrice)
+                params.append('courMark', this.addCourseDialog.courMark)
                 params.append('courPicurl', this.addCourseDialog.courPicurl)
                 params.append('courContent', this.addCourseDialog.courContent)
+                params.append('courOpentime', this.addCourseDialog.courOpentime)
+                params.append('courClosetime', this.addCourseDialog.courClosetime)
                 this.$refs['addForm'].validate((valid) => {
                     axios({
                         method: 'post',
@@ -249,12 +272,14 @@
             //新增
             addUser(){
                 let teaid=sessionStorage.getItem("userid");
-               let params = new URLSearchParams()
+                let params = new URLSearchParams()
                 params.append('courId', this.addCourseDialog.courId)
                 params.append('courName', this.addCourseDialog.courName)
                 params.append('courPrice', this.addCourseDialog.courPrice)
                 params.append('courPicurl', this.addCourseDialog.courPicurl)
                 params.append('courContent', this.addCourseDialog.courContent)
+                params.append('courOpentime', this.addCourseDialog.courOpentime)
+                params.append('courClosetime', this.addCourseDialog.courClosetime)
                 params.append('courTeaid', teaid)
 
                 this.$refs['addForm'].validate((valid) => {
@@ -295,6 +320,8 @@
                 this.addCourseDialog.courTeaid="";
                 this.addCourseDialog.courPicurl="";
                 this.addCourseDialog.courContent="";
+                this.addCourseDialog.courOpentime="";
+                this.addCourseDialog.courClosetime="";
                 this.addCourseDialog.nameDisabled=false;
                 this.addCourseDialog.title="新增章节";
                 this.addCourseDialog.show=true;

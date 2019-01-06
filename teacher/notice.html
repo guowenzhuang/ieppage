@@ -22,6 +22,9 @@
     <el-container>
         <el-main>
             <el-row :gutter="20" type="flex">
+                <el-col :span="2">
+                    <el-button round @click="ret"> < </el-button>
+                </el-col>
                 <el-col :span="4">
                     <span>公告题目:</span>
                     <el-input v-model="query.noTitle" placeholder="请输入公告标题"></el-input>
@@ -53,9 +56,10 @@
                     <el-table-column
                             prop="noTitle"
                             label="公告题目">
-                    </el-table-column>
+                    </el-table-column>ry
                     <el-table-column
                             prop="noConten"
+                            show-overflow-tooltip
                             label="公告内容">
                     </el-table-column>
                     <el-table-column
@@ -65,7 +69,7 @@
                     <el-table-column label="操作">
                         <template slot-scope="scope">
                             <el-button type="text" @click="updateNoticeShow(scope.row)">修改</el-button>
-                            <el-button type="text" @click="deleteNotice(scope.row)">删除</el-button>
+                            <el-button type="text" @click="deleteNotice(scope.$index, scope.row)">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -74,7 +78,7 @@
                 <el-pagination
                         layout="prev, pager, next"
                         :current-page.sync="query.page"
-                        :page-size="query.pageSize"
+                        :page-size="query.rows"
                         @current-change="noticeQuery"
                         :total="query.total">
                 </el-pagination>
@@ -82,26 +86,156 @@
         </el-main>
     </el-container>
 
+    <div>
+        <el-dialog
+                :title="add.title"
+                :visible.sync="add.show">
+            <el-form  :rules="addNotice" ref="addForm" :model="add" label-position="left" label-width="80px">
+                <el-form-item prop="noTitle" label="公告标题">
+                    <el-input v-model="add.noTitle" ></el-input>
+                </el-form-item>
+                <el-form-item prop="noConten" label="公告内容">
+                    <el-input v-model="add.noConten" ></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" v-if="add.title=='新增公告'" @click="addno">新增</el-button>
+                    <el-button type="primary" v-else  @click="updateNotice">修改</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
+
+    </div>
+
 </div>
 </body>
 <script>
     axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
     axios.defaults.headers.common['Content-Type'] = 'application/json;charset=UTF-8';
+    var courid = localStorage.getItem("courId");
     const main = {
         data(){
             return{
+                addNotice:{
+                    noTitle: [
+                        { required: true, message: '请输入公告题目', trigger: 'blur' },
+                    ],
+                    noConten: [
+                        { required: true, message: '请输入公告内容', trigger: 'blur' },
+                    ],
+
+
+                },
+                add:{
+                    show:false,
+                    title:'',
+                    noId:'',
+                    noTitle:'',
+                    noConten:'',
+                    noCourid:'',
+                },
+                noticeData:[],
                 query:{
                     noCourid:'',
                     noTitle:'',
                     page:1,
-                    pageSize:10
+                    rows:10
                 },
-                noticeData:[],
                 total:0,
                 active:{}
             }
         },
         methods:{
+            ret(){
+                window.location.href="course.html";
+            },
+            //新增公告
+            addno(){
+                axios({
+                    method:'post',
+                    url:'/api/teacher/notice/insertNotice',
+                    params:{
+                        noCourid:courid,
+                        noTitle:this.add.noTitle,
+                        noConten:this.add.noConten,
+                        title:this.add.title='新增公告',
+                        show:this.add.show=true,
+
+                    }
+                }).then(res=>{
+                    res=res.data;
+                    if(res.success){
+                        this.$message({
+                            message: res.message,
+                            type: 'success'
+                        });
+                        this.add.show=false;
+                        this.noticeQuery();
+                    }
+                })
+            },
+            //修改院系
+            updateNotice(){
+                axios({
+                    method:'put',
+                    url:'/api/teacher/notice/updateNotice',
+                    data:this.add
+                }).then(res=>{
+                    res=res.data;
+                    if(res.success){
+                        this.$message({
+                            message: res.message,
+                            type: 'success'
+                        });
+                        this.add.show=false;
+                        this.noticeQuery();
+                    }
+                })
+            },
+               //删除公告
+            deleteNotice(index,row){
+                this.$confirm('此操作将永久删除该公告, 是否继续?', '提示', {
+                    cancelButtonText: '取消',
+                    confirmButtonText: '确定',
+                    type: 'warning',
+                    center: true
+                }).then(() => {
+                    axios({
+                        method:"delete",
+                        url:'/api/teacher/notice/deleteNoticeBynoId',
+                        params: {
+                            noId: row.noId
+                        },
+                    })
+                        .then(res=>{
+                            res=res.data;
+                            if(res.success) {
+                                this.$message({
+                                    message: res.message,
+                                    type: 'success'
+                                });
+                                this.add.show = false;
+                                this.noticeQuery();
+                                location.reload()
+                            }
+                        })
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            //修改公告框显示
+            updateNoticeShow(row){
+                this.active=row;
+                this.add.noId=row.noId;
+                this.add.noCourid=row.noCourid;
+                this.add.noTitle=row.noTitle;
+                this.add.noConten=row.noConten;
+                this.add.title="修改公告";
+                this.add.show=true;
+            },
             //搜索
             search(){
                 this.query.page=1;
@@ -109,6 +243,8 @@
             },
             //新增公告弹出框显示
             addNoticeShow(){
+                this.add.noTitle="";
+                this.add.noConten="";
                 this.add.title="新增公告";
                 this.add.show=true;
             },
@@ -117,7 +253,13 @@
                 axios({
                     method:'get',
                     url:'/api/teacher/notice/query',
-                    params:this.query
+                    params:{
+                        noCourid:courid,
+                        noTitle:this.query.noTitle,
+                        page:this.query.page,
+                        rows:this.query.rows,
+                    }
+
                 }).then(res=>{
                     res=res.data;
                     this.query.total=res.total;

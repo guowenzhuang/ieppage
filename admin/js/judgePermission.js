@@ -2,6 +2,16 @@
 function permissionshow() {
     $("[permissionValue]").each((index,item)=>{
         let permissionValue=$(item).attr('permissionValue');
-        console.log(sessionStorage.getItem(""))
+        axios({
+            meethod:'get',
+            url:'/api/admin/permission/judgePermission',
+            params:{
+                value:permissionValue
+            }
+        }).then(res=>{
+            if(res.data.success==false){
+                $(item).hide(500);
+            }
+        })
     })
 }

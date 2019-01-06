@@ -436,9 +436,9 @@
                         url: '/api/exam/examrubric/examination',
                         data: params,
                     }).then(res => {
-                         app.finalScore = res.data.remark.total	;
-                        app.acceptablevalue = res.data.remark.isqualified;
                           if(res.data.success){
+                              app.finalScore = res.data.remark.total;
+                              app.acceptablevalue = res.data.remark.isqualified;
                               app.centerDialogVisible = true;
                               if (app.time != null) {
                                   window.clearInterval(app.time);
@@ -613,7 +613,7 @@
                 let s = this.formate(parseInt(leftTime % 60));
                 if (leftTime <= 0) {
                     clearInterval(this.time)
-                    this.endtest();
+                    this.secondSteptest();
                     /*     let params = new URLSearchParams();
                          params.append("studentId", userid);
                          params.append("examparperId", this.tableData.id);
