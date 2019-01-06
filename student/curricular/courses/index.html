@@ -165,7 +165,8 @@
 			<div class="row">
 				<div class="col-md-9 layout-body">
 					<div class="content">
-						<div class="row course-cates">
+					<!--	<div class="row course-cates">
+
 							<div class="col-md-1 course-cates-title">类别：</div>
 							<div class="col-md-11 course-cates-content">
 								<a class="active" href="/courses/?course_type=all&amp;tag=all">全部</a>
@@ -176,9 +177,10 @@
 									<a class="" href="/courses/?course_type=all&amp;tag=all&amp;fee=member">会员</a>
 								</div>
 							</div>
-						</div>
+						</div>-->
+
 						<div class="row course-cates">
-							<div class="col-md-1 course-cates-title">标签：</div>
+							<div class="col-md-1 course-cates-title">类别：</div>
 							<div class="col-md-11 course-cates-content">
 								<a class="active" href="javascript:void(0)" @click="queryKeichengContent()">全部</a>
 								<a v-for="site in sites" class="" @click="queryKeichengContent(site.departmentId)" href="javascript:void(0)"
@@ -291,7 +293,7 @@
 								<div class="media-left">
 									<div class="user-avatar">
 
-										<a class="avatar" href="#sign-modal" data-toggle="modal" data-sign="signin">
+										<a class="avatar" href="javascript:void(0)" data-toggle="modal" data-sign="signin">
 											<img class="circle" src="../img/logo-grey.png">
 										</a>
 
@@ -299,8 +301,8 @@
 								</div>
 								<div class="media-body">
 
-									<span class="media-heading username">欢迎来到实验楼</span>
-									<p class="vip-remain">做实验，学编程</p>
+									<span class="media-heading username">欢迎来到易课堂</span>
+									<p class="vip-remain">到易课，学知识</p>
 
 								</div>
 							</div>
@@ -309,10 +311,10 @@
 
 								<hr>
 								<div class="btn-group-lr">
-									<a href="#sign-modal" type="button" class="btn btn-success col-md-5 col-xs-6 login-btn" data-toggle="modal"
+									<!--<a href="#sign-modal" type="button" class="btn btn-success col-md-5 col-xs-6 login-btn" data-toggle="modal"
 									 data-sign="signin">登录</a>
 									<a href="#sign-modal" type="button" class="btn btn-success col-md-5 col-xs-6 col-md-offset-1 register-btn"
-									 data-toggle="modal" data-sign="signup">注册</a>
+									 data-toggle="modal" data-sign="signup">注册</a>-->
 								</div>
 
 							</div>
@@ -320,12 +322,12 @@
 							<div class="userinfo-footer row">
 								<div class="col-md-6 col-xs-6 pos-left">
 
-									<a href="#sign-modal" data-toggle="modal" data-sign="signin"><span class="glyphicon glyphicon-bookmark"></span>
-										加入私有课</a>
+									<!--<a href="#sign-modal" data-toggle="modal" data-sign="signin"><span class="glyphicon glyphicon-bookmark"></span>
+										加入私有课</a>-->
 
 								</div>
 								<div class="col-md-6 col-xs-6 pos-right">
-									<a href="/contribute" target="_blank"><span class="glyphicon glyphicon-send"></span> 我要投稿</a>
+									<!--<a href="/contribute" target="_blank"><span class="glyphicon glyphicon-send"></span> 我要投稿</a>-->
 								</div>
 
 								<div id="join-private-course" class="modal fade words-ctrl" tabindex="-1" role="dialog">
@@ -360,14 +362,14 @@
 					<div class="sidebox">
 
 						<div class="sidebox-header">
-							<h4 class="sidebox-title">最热路径</h4>
+							<h4 class="sidebox-title">最热课程</h4>
 						</div>
-						<div class="sidebox-body course-content side-list-body">
-							<a href="/paths/python"><img style="width:25px;height:25px" src="../img/1471513769430.png"> Python 研发工程师</a>
-							<a href="/paths/bigdata"><img style="width:25px;height:25px" src="../img/1471513926288.png"> 大数据工程师</a>
+						<div class="sidebox-body course-content side-list-body" >
+							<a :href="'show.html?courId='+r.courId" v-for="r in recommended"><img style="width:25px;height:25px" :src="r.courPicurl"> {{r.courName}}</a>
+							<!--<a href="/paths/bigdata"><img style="width:25px;height:25px" src="../img/1471513926288.png"> 大数据工程师</a>
 							<a href="/paths/cpp"><img style="width:25px;height:25px" src="../img/1471513793360.png"> C++ 研发工程师</a>
 							<a href="/paths/security"><img style="width:25px;height:25px" src="../img/1471513867033.png"> 信息安全工程师</a>
-							<a href="/paths/linuxsys"><img style="width:25px;height:25px" src="../img/1471514004752.png"> Linux 运维工程师</a>
+							<a href="/paths/linuxsys"><img style="width:25px;height:25px" src="../img/1471514004752.png"> Linux 运维工程师</a>-->
 						</div>
 
 					</div>
@@ -624,7 +626,8 @@
 					//结束显示的分页按钮
 					showPageEnd: 20,
 					//分页数据
-					courseList: []
+					courseList: [],
+                    recommended:[]
 
 
 
@@ -651,8 +654,19 @@
 						}).then(res => {
 							console.log(res);
 							this.sites = res.data.message;
+                            this.queryTuiJian();
 						})
 					},
+                    queryTuiJian: function() {
+                        axios({
+                            method: 'get',
+                            url: '/api/student/home/getRecommended',
+
+                        }).then(res => {
+                            console.log(res.data);
+                            this.recommended = res.data;
+                        })
+                    },
 					//根据分类Id查询课程
 					queryKeichengContent(val) {
 
@@ -660,7 +674,7 @@
 							method: 'get',
 							url: '/api/student/curricularTaxonomy/getCourse',
 							params: {
-								courDepid: val,
+                                courDepid:val,
 								page: this.pageCurrent,
 								pageSize: this.pagesize
 							}

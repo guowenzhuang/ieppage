@@ -225,17 +225,22 @@
 								<!-- 回复 -->
 								<span class="btn btn-weiboshare">
 									<template>
-										<el-button size="small" type="success" plain>回复</el-button>
+										<el-button size="mini" type="success" plain>回复</el-button>
 									</template>
 								</span>
 
 								<!-- 举报 -->
 								<span class="btn  btn-weiboshare" v-if="postReport">
-									<el-button type="warning" size="small" disabled>举报</el-button>
+									<el-button type="warning" size="mini" disabled>举报</el-button>
 								</span>
 								<span class="btn  btn-weiboshare" v-else>
-									<el-button type="warning" size="small" @click="userReportPost()">举报</el-button>
+									<el-button type="warning" size="mini" @click="userReportPost()">举报</el-button>
 								</span>
+								<!-- 删除 -->
+								<span class="btn  btn-weiboshare" v-if="isMy">
+									<i class="layui-icon layui-icon-delete" v-on:click="" style="font-size: 20px; color: #CC0033;"></i>
+								</span>
+								
 								<!-- 点赞 -->
 								<span class="btn  btn-weiboshare" v-if="postLike">
 									<i class="layui-icon layui-icon-praise" v-on:click="userLikePost()" style="font-size: 20px; color: #CC0033;"></i>
@@ -258,9 +263,12 @@
 											<!--  回复人头像 -->
 											<img src="#">
 										</a>
-									</div>
+									</div>									
 								</div>
 								<div class="answer-detail">
+									<div class="question-headline">
+										<span class="question-figure">{{reply.replyLikenum}} 点赞</span>
+									</div>
 									<span class="comment-reply">
 										<div class="user-username ">
 											<a class="username" href="#" target="_blank">{{reply.replyUsername}}</a>
@@ -276,7 +284,10 @@
 
 									</span>
 
-									<div class="answer-content markdown-body">
+									<div class="answer-content markdown-body" v-if="reply.isDelete">
+										<p>该回复已被删除，不能查看</p>
+									</div>
+									<div class="answer-content markdown-body" v-else>
 										<p>{{reply.replyContent}}</p>
 									</div>
 									<div>
@@ -286,16 +297,21 @@
 										<!-- 回复 -->
 										<span class="btn btn-weiboshare">
 											<template>
-												<el-button size="small" type="success" plain @click="replyUser(reply.replyId)">回复</el-button>
+												<el-button size="mini" type="success" plain @click="replyUser(reply.replyId)">回复</el-button>
 											</template>
 										</span>
 
 										<!-- 举报 -->
 										<span class="btn  btn-weiboshare" v-if="reply.isReport">
-											<el-button type="warning" size="small" disabled>举报</el-button>
+											<el-button type="warning" size="mini" disabled>举报</el-button>
 										</span>
 										<span class="btn  btn-weiboshare" v-else>
-											<el-button type="warning" size="small" @click="reportReply(reply)">举报</el-button>
+											<el-button type="warning" size="mini" @click="reportReply(reply)">举报</el-button>
+										</span>
+										
+										<!-- 删除 -->
+										<span class="btn  btn-weiboshare" v-if="reply.isMy">
+											<i class="layui-icon layui-icon-delete" v-on:click="deleteReply(reply)" style="font-size: 20px; color: #CC0033;"></i>
 										</span>
 
 										<!-- 点赞 -->
@@ -422,7 +438,8 @@
 						postContent: '',
 						postBrowse: '',
 						postTime: '',
-						userId: '',
+						isMy: '',
+						userId: sessionStorage.getItem("userid"),
 						replyId: '',
 						postTitle: '',
 						username: sessionStorage.getItem("username"),
@@ -436,7 +453,7 @@
 					queryReply: function() {
 						let params = new URLSearchParams();
 						params.append("postId", this.postId);
-						params.append("loginUserId", sessionStorage.getItem("userid"))
+						params.append("loginUserId", this.userId);
 						axios({
 							method: 'post',
 							url: '/api/bbs/reply/getReplyByPostId',
@@ -453,6 +470,7 @@
 					getPostDetails: function() {
 						let params = new URLSearchParams();
 						params.append("postId", this.postId);
+						params.append("userId", this.userId);
 						axios({
 							method: 'post',
 							url: '/api/bbs/post/getPostDetailsByPostId',
@@ -470,13 +488,37 @@
 							this.replyId = res.replyId;
 							this.replynum = res.replyNum;
 							this.replyLikenum = res.replyLikenum;
+							this.isMy=res.isMy;
+						})
+					},
+					deleteReply: function(reply){
+						let params = new URLSearchParams();
+						params.append("replyId", reply.replyId);
+						axios({
+							method: 'post',
+							url: '/api/bbs/reply/upReplyIsDel',
+							data: params,
+							headers: {
+								//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
+							}
+						}).then(res => {
+							res = res.data;
+							if (res.success) {
+								this.$message({
+									message: res.message,
+									type: 'success'
+								});
+								this.queryReply();
+							} else {
+								this.$message.error(res.message);
+							}
 						})
 					},
 					/* 用户是否举报或点赞该贴 */
 					userIsPost: function() {
 						let params = new URLSearchParams();
 						params.append("replyId", this.replyId);
-						params.append("userId", sessionStorage.getItem("userid"));
+						params.append("userId", this.userId);
 						axios({
 							method: 'post',
 							url: '/api/bbs/post/userIsPost',
@@ -493,7 +535,7 @@
 					replyLike: function(reply) {
 						let params = new URLSearchParams();
 						params.append("replyId", reply.replyId);
-						params.append("userId", sessionStorage.getItem("userid"));
+						params.append("userId", this.userId);
 						params.append("isLike", reply.isLike);
 						axios({
 							method: 'post',
@@ -531,7 +573,7 @@
 							params.append("replyContent", value);
 							params.append("postId", this.postId);
 							params.append("pId", replyId);
-							params.append("userId", sessionStorage.getItem("userid"));
+							params.append("userId", this.userId);
 							axios({
 								method: 'post',
 								url: '/api/bbs/reply/insertReply',
@@ -569,7 +611,7 @@
 						}) => {
 							let params = new URLSearchParams();
 							params.append("replyId", reply.replyId);
-							params.append("userId", sessionStorage.getItem("userid"));
+							params.append("userId", this.userId);
 							params.append("reportReason", value);
 							axios({
 								method: 'post',
@@ -607,7 +649,7 @@
 
 						let params = new URLSearchParams();
 						params.append("replyId", this.replyId );
-						params.append("userId", sessionStorage.getItem("userid"));
+						params.append("userId", this.userId);
 						params.append("isLike", this.postLike);
 						axios({
 							method: 'post',
@@ -640,8 +682,8 @@
 							value
 						}) => {
 							let params = new URLSearchParams();
-							params.append("replyId", sessionStorage.getItem("replyId"));
-							params.append("userId", sessionStorage.getItem("userid"));
+							params.append("replyId", this.replyId);
+							params.append("userId", this.userId);
 							params.append("reportReason", value);
 							axios({
 								method: 'post',
