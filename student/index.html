@@ -73,11 +73,11 @@
 			<div class="width_1200 margin_auto">
 				<div class="width100 float_l height460 posi_relative">
 
-					<div class="width100 float_l">
+					<div class="width100 float_l" id="lb">
 						<div class="focusBox">
 							<ul class="pic">
-								<li><a href="curricular/courses/show.html"><img src="img/uiz21.jpg" /></a></li>
-								<li><a href="curricular/courses/show.html"><img src="img/uiz20.jpg" /></a></li>
+								<li v-for="s in shufflings"><a href="curricular/courses/show.html"><img :src="s.courPicurl" /></a></li>
+								<!-- <li><a href="curricular/courses/show.html"><img src="img/uiz20.jpg" /></a></li> -->
 							</ul>
 							<a class="prev" href="javascript:void(0)"></a>
 							<a class="next" href="javascript:void(0)"></a>
@@ -168,6 +168,29 @@
 					}
 				}
 			});
+
+			var lb = new Vue({
+				el: "#lb",
+				mounted: function() {
+					this.queryLunbo()
+				},
+				data: {
+					shufflings: []
+				},
+				methods: {
+					queryLunbo: function() {
+						axios({
+							method: 'get',
+							url: '/api/student/home/queryShuffling',
+
+						}).then(res => {
+							console.log(res.data);
+							this.shufflings = res.data;
+						})
+					}
+				}
+
+			});
 		</script>
 
 
@@ -226,7 +249,6 @@
 					this.queryTuiJian()
 				},
 				data: {
-					currentDate: new Date(),
 					recommended: []
 				},
 				methods: {
@@ -485,8 +507,8 @@
 							}
 						}).then(res => {
 							console.log(res.data.message);
-							
-							this.computers = res.data.message.map(item =>{
+
+							this.computers = res.data.message.map(item => {
 								if (item.courPicurl == null || item.courPicurl == "") {
 									item.courPicurl = "img/timg.jpg"
 								}
@@ -541,30 +563,22 @@
 							})
 
 						} else {
-							console.log("发现您未登录!")
 							this.$confirm('您未登录,请先登录！', '温馨提示', {
 								confirmButtonText: '确定',
 								cancelButtonText: '取消',
 								type: 'warning'
 							}).then(() => {
-								
-								this.$message({
-									type: 'success',
-									message: '删除成功!'
-								});
+								window.location.href = "http://127.0.0.1/login.html";
 							}).catch(() => {
 								this.$message({
 									type: 'info',
-									message: '已取消删除'
+									message: '已取消'
 								});
 							});
-							
+
 						}
 					}
-
-
 				}
-
 			});
 
 			var language = new Vue({
@@ -646,16 +660,14 @@
 								type: 'warning'
 							}).then(() => {
 								window.location.href = "http://127.0.0.1/login.html";
-								
 							}).catch(() => {
-								 this.$message({
+								this.$message({
 									type: 'info',
 									message: '已取消'
-								}); 
+								});
 							});
-							
-						}
 
+						}
 					}
 				}
 
@@ -734,11 +746,20 @@
 							})
 
 						} else {
-							if (confirm("请先登录") == true) {
-								window.location.href = "http://127.0.0.1/login.html";
-							}
-						}
 
+							this.$confirm('您未登录,请先登录！', '温馨提示', {
+								confirmButtonText: '确定',
+								cancelButtonText: '取消',
+								type: 'warning'
+							}).then(() => {
+								window.location.href = "http://127.0.0.1/login.html";
+							}).catch(() => {
+								this.$message({
+									type: 'info',
+									message: '已取消'
+								});
+							});
+						}
 					}
 				}
 			});
