@@ -58,8 +58,8 @@
 				<!-- 顶部右边 -->
 				<div class="float_r">
 					<div class="float_l top_input">
-						<input class="posi_relative" type="text" name="" id="" placeholder="请输入想搜索的内容...">
-						<img class="img_sousuo bianshou" src="../../img/uiz4.png">
+						<input class="posi_relative" type="text" v-model="query" placeholder="请输入想搜索的内容...">
+						<img class="img_sousuo bianshou" src="../../img/uiz4.png" @click="search()">
 					</div>
 					<div class="float_l margin_l20">
 						<img src="../../img/uiz5.png">
@@ -91,10 +91,8 @@
 		<div id="details" class="container layout layout-margin-top">
 
 			<ol class="breadcrumb">
-				<li><a href="/courses/">全部课程</a></li>
-				<li>
-					<a href="/courses/?tag=Linux">Linux</a>
-				</li>
+				<li><a href="/student/curricular/courses/index.html">全部课程</a></li>
+				
 				<li class="active">
 					<a href="/courses/1">
 						{{courName}}
@@ -282,13 +280,13 @@
 
 												<div class="col-md-2 question-item-rank">
 													<div v-if="c.isLike==true" style="color: #00b877">
-														<div @click="dainzan(c.praise,c.mid)" style="cursor:pointer">
+														<div @click="dainzan(c.praise,c.mid)" style="cursor: pointer">
 														<span class="glyphicon glyphicon-thumbs-up"></span>&nbsp;&nbsp;<span v-text="c.praise"></span>
 														</div>
 														<!--<div><span v-text="c.praise"></span></div>-->
 													</div>
 													<div v-else>
-														<div @click="dainzan(c.praise,c.mid)" style="cursor:pointer">
+														<div @click="dainzan(c.praise,c.mid)"  style="cursor: pointer">
 															<span class="glyphicon glyphicon-thumbs-up"></span>&nbsp;&nbsp;<span v-text="c.praise"></span>
 														</div>
 														<!--<div></span></div>-->
@@ -596,7 +594,7 @@
 									}
 								})
 							} else if (this.baoming = "进入学习") {
-								window.location.href = "study.html?courId=" + this.courId;
+								window.location.href = "study.html?courId=" + this.courId+"&value=gonggao";
 							}
 						} else {
                             this.open();
@@ -742,7 +740,8 @@
 				data: {
 					isShow: true,
 					isCenter: false,
-					userPhoto: ''
+					userPhoto: '',
+					query:''
 				},
 				methods: {
 					login: function() {
@@ -751,9 +750,18 @@
 					tuichu: function() {
 						sessionStorage.clear();
 						localStorage.clear();
+						window.location.href = "http://127.0.0.1/login.html";
 					},
 					shezhi:function(){
 						window.location.href = "/student/curricular/user/13/personal.html";
+					},
+					search: function() {
+						if (this.query == "") {
+							this.$message.error('错了哦，请输入有效的搜索条件！');
+							return;
+						}
+						sessionStorage.setItem("search_name", this.query);
+						window.location.href = "/student/search.html"
 					}
 				}
 			});	

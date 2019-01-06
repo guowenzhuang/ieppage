@@ -68,6 +68,10 @@
         }
     </style>
 		<script type="text/javascript">
+			if (sessionStorage.getItem("access_token") != null) {
+				axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
+			}
+			
 			layui.use('layedit', function() {
 				var layedit = layui.layedit,
 					$ = layui.jquery;
@@ -104,7 +108,7 @@
 								replyContent: replyText,
 								postId: sessionStorage.getItem("courPostId"),
 								userId: sessionStorage.getItem("userid"),
-								courseId: 1,
+								courseId: sessionStorage.getItem("courId"),
 								pId: 0
 							},
 							beforeSend: function(request) {

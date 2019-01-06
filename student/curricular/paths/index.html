@@ -29,7 +29,7 @@
 		<link rel="stylesheet" type="text/css" href="../../css/muke.css">
 		<link rel="stylesheet" href="../../js/elementui/index.css">
 		<script src="../../js/vue.min.js"></script>
-		<script  src="../../js/elementui/index.js"></script>
+		<script src="../../js/elementui/index.js"></script>
 		<script src="../../js/axios.min.js"></script>
 
 
@@ -107,8 +107,8 @@
 				<!-- 顶部右边 -->
 				<div class="float_r">
 					<div class="float_l top_input">
-						<input class="posi_relative" type="text" name="" id="" placeholder="请输入想搜索的内容...">
-						<img class="img_sousuo bianshou" src="../../img/uiz4.png">
+						<input class="posi_relative" type="text" v-model="query" placeholder="请输入想搜索的内容...">
+						<img class="img_sousuo bianshou" src="../../img/uiz4.png" @click="search()">
 					</div>
 					<div class="float_l margin_l20">
 						<img src="../../img/uiz5.png">
@@ -121,7 +121,7 @@
 						<a class="btn btn-default navbar-btn sign-in" href="javascript:void(0)" @click="login()" v-show="isShow">登录</a>
 						<el-dropdown>
 							<div class="color_black" v-show="isCenter">
-								<img :src="userPhoto" width="45px" >
+								<img :src="userPhoto" width="45px">
 								<i class="el-icon-arrow-down el-icon&#45;&#45;right"></i>
 							</div>
 							<el-dropdown-menu slot="dropdown">
@@ -134,7 +134,7 @@
 
 			</div>
 		</div>
-		
+
 		<script>
 			var bt = new Vue({
 				el: "#bt",
@@ -149,7 +149,8 @@
 				data: {
 					isShow: true,
 					isCenter: false,
-					userPhoto: ''
+					userPhoto: '',
+					query:''
 				},
 				methods: {
 					login: function() {
@@ -158,9 +159,18 @@
 					tuichu: function() {
 						sessionStorage.clear();
 						localStorage.clear();
+						window.location.href = "http://127.0.0.1/login.html";
 					},
 					shezhi:function(){
 						window.location.href = "/student/curricular/user/13/personal.html";
+					},
+					search: function() {
+						if (this.query == "") {
+							this.$message.error('错了哦，请输入有效的搜索条件！');
+							return;
+						}
+						sessionStorage.setItem("search_name", this.query);
+						window.location.href = "/student/search.html"
 					}
 				}
 			});	
@@ -240,9 +250,6 @@
 						</nav>
 
 
-
-
-
 					</div>
 
 				</div>
@@ -264,8 +271,8 @@
 								</div>
 								<div class="media-body">
 
-									<span class="media-heading username">欢迎来到智慧教学平台</span>
-									<p class="vip-remain">做实验，学编程</p>
+									<span class="media-heading username">欢迎来到易课堂</span>
+									<p class="vip-remain">到易课，学知识</p>
 
 								</div>
 							</div>
@@ -274,10 +281,10 @@
 
 								<hr>
 								<div class="btn-group-lr">
-									<a href="#sign-modal" type="button" class="btn btn-success col-md-5 col-xs-6 login-btn" data-toggle="modal"
+									<!-- <a href="#sign-modal" type="button" class="btn btn-success col-md-5 col-xs-6 login-btn" data-toggle="modal"
 									 data-sign="signin">登录</a>
 									<a href="#sign-modal" type="button" class="btn btn-success col-md-5 col-xs-6 col-md-offset-1 register-btn"
-									 data-toggle="modal" data-sign="signup">注册</a>
+									 data-toggle="modal" data-sign="signup">注册</a> -->
 								</div>
 
 							</div>
@@ -285,12 +292,12 @@
 							<div class="userinfo-footer row">
 								<div class="col-md-6 col-xs-6 pos-left">
 
-									<a href="#sign-modal" data-toggle="modal" data-sign="signin"><span class="glyphicon glyphicon-bookmark"></span>
-										加入私有课</a>
+									<!-- 	<a href="#sign-modal" data-toggle="modal" data-sign="signin"><span class="glyphicon glyphicon-bookmark"></span>
+										加入私有课</a> -->
 
 								</div>
 								<div class="col-md-6 col-xs-6 pos-right">
-									<a href="/contribute" target="_blank"><span class="glyphicon glyphicon-send"></span> 我要投稿</a>
+									<!-- <a href="/contribute" target="_blank"><span class="glyphicon glyphicon-send"></span> 我要投稿</a> -->
 								</div>
 
 								<div id="join-private-course" class="modal fade words-ctrl" tabindex="-1" role="dialog">
@@ -325,14 +332,16 @@
 					<div class="sidebox">
 
 						<div class="sidebox-header">
-							<h4 class="sidebox-title">最热路径</h4>
+							<h4 class="sidebox-title">最热课程</h4>
 						</div>
-						<div class="sidebox-body course-content side-list-body">
-							<a href="/paths/python"><img style="width:25px;height:25px" src="../img/1471513769430.png"> Python 研发工程师</a>
-							<a href="/paths/bigdata"><img style="width:25px;height:25px" src="../img/1471513926288.png"> 大数据工程师</a>
+						<div class="sidebox-body course-content side-list-body" id="zr">
+							<a :href="'/student/curricular/courses/show.html?courId='+r.courId" v-for="r in recommended"><img style="width:25px;height:25px"
+								 :src="r.courPicurl"> {{r.courName}}</a>
+							<!-- <a href="/paths/python"><img style="width:25px;height:25px" src="../img/1471513769430.png"> Python 研发工程师</a> -->
+							<!-- 	<a href="/paths/bigdata"><img style="width:25px;height:25px" src="../img/1471513926288.png"> 大数据工程师</a>
 							<a href="/paths/cpp"><img style="width:25px;height:25px" src="../img/1471513793360.png"> C++ 研发工程师</a>
 							<a href="/paths/security"><img style="width:25px;height:25px" src="../img/1471513867033.png"> 信息安全工程师</a>
-							<a href="/paths/linuxsys"><img style="width:25px;height:25px" src="../img/1471514004752.png"> Linux 运维工程师</a>
+							<a href="/paths/linuxsys"><img style="width:25px;height:25px" src="../img/1471514004752.png"> Linux 运维工程师</a> -->
 						</div>
 
 					</div>
@@ -389,121 +398,6 @@
 
 
 
-
-		<div class="modal fade" id="sign-modal" tabindex="-1" role="dialog">
-			<div class="modal-dialog modal-sm" role="document">
-				<div class="modal-content">
-					<button type="button" class="close-modal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<div class="modal-body">
-						<ul class="nav nav-tabs" role="tablist">
-							<li role="presentation" class="active">
-								<a href="#signin-form" aria-controls="signin-form" role="tab" data-toggle="tab">登录</a>
-							</li>
-							<li role="presentation">
-								<a href="#signup-form" aria-controls="signup-form" role="tab" data-toggle="tab">注册</a>
-							</li>
-						</ul>
-						<div class="tab-content">
-							<div role="tabpanel" class="tab-pane active" id="signin-form">
-								<form action="/login" method="post">
-									<div class="form-group">
-										<div class="input-group">
-											<div class="input-group-addon">
-												<i class="fa fa-envelope" style="margin:0;"></i>
-											</div>
-											<input type="email" name="login" class="form-control" placeholder="请输入邮箱">
-										</div>
-									</div>
-									<div class="form-group">
-										<div class="input-group">
-											<div class="input-group-addon">
-												<i class="fa fa-lock" style="margin:0;"></i>
-											</div>
-											<input type="password" name="password" class="form-control" placeholder="请输入密码">
-										</div>
-									</div>
-									<div class="form-inline verify-code-item" style="display:none;">
-										<div class="form-group">
-											<div class="input-group">
-												<input type="text" name="captcha_v" class="form-control" placeholder="请输入验证码">
-											</div>
-										</div>
-										<img class="verify-code" src="" source="img/captcha.gif">
-									</div>
-									<div class="form-group remember-login">
-										<input name="remember" type="checkbox" value="y"> 下次自动登录
-										<a class="pull-right" href="../reset_password/index.html">忘记密码？</a>
-									</div>
-									<div class="form-group">
-										<input class="btn btn-primary" name="submit" type="submit" value="进入实验楼">
-									</div>
-									<div class="form-group widget-signin">
-										<span>快速登录</span>
-										<a href="/auth/qq?next="><i class="fa fa-qq"></i></a>
-										<a href="/auth/weibo?next="><i class="fa fa-weibo"></i></a>
-										<a href="/auth/weixin?next="><i class="fa fa-weixin"></i></a>
-										<a href="/auth/github?next="><i class="fa fa-github"></i></a>
-										<a href="/auth/renren?next="><i class="fa fa-renren"></i></a>
-									</div>
-									<div class="form-group error-msg">
-										<div class="alert alert-danger" role="alert"></div>
-									</div>
-								</form>
-							</div>
-							<div role="tabpanel" class="tab-pane" id="signup-form">
-								<form action="/register" method="post">
-									<div class="form-group">
-										<div class="input-group">
-											<div class="input-group-addon">
-												<i class="fa fa-envelope" style="margin:0;"></i>
-											</div>
-											<input type="email" name="email" class="form-control" placeholder="请输入邮箱">
-										</div>
-									</div>
-									<div class="form-group">
-										<div class="input-group">
-											<div class="input-group-addon">
-												<i class="fa fa-lock" style="margin:0;"></i>
-											</div>
-											<input type="password" name="password" class="form-control" placeholder="请输入密码">
-										</div>
-									</div>
-									<div class="form-inline">
-										<div class="form-group">
-											<div class="input-group">
-												<input type="text" name="captcha_v" class="form-control" placeholder="请输入验证码">
-											</div>
-										</div>
-										<img class="verify-code" src="" source="img/captcha.gif">
-									</div>
-									<div class="form-group">
-										<input class="btn btn-primary" name="submit" type="submit" value="注册">
-									</div>
-									<div class="form-group agree-privacy">
-										注册表示您已经同意我们的<a href="../privacy/index.html" target="_blank">隐私条款</a>
-									</div>
-									<div class="form-group widget-signup">
-										<span>快速注册</span>
-										<a href="/auth/qq?next="><i class="fa fa-qq"></i></a>
-										<a href="/auth/weibo?next="><i class="fa fa-weibo"></i></a>
-										<a href="/auth/weixin?next="><i class="fa fa-weixin"></i></a>
-										<a href="/auth/github?next="><i class="fa fa-github"></i></a>
-										<a href="/auth/renren?next="><i class="fa fa-renren"></i></a>
-									</div>
-									<div class="form-group error-msg">
-										<div class="alert alert-danger" role="alert"></div>
-									</div>
-								</form>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-
-		<div id="base-data" data-flash="false" data-is-login=false data-is-jwt=true data-socket-url="wss://comet.xxxxxx.com"
-		 data-msg-user="" data-msg-system=""></div>
 		<script src="../app/dest/lib/lib.js?=2016121272249"></script>
 		<script src="../static/jquery/2.2.4/jquery.min.js"></script>
 		<script src="../static/ace/1.2.5/ace.js"></script>
@@ -519,11 +413,11 @@
 		<script src="../static/bootstrap-table/1.11.0/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
 
 		<script src="../static/ravenjs/3.7.0/raven.min.js"></script>
-		<script>
+		<!-- <script>
 			Raven.config('https://bc3878b7ed0a4468a65390bd79e6e73f@sentry.xxxxxx.com/5', {
 				release: '3.12.13'
 			}).install();
-		</script>
+		</script> -->
 
 		<script src="../app/dest/base/index.js?=2016121272249"></script>
 		<script>
@@ -536,6 +430,28 @@
 						'text-overflow': 'ellipsis',
 						overflow: 'hidden'
 					});
+				}
+			});
+
+			var zr = new Vue({
+				el: "#zr",
+				mounted: function() {
+					this.queryTuiJian()
+				},
+				data: {
+					recommended: []
+				},
+				methods: {
+					queryTuiJian: function() {
+						axios({
+							method: 'get',
+							url: '/api/student/home/getRecommended',
+
+						}).then(res => {
+							console.log(res.data);
+							this.recommended = res.data;
+						})
+					},
 				}
 			});
 
@@ -555,7 +471,7 @@
 					//当前页面
 					pageCurrent: 1,
 					//分页大小
-					pagesize: 3,
+					pagesize: 4,
 					//显示分页按钮数
 					showPages: 5,
 					//开始显示的分页按钮
@@ -577,7 +493,12 @@
 								roleName: "老师",
 							}
 						}).then(res => {
-							this.teachers = res.data.rows;
+							this.teachers = res.data.rows.map(item => {
+								if (item.teaPhoto == null || item.teaPhoto == "") {
+									item.teaPhoto = "../img/default.jpg";
+								}
+								return item;
+							});
 							this.totalCount = res.data.total;
 							this.pageCount = Math.ceil(res.data.total / this.pagesize);
 							if (this.pageCount > this.showPages) {
@@ -634,8 +555,6 @@
 							}
 						}
 					}
-
-
 				}
 			})
 		</script>

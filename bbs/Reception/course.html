@@ -121,6 +121,10 @@
 		</div>
 	</body>
 	<script type="text/javascript">
+		if (sessionStorage.getItem("access_token") != null) {
+			axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
+		}
+		
 		var course = new Vue({
 			el: "#course",
 
@@ -135,7 +139,7 @@
 				return {
 					typeName: "",
 					orderBy: "replyTime",
-					courseId: 1/* sessionStorage.getItem("courId") */,
+					courseId: sessionStorage.getItem("courId") ,
 					total: 50, //默认数据总数
 					pagesize: 10, //每页的数据条数
 					currentPage: 1, //默认开始页面

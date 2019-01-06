@@ -67,6 +67,10 @@
         }
     </style>
 		<script type="text/javascript">
+			if(sessionStorage.getItem("access_token")!=null){
+				axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
+			}
+			
 			layui.use('layedit', function() {
 				var layedit = layui.layedit,
 					$ = layui.jquery;
@@ -118,6 +122,11 @@
 								content: postContent,
 								title: postTitle,
 								userId: sessionStorage.getItem("userid")
+							},
+			//	
+							headers:{
+								'Authorization': 'bearer '+sessionStorage.getItem("access_token")
+								
 							},
 							beforeSend: function(request) {
 								// 禁用按钮防止重复提交
@@ -188,10 +197,6 @@
 					</div>
 					<div class="float_l margin_l35">
 						<img src="../img/uiz6.png">
-					</div>
-					<div class="float_l margin_l30 margin_r40">
-						<a class="btn btn-default navbar-btn sign-in" data-sign="signin" href="#sign-modal" data-toggle="modal">登录</a>
-						<a class="btn btn-default navbar-btn sign-up" data-sign="signup" href="#sign-modal" data-toggle="modal">注册</a>
 					</div>
 				</div>
 

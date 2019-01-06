@@ -28,14 +28,14 @@
 				<!-- 顶部左边 -->
 				<div class="float_l">
 					<div class="float_l margin_l20">
-						<a href="index.html"> <img src="../../../img/uiz1.png"/></a>
+						<a href="/student/index.html"> <img src="../../../img/uiz1.png"/></a>
 
 					</div>
 					<div class="float_l">
 						<ul class="ul_li fon_siz16">
-							<li><a class="color_black" href="curricular/courses/index.html">课程</a></li>
+							<li><a class="color_black" href="/student/curricular/courses/index.html">课程</a></li>
 							<li><a class="color_black" href="../../../department.html">院系</a></li>
-							<li><a class="color_black" href="curricular/paths/index.html">名师专栏</a></li>
+							<li><a class="color_black" href="/student/curricular/paths/index.html">名师专栏</a></li>
 						</ul>
 
 					</div>
@@ -55,7 +55,7 @@
 						<img src="../../../img/uiz6.png">
 					</div>
 					<div class="float_l margin_l30 margin_r40">
-						<a class="color_black" href="curricular/user/13/course.html" v-show="isCenter">个人中心</a>&nbsp;&nbsp;
+						<a class="color_black" href="course.html" v-show="isCenter">个人中心</a>&nbsp;&nbsp;
 						<a class="btn btn-default navbar-btn sign-in" href="javascript:void(0)" @click="login()" v-show="isShow">登录</a>
 						<el-dropdown>
 							<div class="color_black" v-show="isCenter">
@@ -102,6 +102,9 @@
 							<el-form-item label="用户名">
 								<el-input disabled size="large" v-model="form.loginName"></el-input>
 							</el-form-item>
+                            <el-form-item label="学分">
+                                <el-input disabled size="large" v-model="form.credits"></el-input>
+                            </el-form-item>
 							<el-form-item label="性别">
 								<el-radio-group v-model="form.sex">
 									<el-radio label="男" value="男"></el-radio>
@@ -263,7 +266,7 @@
                          }
                      }).then(res => {
                          let o=res.data.message[0];
-                         alert("as"+o.photo)
+                        // alert("as"+o.photo)
                          if(o.photo==null || o.photo==""){
                              o.photo='img/photo.jpg'
                          }
@@ -357,6 +360,7 @@
                      this.isShow = false;
                      this.isCenter = true;
                      this.photo = sessionStorage.getItem("userPhoto");
+                     var photo = sessionStorage.setItem("userPhoto",this.photo);
                      this.userid = sessionStorage.getItem("userid");
                  }else{
                      console.log("学生未登录");
