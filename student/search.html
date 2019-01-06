@@ -101,6 +101,9 @@
         <div class="row">
 
 
+            <div v-if="courData.length==0" style="width: 100%;text-align: center;font-size: 50px;color:rgb(8,191,145);">
+                暂无数据
+            </div>
             <div class="media bootcamp-courses-item" v-for="c in courData">
                 <div class="media-left bootcamp-courses-media">
                     <img style="width: 280px;height: 140px" class="media-object" :src="c.cour_picurl">
