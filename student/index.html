@@ -640,9 +640,20 @@
 							})
 
 						} else {
-							if (confirm("请先登录") == true) {
+							this.$confirm('您未登录,请先登录！', '温馨提示', {
+								confirmButtonText: '确定',
+								cancelButtonText: '取消',
+								type: 'warning'
+							}).then(() => {
 								window.location.href = "http://127.0.0.1/login.html";
-							}
+								
+							}).catch(() => {
+								 this.$message({
+									type: 'info',
+									message: '已取消'
+								}); 
+							});
+							
 						}
 
 					}
@@ -683,7 +694,12 @@
 							}
 						}).then(res => {
 							console.log(res.data.message);
-							this.neoDiscuss = res.data.message;
+							this.neoDiscuss = res.data.message.map(item => {
+								if (item.courPicurl == null || item.courPicurl == "") {
+									item.courPicurl = "img/timg.jpg"
+								}
+								return item;
+							});
 						})
 					},
 					intoDiscuss: function(cid, postId) {
