@@ -107,6 +107,10 @@
 								userId: sessionStorage.getItem("userid"),
 								pId: 0
 							},
+							headers:{
+								'Authorization': 'bearer '+sessionStorage.getItem("access_token")
+								
+							},
 							beforeSend: function(request) {
 								// 禁用按钮防止重复提交
 								$("#commit").attr({

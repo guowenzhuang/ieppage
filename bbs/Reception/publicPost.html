@@ -67,6 +67,10 @@
         }
     </style>
 		<script type="text/javascript">
+			if(sessionStorage.getItem("access_token")!=null){
+				axios.defaults.headers.common['Authorization'] = "bearer " + sessionStorage.getItem("access_token");
+			}
+			
 			layui.use('layedit', function() {
 				var layedit = layui.layedit,
 					$ = layui.jquery;
@@ -118,6 +122,11 @@
 								content: postContent,
 								title: postTitle,
 								userId: sessionStorage.getItem("userid")
+							},
+			//	
+							headers:{
+								'Authorization': 'bearer '+sessionStorage.getItem("access_token")
+								
 							},
 							beforeSend: function(request) {
 								// 禁用按钮防止重复提交
