@@ -109,11 +109,11 @@
                     <div class="bootcamp-courses-info">
                         <h4 class="media-heading"><span>已上线</span>{{c.cour_name}}</h4>
                         <div>
-                            <p>{{c.courContent}}</p>
+                            <p>{{c.cour_content}}</p>
                         </div>
                         <div>推荐先学：<a href="https://www.xxxxxx.com/courses/1" target="_blank">Linux基础入门</a> </div>
                         <div>
-                            <p>浏览次数：<a class="tagStyle2">{{c.cour_pageview}}</a></p>
+                            <p>浏览次数：<a class="tagStyle2">{{c.cour_pageview == null? 0:c.cour_pageview}}</a></p>
                         </div>
                     </div>
                     <div class="bootcamp-courses-subscribe">
