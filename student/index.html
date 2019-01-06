@@ -73,11 +73,17 @@
 			<div class="width_1200 margin_auto">
 				<div class="width100 float_l height460 posi_relative">
 
-					<div class="width100 float_l" id="lb">
+					<div class="width100 float_l" >
 						<div class="focusBox">
-							<ul class="pic">
-								<li v-for="s in shufflings"><a href="curricular/courses/show.html"><img :src="s.courPicurl" /></a></li>
-								<!-- <li><a href="curricular/courses/show.html"><img src="img/uiz20.jpg" /></a></li> -->
+							<ul class="pic" id="lb">
+								<!-- <li><a href="curricular/courses/show.html">
+										<img src="http://iep-oss.oss-cn-beijing.aliyuncs.com/courPicurl/1546335650783320062_300.jpg"></a>
+								</li>
+
+								<li><a href="curricular/courses/show.html"><img src="http://iep-oss.oss-cn-beijing.aliyuncs.com/courPicurl/1545745438780323654.jpg">
+									</a>
+								</li> -->
+
 							</ul>
 							<a class="prev" href="javascript:void(0)"></a>
 							<a class="next" href="javascript:void(0)"></a>
@@ -103,6 +109,22 @@
 				</div>
 			</div>
 		</div>
+		<script type="text/javascript">
+
+			$(function() {
+				axios({
+					method: 'get',
+					url: '/api/student/home/queryShuffling',
+
+				}).then(res => {
+					for (var i = 0; i < res.data.length; i++) {
+						var course=res.data[i];
+						console.log(course);				
+						$("#lb").append("<li><a href='curricular/courses/show.html'><img src='"+course.courPicurl+"'></a></li>");
+					}
+				})
+			});
+		</script>
 		<script>
 			var bt = new Vue({
 				el: "#bt",
@@ -168,29 +190,6 @@
 					}
 				}
 			});
-
-			var lb = new Vue({
-				el: "#lb",
-				mounted: function() {
-					this.queryLunbo()
-				},
-				data: {
-					shufflings: []
-				},
-				methods: {
-					queryLunbo: function() {
-						axios({
-							method: 'get',
-							url: '/api/student/home/queryShuffling',
-
-						}).then(res => {
-							console.log(res.data);
-							this.shufflings = res.data;
-						})
-					}
-				}
-
-			});
 		</script>
 
 
@@ -233,7 +232,7 @@
 								<span class="float_l fon_siz12 line_hei16 color_gray margin_t5 posi_relative ">{{r.courContent}}</span>
 							</div>
 							<div class="width100 float_l padding_lr20 height48 fon_siz12 line_hei48 z_inx_3 posi_relative backg_white">
-								<span class="float_r color_gray"><span>{{r.courStudypeople}}</span>人在学</span>
+								<span class="float_r color_gray"><span>{{r.courStudypeople==null? 0:r.courStudypeople}}</span>人在学</span>
 							</div>
 						</a>
 					</div>
