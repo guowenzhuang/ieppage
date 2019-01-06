@@ -111,19 +111,29 @@
 		</div>
 		<script type="text/javascript">
 
-			$(function() {
+
+			
 				axios({
 					method: 'get',
 					url: '/api/student/home/queryShuffling',
 
 				}).then(res => {
+			
+					
 					for (var i = 0; i < res.data.length; i++) {
 						var course=res.data[i];
 						console.log(course);				
 						$("#lb").append("<li><a href='curricular/courses/show.html'><img src='"+course.courPicurl+"'></a></li>");
+			
 					}
+					jQuery(".focusBox").slide({
+						mainCell: ".pic",
+						effect: "left",
+						autoPlay: true,
+						delayTime: 500
+					});
 				})
-			});
+			
 		</script>
 		<script>
 			var bt = new Vue({
@@ -200,16 +210,7 @@
 				$(this).children(".bianhuabeijing").css("background-color", "#a9aaae").next().css("display", "none")
 			});
 		</script>
-
-		<script type="text/javascript">
-			jQuery(".focusBox").slide({
-				mainCell: ".pic",
-				effect: "left",
-				autoPlay: true,
-				delayTime: 500
-			});
-		</script>
-
+		
 		<!-- 课程推荐 -->
 		<div class="width100 float_l margin_b40">
 
