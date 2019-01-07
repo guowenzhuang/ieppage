@@ -76,14 +76,7 @@
 					<div class="width100 float_l" >
 						<div class="focusBox">
 							<ul class="pic" id="lb">
-								<!-- <li><a href="curricular/courses/show.html">
-										<img src="http://iep-oss.oss-cn-beijing.aliyuncs.com/courPicurl/1546335650783320062_300.jpg"></a>
-								</li>
-
-								<li><a href="curricular/courses/show.html"><img src="http://iep-oss.oss-cn-beijing.aliyuncs.com/courPicurl/1545745438780323654.jpg">
-									</a>
-								</li> -->
-
+			
 							</ul>
 							<a class="prev" href="javascript:void(0)"></a>
 							<a class="next" href="javascript:void(0)"></a>
@@ -110,9 +103,6 @@
 			</div>
 		</div>
 		<script type="text/javascript">
-
-
-			
 				axios({
 					method: 'get',
 					url: '/api/student/home/queryShuffling',
@@ -543,21 +533,32 @@
 								}
 							}).then(res => {
 								var cidlist = res.data;
-								for (var i = 0; i < cidlist.length; i++) {
-									if (cidlist[i].cid == cid) {
-										//当前登录学生已经报名 点击的讨论的课程   进入学习页
-										console.log("课程id" + cidlist[i].cid);
-										window.location.href = "http://127.0.0.1/student/curricular/courses/study.html?courId=" + cid +
-											"&value=discussion";
-									} else {
-
-										if (confirm("请先报名该课程，再进入讨论!") == true) {
-											window.location.href = "http://127.0.0.1/student/curricular/courses/show.html?courId=" + cid;
-										}
-									}
-
-								}
-								this.computerDiscuss = res.data.message;
+								console.log(res.data);
+								var courid=null;						
+								 for (var i = 0; i < cidlist.length; i++) {
+									if (cidlist[i].cid == cid){
+										courid=cidlist[i].cid;
+									}						
+								} 							
+								if (courid!=null) {
+									//当前登录学生已经报名 点击的讨论的课程   进入学习页
+									console.log("课程id" + courid);
+									window.location.href = "http://127.0.0.1/student/curricular/courses/study.html?courId=" + courid +
+										"&value=discussion";
+								} else {
+									this.$confirm('请报名该课程,报名参与讨论！', '温馨提示', {
+										confirmButtonText: '确定',
+										cancelButtonText: '取消',
+										type: 'warning'
+									}).then(() => {
+										window.location.href = "http://127.0.0.1/student/curricular/courses/show.html?courId="+courid;
+									}).catch(() => {
+										this.$message({
+											type: 'info',
+											message: '已取消'
+										});
+									});											
+								}						
 							})
 
 						} else {
@@ -637,18 +638,33 @@
 								}
 							}).then(res => {
 								var cidlist = res.data;
+								var courid=null;						
 								for (var i = 0; i < cidlist.length; i++) {
-									if (cidlist[i].cid == cid) {
-										//当前登录学生已经报名 点击的讨论的课程   进入学习页
-										console.log("课程id" + cidlist[i].cid);
-										window.location.href = "http://127.0.0.1/student/curricular/courses/study.html?courId=" + cid +
-											"&value=discussion";
-									} else {
-
-									}
-
+									if (cidlist[i].cid == cid){
+										courid=cidlist[i].cid;
+									}						
+								} 							
+								if (courid!=null) {
+									//当前登录学生已经报名 点击的讨论的课程   进入学习页
+									console.log("课程id" + courid);
+									window.location.href = "http://127.0.0.1/student/curricular/courses/study.html?courId=" + courid +
+										"&value=discussion";
+								} else {
+									this.$confirm('请报名该课程,报名参与讨论！', '温馨提示', {
+										confirmButtonText: '确定',
+										cancelButtonText: '取消',
+										type: 'warning'
+									}).then(() => {
+										window.location.href = "http://127.0.0.1/student/curricular/courses/show.html?courId="+courid;
+									}).catch(() => {
+										this.$message({
+											type: 'info',
+											message: '已取消'
+										});
+									});											
 								}
-								this.computerDiscuss = res.data.message;
+								
+								
 							})
 
 						} else {
@@ -730,29 +746,31 @@
 								}
 							}).then(res => {
 								var cidlist = res.data;
+								var courid=null;						
 								for (var i = 0; i < cidlist.length; i++) {
-									if (cidlist[i].cid == cid) {
-										//当前登录学生已经报名 点击的讨论的课程   进入学习页
-										console.log("课程id" + cidlist[i].cid);
-										window.location.href = "http://127.0.0.1/student/curricular/courses/study.html?courId=" + cid +
-											"&value=discussion";
-									} else {
-                                        this.$confirm('请报名该课程,报名参与讨论！', '温馨提示', {
-                                        	confirmButtonText: '确定',
-                                        	cancelButtonText: '取消',
-                                        	type: 'warning'
-                                        }).then(() => {
-                                        	window.location.href = "http://127.0.0.1/student/curricular/courses/show.html?courId="+cid;
-                                        }).catch(() => {
-                                        	this.$message({
-                                        		type: 'info',
-                                        		message: '已取消'
-                                        	});
-                                        });
-									}
-
+									if (cidlist[i].cid == cid){
+										courid=cidlist[i].cid;
+									}						
+								} 							
+								if (courid!=null) {
+									//当前登录学生已经报名 点击的讨论的课程   进入学习页
+									console.log("课程id" + courid);
+									window.location.href = "http://127.0.0.1/student/curricular/courses/study.html?courId=" + courid +
+										"&value=discussion";
+								} else {
+									this.$confirm('请报名该课程,报名参与讨论！', '温馨提示', {
+										confirmButtonText: '确定',
+										cancelButtonText: '取消',
+										type: 'warning'
+									}).then(() => {
+										window.location.href = "http://127.0.0.1/student/curricular/courses/show.html?courId="+courid;
+									}).catch(() => {
+										this.$message({
+											type: 'info',
+											message: '已取消'
+										});
+									});											
 								}
-								this.computerDiscuss = res.data.message;
 							})
 
 						} else {
