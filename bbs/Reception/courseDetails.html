@@ -108,7 +108,7 @@
 								replyContent: replyText,
 								postId: sessionStorage.getItem("courPostId"),
 								userId: sessionStorage.getItem("userid"),
-								courseId: 1,
+								courseId: sessionStorage.getItem("courId"),
 								pId: 0
 							},
 							beforeSend: function(request) {

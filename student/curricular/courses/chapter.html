@@ -88,13 +88,13 @@
                         <div style="display: flex;justify-content: left;align-items: center;">
                           <span v-for="i in hierarchy*2">&emsp;</span>
                             &nbsp;
-                            <div v-if="item.progress==null || item.progress==0"  class="el-progress-circle" style="height: 50px; width: 50px;"><svg viewBox="0 0 100 100"><path d="M 50 50 m 0 -44 a 44 44 0 1 1 0 88 a 44 44 0 1 1 0 -88" stroke="#e5e9f2" stroke-width="12.0" fill="none" class="el-progress-circle__track"></path><path d="M 50 50 m 0 -44 a 44 44 0 1 1 0 88 a 44 44 0 1 1 0 -88" stroke-linecap="round" stroke="#20a0ff" stroke-width="0" fill="none" class="el-progress-circle__path" style="stroke-dasharray: 276.46px, 276.46px; stroke-dashoffset: 269.549px; transition: stroke-dashoffset 0.6s ease 0s, stroke 0.6s ease 0s;"></path></svg></div>
+                            <div v-if="item.progress==null || item.progress==0"  class="el-progress-circle" style="height: 45px; width: 45px;"><svg viewBox="0 0 100 100"><path d="M 50 50 m 0 -44 a 44 44 0 1 1 0 88 a 44 44 0 1 1 0 -88" stroke="#e5e9f2" stroke-width="12.0" fill="none" class="el-progress-circle__track"></path><path d="M 50 50 m 0 -44 a 44 44 0 1 1 0 88 a 44 44 0 1 1 0 -88" stroke-linecap="round" stroke="#20a0ff" stroke-width="0" fill="none" class="el-progress-circle__path" style="stroke-dasharray: 276.46px, 276.46px; stroke-dashoffset: 269.549px; transition: stroke-dashoffset 0.6s ease 0s, stroke 0.6s ease 0s;"></path></svg></div>
                                <el-progress
                                v-else
                                 :show-text="false"
                                type="circle"
                                :percentage="item.progress"
-                               width="50"
+                               width="45"
                               ></el-progress>
                                &emsp;
                                <span>{{item.chaName}}</span>

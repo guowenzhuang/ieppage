@@ -19,6 +19,8 @@
 <div id="app">
 
     <el-row>
+        <el-button  onclick="window.history.go(-1)" type="primary">后退</el-button>
+
         <el-tabs v-model="labelValue" type="card">
             <el-tab-pane label="视频" active name="video">
                 <el-row type="flex" justify="center">
