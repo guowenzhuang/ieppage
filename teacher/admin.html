@@ -23,6 +23,10 @@
             <el-row :gutter="20" type="flex">
                 <el-col :span="3">
                     <div>&nbsp;</div>
+                    <el-button type="primary" @click="ret">返回</el-button>
+                </el-col>
+                <el-col :span="3">
+                    <div>&nbsp;</div>
                     <el-button type="primary"
                                @click="addChapterShow">新增章节
                     </el-button>
@@ -121,12 +125,12 @@
                         </div>
                     </el-form-item>
                 </el-tab-pane>
-                <el-tab-pane label="ppt" name="second">
+                <!--<el-tab-pane label="ppt" name="second">
                     <el-form-item>
                         <el-input type="file" id="pptfile"></el-input>
                         <el-button @click="ppttj()">提交</el-button>
                     </el-form-item>
-                </el-tab-pane>
+                </el-tab-pane>-->
                 <el-tab-pane label="文档" name="third">
                     <el-form-item>
                         <el-input type="file" id="dofile"></el-input>
@@ -175,7 +179,6 @@
                             label="模块操作">
                         <template slot-scope="scope">
                          <el-button type="info" round size="mini"  icon="el-icon-plus" @click="addChapterShow(scope.row)"></el-button>
-                          <!-- <el-button type="text" @click="updateModuleShow(scope.row)">课次信息</el-button>-->
                            <el-button type="danger" round size="mini"  icon="el-icon-delete" @click="deleteModule(scope.row.chaId)"></el-button>
 
                             <el-button v-if="scope.row.children==null || scope.row.children.size==0" type="primary" round size="mini"  icon="el-icon-edit" @click="updateModuleShow(scope.row)"></el-button>
@@ -257,6 +260,9 @@
             };
         },
         methods: {
+            ret(){
+                window.location.href="course.html";
+            },
             zhTest(row) {
                 let chaId = row.chaId;
                 localStorage.getItem("courId");
@@ -296,7 +302,7 @@
                     }
                 })
             },
-            ppttj() {
+            /*ppttj() {
                 let file = document.getElementById("pptfile").files[0];
                 if (file == null) {
                     this.$message({
@@ -328,7 +334,7 @@
                         this.update.chaPpturl = res.message.path;
                     }
                 })
-            },
+            },*/
             longtj() {
                 let file = document.getElementById("longfile").files[0];
                 if (file == null) {
