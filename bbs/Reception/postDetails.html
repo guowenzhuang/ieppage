@@ -360,7 +360,7 @@
 
 										<!-- 删除 -->
 										<span class="btn  btn-weiboshare" v-if="reply.isMy">
-											<i class="layui-icon layui-icon-delete" v-on:click="" style="font-size: 20px; color: #CC0033;"></i>
+											<i class="layui-icon layui-icon-delete" v-on:click="deleteReply(reply)" style="font-size: 20px; color: #CC0033;"></i>
 										</span>
 
 										<!-- 点赞 -->
@@ -547,6 +547,29 @@
 						axios({
 							method: 'post',
 							url: '/api/bbs/post/deletePost',
+							data: params,
+							headers: {
+								//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
+							}
+						}).then(res => {
+							res = res.data;
+							if (res.success) {
+								this.$message({
+									message: res.message,
+									type: 'success'
+								});
+								this.queryReply();
+							} else {
+								this.$message.error(res.message);
+							}
+						})
+					},
+					deleteReply: function(reply){
+						let params = new URLSearchParams();
+						params.append("replyId", reply.replyId);
+						axios({
+							method: 'post',
+							url: '/api/bbs/reply/deleteReply',
 							data: params,
 							headers: {
 								//"Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiLlvKDkuIkiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXSwiY29tcGFueSI6ImllcCIsImV4cCI6MTU0NDUzMTEzMCwiYXV0aG9yaXRpZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVf5a2m55SfIn0seyJhdXRob3JpdHkiOiLmtYvor5XmnYPpmZAifV0sImp0aSI6IjQyNWQxN2NiLTA1MTEtNGUwNy1iZTBiLTMxNDY1MDYxYzhhYSIsImNsaWVudF9pZCI6ImllcCJ9.4ELHXcBVRxTDYAQP0CBYTTY9mxMqLgJhdFONiH6o_fs"
