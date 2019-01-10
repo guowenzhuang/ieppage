@@ -517,6 +517,8 @@
 				mounted: function() {
 					/*自动在请求中添加请求头*/
 					var token = sessionStorage.getItem("access_token");
+					console.log(token)
+					
 					if (token != null) {
 						axios.defaults.headers.common['Authorization'] = "bearer " + token;
 					}
@@ -571,6 +573,8 @@
 						return '';
 					},
 					add1: function() {
+						
+						console.log(sessionStorage.getItem("access_token"))
 						if (sessionStorage.getItem("access_token") != null && sessionStorage.getItem("access_token") !="") {
 							if (this.baoming == "立即参加") {
 								axios({

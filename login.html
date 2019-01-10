@@ -194,6 +194,8 @@
                 res = res.data;
                 //token
                 sessionStorage.setItem("access_token", res.access_token);
+								console.log(sessionStorage.getItem("access_token"))
+								console.log(res)
                 //刷新token
                 sessionStorage.setItem("refresh_token", res.refresh_token);
                 //过期时间
