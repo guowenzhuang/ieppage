@@ -1,15 +1,15 @@
 智慧教学平台前端页面
 ----------
-目录结构        介绍                      负责人
+目录结构        介绍                      
 
-    bbs         论坛页面                  孟劭华组
-    demo        demo页面 登录案列         郭文壮组
-    exam        考试页面                  高中烨组
-    js          存放js文件  用于存放登录需要的js 其他组放到自己的文件夹内
-    student     学生页面                  盛广杰组
-    teacher     老师页面                   白婷婷组
-    login.html   登录页                    郭文壮组
-    README.md    项目介绍                 郭文壮组
+    bbs         论坛页面                  
+    demo        demo页面 登录案列         
+    exam        考试页面                  
+    js          存放js文件  
+    student     学生页面                 
+    teacher     老师页面                   
+    login.html   登录页                   
+    README.md    项目介绍                
 
 ## 前端项目需要运行在nginx上
 配置反向代理
